@@ -1,0 +1,53 @@
+The following open source projects are referenced by Video Analytics Serving:
+
+swagger-ui-bundle (Apache 2.0) https://pypi.org/project/swagger-ui-bundle/
+https://libraries.io/pypi/swagger-ui-bundle
+
+Tornado Web Server (Apache 2.0) https://packages.debian.org/sid/python3-tornado
+https://github.com/tornadoweb/tornado/blob/master/LICENSE
+
+Requests (Apache 2.0) https://packages.debian.org/sid/python3-requests
+https://github.com/kennethreitz/requests/blob/master/LICENSE
+
+Zalando Connexion (Apache 2.0) https://pypi.org/project/connexion/
+https://github.com/zalando/connexion/blob/master/LICENSE.txt
+
+python-dateutil (dual Apache 2.0 / BSD 3-clause) https://pypi.org/project/python-dateutil/
+https://github.com/dateutil/dateutil/blob/master/LICENSE
+
+GStreamer Python Bindings Supplement (LGPL 2.1) https://gstreamer.freedesktop.org/modules/
+gst-python.html
+https://github.com/GStreamer/gst-python/blob/master/COPYING
+
+GStreamer (LGPL 2.1) https://github.com/GStreamer
+https://gstreamer.freedesktop.org/documentation/frequently-asked-questions/licensing.html
+
+FFMpeg (LGPL 2.1) https://ffmpeg.org/
+https://github.com/FFmpeg/FFmpeg/blob/master/LICENSE.md
+
+PyGObject (LGPL 2.1) https://pypi.org/project/PyGObject/
+https://github.com/GNOME/pygobject/blob/master/COPYING
+
+libsoup (LGPL) https://packages.debian.org/sid/libsoup2.4-1
+https://github.com/GNOME/libsoup/blob/master/COPYING
+
+GObject Introspection (LGPL 2) https://gi.readthedocs.io/en/latest/
+https://github.com/GNOME/gobject-introspection/blob/master/COPYING.LGPL
+
+OpenVINO Model Zoo (Apache 2.0) https://software.intel.com/en-us/openvino-toolkit/documentation/pretrained-models
+https://github.com/opencv/open_model_zoo/blob/master/LICENSE
+
+setuptools (MIT) https://setuptools.readthedocs.io/en/latest/setuptools.html
+https://packages.debian.org/sid/python3-setuptools
+
+GStreamer Video Analytics Plugins (MIT) https://github.com/opencv/gst-video-analytics
+https://github.com/opencv/gst-video-analytics/blob/master/LICENSE
+
+six (MIT) https://pypi.org/project/six/
+https://github.com/benjaminp/six/blob/master/LICENSE
+
+Python 3 (Custom) https://packages.debian.org/sid/python3
+https://docs.python.org/3/license.html
+
+pip3 (MIT) https://packages.debian.org/sid/python3-pip
+https://github.com/pypa/pip/blob/master/LICENSE.txt

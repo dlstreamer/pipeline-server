@@ -1,0 +1,19 @@
+{
+    "name": "face_reidentification",
+    "version": 1,
+    "type": "IntelDLDT",
+    "network":"./FP32/face-reidentification-retail-0095.xml",
+    "weights":"./FP32/face-reidentification-retail-0095.bin",
+    "features":"./registered_faces.bin",
+    "gallery":"./gallery/gallery.json",
+    "proc":"./face-reidentification-retail-0095.json",
+    "labels":"./labels.txt",
+    "outputs": {
+        "detection":
+        {
+          "layer": "detection_out",
+          "labels": "",
+          "type": "DetectionOutput"
+        }
+    }
+}

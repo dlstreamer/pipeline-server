@@ -1,0 +1,16 @@
+{
+    "name": "landmarks_regression",
+    "version": 1,
+    "type": "IntelDLDT",
+    "network":"./FP32/landmarks-regression-retail-0009.xml",
+    "weights":"./FP32/landmarks-regression-retail-0009.bin",
+    "proc":"./landmarks-regression-retail-0009.json",
+    "outputs": {
+        "detection":
+        {
+          "layer": "detection_out",
+          "labels": "",
+          "type": "DetectionOutput"
+        }
+    }
+}

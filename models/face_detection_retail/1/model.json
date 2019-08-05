@@ -1,0 +1,16 @@
+{
+    "name": "face_detection_retail",
+    "version": 1,
+    "type": "IntelDLDT",
+    "network":"./FP32/face-detection-retail-0004.xml",
+    "weights":"./FP32/face-detection-retail-0004.bin",
+    "proc":"./face-detection-retail-0004.json",
+    "outputs": {
+        "detection":
+        {
+          "layer": "detection_out",
+          "labels": "labels.txt",
+          "type": "DetectionOutput"
+        }
+    }
+}

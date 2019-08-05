@@ -1,0 +1,16 @@
+{
+    "name": "object_detection",
+    "version": 1,
+    "type": "IntelDLDT",
+    "network":"./FP32/mobilenet-ssd.xml",
+    "weights":"./FP32/mobilenet-ssd.bin",
+    "proc":"./mobilenet-ssd.json",
+    "outputs": {
+	"detection":
+	{
+	    "layer": "detection_out",
+	    "labels": "labels.txt",
+	    "type": "DetectionOutput"
+	}
+    }
+}
