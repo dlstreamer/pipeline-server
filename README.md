@@ -10,6 +10,12 @@ These endpoints and pipelines may be customized to negotiate the inputs and outp
 ## Architecture Overview
 <img src="doc/html/image/video_analytics_service_architecture.png" width="800">
 
+
+### DISCLAIMER
+**IMPORTANT:** Video Analytics Serving is provided as a pre-production _sample_.
+
+The project provides a reference architecture with straightforward examples to accelerate your implementation of a solution. However, it is **_not intended for production without modification_**. In addition to modifying pipelines and models to fit your use cases, you must harden security of endpoints and other critical tasks to secure your solution.
+
 ## Interfaces
 
 | Path | Description |
@@ -38,11 +44,6 @@ Video Analytics Serving includes two [sample](pipelines) analytics pipelines for
 ## Build and Run Video Analytics Serving
 
 Video Analytics Serving may be modified to co-exist in a container alongside other applications or can be built and run as a standalone service.
-
-### DISCLAIMER
-**IMPORTANT:** Video Analytics Serving is provided as a pre-production _sample_.
-
-The project provides a reference architecture with straightforward examples to accelerate your implementation of a solution. However, it is **_not intended for production without modification_**. In addition to modifying pipelines and models to fit your use cases, you must harden security of endpoints and other critical tasks to secure your solution.
 
 ### Building
 
