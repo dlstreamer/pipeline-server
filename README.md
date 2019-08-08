@@ -55,11 +55,13 @@ To get started, build the service as a standalone component execute the followin
 
 ### Running
 
-After the service is built it can be run using standard docker run commands (volume mounting is required only to see the sample results)
+After a successful build, run the service using the included script
 
 ```bash
-(1) sudo docker run -e http_proxy=$http_proxy -e https_proxy=$https_proxy -p 8080:8080 -v /tmp:/tmp --rm video_analytics_service_gstreamer
+./run.sh
 ```
+
+This script issues a standard docker run command to launch the container. Volume mounting is used to publish the sample results to your host.
 
 ### Sample Request
 
