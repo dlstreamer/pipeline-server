@@ -11,7 +11,7 @@
 import os
 
 CONFIG_PATH = os.path.dirname(__file__) + "/../../"
-MAX_RUNNING_PIPELINES = 2
+MAX_RUNNING_PIPELINES = 1
 
 LOG_LEVEL = "INFO"
 LOG_ATTRS = ['levelname', 'asctime', 'message', 'name']
