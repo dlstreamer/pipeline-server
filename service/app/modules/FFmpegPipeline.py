@@ -38,17 +38,8 @@ class FFmpegPipeline(Pipeline):
         self.fps = None
 
     def stop(self):
-        if self._process:
-            self.state = "ABORTED"
-            self._process.kill()
-            logger.debug("Setting Pipeline {id} State to ABORTED".format(id=self.id))
-            PipelineManager.pipeline_finished()
-        if self.state is "QUEUED":
-            PipelineManager.remove_from_queue(self.id)
-            self.state = "ABORTED"
-            logger.debug("Setting Pipeline {id} State to ABORTED and removing from the queue".format(id=self.id))
-
-
+        self.state = "ABORTED"
+        return self.status()
  
     def params(self):
         request = copy.deepcopy(self.request)
@@ -90,7 +81,7 @@ class FFmpegPipeline(Pipeline):
         self._process=subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True)
         self.state = "RUNNING"
         self._process.poll()
-        while self._process.returncode == None:
+        while self._process.returncode is None and self.state != "ABORTED":
             next_line = self._process.stderr.readline()
             fps_idx = next_line.rfind('fps=')
             q_idx = next_line.rfind('q=')
@@ -98,12 +89,14 @@ class FFmpegPipeline(Pipeline):
                 self.fps = int(float(next_line[fps_idx+4:q_idx].strip()))
             self._process.poll()
         self.stop_time = time.time()
-        if self.state != "ABORTED":
+        if self.state == "ABORTED":
+            self._process.kill()
+        else:
             if self._process.returncode == 0:
                 self.state = "COMPLETED"
             else:
                 self.state = "ERROR"
-            PipelineManager.pipeline_finished()
+        PipelineManager.pipeline_finished()
         self._process = None
 
     def _add_tags(self, iemetadata_args):
