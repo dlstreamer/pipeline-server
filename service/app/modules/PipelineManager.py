@@ -12,7 +12,7 @@ import time
 from modules.ModelManager import ModelManager  # pylint: disable=import-error
 from collections import deque
 import jsonschema as jsonschema
-
+import tornado
 logger = logging.get_logger('PipelineManager', is_static=True)
 
 def import_pipeline_types():
@@ -148,15 +148,16 @@ class PipelineManager:
             if(pipeline_to_start is not None):
                 PipelineManager.running_pipelines += 1
                 pipeline_to_start.start()
-        
+    
     @staticmethod
-    def pipeline_finished():
+    def start_next_pipeline():
         PipelineManager.running_pipelines -= 1
         PipelineManager.start()
 
     @staticmethod
-    def remove_from_queue(id):
-        PipelineManager.pipeline_queue.remove(id)
+    def pipeline_finished():
+        ioloop = tornado.ioloop.IOLoop.instance()
+        ioloop.add_callback(PipelineManager.start_next_pipeline)
 
     @staticmethod
     def get_instance_parameters(name, version, instance_id):
@@ -173,7 +174,12 @@ class PipelineManager:
     @staticmethod
     def stop_instance(name, version, instance_id):
         if PipelineManager.instance_exists(name, version, instance_id):
-            return PipelineManager.pipeline_instances[instance_id].stop()
+            try:
+                PipelineManager.pipeline_queue.remove(instance_id)
+            except ValueError:
+                pass
+            finally:
+                return PipelineManager.pipeline_instances[instance_id].stop()
         return None
 
     @staticmethod
