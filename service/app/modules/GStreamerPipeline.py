@@ -76,7 +76,8 @@ class GStreamerPipeline(Pipeline):
     def params(self):
 
         request = copy.deepcopy(self.request)
-        del request["models"]
+        if "models" in request:
+            del request["models"]
 
         params_obj = {
             "id": self.id,

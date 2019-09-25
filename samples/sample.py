@@ -49,7 +49,7 @@ def print_json(object):
                      separators=[',',': ']))
     
 def read_detection_results(destination,verbose=True):
-    if verbose:
+    if (verbose): # pylint: disable=superfluous-parens
         object_lines=[]
         with open(destination) as file:
             for line in file:
@@ -82,7 +82,7 @@ def wait_for_pipeline(instance_id,
         status=get_status(instance_id,pipeline,version)
         if status==None:
             return None
-        if verbose:
+        if (verbose): # pylint: disable=superfluous-parens
             print("Pipeline Status:\n")
             print_json(status)
         time.sleep(sleep_for_status)
@@ -130,7 +130,7 @@ def start_pipeline(stream_uri,
     pipeline_url = urllib.parse.urljoin(video_analytics_serving,
                                         pipeline+"/"+version)
 
-    if verbose:
+    if (verbose): # pylint: disable=superfluous-parens
         print("Starting Pipeline: %s" % (pipeline_url))
 
     try:
