@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<net batch="1" name="landmarks-regression-retail-0009" version="4">
+<net batch="1" name="landmarks-regression-retail-0009" version="5">
 	<layers>
 		<layer id="0" name="0" precision="FP32" type="Input">
 			<output>
@@ -97,7 +97,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="5" name="Mul1_209/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="5" name="Mul1_980/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -183,7 +183,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="9" name="Mul1_236/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="9" name="Mul1_1016/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -269,7 +269,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="13" name="Mul1_227/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="13" name="Mul1_971/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -336,7 +336,7 @@
 				<weights offset="242980" size="4"/>
 			</blobs>
 		</layer>
-		<layer id="16" name="Mul1_200/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="16" name="Mul1_1007/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -470,7 +470,7 @@
 				<weights offset="558892" size="4"/>
 			</blobs>
 		</layer>
-		<layer id="22" name="Mul1_245/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="22" name="Mul1_962/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -537,7 +537,7 @@
 				<weights offset="692016" size="4"/>
 			</blobs>
 		</layer>
-		<layer id="25" name="Mul1_218/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="25" name="Mul1_989/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -679,7 +679,7 @@
 		<edge from-layer="28" from-port="3" to-layer="29" to-port="0"/>
 	</edges>
 	<meta_data>
-		<MO_version value="1.5.4.dacdc0a0"/>
+		<MO_version value="2019.1.0-341-gc9b66a2"/>
 		<cli_parameters>
 			<data_type value="FP32"/>
 			<disable_fusing value="False"/>
@@ -687,6 +687,7 @@
 			<disable_nhwc_to_nchw value="False"/>
 			<disable_omitting_optional value="False"/>
 			<disable_resnet_optimization value="False"/>
+			<enable_concat_optimization value="False"/>
 			<enable_flattening_nested_params value="False"/>
 			<extensions value="DIR"/>
 			<framework value="onnx"/>
@@ -696,13 +697,15 @@
 			<input_model_is_text value="False"/>
 			<input_shape value="[1,3,48,48]"/>
 			<k value="DIR/CustomLayersMapping.xml"/>
+			<keep_shape_ops value="False"/>
 			<legacy_mxnet_model value="False"/>
 			<log_level value="ERROR"/>
+			<mean_scale_values value="{'0': {'mean': None, 'scale': array([254.99991075])}}"/>
 			<mean_values value="()"/>
 			<model_name value="landmarks-regression-retail-0009"/>
 			<move_to_preprocess value="False"/>
-			<offload_unsupported_operations_to_tf value="False"/>
 			<output_dir value="DIR"/>
+			<placeholder_shapes value="{'0': array([ 1,  3, 48, 48])}"/>
 			<remove_output_softmax value="False"/>
 			<reverse_input_channels value="True"/>
 			<save_params_from_nd value="False"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<net batch="1" name="0003_EmoNet_ResNet10" version="4">
+<net batch="1" name="0003_EmoNet_ResNet10" version="5">
 	<layers>
 		<layer id="0" name="data" precision="FP32" type="Input">
 			<output>
@@ -11,7 +11,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="1" name="Mul_214/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="1" name="Mul_978/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -183,7 +183,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="9" name="Mul_220/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="9" name="Mul_/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -335,7 +335,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="16" name="Mul_202/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="16" name="Mul_1002/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -487,7 +487,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="23" name="Mul_199/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="23" name="Mul_999/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -639,7 +639,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="30" name="Mul_211/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
+		<layer id="30" name="Mul_993/Fused_Mul_/FusedScaleShift_" precision="FP32" type="ScaleShift">
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -763,7 +763,7 @@
 		<edge from-layer="32" from-port="3" to-layer="33" to-port="0"/>
 	</edges>
 	<meta_data>
-		<MO_version value="1.5.12.49d067a0"/>
+		<MO_version value="2019.1.0-341-gc9b66a2"/>
 		<cli_parameters>
 			<data_type value="FP32"/>
 			<disable_fusing value="False"/>
@@ -771,6 +771,7 @@
 			<disable_nhwc_to_nchw value="False"/>
 			<disable_omitting_optional value="False"/>
 			<disable_resnet_optimization value="False"/>
+			<enable_concat_optimization value="False"/>
 			<enable_flattening_nested_params value="False"/>
 			<extensions value="DIR"/>
 			<framework value="caffe"/>
@@ -781,14 +782,16 @@
 			<input_proto value="DIR/0003_EmoNet_ResNet10.prototxt"/>
 			<input_shape value="[1,3,64,64]"/>
 			<k value="DIR/CustomLayersMapping.xml"/>
+			<keep_shape_ops value="False"/>
 			<legacy_mxnet_model value="False"/>
 			<log_level value="ERROR"/>
+			<mean_scale_values value="{'data': {'mean': None, 'scale': array([1.])}}"/>
 			<mean_values value="()"/>
 			<model_name value="emotions-recognition-retail-0003"/>
 			<move_to_preprocess value="False"/>
-			<offload_unsupported_operations_to_tf value="False"/>
-			<output value="prob_emotion"/>
+			<output value="['prob_emotion']"/>
 			<output_dir value="DIR"/>
+			<placeholder_shapes value="{'data': array([ 1,  3, 64, 64])}"/>
 			<remove_output_softmax value="False"/>
 			<reverse_input_channels value="False"/>
 			<save_params_from_nd value="False"/>

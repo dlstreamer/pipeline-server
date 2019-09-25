@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 '''
 * Copyright (C) 2019 Intel Corporation.
-*
+* 
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
 import sys
 import os
 import connexion
+import json
 import asyncio
 from openapi_server import encoder
 
@@ -25,7 +26,6 @@ from optparse import OptionParser
 
 logger = logging.get_logger('main', is_static=True)
 
-
 def get_options():
     parser = OptionParser()
     parser.add_option("-p", "--port", action="store", type="int", dest="port", default=8080)
@@ -35,11 +35,16 @@ def get_options():
                       type="string", default='pipelines/gstreamer')
     parser.add_option("--model_dir", action="store", dest="model_dir",
                       type="string", default='models')
+    parser.add_option("--network_preference", action="store", 
+                      dest="network_preference",
+                      type="string", default=os.getenv('NETWORK_PREFERENCE', '{}'))
 
     return parser.parse_args()
 
 
 def gobject_mainloop():
+    import gi
+    gi.require_version('Gst', '1.0')
     from gi.repository import Gst, GObject
     mainloop = GObject.MainLoop()
     try:
@@ -47,10 +52,17 @@ def gobject_mainloop():
     except KeyboardInterrupt:
         pass
 
+def parse_network_preference(options):
+    try:
+        return json.loads(options.network_preference)
+    except Exception as error:
+        logger.warning("Invalid network preference: %s" %(error,))
+        return {}
 
 def main(options):
+        
     PipelineManager.load_config(os.path.join(CONFIG_PATH, options.pipeline_dir), MAX_RUNNING_PIPELINES)
-    ModelManager.load_config(os.path.join(CONFIG_PATH, options.model_dir))
+    ModelManager.load_config(os.path.join(CONFIG_PATH, options.model_dir),parse_network_preference(options))
     app = connexion.App(__name__, specification_dir='./openapi/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('openapi.yaml', arguments={'title': 'Video Analytics Serving API'})

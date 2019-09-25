@@ -289,6 +289,16 @@ components:
       - type
       - uri
       type: object
+    DeviceSource:
+      properties:
+        type:
+          type: string
+        path:
+          type: string
+      required:
+      - type
+      - path
+      type: object
     FileDestination:
       properties:
         type:
@@ -339,6 +349,7 @@ components:
             propertyName: type
           oneOf:
           - $ref: '#/components/schemas/URISource'
+          - $ref: '#/components/schemas/DeviceSource'
           type: object
         destination:
           discriminator:

@@ -6,6 +6,7 @@
 
 from modules.Pipeline import Pipeline  # pylint: disable=import-error
 from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
+from modules.ModelManager import ModelManager  # pylint: disable=import-error
 from common.utils import logging  # pylint: disable=import-error
 import string
 import shlex
@@ -15,6 +16,7 @@ import copy
 from threading import Thread
 import shutil
 import uuid
+import re
 
 logger = logging.get_logger('FFmpegPipeline', is_static=True)
 
@@ -24,6 +26,14 @@ if shutil.which('ffmpeg') is None:
 
 class FFmpegPipeline(Pipeline):
 
+    GVA_INFERENCE_FILTER_TYPES = ["detect",
+                                  "classify"]
+
+    DEVICEID_MAP = {2:'CPU',
+                    3:'GPU',
+                    5:'VPU',
+                    6:'HDDL'}
+    
     def __init__(self, id, config, models, request):
         self.config = config
         self.models = models
@@ -35,7 +45,7 @@ class FFmpegPipeline(Pipeline):
         self._ffmpeg_launch_string = None
         self.request = request
         self.state = "QUEUED"
-        self.fps = None
+        self.fps = 0
 
     def stop(self):
         self.state = "ABORTED"
@@ -121,6 +131,38 @@ class FFmpegPipeline(Pipeline):
 
         self.request["parameters"] = request_parameters
 
+    def _get_filter_params(self,_filter):
+        result = {}
+        params = re.split("=|:",_filter)
+        result['type'] = params[0]
+        for x in range(1,len(params[0:]),2):
+            result[params[x]] = params[x+1]
+        return result
+
+    def _join_filter_params(self,filter_params):
+        filter_type = filter_params.pop('type')
+        parameters = ["%s=%s" %(x,y) for (x,y) in filter_params.items()]
+        return "{filter_type}={params}".format(filter_type=filter_type,params=':'.join(parameters)) 
+        
+    def _add_default_models(self,args):
+        vf_index = args.index('-vf') if ('-vf' in args) else None
+        if (vf_index==None):
+            return
+        filters = args[vf_index+1].split(',')
+        new_filters=[]
+        for _filter in filters:
+            filter_params = self._get_filter_params(_filter)
+            if ( (filter_params['type'] in FFmpegPipeline.GVA_INFERENCE_FILTER_TYPES) and
+                 ("VA_DEVICE_DEFAULT" in filter_params['model'])):
+                device="CPU"
+                if ("device" in filter_params):
+                    device = FFmpegPipeline.DEVICEID_MAP[int(filter_params['device'])]
+                filter_params["model"] = ModelManager.get_default_network_for_device(device,filter_params["model"])
+                new_filters.append(self._join_filter_params(filter_params))
+            else:
+                new_filters.append(_filter)
+        args[vf_index+1] =','.join(new_filters)
+                
     def start(self):
         logger.debug("Starting Pipeline {id}".format(id=self.id))
         self.request["models"] = self.models
@@ -143,6 +185,7 @@ class FFmpegPipeline(Pipeline):
             iemetadata_args.append("file:///tmp/tmp"+str(uuid.uuid4().hex)+".json")
                                     
         args.extend(iemetadata_args)
+        self._add_default_models(args)
         logger.debug(args)
         thread = Thread(target=self._spawn, args=[args])
         thread.start()    

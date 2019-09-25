@@ -75,7 +75,7 @@ class PipelineManager:
                                 if config['type'] in PipelineManager.pipeline_types:
                                     pipelines[pipeline][version] = config
                                     # validate_config will throw warning of missing elements but continue execution
-                                    # PipelineManager.pipeline_types[config['type']].validate_config(config)
+                                    PipelineManager.pipeline_types[config['type']].validate_config(config)
                                 else:
                                     del pipelines[pipeline][version]
                                     logger.error("Pipeline %s with type %s not supported" % (pipeline, config['type']))
