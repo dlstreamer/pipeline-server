@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+'''
+* Copyright (C) 2019 Intel Corporation.
+* 
+* SPDX-License-Identifier: BSD-3-Clause
+'''
+
 import sys
 import os
 import connexion

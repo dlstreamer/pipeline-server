@@ -1,3 +1,9 @@
+'''
+* Copyright (C) 2019 Intel Corporation.
+* 
+* SPDX-License-Identifier: BSD-3-Clause
+'''
+
 from modules.Pipeline import Pipeline  # pylint: disable=import-error
 from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
 from modules.ModelManager import ModelManager  # pylint: disable=import-error
@@ -143,7 +149,7 @@ class FFmpegPipeline(Pipeline):
     def _join_filter_params(self,filter_params):
         filter_type = filter_params.pop('type')
         parameters = ["%s=%s" %(x,y) for (x,y) in filter_params.items()]
-        return "%s=%s" %(filter_type,':'.join(parameters)) 
+        return "{filter_type}={params}".format(filter_type=filter_type,params=':'.join(parameters)) 
         
     def _add_default_models(self,args):
         vf_index = args.index('-vf') if ('-vf' in args) else None

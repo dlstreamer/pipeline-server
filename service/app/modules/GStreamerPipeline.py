@@ -1,3 +1,9 @@
+'''
+* Copyright (C) 2019 Intel Corporation.
+* 
+* SPDX-License-Identifier: BSD-3-Clause
+'''
+
 import string
 import json
 import time
@@ -181,16 +187,17 @@ class GStreamerPipeline(Pipeline):
         self._year_base = time.strftime("%Y", time.localtime(adjusted_time / 1000000000))
         self._month_base = time.strftime("%m", time.localtime(adjusted_time / 1000000000))
         self._day_base = time.strftime("%d", time.localtime(adjusted_time / 1000000000))
-        self._dirName = "%s/%s/%s/%s" %(self.request["parameters"]["recording_prefix"],self._year_base,self._month_base,self._day_base)
+        self._dirName = "{prefix}/{yearbase}/{monthbase}/{daybase}".format(prefix=self.request["parameters"]["recording_prefix"], yearbase=self._year_base,
+                                                                            monthbase=self._month_base, daybase=self._day_base)
 
         try:
             os.makedirs(self._dirName)
         except FileExistsError:
             logger.debug("Directory already exists")
 
-        return "%s/%d_%d.mp4" %(self._dirName,
-                                adjusted_time,
-                                times["stream_time"]-self._stream_base)
+        return "{dirname}/{adjustedtime}_{time}.mp4".format(dirname=self._dirName,
+                                adjustedtime=adjusted_time,
+                                time=times["stream_time"]-self._stream_base)
 
 
     def start(self):
@@ -260,7 +267,7 @@ class GStreamerPipeline(Pipeline):
         buffer = info.get_buffer()
         pts = buffer.pts
         source_time = self.latency_times.pop(pts, -1)
-        if not source_time == -1:
+        if source_time != -1:
             self.sum_pipeline_latency += time.time() - source_time
             self.count_pipeline_latency += 1
         return Gst.PadProbeReturn.OK
@@ -284,7 +291,6 @@ class GStreamerPipeline(Pipeline):
             else:
                 json_string = GstGVAJSONMeta.get_json_message(meta).decode('utf-8')  # pylint: disable=undefined-variable
                 json_object = json.loads(json_string)
-                #json_object['tags']={'times':self.calculate_times(sample)}
                 logger.debug(json.dumps(json_object))
                 if self.destination and ("objects" in json_object) and (len(json_object["objects"]) > 0):
                     self.destination.send(json_object)
