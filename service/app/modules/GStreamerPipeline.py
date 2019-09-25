@@ -22,7 +22,6 @@ from gi.repository import Gst, GObject  # pylint: disable=import-error
 
 logger = logging.get_logger('GSTPipeline', is_static=True)
 
-
 class GStreamerPipeline(Pipeline):
 
     Gst.init(None)
@@ -50,23 +49,28 @@ class GStreamerPipeline(Pipeline):
         self.sum_pipeline_latency = 0
         self.count_pipeline_latency = 0
 
-    def stop_running_pipeline(self):
-        self.pipeline.set_state(Gst.State.NULL)
-        if self.state is "RUNNING":
-            self.state = "ABORTED"
-            logger.debug("Setting Pipeline {id} State to ABORTED".format(id=self.id))
-            self.stop_time = time.time()
-            PipelineManager.pipeline_finished()
+    def pipeline_is_in_terminal_state(self):
+        if self.pipeline is None and self.state != "QUEUED":
+            return True
+        return False
 
+    def shutdown_and_delete_pipeline(self, new_state):
+        if not self.pipeline_is_in_terminal_state():
+            self.stop_time = time.time()
+            logger.debug("Setting Pipeline {id} State to {next_state}".format(id=self.id, next_state=new_state))
+            self.state = new_state
+            self.pipeline.set_state(Gst.State.NULL)
+            del self.pipeline
+            self.pipeline = None
+            PipelineManager.pipeline_finished()
+        elif self.state == "QUEUED":
+            logger.debug("Setting Pipeline {id} State to {next_state} and removing from queue".format(id=self.id, next_state=new_state))
+            self.stop_time = time.time()
+            self.state = new_state
+  
     def stop(self):
-        if self.pipeline is not None:
-            self.stop_running_pipeline()
-        if self.state is "QUEUED":
-            self.state = "ABORTED"
-            PipelineManager.remove_from_queue(self.id)
-            logger.debug("Setting Pipeline {id} State to ABORTED and removing from the queue".format(id=self.id))
-        del self.pipeline
-        self.pipeline = None
+        if not self.pipeline_is_in_terminal_state():
+            GObject.idle_add(self.shutdown_and_delete_pipeline, "ABORTED")
         return self.status()
 
     def params(self):
@@ -85,10 +89,11 @@ class GStreamerPipeline(Pipeline):
 
     def status(self):
         logger.debug("Called Status")
-        if self.stop_time is not None:
-            elapsed_time = max(0, self.stop_time - self.start_time)
-        elif self.start_time is not None:
-            elapsed_time = max(0, time.time() - self.start_time)
+        if self.start_time is not None:
+            if self.stop_time is not None:
+                elapsed_time = max(0, self.stop_time - self.start_time)
+            else:
+                elapsed_time = max(0, time.time() - self.start_time)
         else:
             elapsed_time = None
 
@@ -306,37 +311,18 @@ class GStreamerPipeline(Pipeline):
         t = message.type
         if t == Gst.MessageType.EOS:
             logger.info("Pipeline {id} Ended".format(id=self.id))
-            self.pipeline.set_state(Gst.State.NULL)
-            if self.state is "RUNNING":
-                logger.debug("Setting Pipeline {id} State to COMPLETED".format(id=self.id))
-                self.state = "COMPLETED"
-            self.stop_time = time.time()
             bus.remove_signal_watch()
-            if (self.destination):
-                del self.destination
-                self.destination=None
-            del self.pipeline
-            self.pipeline = None
-            PipelineManager.pipeline_finished()
+            self.shutdown_and_delete_pipeline("COMPLETED")
         elif t == Gst.MessageType.ERROR:
             err, debug = message.parse_error()
             logger.error("Error on Pipeline {id}: {err}".format(id=id, err=err))
-            
-            if (self.state is None) or (self.state is "RUNNING") or (self.state is "QUEUED"):
-                logger.debug("Setting Pipeline {id} State to ERROR".format(id=self.id))
-                self.stop_time = time.time()
-                self.state = "ERROR"
-            self.pipeline.set_state(Gst.State.NULL)
-            self.stop_time = time.time()
             bus.remove_signal_watch()
-            del self.pipeline
-            self.pipeline = None
-            PipelineManager.pipeline_finished()
+            self.shutdown_and_delete_pipeline("ERROR")
         elif t == Gst.MessageType.STATE_CHANGED:
             old_state, new_state, pending_state = message.parse_state_changed()
             if message.src == self.pipeline:
                 if old_state == Gst.State.PAUSED and new_state == Gst.State.PLAYING:
-                    if self.state is "QUEUED":
+                    if self.state == "QUEUED":
                         logger.debug("Setting Pipeline {id} State to RUNNING".format(id=self.id))
                         self.state = "RUNNING"
         else:

@@ -63,9 +63,6 @@ def main(options):
         
     PipelineManager.load_config(os.path.join(CONFIG_PATH, options.pipeline_dir), MAX_RUNNING_PIPELINES)
     ModelManager.load_config(os.path.join(CONFIG_PATH, options.model_dir),parse_network_preference(options))
-
-    asyncio.set_event_loop(asyncio.new_event_loop())
-
     app = connexion.App(__name__, specification_dir='./openapi/')
     app.app.json_encoder = encoder.JSONEncoder
     app.add_api('openapi.yaml', arguments={'title': 'Video Analytics Serving API'})
