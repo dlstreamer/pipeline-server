@@ -20,4 +20,4 @@ COPY   docker-entrypoint.sh /home/video-analytics/
 
 WORKDIR /home/video-analytics
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh" , "--pipeline_dir", "pipelines/gstreamer" ]
