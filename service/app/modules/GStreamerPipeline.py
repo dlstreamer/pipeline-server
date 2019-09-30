@@ -9,7 +9,6 @@ import json
 import time
 import os
 import copy
-import modules.Destination as Destination  # pylint: disable=import-error
 import modules.GstGVAJSONMeta as GstGVAJSONMeta  # pylint: disable=import-error
 from modules.Pipeline import Pipeline  # pylint: disable=import-error
 from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
@@ -23,7 +22,6 @@ from gi.repository import Gst, GObject  # pylint: disable=import-error
 logger = logging.get_logger('GSTPipeline', is_static=True)
 
 class GStreamerPipeline(Pipeline):
-
     Gst.init(None)
     GObject.threads_init()
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
@@ -112,39 +110,36 @@ class GStreamerPipeline(Pipeline):
 
     def get_avg_fps(self):
         return self.avg_fps
+    
+    def _get_element_property(self,element,key):
+        if isinstance(element,str):
+            return (element,key,None)
+        if isinstance(element,dict):
+            return (element["name"],element["property"],element.get("format",None))
 
-    def _add_tags(self):
-        if "tags" in self.request:
-            metaconvert = self.pipeline.get_by_name("jsonmetaconvert")
-            if metaconvert:
-                metaconvert.set_property("tags", json.dumps(self.request["tags"]))
-            else:
-                logger.debug("tags given but no metaconvert element found")
-
-    def _add_default_parameters(self):
-        request_parameters = self.request.get("parameters", {})
-        pipeline_parameters = self.config.get("parameters", {}).get("properties", {})
-
-        for key in pipeline_parameters:
-            if (not key in request_parameters) and ("default" in pipeline_parameters[key]):
-                request_parameters[key] = pipeline_parameters[key]["default"]
-
-        self.request["parameters"] = request_parameters
-
-    def _add_element_parameters(self):
-        request_parameters = self.request.get("parameters", {})
-        pipeline_parameters = self.config.get("parameters", {}).get("properties", {})
-
-        for key in pipeline_parameters:                
-            if "element" in pipeline_parameters[key]:
-                if key in request_parameters:
-                    element = self.pipeline.get_by_name(pipeline_parameters[key]["element"])
-                    if element:
-                        element.set_property(key, request_parameters[key])
+    def _set_section_properties(self,request_section=[],config_section=[]):
+        request,config = PipelineManager.get_section_and_config(self.request,self.config,request_section,config_section)
+        
+        for key in config:
+            if isinstance(config[key],dict) and "element" in config[key]:
+                if key in request:
+                    if (isinstance(config[key]["element"],list)):
+                        element_properties = [self._get_element_property(x,key) for x in config[key]["element"]]
                     else:
-                        logger.debug("parameter given for element but no element found")
+                        element_properties = [self._get_element_property(config[key]["element"],key)]
 
-    def _add_default_models(self):
+                    for name,property,format in element_properties:
+                        element = self.pipeline.get_by_name(name)
+                        if (element):
+                            if (format=="json"):
+                                element.set_property(property,json.dumps(request[key]))
+                            else:
+                                element.set_property(property,request[key])
+                            logger.debug("Setting element: {}, property: {}, value: {}".format(name,property,element.get_property(property)))
+                        else:
+                            logger.debug("parameter given for element but no element found")
+               
+    def _set_default_models(self):
         gva_elements = [e for e in self.pipeline.iterate_elements() if (e.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and "VA_DEVICE_DEFAULT" in e.get_property("model"))]
         for e in gva_elements:
             network = ModelManager.get_default_network_for_device(e.get_property("device"),e.get_property("model"))
@@ -156,8 +151,8 @@ class GStreamerPipeline(Pipeline):
         template = config["template"]
         pipeline = Gst.parse_launch(template)
         appsink = pipeline.get_by_name("appsink")
-        jsonmetaconvert = pipeline.get_by_name("jsonmetaconvert")
-        metapublish = pipeline.get_by_name("metapublish")
+        jsonmetaconvert = pipeline.get_by_name("metaconvert")
+        metapublish = pipeline.get_by_name("destination")
         if appsink is None:
             logger.warning("Missing appsink element")
         if jsonmetaconvert is None:
@@ -205,23 +200,25 @@ class GStreamerPipeline(Pipeline):
                                 adjustedtime=adjusted_time,
                                 time=times["stream_time"]-self._stream_base)
 
+    def _set_properties(self):
+        self._set_section_properties(["parameters"],
+                                     ["parameters","properties"])
+        self._set_section_properties(["destination"],
+                                     ["destination",self.request["destination"]["type"],"properties"])
+        self._set_section_properties(["source"],
+                                     ["source",self.request["source"]["type"],"properties"])
+        self._set_section_properties()
 
+        
     def start(self):
         logger.debug("Starting Pipeline {id}".format(id=self.id))
 
-        try:
-            self.destination = Destination.create_instance(self.request)
-        except:
-            self.destination = None
-
         self.request["models"] = self.models
-        self._add_default_parameters()
         self._gst_launch_string = string.Formatter().vformat(self.template, [], self.request)
         logger.debug(self._gst_launch_string)
         self.pipeline = Gst.parse_launch(self._gst_launch_string)
-        self._add_element_parameters()
-        self._add_tags()
-        self._add_default_models()
+        self._set_properties()
+        self._set_default_models()
         sink = self.pipeline.get_by_name("appsink")
 
         if sink is not None:
@@ -329,3 +326,4 @@ class GStreamerPipeline(Pipeline):
         else:
             pass
         return True
+    

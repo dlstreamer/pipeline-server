@@ -23,8 +23,9 @@ request_template = {
         "type": "uri"
     },
     "destination": {
-        "uri": "file:///home/video-analytics/samples/results.txt",
-        "type": "file"
+        "path": "/home/video-analytics/samples/results.txt",
+        "type": "file",
+        "format":"stream"
     }
 }
 
@@ -122,7 +123,7 @@ def start_pipeline(stream_uri,
     except OSError:
         pass
 
-    request["destination"]["uri"] = urllib.parse.urljoin("file://",os.path.abspath(destination))
+    request["destination"]["path"] = os.path.abspath(destination)
     if tags and len(tags) > 0:
         request["tags"] = tags
     if parameters and len(parameters) > 0:

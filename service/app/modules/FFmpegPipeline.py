@@ -121,16 +121,6 @@ class FFmpegPipeline(Pipeline):
             except Exception:
                 logger.error("Error adding tags")
 
-    def _add_default_parameters(self):
-        request_parameters = self.request.get("parameters", {})
-        pipeline_parameters = self.config.get("parameters", {}).get("properties", {})
-
-        for key in pipeline_parameters:
-            if (not key in request_parameters) and ("default" in pipeline_parameters[key]):
-                request_parameters[key] = pipeline_parameters[key]["default"]
-
-        self.request["parameters"] = request_parameters
-
     def _get_filter_params(self,_filter):
         result = {}
         params = re.split("=|:",_filter)
@@ -167,7 +157,6 @@ class FFmpegPipeline(Pipeline):
         logger.debug("Starting Pipeline {id}".format(id=self.id))
         self.request["models"] = self.models
 
-        self._add_default_parameters()
         self._ffmpeg_launch_string = string.Formatter().vformat(self.template, [], self.request)
         args = ['ffmpeg']
         args.extend(shlex.split(self._ffmpeg_launch_string))
@@ -177,15 +166,15 @@ class FFmpegPipeline(Pipeline):
 
         if 'destination' in self.request:
             if self.request['destination']['type'] == "kafka":
-                for item in self.request['destination']['hosts']:
+                for item in self.request['destination']['host'].split(','):
                     iemetadata_args.append("kafka://"+item+"/"+self.request["destination"]["topic"])
             elif self.request['destination']['type'] == "file":
-                iemetadata_args.append(self.request['destination']['uri'])
+                iemetadata_args.append(self.request['destination']['path'])
         else:
-            iemetadata_args.append("file:///tmp/tmp"+str(uuid.uuid4().hex)+".json")
+            iemetadata_args.append("/tmp/tmp"+str(uuid.uuid4().hex)+".json")
                                     
         args.extend(iemetadata_args)
         self._add_default_models(args)
         logger.debug(args)
         thread = Thread(target=self._spawn, args=[args])
-        thread.start()    
+        thread.start()
