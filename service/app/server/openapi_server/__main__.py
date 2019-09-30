@@ -32,7 +32,7 @@ def get_options():
     parser.add_option("--framework", action="store", dest="framework",
                       choices=['gstreamer', 'ffmpeg'], default='gstreamer')
     parser.add_option("--pipeline_dir", action="store", dest="pipeline_dir",
-                      type="string", default='pipelines/gstreamer')
+                      type="string", default='pipelines')
     parser.add_option("--model_dir", action="store", dest="model_dir",
                       type="string", default='models')
     parser.add_option("--network_preference", action="store", 

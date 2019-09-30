@@ -12,7 +12,9 @@ import time
 from modules.ModelManager import ModelManager  # pylint: disable=import-error
 from collections import deque
 import jsonschema as jsonschema
+import modules.schema as schema
 import tornado
+
 logger = logging.get_logger('PipelineManager', is_static=True)
 
 def import_pipeline_types():
@@ -112,31 +114,92 @@ class PipelineManager:
         return params_obj
 
     @staticmethod
-    def is_input_valid(name, version, request):
-        config_validation = PipelineManager.pipelines[name][str(version)].get("parameters", {})
+    def is_input_valid(request,pipeline_config,section):
+
+        config = pipeline_config.get(section,{})
         try:
-            input_validator = jsonschema.Draft4Validator(schema=config_validation, format_checker=jsonschema.draft4_format_checker)
-            input_validator.validate(request.get("parameters", {}))
-            logger.debug("Validation successful")
+            input_validator = jsonschema.Draft4Validator(schema=config, format_checker=jsonschema.draft4_format_checker)
+            input_validator.validate(request.get(section, {}))
+            
+            logger.debug("{} Validation successful".format(section))
             return True
-        except:
-            logger.debug("Validation error in request payload")
+        except Exception as error:
+            logger.debug("Validation error in request section {} payload".format(section))
             return False
+
+    @staticmethod
+    def get_section_and_config(request,config,request_section=[],config_section=[]):
+        for key in request_section:
+            request = request.get(key,{})
+
+        for key in config_section:
+            config = config.get(key,{})
+       
+        return request,config
+
+    @staticmethod
+    def set_section_defaults(request,config,request_section=[],config_section=[]):        
+        section,config = PipelineManager.get_section_and_config(request,config,request_section,config_section)
+        for key in config:
+            if (key not in section) and ("default" in config[key]):
+                section[key] = config[key]["default"]
+
+        if (len(section)):
+            result = request
+            for key in request_section[0:-1]:
+                result=result.setdefault(key,{})
+            result[request_section[-1]]=section
+
+    @staticmethod
+    def set_defaults(request,config):
+
+        if ("destination" not in config):
+            config["destination"]=schema.destination
+        if ("source" not in config):
+            config["source"] = schema.source
+        if ("tags" not in config):
+            config["tags"]=schema.tags
+
+        PipelineManager.set_section_defaults(request,config,["parameters"],
+                                             ["parameters","properties"])
+        if ("destination" in request) and ("type" in request["destination"]):
+            PipelineManager.set_section_defaults(request,config,["destination"],
+                                                 ["destination",request["destination"]["type"],"properties"])
+        if ("source" in request) and ("type" in request["source"]):
+            PipelineManager.set_section_defaults(request,config,["source"],
+                                                 ["source",request["source"]["type"],"properties"])
+
+        PipelineManager.set_section_defaults(request,config,["tags"],
+                                              ["tags","properties"])
+
 
     @staticmethod
     def create_instance(name, version, request):
         logger.info("Creating Instance of Pipeline {name}/{v}".format(name=name, v=version))
         if not PipelineManager.pipeline_exists(name, version):
             return None, "Invalid Pipeline or Version"
-        if not PipelineManager.is_input_valid(name, version, request):
-            return None, "Request parameters do not match JSON schema"
+
         pipeline_type = PipelineManager.pipelines[name][str(version)]['type']
+        pipeline_config = PipelineManager.pipelines[name][str(version)]
+
+        PipelineManager.set_defaults(request,pipeline_config)
+
+        if not PipelineManager.is_input_valid(request,pipeline_config,"parameters"):
+            return None, "Invalid Parameters"
+        if not PipelineManager.is_input_valid(request,pipeline_config,"destination"):
+            return None, "Invalid Destination"
+        if not PipelineManager.is_input_valid(request,pipeline_config,"source"):
+            return None, "Invalid Source"
+        if not PipelineManager.is_input_valid(request,pipeline_config,"tags"):
+            return None, "Invalid Tags"
+        
         PipelineManager.pipeline_id += 1
+        
         PipelineManager.pipeline_instances[PipelineManager.pipeline_id] = \
             PipelineManager.pipeline_types[pipeline_type](PipelineManager.pipeline_id,
-                                                            PipelineManager.pipelines[name][str(version)],
-                                                            ModelManager.models,
-                                                            request)
+                                                          pipeline_config,
+                                                          ModelManager.models,
+                                                          request)
         PipelineManager.pipeline_queue.append(PipelineManager.pipeline_id)
         PipelineManager.start()
         return PipelineManager.pipeline_id, None
@@ -148,7 +211,7 @@ class PipelineManager:
             if(pipeline_to_start is not None):
                 PipelineManager.running_pipelines += 1
                 pipeline_to_start.start()
-    
+
     @staticmethod
     def start_next_pipeline():
         PipelineManager.running_pipelines -= 1
