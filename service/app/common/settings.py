@@ -5,13 +5,14 @@
 '''
 
 """
-    define service level settings for Video Analytics Serving here
+    define logging settings here
 """
 
 import os
 
-CONFIG_PATH = os.path.dirname(__file__) + "/../../"
-MAX_RUNNING_PIPELINES = 1
-
 LOG_LEVEL = "INFO"
 LOG_ATTRS = ['levelname', 'asctime', 'message', 'name']
+
+def set_log_level(level):
+    global LOG_LEVEL
+    LOG_LEVEL = level
