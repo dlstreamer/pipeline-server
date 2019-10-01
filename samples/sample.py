@@ -1,23 +1,24 @@
 #!/usr/bin/python3
 '''
 * Copyright (C) 2019 Intel Corporation.
-* 
+*
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-import requests
-import urllib.parse
+from __future__ import print_function
+import argparse
 import json
+import urllib.parse
 import time
 import os
-from optparse import OptionParser
 import statistics
+import requests
 
-video_analytics_serving = "http://localhost:8080/pipelines/"
-timeout = 30
-sleep_for_status = 0.5
+VIDEO_ANALYTICS_SERVING = "http://localhost:8080/pipelines/"
+TIMEOUT = 30
+SLEEP_FOR_STATUS = 0.5
 
-request_template = {
+REQUEST_TEMPLATE = {
     "source": {
         "uri": "file:///home/video-analytics/samples/pinwheel.ts",
         "type": "uri"
@@ -25,88 +26,91 @@ request_template = {
     "destination": {
         "path": "/home/video-analytics/samples/results.txt",
         "type": "file",
-        "format":"stream"
+        "format": "stream"
     }
 }
 
 def get_options():
-    parser = OptionParser()
-    parser.add_option("--pipeline", action="store", dest="pipeline",
-                      type="string", default='object_detection')
-    parser.add_option("--source", action="store", dest="source",
-                      type="string", default='file:///home/video-analytics/samples/pinwheel.ts')
-    parser.add_option("--destination", action="store", dest="destination",
-                      type="string", default='/home/video-analytics/samples/results.txt')
-    parser.add_option("--repeat", action="store", dest="repeat",
-                      type="int", default=1)
-    parser.add_option("--quiet", action="store_false", dest="verbose", default=True)
+    """Process command line options"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pipeline", action="store", dest="pipeline",
+                        type="string", default='object_detection')
+    parser.add_argument("--source", action="store", dest="source",
+                        type="string", default='file:///home/video-analytics/samples/pinwheel.ts')
+    parser.add_argument("--destination", action="store", dest="destination",
+                        type="string", default='/home/video-analytics/samples/results.txt')
+    parser.add_argument("--repeat", action="store", dest="repeat",
+                        type="int", default=1)
+    parser.add_argument("--quiet", action="store_false", dest="verbose", default=True)
 
     return parser.parse_args()
 
-def print_json(object):
-    print(json.dumps(object,
+def print_json(obj):
+    """Output as JSON formatted data"""
+    print(json.dumps(obj,
                      sort_keys=True,
                      indent=4,
-                     separators=[',',': ']))
-    
-def read_detection_results(destination,verbose=True):
-    if (verbose): # pylint: disable=superfluous-parens
-        object_lines=[]
+                     separators=[',', ': ']))
+
+def read_detection_results(destination, verbose=True):
+    """Process received detection metadata"""
+    if verbose:
+        object_lines = []
         with open(destination) as file:
             for line in file:
                 try:
-                    if line=="{\n":
+                    if line == "{\n":
                         object_lines.append(line)
-                        line=None
-                        
+                        line = None
                     if object_lines:
                         if line:
                             object_lines.append(line)
-                        if line=='}\n':
-                            line="".join(object_lines)
-                            object_lines=[]
+                        if line == '}\n':
+                            line = "".join(object_lines)
+                            object_lines = []
                         else:
-                            line=None
-
+                            line = None
                     if line:
                         print("Detection Result: \n")
                         print_json(json.loads(line))
-                except Exception as error:
+                except Exception as error: # pylint: disable=broad-except
                     print(error)
-                
+
 def wait_for_pipeline(instance_id,
                       pipeline="object_detection",
                       version="1",
                       verbose=True):
+    """Await pipeline completion"""
     status = {"state":"RUNNING"}
-    while((status["state"]=="RUNNING") or (status["state"]==None) or (status["state"]=="QUEUED")):
-        status=get_status(instance_id,pipeline,version)
-        if status==None:
+    while ((status["state"] is None) or
+           (status["state"] == "QUEUED") or
+           (status["state"] == "RUNNING")):
+        status = get_status(instance_id, pipeline, version)
+        if status is None:
             return None
-        if (verbose): # pylint: disable=superfluous-parens
+        if verbose:
             print("Pipeline Status:\n")
             print_json(status)
-        time.sleep(sleep_for_status)
+        time.sleep(SLEEP_FOR_STATUS)
     return status
 
 def get_status(instance_id,
                pipeline="object_detection",
                version="1"):
-    
-    status_url = urllib.parse.urljoin(video_analytics_serving,
+    """Fetch status of requested pipeline"""
+    status_url = urllib.parse.urljoin(VIDEO_ANALYTICS_SERVING,
                                       "/".join([pipeline,
                                                 version,
-                                                str(instance_id),"status"]))
-
+                                                str(instance_id), "status"]))
     try:
-        r = requests.get(status_url,timeout=timeout)
-        if r.status_code == 200:
-            return json.loads(r.text)
-        else:
-            None
-    except requests.exceptions.RequestException as e:
-        return None
-    
+        status_response = requests.get(status_url, timeout=TIMEOUT)
+        if status_response.status_code == 200:
+            return json.loads(status_response.text)
+    except requests.exceptions.RequestException as request_error:
+        print(request_error)
+    return None
+
+# pylint: disable=too-many-arguments
 def start_pipeline(stream_uri,
                    pipeline,
                    destination,
@@ -114,63 +118,68 @@ def start_pipeline(stream_uri,
                    tags=None,
                    parameters=None,
                    verbose=True):
-
-    request = request_template
+    """Launch requested pipeline"""
+    request = REQUEST_TEMPLATE
     request["source"]["uri"] = stream_uri
-
     try:
         os.remove(os.path.abspath(destination))
     except OSError:
         pass
-
     request["destination"]["path"] = os.path.abspath(destination)
-    if tags and len(tags) > 0:
+    if tags:
         request["tags"] = tags
-    if parameters and len(parameters) > 0:
+    if parameters:
         request["parameters"] = parameters
-    pipeline_url = urllib.parse.urljoin(video_analytics_serving,
+    pipeline_url = urllib.parse.urljoin(VIDEO_ANALYTICS_SERVING,
                                         pipeline+"/"+version)
-
-    if (verbose): # pylint: disable=superfluous-parens
+    if verbose:
         print("Starting Pipeline: %s" % (pipeline_url))
-
     try:
-        r = requests.post(pipeline_url, json=request, timeout=timeout)
-        if r.status_code == 200:
-            instance_id = int(r.text)
+        launch_response = requests.post(pipeline_url, json=request, timeout=TIMEOUT)
+        if launch_response.status_code == 200:
+            instance_id = int(launch_response.text)
             return instance_id
-    except requests.exceptions.RequestException as e:
-        return None
-    
-def print_stats(status,key='avg_fps'):
-    values = [x[key] for x in status if x and key in x and 'state' in x and x['state']=="COMPLETED"]
+    except requests.exceptions.RequestException as request_error:
+        print(request_error)
+    return None
 
-    if len(values):
+def print_stats(status, key='avg_fps'):
+    """Output pipeline statistics"""
+    values = [x[key] for x in status if x and key in x and
+              'state' in x and x['state'] == "COMPLETED"]
+    if values:
         stats = {"value":key,
                  "Average":statistics.mean(values),
                  "Variance":statistics.variance(values),
                  "Max":max(values),
                  "Min":min(values),
-                 "Count":len(status)
-        }
+                 "Count":len(status)}
         print_json(stats)
     else:
         print("No results")
-    
-if __name__ == "__main__":
 
-    try:
-        options, args = get_options()
-    except Exception as error:
-        print(error)
-        logger.error("Getopt Error!")
-        exit(1)
-    status=[]
+def launch_pipelines(options):
+    """Launch the set of pipelines defined for startup"""
+    pipeline_status = []
     for i in range(options.repeat):
-        instance_id=start_pipeline(options.source,options.pipeline,options.destination,verbose=options.verbose)
-        status.append(wait_for_pipeline(instance_id,options.pipeline,verbose=options.verbose))
-        read_detection_results(options.destination,verbose=options.verbose)
-        
-    if len(status)>1:
-        print_stats(status)
-        print_stats(status,key="elapsed_time")
+        started_instance_id = start_pipeline(options.source,
+                                             options.pipeline,
+                                             options.destination,
+                                             verbose=options.verbose)
+        pipeline_status.append(wait_for_pipeline(started_instance_id,
+                                                 options.pipeline,
+                                                 verbose=options.verbose))
+        read_detection_results(options.destination,
+                               verbose=options.verbose)
+        print("Repeating " + str(i) + "/" + options.repeat)
+    if pipeline_status:
+        print_stats(pipeline_status)
+        print_stats(pipeline_status, key="elapsed_time")
+
+if __name__ == "__main__":
+    try:
+        OPTIONS = get_options()
+    except Exception as error: # pylint: disable=broad-except
+        print(error)
+        exit(1)
+    launch_pipelines(OPTIONS)
