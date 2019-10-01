@@ -12,6 +12,7 @@ import json
 import time
 import os
 import statistics
+import sys
 import requests
 
 VIDEO_ANALYTICS_SERVING = "http://localhost:8080/pipelines/"
@@ -182,5 +183,5 @@ if __name__ == "__main__":
         OPTIONS = get_options()
     except Exception as error: # pylint: disable=broad-except
         print(error)
-        exit(1)
+        sys.exit(1)
     launch_pipelines(OPTIONS)
