@@ -20,7 +20,7 @@ source = {
         "properties": {
             "type": {
                 "type":"string",
-                "const":"uri"
+                "enum":["uri"]
             },
             "uri": {
                 "type":"string",
@@ -34,7 +34,7 @@ source = {
     "device": {
         "type":"object",
         "properties": {
-            "type":{"type":"string","const":"device"},
+            "type":{"type":"string","enum":["device"]},
             "path":{"type":"string","format":"path","element":[{"name":"source","property":"device"},{"name":"metaconvert","property":"source"}]}
         },
         "required":["type","path"]
@@ -55,7 +55,7 @@ destination = {
       "properties": {
         "type": {
           "type": "string",
-          "const": "file",
+          "enum": ["file"],
           "element": {
             "name": "destination",
             "property": "method"
@@ -88,7 +88,8 @@ destination = {
       "properties": {
         "type": {
           "type": "string",
-          "const": "mqtt"
+            "enum": ["mqtt"],
+            "element":{"name":"destination","property":"method"}
         },
         "host": {
           "type": "string",
@@ -107,7 +108,6 @@ destination = {
         },
         "timeout": {
           "type": "integer",
-          "default": 1000,
           "element": "destination"
         }
       },
@@ -122,7 +122,7 @@ destination = {
       "properties": {
         "type": {
           "type": "string",
-          "const": "kafka",
+          "enum": ["kafka"],
             "element":{"name":"destination","property":"method"}
         },
         "host": {
@@ -135,8 +135,7 @@ destination = {
         },
         "topic": {
           "type": "string",
-            "element": "destination",
-            "default":"cody"
+            "element": "destination"
         }
       },
       "required": [
