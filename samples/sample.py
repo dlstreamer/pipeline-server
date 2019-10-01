@@ -6,9 +6,9 @@
 '''
 
 from __future__ import print_function
+from urllib.parse import urljoin
 import argparse
 import json
-import urllib.parse
 import time
 import os
 import statistics
@@ -56,8 +56,8 @@ def read_detection_results(destination, verbose=True):
     """Process received detection metadata"""
     if verbose:
         object_lines = []
-        with open(destination) as file:
-            for line in file:
+        with open(destination) as detection_file:
+            for line in detection_file:
                 try:
                     if line == "{\n":
                         object_lines.append(line)
@@ -98,10 +98,11 @@ def get_status(instance_id,
                pipeline="object_detection",
                version="1"):
     """Fetch status of requested pipeline"""
-    status_url = urllib.parse.urljoin(VIDEO_ANALYTICS_SERVING,
-                                      "/".join([pipeline,
-                                                version,
-                                                str(instance_id), "status"]))
+    status_url = urljoin(VIDEO_ANALYTICS_SERVING,
+                         "/".join([pipeline,
+                                   version,
+                                   str(instance_id),
+                                   "status"]))
     try:
         status_response = requests.get(status_url, timeout=TIMEOUT)
         if status_response.status_code == 200:
@@ -130,8 +131,8 @@ def start_pipeline(stream_uri,
         request["tags"] = tags
     if parameters:
         request["parameters"] = parameters
-    pipeline_url = urllib.parse.urljoin(VIDEO_ANALYTICS_SERVING,
-                                        pipeline+"/"+version)
+    pipeline_url = urljoin(VIDEO_ANALYTICS_SERVING,
+                           pipeline + "/" + version)
     if verbose:
         print("Starting Pipeline: %s" % (pipeline_url))
     try:
