@@ -31,18 +31,19 @@ REQUEST_TEMPLATE = {
 }
 
 def supported_pipeline(string):
-    listOfPipelines = ['object_detection' , 'emotion_recognition']
-    if string not in listOfPipelines:
+    """Validates input for pipeline argument"""
+    list_pipelines = ['object_detection', 'emotion_recognition']
+    if string not in list_pipelines:
         err = "The provided pipeline parameter (%r) is invalid" % string
         raise argparse.ArgumentTypeError(err)
     return string
 
 def supported_source(string):
-    # TODO: Confirm no unexpected symlink in path
+    """Validates input for source argument for concerns such as unexpected symlink"""
     return string
 
 def supported_destination(string):
-    # TODO: Confirm no unexpected symlink in path
+    """Validates input for destination argument for concerns such as unexpected symlink"""
     return string
 
 def get_options():
@@ -53,15 +54,18 @@ def get_options():
                         help="One of the supported pipelines you want to launch; "
                              "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
-                        type=supported_source, default="file:///home/video-analytics/samples/pinwheel.ts",
+                        type=supported_source,
+                        default="file:///home/video-analytics/samples/pinwheel.ts",
                         help="Location of the content to have the requested pipeline analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
-                        type=supported_destination, default="/home/video-analytics/samples/results.txt",
+                        type=supported_destination,
+                        default="/home/video-analytics/samples/results.txt",
                         help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
                         type=int, default=1,
                         help="Number of times to launch this pipeline.")
-    parser.add_argument("--quiet", action="store_false", dest="verbose", default=True,
+    parser.add_argument("--quiet", action="store_false",
+                        dest="verbose", default=True,
                         help="Pass this flag to reduce amount of logging.")
 
     return parser.parse_args()
@@ -191,8 +195,8 @@ def launch_pipelines(options):
                                              options.destination,
                                              verbose=options.verbose)
         pipeline_stats.append(wait_for_pipeline(started_instance_id,
-                                                 options.pipeline,
-                                                 verbose=options.verbose))
+                                                options.pipeline,
+                                                verbose=options.verbose))
         read_detection_results(options.destination,
                                verbose=options.verbose)
         print("Repeating {this_instance}/{total_instances}"
