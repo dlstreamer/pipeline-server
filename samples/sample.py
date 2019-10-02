@@ -30,18 +30,39 @@ REQUEST_TEMPLATE = {
     }
 }
 
+def supported_pipeline(string):
+    listOfPipelines = ['object_detection' , 'emotion_recognition']
+    if string not in listOfPipelines:
+        err = "The provided pipeline parameter (%r) is invalid" % string
+        raise argparse.ArgumentTypeError(err)
+    return string
+
+def supported_source(string):
+    # TODO: Confirm no unexpected symlink in path
+    return string
+
+def supported_destination(string):
+    # TODO: Confirm no unexpected symlink in path
+    return string
+
 def get_options():
     """Process command line options"""
     parser = argparse.ArgumentParser()
     parser.add_argument("--pipeline", action="store", dest="pipeline",
-                        type="string", default='object_detection')
+                        type=supported_pipeline, default="object_detection",
+                        help="One of the supported pipelines you want to launch; "
+                             "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
-                        type="string", default='file:///home/video-analytics/samples/pinwheel.ts')
+                        type=supported_source, default="file:///home/video-analytics/samples/pinwheel.ts",
+                        help="Location of the content to have the requested pipeline analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
-                        type="string", default='/home/video-analytics/samples/results.txt')
+                        type=supported_destination, default="/home/video-analytics/samples/results.txt",
+                        help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
-                        type="int", default=1)
-    parser.add_argument("--quiet", action="store_false", dest="verbose", default=True)
+                        type=int, default=1,
+                        help="Number of times to launch this pipeline.")
+    parser.add_argument("--quiet", action="store_false", dest="verbose", default=True,
+                        help="Pass this flag to reduce amount of logging.")
 
     return parser.parse_args()
 
@@ -161,21 +182,24 @@ def print_stats(status, key='avg_fps'):
 
 def launch_pipelines(options):
     """Launch the set of pipelines defined for startup"""
-    pipeline_status = []
+    print("Launching with options:")
+    print(options)
+    pipeline_stats = []
     for i in range(options.repeat):
         started_instance_id = start_pipeline(options.source,
                                              options.pipeline,
                                              options.destination,
                                              verbose=options.verbose)
-        pipeline_status.append(wait_for_pipeline(started_instance_id,
+        pipeline_stats.append(wait_for_pipeline(started_instance_id,
                                                  options.pipeline,
                                                  verbose=options.verbose))
         read_detection_results(options.destination,
                                verbose=options.verbose)
-        print("Repeating " + str(i) + "/" + options.repeat)
-    if pipeline_status:
-        print_stats(pipeline_status)
-        print_stats(pipeline_status, key="elapsed_time")
+        print("Repeating {this_instance}/{total_instances}"
+              .format(this_instance=i+1, total_instances=options.repeat))
+    if len(pipeline_stats) > 1: # Requires at least two datapoints
+        print_stats(pipeline_stats) # Output avg_fps
+        print_stats(pipeline_stats, key="elapsed_time")
 
 def main():
     """Program entrypoint"""
