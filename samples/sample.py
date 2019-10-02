@@ -177,10 +177,14 @@ def launch_pipelines(options):
         print_stats(pipeline_status)
         print_stats(pipeline_status, key="elapsed_time")
 
-if __name__ == "__main__":
+def main():
+    """Program entrypoint"""
     try:
-        OPTIONS = get_options()
+        options = get_options()
     except Exception as error: # pylint: disable=broad-except
         print(error)
         sys.exit(1)
-    launch_pipelines(OPTIONS)
+    launch_pipelines(options)
+
+if __name__ == "__main__":
+    main()
