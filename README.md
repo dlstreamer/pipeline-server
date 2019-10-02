@@ -7,7 +7,7 @@ The Video Analytics Service exposes a set of RESTful interfaces designed to simp
 <img src="doc/html/image/video_analytics_service_architecture.png" width="800">
 
 
-### DISCLAIMERs
+### DISCLAIMER
 **IMPORTANT:** Video Analytics Serving is provided as a pre-production _sample_.
 
 The project provides a reference architecture with straightforward examples to accelerate your implementation of a solution. However, it is **_not intended for production without modification_**. In addition to modifying pipelines and models to fit your use cases, you must harden security of endpoints and other critical tasks to secure your solution.
