@@ -5,7 +5,6 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-from __future__ import print_function
 from urllib.parse import urljoin
 import argparse
 import json
