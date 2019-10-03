@@ -59,13 +59,13 @@ In terminal window 2:
      }
      ```
 
-    8. Explore passing other sources, destination targets, and other options described in sample.py.
-       ```
-       # ./sample.py --help
-       ```
+  8. Explore running new pipelines, passing other sources, destination targets, and other options described in sample.py.
+     ```
+     # ./sample.py --help
+     ```
 
-    9. Stop the container by typing `exit` and running the `stop.sh` script. Notice that this stops activities in both terminal windows.
-        ```
-        # exit
-        $ ./stop.sh gstreamer
-        ```
+  9. Stop the container by typing `exit` and running the `stop.sh` script. Notice that this stops activities in both terminal windows.
+     ```
+     # exit
+     $ ./stop.sh gstreamer
+     ```
