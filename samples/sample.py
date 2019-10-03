@@ -14,6 +14,7 @@ import statistics
 import sys
 import requests
 
+
 VIDEO_ANALYTICS_SERVING = "http://localhost:8080/pipelines/"
 TIMEOUT = 30
 SLEEP_FOR_STATUS = 0.5
@@ -34,7 +35,7 @@ def supported_pipeline(string):
     """Validates input for pipeline argument"""
     list_pipelines = ['object_detection', 'emotion_recognition']
     if string not in list_pipelines:
-        err = "The provided pipeline parameter (%r) is invalid" % string
+        err = "The provided pipeline parameter ({pipeline}) is invalid".format(pipeline=string)
         raise argparse.ArgumentTypeError(err)
     return string
 
@@ -48,18 +49,18 @@ def supported_destination(string):
 
 def get_options():
     """Process command line options"""
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--pipeline", action="store", dest="pipeline",
                         type=supported_pipeline, default="object_detection",
                         help="One of the supported pipelines you want to launch; "
                              "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
                         type=supported_source,
-                        default="file:///home/video-analytics/samples/pinwheel.ts",
-                        help="Location of the content to have the requested pipeline analyze.")
+                        default=REQUEST_TEMPLATE['source']['uri'], # "file:///home/video-analytics/samples/pinwheel.ts",
+                        help="Location of the content to play/analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
                         type=supported_destination,
-                        default="/home/video-analytics/samples/results.txt",
+                        default=REQUEST_TEMPLATE['destination']['path'], # "/home/video-analytics/samples/results.txt"
                         help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
                         type=int, default=1,

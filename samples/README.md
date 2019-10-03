@@ -1,4 +1,4 @@
-## Using Video Analytics Serving Samples
+# Using Video Analytics Serving Samples
 
 These steps walk you through how to launch the sample application that is included within the built docker image. We show steps for using the GStreamer based image, but you will find that altering to run for FFmpeg is very similar.
 
