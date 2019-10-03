@@ -24,7 +24,7 @@ The project provides a reference architecture with straightforward examples to a
 | [`GET` /pipelines/{name}/{version}/{instance_id}/status](interfaces.md#get-pipelinesnameversioninstance_idstatus) | Return pipeline instance status. |
 | [`DELETE` /pipelines/{name}/{version}/{instance_id}](interfaces.md#delete-pipelinesnameversioninstance_id) | Stops a running pipeline or cancels a queued pipeline. |
 
-## Build and Run Video Analytics Serving
+## Building and Running
 
 Video Analytics Serving may be modified to co-exist in a container alongside other applications or can be built and run as a standalone service.
 ### Prerequisites
