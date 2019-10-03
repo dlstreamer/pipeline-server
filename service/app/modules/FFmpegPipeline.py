@@ -1,6 +1,6 @@
 '''
 * Copyright (C) 2019 Intel Corporation.
-* 
+*
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
@@ -33,7 +33,7 @@ class FFmpegPipeline(Pipeline):
                     3:'GPU',
                     5:'VPU',
                     6:'HDDL'}
-    
+
     def __init__(self, id, config, models, request):
         self.config = config
         self.models = models
@@ -50,7 +50,7 @@ class FFmpegPipeline(Pipeline):
     def stop(self):
         self.state = "ABORTED"
         return self.status()
- 
+
     def params(self):
         request = copy.deepcopy(self.request)
         del(request["models"])
@@ -132,8 +132,8 @@ class FFmpegPipeline(Pipeline):
     def _join_filter_params(self,filter_params):
         filter_type = filter_params.pop('type')
         parameters = ["%s=%s" %(x,y) for (x,y) in filter_params.items()]
-        return "{filter_type}={params}".format(filter_type=filter_type,params=':'.join(parameters)) 
-        
+        return "{filter_type}={params}".format(filter_type=filter_type,params=':'.join(parameters))
+
     def _add_default_models(self,args):
         vf_index = args.index('-vf') if ('-vf' in args) else None
         if (vf_index==None):
@@ -152,7 +152,7 @@ class FFmpegPipeline(Pipeline):
             else:
                 new_filters.append(_filter)
         args[vf_index+1] =','.join(new_filters)
-                
+
     def start(self):
         logger.debug("Starting Pipeline {id}".format(id=self.id))
         self.request["models"] = self.models
@@ -171,8 +171,9 @@ class FFmpegPipeline(Pipeline):
             elif self.request['destination']['type'] == "file":
                 iemetadata_args.append(self.request['destination']['path'])
         else:
-            iemetadata_args.append("/tmp/tmp"+str(uuid.uuid4().hex)+".json")
-                                    
+            logger.warning("No destination in pipeline request {id}. Results will be discarded.".format(id=self.id))
+            iemetadata_args.append("/dev/null")
+
         args.extend(iemetadata_args)
         self._add_default_models(args)
         logger.debug(args)
