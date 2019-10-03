@@ -56,11 +56,11 @@ def get_options():
                              "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
                         type=supported_source,
-                        default=REQUEST_TEMPLATE['source']['uri'], # "file:///home/video-analytics/samples/pinwheel.ts",
+                        default=REQUEST_TEMPLATE['source']['uri'],
                         help="Location of the content to play/analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
                         type=supported_destination,
-                        default=REQUEST_TEMPLATE['destination']['path'], # "/home/video-analytics/samples/results.txt"
+                        default=REQUEST_TEMPLATE['destination']['path'],
                         help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
                         type=int, default=1,
