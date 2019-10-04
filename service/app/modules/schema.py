@@ -27,6 +27,8 @@ source = {
                 "format":"uri",
                 "element":[{"name":"source",
                             "property":"uri"},
+                           {"name":"source",
+                            "property":"location"},
                            {"name":"metaconvert","property":"source"}]}
         },
         "required":["type","uri"]
@@ -35,7 +37,8 @@ source = {
         "type":"object",
         "properties": {
             "type":{"type":"string","enum":["device"]},
-            "path":{"type":"string","format":"path","element":[{"name":"source","property":"device"},{"name":"metaconvert","property":"source"}]}
+            "path":{"type":"string","format":"path","element":[{"name":"source","property":"device"},
+                                                               {"name":"metaconvert","property":"source"}]}
         },
         "required":["type","path"]
     },
@@ -87,7 +90,7 @@ destination = {
       "type": "object",
       "properties": {
         "type": {
-          "type": "string",
+            "type": "string",
             "enum": ["mqtt"],
             "element":{"name":"destination","property":"method"}
         },

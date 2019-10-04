@@ -131,13 +131,16 @@ class GStreamerPipeline(Pipeline):
                     for name,property,format in element_properties:
                         element = self.pipeline.get_by_name(name)
                         if (element):
-                            if (format=="json"):
-                                element.set_property(property,json.dumps(request[key]))
+                            if (property in [x.name for x in element.list_properties()]):
+                                if (format=="json"):
+                                    element.set_property(property,json.dumps(request[key]))
+                                else:
+                                    element.set_property(property,request[key])
+                                logger.debug("Setting element: {}, property: {}, value: {}".format(name,property,element.get_property(property)))
                             else:
-                                element.set_property(property,request[key])
-                            logger.debug("Setting element: {}, property: {}, value: {}".format(name,property,element.get_property(property)))
+                                logger.debug("Parameter {} given for element {} but no property found".format(property,name))
                         else:
-                            logger.debug("parameter given for element but no element found")
+                            logger.debug("Parameter {} given for element {} but no element found".format(property,name))
                
     def _set_default_models(self):
         gva_elements = [e for e in self.pipeline.iterate_elements() if (e.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and "VA_DEVICE_DEFAULT" in e.get_property("model"))]
@@ -204,7 +207,11 @@ class GStreamerPipeline(Pipeline):
         self._set_section_properties(["parameters"],
                                      ["parameters","properties"])
         self._set_section_properties(["destination"],
+                                     ["destination","properties"])
+        self._set_section_properties(["destination"],
                                      ["destination",self.request["destination"]["type"],"properties"])
+        self._set_section_properties(["source"],
+                                     ["source","properties"])
         self._set_section_properties(["source"],
                                      ["source",self.request["source"]["type"],"properties"])
         self._set_section_properties()
