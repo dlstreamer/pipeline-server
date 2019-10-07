@@ -115,13 +115,12 @@ class PipelineManager:
 
     @staticmethod
     def is_input_valid(request,pipeline_config,section):
-
         config = pipeline_config.get(section,{})
         try:
-            input_validator = jsonschema.Draft4Validator(schema=config, format_checker=jsonschema.draft4_format_checker)
-            input_validator.validate(request.get(section, {}))
-            
-            logger.debug("{} Validation successful".format(section))
+            if (section in request):
+                input_validator = jsonschema.Draft4Validator(schema=config, format_checker=jsonschema.draft4_format_checker)
+                input_validator.validate(request.get(section, {}))    
+                logger.debug("{} Validation successful".format(section))
             return True
         except Exception as error:
             logger.debug("Validation error in request section {} payload".format(section))
