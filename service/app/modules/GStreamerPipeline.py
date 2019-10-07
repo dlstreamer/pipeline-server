@@ -208,12 +208,14 @@ class GStreamerPipeline(Pipeline):
                                      ["parameters","properties"])
         self._set_section_properties(["destination"],
                                      ["destination","properties"])
-        self._set_section_properties(["destination"],
-                                     ["destination",self.request["destination"]["type"],"properties"])
+        if "destination" in self.request and "type" in self.request["destination"]:
+            self._set_section_properties(["destination"],
+                                         ["destination",self.request["destination"]["type"],"properties"])
         self._set_section_properties(["source"],
                                      ["source","properties"])
-        self._set_section_properties(["source"],
-                                     ["source",self.request["source"]["type"],"properties"])
+        if "source" in self.request and "type" in self.request["source"]:
+            self._set_section_properties(["source"],
+                                         ["source",self.request["source"]["type"],"properties"])
         self._set_section_properties()
 
         
