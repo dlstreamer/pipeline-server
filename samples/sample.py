@@ -33,10 +33,6 @@ REQUEST_TEMPLATE = {
 
 def supported_pipeline(string):
     """Validates input for pipeline argument"""
-    list_pipelines = ['object_detection', 'emotion_recognition']
-    if string not in list_pipelines:
-        err = "The provided pipeline parameter ({pipeline}) is invalid".format(pipeline=string)
-        raise argparse.ArgumentTypeError(err)
     return string
 
 def supported_source(string):
