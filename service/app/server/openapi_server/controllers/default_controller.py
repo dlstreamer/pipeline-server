@@ -169,5 +169,5 @@ def pipelines_name_version_post(name, version):  # noqa: E501
                 return pipeline_id
             return (err, HTTPStatus.BAD_REQUEST)
         except Exception as e:
-            logger.error('pipelines_name_version_post ' +e)
+            logger.error('pipelines_name_version_post ' +str(e))
             return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)

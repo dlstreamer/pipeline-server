@@ -1,6 +1,5 @@
 
 
-
 ### `GET` /models
 <a id="op-get-models" />
 
@@ -138,7 +137,7 @@ Return pipeline description.
 ### `POST` /pipelines/{name}/{version}
 <a id="op-post-pipelines-name-version" />
 
-Start new pipeline instance.
+Start new pipeline instance. Four sections are supported by default: source, destination, parameters, and tags. These sections have special handling based on the [default schema](service/app/modules/schema.py) and/or the schema defined in the pipeline.json file for the requested pipeline.
 
 
 #### Path parameters
@@ -211,6 +210,7 @@ Start new pipeline instance.
     "type": "uri",
     "uri": "file:///root/video-examples/example.mp4"
   },
+  "destination":{},
   "parameters": {},
   "tags": {}
 }

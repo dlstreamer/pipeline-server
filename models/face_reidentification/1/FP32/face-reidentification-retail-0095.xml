@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<net batch="1" name="face-reidentification-retail-0095" version="4">
+<net batch="1" name="face-reidentification-retail-0095" version="5">
 	<layers>
 		<layer id="0" name="0" precision="FP32" type="Input">
 			<output>
@@ -361,7 +361,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="17" name="430/Broadcast/2041" precision="FP32" type="Tile">
+		<layer id="17" name="430/Broadcast/9799" precision="FP32" type="Tile">
 			<data axis="3" tiles="32"/>
 			<input>
 				<port id="0">
@@ -643,7 +643,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="30" name="445/Broadcast/2049" precision="FP32" type="Tile">
+		<layer id="30" name="445/Broadcast/9759" precision="FP32" type="Tile">
 			<data axis="3" tiles="32"/>
 			<input>
 				<port id="0">
@@ -950,7 +950,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="44" name="461/Broadcast/2077" precision="FP32" type="Tile">
+		<layer id="44" name="461/Broadcast/9755" precision="FP32" type="Tile">
 			<data axis="3" tiles="32"/>
 			<input>
 				<port id="0">
@@ -1257,7 +1257,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="58" name="477/Broadcast/2045" precision="FP32" type="Tile">
+		<layer id="58" name="477/Broadcast/9787" precision="FP32" type="Tile">
 			<data axis="3" tiles="32"/>
 			<input>
 				<port id="0">
@@ -1564,7 +1564,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="72" name="493/Broadcast/2061" precision="FP32" type="Tile">
+		<layer id="72" name="493/Broadcast/9775" precision="FP32" type="Tile">
 			<data axis="3" tiles="32"/>
 			<input>
 				<port id="0">
@@ -1871,7 +1871,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="86" name="509/Broadcast/2069" precision="FP32" type="Tile">
+		<layer id="86" name="509/Broadcast/9771" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -2153,7 +2153,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="99" name="524/Broadcast/2029" precision="FP32" type="Tile">
+		<layer id="99" name="524/Broadcast/9803" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -2460,7 +2460,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="113" name="540/Broadcast/2057" precision="FP32" type="Tile">
+		<layer id="113" name="540/Broadcast/9795" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -2767,7 +2767,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="127" name="556/Broadcast/2073" precision="FP32" type="Tile">
+		<layer id="127" name="556/Broadcast/9751" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -3074,7 +3074,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="141" name="572/Broadcast/2033" precision="FP32" type="Tile">
+		<layer id="141" name="572/Broadcast/9767" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -3381,7 +3381,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="155" name="588/Broadcast/2081" precision="FP32" type="Tile">
+		<layer id="155" name="588/Broadcast/9779" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -3688,7 +3688,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="169" name="604/Broadcast/2025" precision="FP32" type="Tile">
+		<layer id="169" name="604/Broadcast/9763" precision="FP32" type="Tile">
 			<data axis="3" tiles="16"/>
 			<input>
 				<port id="0">
@@ -3995,7 +3995,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="183" name="620/Broadcast/2053" precision="FP32" type="Tile">
+		<layer id="183" name="620/Broadcast/9807" precision="FP32" type="Tile">
 			<data axis="3" tiles="8"/>
 			<input>
 				<port id="0">
@@ -4277,7 +4277,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="196" name="635/Broadcast/2037" precision="FP32" type="Tile">
+		<layer id="196" name="635/Broadcast/9783" precision="FP32" type="Tile">
 			<data axis="3" tiles="8"/>
 			<input>
 				<port id="0">
@@ -4584,7 +4584,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="210" name="651/Broadcast/2065" precision="FP32" type="Tile">
+		<layer id="210" name="651/Broadcast/9791" precision="FP32" type="Tile">
 			<data axis="3" tiles="8"/>
 			<input>
 				<port id="0">
@@ -4990,7 +4990,7 @@
 		<edge from-layer="215" from-port="3" to-layer="216" to-port="0"/>
 	</edges>
 	<meta_data>
-		<MO_version value="1.5.4.dacdc0a0"/>
+		<MO_version value="2019.1.0-341-gc9b66a2"/>
 		<cli_parameters>
 			<data_type value="FP32"/>
 			<disable_fusing value="False"/>
@@ -4998,6 +4998,7 @@
 			<disable_nhwc_to_nchw value="False"/>
 			<disable_omitting_optional value="False"/>
 			<disable_resnet_optimization value="False"/>
+			<enable_concat_optimization value="False"/>
 			<enable_flattening_nested_params value="False"/>
 			<extensions value="DIR"/>
 			<framework value="onnx"/>
@@ -5007,13 +5008,15 @@
 			<input_model_is_text value="False"/>
 			<input_shape value="[1,3,128,128]"/>
 			<k value="DIR/CustomLayersMapping.xml"/>
+			<keep_shape_ops value="False"/>
 			<legacy_mxnet_model value="False"/>
 			<log_level value="ERROR"/>
+			<mean_scale_values value="{'0': {'mean': None, 'scale': array([254.99991075])}}"/>
 			<mean_values value="()"/>
 			<model_name value="face-reidentification-retail-0095"/>
 			<move_to_preprocess value="False"/>
-			<offload_unsupported_operations_to_tf value="False"/>
 			<output_dir value="DIR"/>
+			<placeholder_shapes value="{'0': array([  1,   3, 128, 128])}"/>
 			<remove_output_softmax value="False"/>
 			<reverse_input_channels value="True"/>
 			<save_params_from_nd value="False"/>

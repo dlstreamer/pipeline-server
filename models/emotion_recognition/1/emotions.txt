@@ -1,1 +1,0 @@
-neutral,happy,sad,surprise,anger

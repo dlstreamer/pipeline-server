@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<net batch="1" name="MobileNet-SSD" version="3">
+<net batch="1" name="MobileNet-SSD" version="5">
 	<layers>
 		<layer id="0" name="data" precision="FP32" type="Input">
 			<output>
@@ -1042,7 +1042,7 @@
 			</output>
 		</layer>
 		<layer id="50" name="conv11_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1269,7 +1269,7 @@
 			</output>
 		</layer>
 		<layer id="61" name="conv13_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1412,7 +1412,7 @@
 			</output>
 		</layer>
 		<layer id="68" name="conv14_2_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1555,7 +1555,7 @@
 			</output>
 		</layer>
 		<layer id="75" name="conv15_2_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1698,7 +1698,7 @@
 			</output>
 		</layer>
 		<layer id="82" name="conv16_2_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1841,7 +1841,7 @@
 			</output>
 		</layer>
 		<layer id="89" name="conv17_2_mbox_loc_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1935,7 +1935,7 @@
 			</output>
 		</layer>
 		<layer id="93" name="conv11_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -1994,7 +1994,7 @@
 			</output>
 		</layer>
 		<layer id="96" name="conv13_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2053,7 +2053,7 @@
 			</output>
 		</layer>
 		<layer id="99" name="conv14_2_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2112,7 +2112,7 @@
 			</output>
 		</layer>
 		<layer id="102" name="conv15_2_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2171,7 +2171,7 @@
 			</output>
 		</layer>
 		<layer id="105" name="conv16_2_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2230,7 +2230,7 @@
 			</output>
 		</layer>
 		<layer id="108" name="conv17_2_mbox_conf_flat" precision="FP32" type="Flatten">
-			<data axis="1"/>
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2281,23 +2281,36 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="110" name="mbox_conf_reshape" precision="FP32" type="Reshape">
-			<data axis="0" dim="0,-1,21" num_axes="-1"/>
+		<layer id="110" name="mbox_conf_reshape/DimData_const" precision="FP32" type="Const">
+			<output>
+				<port id="1">
+					<dim>3</dim>
+				</port>
+			</output>
+			<blobs>
+				<custom offset="23133692" size="12"/>
+			</blobs>
+		</layer>
+		<layer id="111" name="mbox_conf_reshape" precision="FP32" type="Reshape">
+			<data axis="0" num_axes="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
 					<dim>40257</dim>
 				</port>
+				<port id="1">
+					<dim>3</dim>
+				</port>
 			</input>
 			<output>
-				<port id="1">
+				<port id="2">
 					<dim>1</dim>
 					<dim>1917</dim>
 					<dim>21</dim>
 				</port>
 			</output>
 		</layer>
-		<layer id="111" name="mbox_conf_softmax" precision="FP32" type="SoftMax">
+		<layer id="112" name="mbox_conf_softmax" precision="FP32" type="SoftMax">
 			<data axis="2"/>
 			<input>
 				<port id="0">
@@ -2314,8 +2327,8 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="112" name="mbox_conf_flatten" precision="FP32" type="Flatten">
-			<data axis="1"/>
+		<layer id="113" name="mbox_conf_flatten" precision="FP32" type="Flatten">
+			<data axis="1" end_axis="-1"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2330,7 +2343,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="113" name="conv11_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="114" name="conv11_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0" clip="0" flip="1" max_size="" min_size="60.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2354,7 +2367,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="114" name="conv13_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="115" name="conv13_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0,3.0" clip="0" flip="1" max_size="150.0" min_size="105.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2378,7 +2391,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="115" name="conv14_2_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="116" name="conv14_2_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0,3.0" clip="0" flip="1" max_size="195.0" min_size="150.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2402,7 +2415,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="116" name="conv15_2_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="117" name="conv15_2_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0,3.0" clip="0" flip="1" max_size="240.0" min_size="195.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2426,7 +2439,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="117" name="conv16_2_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="118" name="conv16_2_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0,3.0" clip="0" flip="1" max_size="285.0" min_size="240.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2450,7 +2463,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="118" name="conv17_2_mbox_priorbox" precision="FP32" type="PriorBox">
+		<layer id="119" name="conv17_2_mbox_priorbox" precision="FP32" type="PriorBox">
 			<data aspect_ratio="2.0,3.0" clip="0" flip="1" max_size="300.0" min_size="285.0" offset="0.5" variance="0.10000000149011612,0.10000000149011612,0.20000000298023224,0.20000000298023224"/>
 			<input>
 				<port id="0">
@@ -2474,7 +2487,7 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="119" name="mbox_priorbox" precision="FP32" type="Concat">
+		<layer id="120" name="mbox_priorbox" precision="FP32" type="Concat">
 			<data axis="2"/>
 			<input>
 				<port id="0">
@@ -2516,8 +2529,8 @@
 				</port>
 			</output>
 		</layer>
-		<layer id="120" name="detection_out" precision="FP32" type="DetectionOutput">
-			<data background_label_id="0" code_type="caffe.PriorBoxParameter.CENTER_SIZE" confidence_threshold="0.25" eta="1.0" input_height="-1" input_width="-1" keep_top_k="100" nms_threshold="0.44999998807907104" normalized="1" num_classes="21" share_location="1" top_k="100" variance_encoded_in_target="0" visualize="False"/>
+		<layer id="121" name="detection_out" precision="FP32" type="DetectionOutput">
+			<data background_label_id="0" code_type="caffe.PriorBoxParameter.CENTER_SIZE" confidence_threshold="0.25" eta="1.0" input_height="1" input_width="1" keep_top_k="100" nms_threshold="0.44999998807907104" normalized="1" num_classes="21" share_location="1" top_k="100" variance_encoded_in_target="0" visualize="False"/>
 			<input>
 				<port id="0">
 					<dim>1</dim>
@@ -2663,33 +2676,34 @@
 		<edge from-layer="102" from-port="1" to-layer="109" to-port="3"/>
 		<edge from-layer="105" from-port="1" to-layer="109" to-port="4"/>
 		<edge from-layer="108" from-port="1" to-layer="109" to-port="5"/>
-		<edge from-layer="109" from-port="6" to-layer="110" to-port="0"/>
-		<edge from-layer="110" from-port="1" to-layer="111" to-port="0"/>
-		<edge from-layer="111" from-port="1" to-layer="112" to-port="0"/>
-		<edge from-layer="47" from-port="1" to-layer="113" to-port="0"/>
-		<edge from-layer="1" from-port="3" to-layer="113" to-port="1"/>
-		<edge from-layer="58" from-port="1" to-layer="114" to-port="0"/>
+		<edge from-layer="109" from-port="6" to-layer="111" to-port="0"/>
+		<edge from-layer="110" from-port="1" to-layer="111" to-port="1"/>
+		<edge from-layer="111" from-port="2" to-layer="112" to-port="0"/>
+		<edge from-layer="112" from-port="1" to-layer="113" to-port="0"/>
+		<edge from-layer="47" from-port="1" to-layer="114" to-port="0"/>
 		<edge from-layer="1" from-port="3" to-layer="114" to-port="1"/>
-		<edge from-layer="65" from-port="1" to-layer="115" to-port="0"/>
+		<edge from-layer="58" from-port="1" to-layer="115" to-port="0"/>
 		<edge from-layer="1" from-port="3" to-layer="115" to-port="1"/>
-		<edge from-layer="72" from-port="1" to-layer="116" to-port="0"/>
+		<edge from-layer="65" from-port="1" to-layer="116" to-port="0"/>
 		<edge from-layer="1" from-port="3" to-layer="116" to-port="1"/>
-		<edge from-layer="79" from-port="1" to-layer="117" to-port="0"/>
+		<edge from-layer="72" from-port="1" to-layer="117" to-port="0"/>
 		<edge from-layer="1" from-port="3" to-layer="117" to-port="1"/>
-		<edge from-layer="86" from-port="1" to-layer="118" to-port="0"/>
+		<edge from-layer="79" from-port="1" to-layer="118" to-port="0"/>
 		<edge from-layer="1" from-port="3" to-layer="118" to-port="1"/>
-		<edge from-layer="113" from-port="2" to-layer="119" to-port="0"/>
-		<edge from-layer="114" from-port="2" to-layer="119" to-port="1"/>
-		<edge from-layer="115" from-port="2" to-layer="119" to-port="2"/>
-		<edge from-layer="116" from-port="2" to-layer="119" to-port="3"/>
-		<edge from-layer="117" from-port="2" to-layer="119" to-port="4"/>
-		<edge from-layer="118" from-port="2" to-layer="119" to-port="5"/>
-		<edge from-layer="90" from-port="6" to-layer="120" to-port="0"/>
-		<edge from-layer="112" from-port="1" to-layer="120" to-port="1"/>
-		<edge from-layer="119" from-port="6" to-layer="120" to-port="2"/>
+		<edge from-layer="86" from-port="1" to-layer="119" to-port="0"/>
+		<edge from-layer="1" from-port="3" to-layer="119" to-port="1"/>
+		<edge from-layer="114" from-port="2" to-layer="120" to-port="0"/>
+		<edge from-layer="115" from-port="2" to-layer="120" to-port="1"/>
+		<edge from-layer="116" from-port="2" to-layer="120" to-port="2"/>
+		<edge from-layer="117" from-port="2" to-layer="120" to-port="3"/>
+		<edge from-layer="118" from-port="2" to-layer="120" to-port="4"/>
+		<edge from-layer="119" from-port="2" to-layer="120" to-port="5"/>
+		<edge from-layer="90" from-port="6" to-layer="121" to-port="0"/>
+		<edge from-layer="113" from-port="1" to-layer="121" to-port="1"/>
+		<edge from-layer="120" from-port="6" to-layer="121" to-port="2"/>
 	</edges>
 	<meta_data>
-		<MO_version value="1.4.292.6ef7232d"/>
+		<MO_version value="unknown version"/>
 		<cli_parameters>
 			<data_type value="FP32"/>
 			<disable_fusing value="False"/>
@@ -2697,6 +2711,7 @@
 			<disable_nhwc_to_nchw value="False"/>
 			<disable_omitting_optional value="False"/>
 			<disable_resnet_optimization value="False"/>
+			<enable_concat_optimization value="False"/>
 			<enable_flattening_nested_params value="False"/>
 			<extensions value="DIR"/>
 			<framework value="caffe"/>
@@ -2707,13 +2722,15 @@
 			<input_proto value="DIR/mobilenet-ssd.prototxt"/>
 			<input_shape value="[1,3,300,300]"/>
 			<k value="DIR/CustomLayersMapping.xml"/>
+			<keep_shape_ops value="False"/>
 			<legacy_mxnet_model value="False"/>
 			<log_level value="ERROR"/>
+			<mean_scale_values value="{'data': {'mean': array([127.5, 127.5, 127.5]), 'scale': array([127.50223129])}}"/>
 			<mean_values value="data[127.5,127.5,127.5]"/>
 			<move_to_preprocess value="False"/>
-			<offload_unsupported_operations_to_tf value="False"/>
-			<output value="detection_out"/>
+			<output value="['detection_out']"/>
 			<output_dir value="DIR"/>
+			<placeholder_shapes value="{'data': array([  1,   3, 300, 300])}"/>
 			<remove_output_softmax value="False"/>
 			<reverse_input_channels value="False"/>
 			<save_params_from_nd value="False"/>

@@ -2,7 +2,7 @@
     "name": "emotion_recognition",
     "version": 1,
     "type": "FFmpeg",
-    "template":"-i \"{source[uri]}\" -vf \"detect=model={models[face_detection_retail][1][network]}:label=\"{models[face_detection_retail][1][outputs][detection][labels]}\":name=face:interval=\"{parameters[every-nth-frame]}\",classify=model=\"{models[emotion_recognition][1][network]}\":label=\"{models[emotion_recognition][1][outputs][emotion][labels]}\":name=emotion\"",
+    "template":"-i \"{source[uri]}\" -vf \"detect=model={models[face_detection_retail][1][network]}:model_proc=\"{models[face_detection_retail][1][proc]}\":interval=\"{parameters[every-nth-frame]}\",classify=model=\"{models[emotion_recognition][1][network]}\":model_proc=\"{models[emotion_recognition][1][proc]}\"\"",
     "description":"Emotion Recognition",
     "parameters": {
         "type" : "object",
