@@ -154,11 +154,11 @@ class GStreamerPipeline(Pipeline):
         template = config["template"]
         pipeline = Gst.parse_launch(template)
         appsink = pipeline.get_by_name("appsink")
-        jsonmetaconvert = pipeline.get_by_name("metaconvert")
+        metaconvert = pipeline.get_by_name("metaconvert")
         metapublish = pipeline.get_by_name("destination")
         if appsink is None:
             logger.warning("Missing appsink element")
-        if jsonmetaconvert is None:
+        if metaconvert is None:
             logger.warning("Missing metaconvert element")
         if metapublish is None:
             logger.warning("Missing metapublish element")
@@ -179,7 +179,7 @@ class GStreamerPipeline(Pipeline):
             clock = Gst.SystemClock(clock_type=Gst.ClockType.REALTIME)
             self._real_base = clock.get_time()
             self._stream_base = times["segment.time"]
-            metaconvert = self.pipeline.get_by_name("jsonmetaconvert")
+            metaconvert = self.pipeline.get_by_name("metaconvert")
             
             if metaconvert:
                 if ("tags" not in self.request):
