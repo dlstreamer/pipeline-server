@@ -208,8 +208,112 @@ RUN wget ${OPENCV_REPO} && \
     make install DESTDIR=/home/build && \
     make install
 
+
+# Fetch gmmlib
+ARG GMMLIB_VER=intel-gmmlib-18.3.0
+ARG GMMLIB_REPO=https://github.com/intel/gmmlib/archive/${GMMLIB_VER}.tar.gz
+
+RUN wget -O - ${GMMLIB_REPO} | tar xz && mv gmmlib-${GMMLIB_VER} gmmlib;
+
+
+# Build libdrm
+ARG LIBDRM_VER=2.4.96
+ARG LIBDRM_REPO=https://dri.freedesktop.org/libdrm/libdrm-${LIBDRM_VER}.tar.gz
+
+RUN apt-get update && apt-get install -y -q --no-install-recommends libpciaccess-dev
+
+RUN wget -O - ${LIBDRM_REPO} | tar xz && \
+    cd libdrm-${LIBDRM_VER} && \
+    ./configure --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+    make -j8 && \
+    make install DESTDIR=/home/build && \
+    make install ;
+
+
+# Build libva
+ARG LIBVA_VER=2.4.0
+ARG LIBVA_REPO=https://github.com/intel/libva/archive/${LIBVA_VER}.tar.gz
+
+RUN apt-get remove libva*
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libdrm-dev libx11-dev xorg-dev libgl1-mesa-dev openbox
+
+RUN wget -O - ${LIBVA_REPO} | tar xz && \
+    cd libva-${LIBVA_VER} && \
+    ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
+    make -j8 && \
+    make install DESTDIR=/home/build && \
+    make install;
+
+# Build libva-utils
+ARG LIBVA_UTILS_VER=2.4.0
+ARG LIBVA_UTILS_REPO=https://github.com/intel/libva-utils/archive/${LIBVA_UTILS_VER}.tar.gz
+
+RUN wget -O - ${LIBVA_UTILS_REPO} | tar xz; \
+    cd libva-utils-${LIBVA_UTILS_VER}; \
+    ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu; \
+    make -j8; \
+    make install DESTDIR=/home/build; \
+    make install;
+
+
+# Build media driver
+ARG MEDIA_DRIVER_VER=intel-media-kbl-19.1.1
+ARG MEDIA_DRIVER_REPO=https://github.com/VCDP/media-driver/archive/${MEDIA_DRIVER_VER}.tar.gz
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libdrm-dev libpciaccess-dev libx11-dev xorg-dev libgl1-mesa-dev
+
+RUN wget -O - ${MEDIA_DRIVER_REPO} | tar xz && mv media-driver-${MEDIA_DRIVER_VER} media-driver && \
+    mkdir -p media-driver/build && \
+    cd media-driver/build && \
+    cmake -DBUILD_TYPE=release -DBUILD_ALONG_WITH_CMRTLIB=1 -DMEDIA_VERSION="2.0.0" -DBS_DIR_GMMLIB=/home/gmmlib/Source/GmmLib -DBS_DIR_COMMON=/home/gmmlib/Source/Common -DBS_DIR_INC=/home/gmmlib/Source/inc -DBS_DIR_MEDIA=/home/media-driver -Wno-dev -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make -j8 && \
+    make install DESTDIR=/home/build && \
+    make install
+
+#install OpenCL
+
+RUN mkdir neo
+
+RUN cd neo && wget https://github.com/intel/compute-runtime/releases/download/19.01.12103/intel-gmmlib_18.4.0.348_amd64.deb
+RUN cd neo && wget https://github.com/intel/compute-runtime/releases/download/19.01.12103/intel-igc-core_18.50.1270_amd64.deb
+RUN cd neo && wget https://github.com/intel/compute-runtime/releases/download/19.01.12103/intel-igc-opencl_18.50.1270_amd64.deb
+RUN cd neo && wget https://github.com/intel/compute-runtime/releases/download/19.01.12103/intel-opencl_19.01.12103_amd64.deb
+
+RUN cd neo && \
+    dpkg -i *.deb && \
+    dpkg-deb -x intel-gmmlib_18.4.0.348_amd64.deb /home/build/ && \
+    dpkg-deb -x intel-igc-core_18.50.1270_amd64.deb /home/build/ && \
+    dpkg-deb -x intel-igc-opencl_18.50.1270_amd64.deb /home/build/ && \
+    dpkg-deb -x intel-opencl_19.01.12103_amd64.deb /home/build/
+
+# Build Intel(R) Media SDK
+ARG MSDK_VER=MSS-KBL-2019-R1-HF1
+ARG MSDK_REPO=https://github.com/Intel-Media-SDK/MediaSDK/archive/${MSDK_VER}.tar.gz
+
+RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
+    mkdir -p MediaSDK/build && \
+    cd MediaSDK/build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_INCLUDEDIR=include -DBUILD_SAMPLES=OFF -DENABLE_OPENCL=ON -Wno-dev .. && \
+    make -j8 && \
+    make install DESTDIR=/home/build && \
+    rm -rf /home/build/usr/samples && \
+    rm -rf /home/build/usr/plugins && \
+    make install;
+
+# Install Python 3
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    python-gi-dev \
+    curl\
+    inetutils-ping\
+    libsoup2.4.1
+
 # Build DLDT-Inference Engine
-ARG DLDT_VER=2019_R2
+ARG DLDT_VER=2019_R3.1
 ARG DLDT_REPO=https://github.com/opencv/dldt.git
 
 RUN apt-get -y install libusb-1.0.0-dev
@@ -225,7 +329,7 @@ RUN git clone -b ${DLDT_VER} ${DLDT_REPO} && \
         -DCMAKE_INSTALL_PREFIX=/opt/intel/dldt \
         -DLIB_INSTALL_PATH=/opt/intel/dldt \
         -DENABLE_MKL_DNN=ON \
-        -DENABLE_CLDNN=OFF \
+        -DENABLE_CLDNN=ON \
         -DENABLE_SAMPLES=OFF \
         -DENABLE_TESTS=OFF \
         -DENABLE_OPENCV=OFF .. && \
@@ -408,6 +512,23 @@ RUN wget -O - ${GST_PLUGIN_LIBAV_REPO} | tar xJ && \
     make install DESTDIR=/home/build && \
     make install
 
+# Build gstreamer plugin vaapi
+ARG GST_PLUGIN_VAAPI_REPO=https://gstreamer.freedesktop.org/src/gstreamer-vaapi/gstreamer-vaapi-${GST_VER}.tar.xz
+
+RUN  apt-get update && apt-get install -y -q --no-install-recommends libxrandr-dev libegl1-mesa-dev autopoint bison flex libudev-dev
+
+RUN  wget -O - ${GST_PLUGIN_VAAPI_REPO} | tar xJ && \
+     cd gstreamer-vaapi-${GST_VER} && \
+     ./autogen.sh \
+        --prefix=/usr \
+        --libdir=/usr/lib/x86_64-linux-gnu \
+        --libexecdir=/usr/lib/x86_64-linux-gnu \
+        --enable-shared \
+        --disable-examples \
+        --disable-gtk-doc --disable-debug && \
+     make -j $(nproc) && \
+     make install DESTDIR=/home/build && \
+     make install
 
 # Build gstreamer plugin for svt
 
@@ -430,6 +551,7 @@ RUN cd SVT-AV1/gstreamer-plugin && \
     make install
 
 RUN apt-get install -y -q --no-install-recommends gtk-doc-tools uuid-dev
+
 
 ARG PAHO_INSTALL=true
 ARG PAHO_VER=1.3.0
@@ -487,11 +609,13 @@ RUN if [ "$RDKAFKA_INSTALL" = "true" ] ; then \
 
 #Install va gstreamer plugins
 #Has a dependency on OpenCV, GStreamer
-ARG VA_GSTREAMER_PLUGINS_VER=0.5.1
-ARG VA_GSTREAMER_PLUGINS_REPO=https://github.com/opencv/gst-video-analytics/archive/v${VA_GSTREAMER_PLUGINS_VER}.tar.gz
+ARG VA_GSTREAMER_PLUGINS_VER=v0.6.1
+ARG VA_GSTREAMER_PLUGINS_REPO=https://github.com/opencv/gst-video-analytics.git
 
-RUN wget -O - ${VA_GSTREAMER_PLUGINS_REPO} | tar xz && \
-    cd gst-video-analytics-${VA_GSTREAMER_PLUGINS_VER} && \
+RUN git clone ${VA_GSTREAMER_PLUGINS_REPO} && \
+    cd gst-video-analytics && \
+    git checkout ${VA_GSTREAMER_PLUGINS_VER} && \
+    git submodule init && git submodule update && \
     mkdir build && \
     cd build && \
     export CFLAGS="-std=gnu99 -Wno-missing-field-initializers" && \
@@ -507,20 +631,9 @@ RUN wget -O - ${VA_GSTREAMER_PLUGINS_REPO} | tar xz && \
     -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr .. && \
     make -j4
 RUN mkdir -p build/usr/lib/x86_64-linux-gnu/gstreamer-1.0 && \
-    cp -r gst-video-analytics-${VA_GSTREAMER_PLUGINS_VER}/build/intel64/Release/lib/* build/usr/lib/x86_64-linux-gnu/gstreamer-1.0
+    cp -r gst-video-analytics/build/intel64/Release/lib/* build/usr/lib/x86_64-linux-gnu/gstreamer-1.0
 RUN mkdir -p /usr/lib/x86_64-linux-gnu/gstreamer-1.0 && \
-    cp -r gst-video-analytics-${VA_GSTREAMER_PLUGINS_VER}/build/intel64/Release/lib/* /usr/lib/x86_64-linux-gnu/gstreamer-1.0
-
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-    python3-dev \
-    python3-pip \
-    python3-setuptools \
-    python-gi-dev \
-    curl\
-    inetutils-ping\
-    libsoup2.4.1\
-    && rm -rf /var/lib/apt/lists/*; fi
+    cp -r gst-video-analytics/build/intel64/Release/lib/* /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 
 # Build gstreamer python
 ARG GST_PYTHON_REPO=https://gstreamer.freedesktop.org/src/gst-python/gst-python-${GST_VER}.tar.xz
@@ -553,12 +666,17 @@ WORKDIR /home
 
 # Prerequisites
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime; \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libnuma1 libssl1.1 libglib2.0 libpango-1.0-0 libpangocairo-1.0-0 libpng16-16 libxv1 libvisual-0.4-0 libgl1-mesa-glx libpango-1.0-0 libtheora0 libcdparanoia0 libasound2 libsoup2.4-1 libjpeg8 libjpeg-turbo8 libgtk2.0 libdrm2 libxv1 libpugixml1v5 libcurl3-gnutls libegl1-mesa uuid python3 python3-wheel python3-pip python3-setuptools python3-gi \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libnuma1 libssl1.1 libglib2.0 libpango-1.0-0 libpangocairo-1.0-0 gobject-introspection libcurl3-gnutls libdrm-intel1 libudev1 libx11-xcb1 libgl1-mesa-glx libxrandr2 libegl1-mesa libglib2.0-0 libpng16-16 libxv1 libvisual-0.4-0 libgl1-mesa-glx libpango-1.0-0 libtheora0 libcdparanoia0 libasound2 libsoup2.4-1 libjpeg8 libjpeg-turbo8 libgtk2.0 libdrm2 libxv1 libpugixml1v5 libcurl3-gnutls libegl1-mesa uuid python3 python3-wheel python3-pip python3-setuptools python3-gi libpython3-dev \
 ; \
     rm -rf /var/lib/apt/lists/*;
 
 # Install
 COPY --from=build /home/build /
+ENV LIBVA_DRIVERS_PATH=/usr/lib/x86_64-linux-gnu/dri
+ENV LIBVA_DRIVER_NAME=iHD
+RUN apt-get update && apt-get install -y clinfo
+ENV GST_VAAPI_ALL_DRIVERS=1
+ENV DISPLAY=:0.0
 ARG libdir=/opt/intel/dldt/inference-engine/lib/intel64
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/dldt/inference-engine/lib:/opt/intel/dldt/inference-engine/external/tbb/lib:${libdir}
 ENV InferenceEngine_DIR=/opt/intel/dldt/inference-engine/share
