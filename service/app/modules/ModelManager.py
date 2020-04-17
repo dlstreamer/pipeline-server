@@ -11,6 +11,7 @@ import fnmatch
 import string
 import common.settings  # pylint: disable=import-error
 from common.utils import logging  # pylint: disable=import-error
+from collections import defaultdict
 
 logger = logging.get_logger('ModelManager', is_static=True)
 
@@ -106,7 +107,7 @@ class ModelManager:
             logger.warning("Models directory is symbolic link")
         if os.path.ismount(model_dir):
             logger.warning("Models directory is mount point")
-        models = {}
+        models = defaultdict(dict)
         ModelManager.network_preference.update(network_preference)
         for key in ModelManager.network_preference:
             ModelManager.network_preference[key] = ModelManager.network_preference[key].split(',')
@@ -126,7 +127,7 @@ class ModelManager:
                                                       "type":"IntelDLDT",
                                                       "description":model_name})
                                 
-                            models[model_name] = {version:ModelsDict(model_name,
+                            models[model_name][version]=ModelsDict(model_name,
                                                                      version,
                                 {"networks":networks,
                                  "proc":proc,
@@ -134,7 +135,6 @@ class ModelManager:
                                  "type":"IntelDLDT",
                                  "description":model_name
                                 })
-                            }
                             
             except Exception as error:
                 logger.error("Error Loading Model {model_name} from: {model_dir}: {err}".format(err=error,model_name=model_name,model_dir=model_dir))
