@@ -44,7 +44,7 @@ def get_options():
                       choices=['INFO','DEBUG'], default=os.getenv('LOG_LEVEL', 'INFO'))
     parser.add_option("--config_path", action="store", 
                       dest="config_path",
-                      default=os.getenv('CONFIG_PATH', os.path.dirname(__file__) + "/../../../"))
+                      default=os.getenv('CONFIG_PATH', os.path.join(os.path.dirname(__file__) + "/../../../..")))
     
 
     return parser.parse_args()
