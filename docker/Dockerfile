@@ -19,6 +19,12 @@ ARG FRAMEWORK=gstreamer
 # Multi-License Disclaimer
 RUN echo "IMPORTANT: This script will build third party components licensed under various open source licenses into your container images. The terms under which those components may be used and distributed can be found with the license document that is provided with those components. Please familiarize yourself with those terms to ensure your distribution of those components complies with the terms of those licenses."
 
+ARG USER=vaserving
+
+# Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
+RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-serving && \
+    chown ${USER} -R /home/video-analytics-serving
+
 # Dependencies installed via apt-get
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
@@ -35,14 +41,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 # Dependencies installed via pip
 COPY ./service/app/server/requirements.txt /
 RUN pip3 install  --no-cache-dir -r /requirements.txt
- 
+RUN rm -f /requirements.txt
+
 # Video Analytics Serving Python Modules
-COPY ./service/app /home/video-analytics/app
-RUN rm -f /home/video-analytics/app/server/requirements.txt
+COPY ./service/app /home/video-analytics-serving/service/app
+RUN rm -f /home/video-analytics-serving/service/app/server/requirements.txt
 
 # Media Analytics Framework set via environment variable
 ENV FRAMEWORK=${FRAMEWORK}
-WORKDIR /home/video-analytics/app/server
+WORKDIR /home/video-analytics-serving/service/app/server
 ########################################################
 
 ########################################################
@@ -57,7 +64,7 @@ FROM video-analytics-serving as do_not_copy_models
 FROM video-analytics-serving as copy_models
 ONBUILD ARG MODELS_PATH
 ONBUILD ENV MODELS_PATH=${MODELS_PATH}
-ONBUILD COPY ${MODELS_PATH} /home/video-analytics/models
+ONBUILD COPY ${MODELS_PATH} /home/video-analytics-serving/models
 
 # Stage that is used is controlled via MODELS_COMMAND build argument
 FROM ${MODELS_COMMAND} as video-analytics-serving-with-models
@@ -75,7 +82,7 @@ FROM video-analytics-serving-with-models as do_not_copy_pipelines
 FROM video-analytics-serving-with-models as copy_pipelines
 ONBUILD ARG PIPELINES_PATH
 ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
-ONBUILD COPY ${PIPELINES_PATH} /home/video-analytics/pipelines
+ONBUILD COPY ${PIPELINES_PATH} /home/video-analytics-serving/pipelines
 
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines
@@ -92,3 +99,7 @@ FROM video-analytics-serving-with-models-and-pipelines as video-analytics-servin
 ONBUILD ENTRYPOINT ["python3", "-m", "openapi_server"]
 
 FROM ${FINAL_STAGE}
+
+ARG USER=vaserving
+
+USER ${USER}
