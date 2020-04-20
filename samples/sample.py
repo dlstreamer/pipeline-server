@@ -21,11 +21,11 @@ SLEEP_FOR_STATUS = 0.5
 
 REQUEST_TEMPLATE = {
     "source": {
-        "uri": "file:///home/video-analytics/samples/pinwheel.ts",
+        "uri": "file:///home/video-analytics-serving/samples/pinwheel.ts",
         "type": "uri"
     },
     "destination": {
-        "path": "/home/video-analytics/samples/results.txt",
+        "path": "/home/video-analytics-serving/samples/results.txt",
         "type": "file",
         "format": "stream"
     }

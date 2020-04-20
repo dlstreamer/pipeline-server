@@ -23,19 +23,12 @@ ARG USER=vaserving
 
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
 RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-serving && \
-    chown ${USER} -R /home/video-analytics-serving
+    chown ${USER} -R /home/video-analytics-serving /root
 
 # Dependencies installed via apt-get
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
-    libgirepository-1.0-1 \
-    python3-kafka \
-    python3-kazoo \
-    python3-requests \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel \
-    python3-tornado && \
+    python3 && \
     rm -rf /var/lib/apt/lists/*
 
 # Dependencies installed via pip

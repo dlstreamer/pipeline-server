@@ -2,20 +2,20 @@
     "name": "object_detection",
     "version": 1,
     "type": "GStreamer",
-    "template":"urisourcebin name=\"source\" ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=\"videoconvert\" ! gvadetect inference-id=inf0 model=\"{models[object_detection][1][network]}\" model-proc=\"{models[object_detection][1][proc]}\" name=\"detection\" ! gvametaconvert converter=json method=detection name=\"metaconvert\" ! queue ! gvametapublish name=\"destination\" ! appsink name=appsink",
+    "template":"urisourcebin name=\"source\" ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=\"videoconvert\" ! gvadetect model-instance-id=inf0 model=\"{models[object_detection][1][network]}\" model-proc=\"{models[object_detection][1][proc]}\" name=\"detection\" ! gvametaconvert name=\"metaconvert\" ! queue ! gvametapublish name=\"destination\" ! appsink name=appsink",
     "description": "Object Detection Pipeline",
 
     "parameters": {
 		"type" : "object",
 		"properties" : {
-			"every-nth-frame": {
+			"inference-interval": {
 				"element":"detection",
 				"type": "integer",
 				"minimum": 1,
 				"maximum": 4294967295,
 				"default": 1
 			},
-			"cpu-streams": {
+			"cpu-throughput-streams": {
 			    "element":"detection",
 			    "type": "integer",
                 "minimum": 0,
