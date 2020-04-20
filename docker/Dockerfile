@@ -28,6 +28,7 @@ RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-servin
 # Dependencies installed via apt-get
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
+    python3-pip \
     python3 && \
     rm -rf /var/lib/apt/lists/*
 
