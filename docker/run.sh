@@ -25,7 +25,7 @@ DEFAULT_FFMPEG_IMAGE="video-analytics-serving-ffmpeg"
 ENTRYPOINT=
 PRIVILEGED=
 NETWORK=
-
+USER=
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -50,6 +50,14 @@ while :; do
         --models)
            if [ "$2" ]; then
                 MODELS=$2
+                shift
+            else
+                error 'ERROR: "--models" requires a non-empty option argument.'
+            fi
+           ;;
+	--user)
+           if [ "$2" ]; then
+                USER="--user $2"
                 shift
             else
                 error 'ERROR: "--models" requires a non-empty option argument.'
@@ -167,6 +175,7 @@ show_options() {
        echo "   Name: '${NAME}'"
        echo "   Network: '${NETWORK}'"
        echo "   Entrypoint: '${ENTRYPOINT}'"
+       echo "   User: '${USER}'"
        echo ""
 }
 
@@ -180,6 +189,7 @@ show_help() {
   echo "  [-e additional environment to pass to docker run"
   echo "  [-p additional ports to pass to docker run"
   echo "  [--network to pass to docker run"
+  echo "  [--user to pass to docker run"
   exit 0
 }
 
@@ -226,5 +236,5 @@ fi
 show_options
 
 set -x
-docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} $IMAGE
+docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE
 { set +x; } 2>/dev/null

@@ -9,7 +9,8 @@ import json
 import time
 import os
 import copy
-import modules.GstGVAJSONMeta as GstGVAJSONMeta  # pylint: disable=import-error
+
+from gstgva.util import GVAJSONMeta
 from modules.Pipeline import Pipeline  # pylint: disable=import-error
 from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
 from modules.ModelManager import ModelManager  # pylint: disable=import-error
@@ -41,7 +42,6 @@ class GStreamerPipeline(Pipeline):
         self.start_time = None
         self.stop_time = None
         self.avg_fps = 0
-        self.destination = None
         self._gst_launch_string = None
         self.latency_times = dict()
         self.sum_pipeline_latency = 0
@@ -293,19 +293,11 @@ class GStreamerPipeline(Pipeline):
         try:
 
             buf = sample.get_buffer()
-            try:
-                meta = buf.get_meta("GstGVAJSONMetaAPI")
-            except:
-                meta = None
 
-            if meta is None:
-                logger.debug("No GstGVAJSONMeta")
-            else:
-                json_string = GstGVAJSONMeta.get_json_message(meta).decode('utf-8')  # pylint: disable=undefined-variable
-                json_object = json.loads(json_string)
+            for meta in GVAJSONMeta.iterate(buf):
+                json_object = json.loads(meta.get_message())
                 logger.debug(json.dumps(json_object))
-                if self.destination and ("objects" in json_object) and (len(json_object["objects"]) > 0):
-                    self.destination.send(json_object)
+                
         except Exception as error:
             logger.error("Error on Pipeline {id}: {err}".format(id=self.id, err=error))
 
