@@ -38,12 +38,12 @@ RUN pip3 install  --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules
-COPY ./service/app /home/video-analytics-serving/service/app
+COPY ./vaserving /home/video-analytics-serving/vaserving
 RUN rm -f /home/video-analytics-serving/service/app/server/requirements.txt
 
 # Media Analytics Framework set via environment variable
 ENV FRAMEWORK=${FRAMEWORK}
-WORKDIR /home/video-analytics-serving/service/app/server
+WORKDIR /home/video-analytics-serving
 ########################################################
 
 ########################################################
@@ -87,10 +87,10 @@ FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines
 # Final stage is controlled by the FINAL_STAGE build argument.
 
 FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-environment
-ONBUILD CMD ["python3", "-m", "openapi_server"]
+ONBUILD CMD ["python3", "-m", "vaserving"]
 
 FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-service
-ONBUILD ENTRYPOINT ["python3", "-m", "openapi_server"]
+ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
 
 FROM ${FINAL_STAGE}
 

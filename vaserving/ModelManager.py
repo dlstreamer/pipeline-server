@@ -9,8 +9,8 @@ import sys
 import json
 import fnmatch
 import string
-import common.settings  # pylint: disable=import-error
-from common.utils import logging  # pylint: disable=import-error
+import vaserving.common.settings  # pylint: disable=import-error
+from vaserving.common.utils import logging  # pylint: disable=import-error
 from collections import defaultdict
 
 logger = logging.get_logger('ModelManager', is_static=True)

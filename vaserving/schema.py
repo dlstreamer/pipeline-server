@@ -69,18 +69,18 @@ destination = {
           "format": "path",
           "element": {
             "name": "destination",
-            "property": "filepath"
+            "property": "file-path"
           }
         },
         "format": {
           "type": "string",
           "enum": [
-            "stream",
-            "batch"
+            "json-lines",
+            "json"
           ],
           "element": {
             "name": "destination",
-            "property": "outputformat"
+            "property": "file-format"
           }
         }
       },

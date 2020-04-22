@@ -7,13 +7,13 @@
 import connexion
 import six
 
-from modules.PipelineManager import PipelineManager
+from vaserving.PipelineManager import PipelineManager
 from http import HTTPStatus
-from common.utils import logging
+from vaserving.common.utils import logging
 
 logger = logging.get_logger('Default Controller', is_static=True)
 
-from modules.ModelManager import ModelManager
+from vaserving.ModelManager import ModelManager
 
 bad_request_response = 'Invalid pipeline, version or instance'
 

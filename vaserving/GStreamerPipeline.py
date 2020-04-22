@@ -11,10 +11,10 @@ import os
 import copy
 
 from gstgva.util import GVAJSONMeta
-from modules.Pipeline import Pipeline  # pylint: disable=import-error
-from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
-from modules.ModelManager import ModelManager  # pylint: disable=import-error
-from common.utils import logging  # pylint: disable=import-error
+from vaserving.Pipeline import Pipeline  # pylint: disable=import-error
+from vaserving.PipelineManager import PipelineManager  # pylint: disable=import-error
+from vaserving.ModelManager import ModelManager  # pylint: disable=import-error
+from vaserving.common.utils import logging  # pylint: disable=import-error
 
 import gi  # pylint: disable=import-error
 gi.require_version('Gst', '1.0')

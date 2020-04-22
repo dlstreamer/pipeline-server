@@ -27,7 +27,7 @@ REQUEST_TEMPLATE = {
     "destination": {
         "path": "/home/video-analytics-serving/samples/results.txt",
         "type": "file",
-        "format": "stream"
+        "format": "json-lines"
     }
 }
 
@@ -92,10 +92,11 @@ def read_detection_results(destination, verbose=True):
                             object_lines = []
                         else:
                             line = None
-                    if line:
+                    if line and len(line.strip()):
                         print("Detection Result: \n")
                         print_json(json.loads(line))
                 except Exception as error: # pylint: disable=broad-except
+                    print("Error: '{}'".format(line))
                     print(error)
 
 def wait_for_pipeline(instance_id,

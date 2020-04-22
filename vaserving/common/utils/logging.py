@@ -10,7 +10,7 @@
 import json
 import logging
 
-from common import settings
+from vaserving.common import settings
 
 _static_loggers = []
 

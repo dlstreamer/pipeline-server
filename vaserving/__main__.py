@@ -10,15 +10,13 @@ import os
 import connexion
 import json
 import asyncio
-from openapi_server import encoder
 
-sys.path.append(os.path.dirname(__file__) + "/../../")
-from common import settings
-from modules.PipelineManager import PipelineManager
-from modules.ModelManager import ModelManager
+from vaserving.common import settings
+from vaserving.PipelineManager import PipelineManager
+from vaserving.ModelManager import ModelManager
 from threading import Thread
 
-from common.utils import logging
+from vaserving.common.utils import logging
 
 from optparse import OptionParser
 
@@ -44,7 +42,7 @@ def get_options():
                       choices=['INFO','DEBUG'], default=os.getenv('LOG_LEVEL', 'INFO'))
     parser.add_option("--config_path", action="store", 
                       dest="config_path",
-                      default=os.getenv('CONFIG_PATH', os.path.join(os.path.dirname(__file__) + "/../../../..")))
+                      default=os.getenv('CONFIG_PATH', os.path.join(os.path.dirname(__file__) + "/..")))
     
 
     return parser.parse_args()
@@ -71,9 +69,8 @@ def main(options):
     
     PipelineManager.load_config(os.path.join(options.config_path, options.pipeline_dir), options.max_running_pipelines)
     ModelManager.load_config(os.path.join(options.config_path, options.model_dir),parse_network_preference(options))
-    app = connexion.App(__name__, specification_dir='./openapi/')
-    app.app.json_encoder = encoder.JSONEncoder
-    app.add_api('openapi.yaml', arguments={'title': 'Video Analytics Serving API'})
+    app = connexion.App(__name__,specification_dir='rest_api/')
+    app.add_api('video-analytics-serving.yaml', arguments={'title': 'Video Analytics Serving API'})
     logger.info("Starting Tornado Server on port: {p}".format(p=options.port))
     app.run(server='tornado', port=options.port)
 

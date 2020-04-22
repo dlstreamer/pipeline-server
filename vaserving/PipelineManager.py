@@ -6,13 +6,13 @@
 
 import os
 import json
-import common.settings  # pylint: disable=import-error
-from common.utils import logging  # pylint: disable=import-error
+import vaserving.common.settings  # pylint: disable=import-error
+from vaserving.common.utils import logging  # pylint: disable=import-error
 import time
-from modules.ModelManager import ModelManager  # pylint: disable=import-error
+from vaserving.ModelManager import ModelManager  # pylint: disable=import-error
 from collections import deque
 import jsonschema as jsonschema
-import modules.schema as schema
+import vaserving.schema as schema
 import tornado
 
 logger = logging.get_logger('PipelineManager', is_static=True)
@@ -20,12 +20,12 @@ logger = logging.get_logger('PipelineManager', is_static=True)
 def import_pipeline_types():
     pipeline_types = {}
     try:
-        from modules.GStreamerPipeline import GStreamerPipeline  # pylint: disable=import-error
+        from vaserving.GStreamerPipeline import GStreamerPipeline  # pylint: disable=import-error
         pipeline_types['GStreamer'] = GStreamerPipeline
     except Exception as error:
         logger.error("Error loading GStreamer: %s\n" % (error,))
     try:
-        from modules.FFmpegPipeline import FFmpegPipeline  # pylint: disable=import-error
+        from vaserving.FFmpegPipeline import FFmpegPipeline  # pylint: disable=import-error
         pipeline_types['FFmpeg'] = FFmpegPipeline
     except Exception as error:
         logger.error("Error loading FFmpeg: %s\n" % (error,))
