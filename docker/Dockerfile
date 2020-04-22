@@ -33,13 +33,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Dependencies installed via pip
-COPY ./service/app/server/requirements.txt /
+COPY ./requirements.txt /
 RUN pip3 install  --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules
 COPY ./vaserving /home/video-analytics-serving/vaserving
-RUN rm -f /home/video-analytics-serving/service/app/server/requirements.txt
 
 # Media Analytics Framework set via environment variable
 ENV FRAMEWORK=${FRAMEWORK}
