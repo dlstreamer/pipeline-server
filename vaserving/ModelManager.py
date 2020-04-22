@@ -41,10 +41,10 @@ class ModelsDict(MutableMapping):
 
 class ModelManager:
     models = None
-    network_preference = {'CPU':"FP32",
-                          'HDDL':"FP16",
-                          'GPU':"FP16",
-                          'VPU':"FP16"}
+    network_preference = {'CPU':["FP32"],
+                          'HDDL':["FP16"],
+                          'GPU':["FP16"],
+                          'VPU':["FP16"]}
     
     @staticmethod
     def _get_model_proc(path):
@@ -108,9 +108,10 @@ class ModelManager:
         if os.path.ismount(model_dir):
             logger.warning("Models directory is mount point")
         models = defaultdict(dict)
+        for key in network_preference:
+            if (isinstance(network_preference[key],string)):
+                network_preference[key] = nework_preference[key].split(',')
         ModelManager.network_preference.update(network_preference)
-        for key in ModelManager.network_preference:
-            ModelManager.network_preference[key] = ModelManager.network_preference[key].split(',')
         for model_name in os.listdir(model_dir):
             try:
                 model_path = os.path.join(model_dir,model_name)
