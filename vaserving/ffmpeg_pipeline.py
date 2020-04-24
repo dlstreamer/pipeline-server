@@ -4,10 +4,6 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-from modules.Pipeline import Pipeline  # pylint: disable=import-error
-from modules.PipelineManager import PipelineManager  # pylint: disable=import-error
-from modules.ModelManager import ModelManager  # pylint: disable=import-error
-from common.utils import logging  # pylint: disable=import-error
 import string
 import shlex
 import subprocess
@@ -15,8 +11,12 @@ import time
 import copy
 from threading import Thread
 import shutil
-import uuid
 import re
+from vaserving.pipeline import Pipeline
+from vaserving.pipeline_manager import PipelineManager
+from vaserving.model_manager import ModelManager
+from vaserving.common.utils import logging
+
 
 logger = logging.get_logger('FFmpegPipeline', is_static=True)
 
@@ -29,16 +29,18 @@ class FFmpegPipeline(Pipeline):
     GVA_INFERENCE_FILTER_TYPES = ["detect",
                                   "classify"]
 
-    DEVICEID_MAP = {2:'CPU',
-                    3:'GPU',
-                    5:'VPU',
-                    6:'HDDL'}
+    DEVICEID_MAP = {2: 'CPU',
+                    3: 'GPU',
+                    5: 'VPU',
+                    6: 'HDDL'}
 
-    def __init__(self, id, config, models, request):
+    def __init__(self, identifier, config, models, request):
+        # TODO: refactor as abstract interface
+        # pylint: disable=super-init-not-called
         self.config = config
         self.models = models
         self.template = config['template']
-        self.id = id
+        self.identifier = identifier
         self._process = None
         self.start_time = None
         self.stop_time = None
@@ -52,12 +54,13 @@ class FFmpegPipeline(Pipeline):
         return self.status()
 
     def params(self):
+        # TODO: refactor common code
         request = copy.deepcopy(self.request)
         if "models" in request:
-            del(request["models"])
+            del request["models"]
 
         params_obj = {
-            "id": self.id,
+            "id": self.identifier,
             "request": request,
             "type": self.config["type"],
             "launch_command": self._ffmpeg_launch_string
@@ -74,12 +77,12 @@ class FFmpegPipeline(Pipeline):
         else:
             elapsed_time = None
         status_obj = {
-             "id": self.id,
-             "state": self.state,
-             "avg_fps": self.fps,
-             "start_time": self.start_time,
-             "elapsed_time": elapsed_time
-         }
+            "id": self.identifier,
+            "state": self.state,
+            "avg_fps": self.fps,
+            "start_time": self.start_time,
+            "elapsed_time": elapsed_time
+        }
 
         return status_obj
 
@@ -87,9 +90,13 @@ class FFmpegPipeline(Pipeline):
     def validate_config(config):
         pass
 
-    def _spawn(self,args):
+    def _spawn(self, args):
         self.start_time = time.time()
-        self._process=subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True)
+        self._process = subprocess.Popen(args,
+                                         stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE,
+                                         bufsize=1,
+                                         universal_newlines=True)
         self.state = "RUNNING"
         self._process.poll()
         while self._process.returncode is None and self.state != "ABORTED":
@@ -115,64 +122,71 @@ class FFmpegPipeline(Pipeline):
             try:
                 for key in self.request["tags"]:
                     iemetadata_args.append("-custom_tag")
-                    iemetadata_args.append("%s:%s," % (key, self.request["tags"][key]))
-                if len(iemetadata_args):
+                    iemetadata_args.append("%s:%s," % (
+                        key, self.request["tags"][key]))
+                if len(iemetadata_args) != 0:
                     # remove final comma
                     iemetadata_args[-1] = iemetadata_args[-1][:-1]
             except Exception:
                 logger.error("Error adding tags")
 
-    def _get_filter_params(self,_filter):
+    def _get_filter_params(self, _filter):
         result = {}
-        params = re.split("=|:",_filter)
+        params = re.split("=|:", _filter)
         result['type'] = params[0]
-        for x in range(1,len(params[0:]),2):
+        for x in range(1, len(params[0:]), 2):
             result[params[x]] = params[x+1]
         return result
 
-    def _join_filter_params(self,filter_params):
+    def _join_filter_params(self, filter_params):
         filter_type = filter_params.pop('type')
-        parameters = ["%s=%s" %(x,y) for (x,y) in filter_params.items()]
-        return "{filter_type}={params}".format(filter_type=filter_type,params=':'.join(parameters))
+        parameters = ["%s=%s" % (x, y) for (x, y) in filter_params.items()]
+        return "{filter_type}={params}".format(filter_type=filter_type, params=':'.join(parameters))
 
-    def _add_default_models(self,args):
+    def _add_default_models(self, args):
         vf_index = args.index('-vf') if ('-vf' in args) else None
-        if (vf_index==None):
+        if vf_index is None:
             return
         filters = args[vf_index+1].split(',')
-        new_filters=[]
+        new_filters = []
         for _filter in filters:
             filter_params = self._get_filter_params(_filter)
-            if ( (filter_params['type'] in FFmpegPipeline.GVA_INFERENCE_FILTER_TYPES) and
-                 ("VA_DEVICE_DEFAULT" in filter_params['model'])):
-                device="CPU"
-                if ("device" in filter_params):
-                    device = FFmpegPipeline.DEVICEID_MAP[int(filter_params['device'])]
-                filter_params["model"] = ModelManager.get_default_network_for_device(device,filter_params["model"])
+            if ((filter_params['type'] in FFmpegPipeline.GVA_INFERENCE_FILTER_TYPES) and
+                    ("VA_DEVICE_DEFAULT" in filter_params['model'])):
+                device = "CPU"
+                if "device" in filter_params:
+                    device = FFmpegPipeline.DEVICEID_MAP[int(
+                        filter_params['device'])]
+                filter_params["model"] = ModelManager.get_default_network_for_device(
+                    device, filter_params["model"])
                 new_filters.append(self._join_filter_params(filter_params))
             else:
                 new_filters.append(_filter)
-        args[vf_index+1] =','.join(new_filters)
+        args[vf_index+1] = ','.join(new_filters)
 
     def start(self):
-        logger.debug("Starting Pipeline {id}".format(id=self.id))
+        logger.debug("Starting Pipeline %s", self.identifier)
         self.request["models"] = self.models
 
-        self._ffmpeg_launch_string = string.Formatter().vformat(self.template, [], self.request)
+        self._ffmpeg_launch_string = string.Formatter().vformat(
+            self.template, [], self.request)
         args = ['ffmpeg']
         args.extend(shlex.split(self._ffmpeg_launch_string))
-        iemetadata_args = ["-f", "iemetadata", "-source_url", self.request["source"]["uri"]]
+        iemetadata_args = ["-f", "iemetadata",
+                           "-source_url", self.request["source"]["uri"]]
 
         self._add_tags(iemetadata_args)
 
         if 'destination' in self.request:
             if self.request['destination']['type'] == "kafka":
                 for item in self.request['destination']['host'].split(','):
-                    iemetadata_args.append("kafka://"+item+"/"+self.request["destination"]["topic"])
+                    iemetadata_args.append(
+                        "kafka://"+item+"/"+self.request["destination"]["topic"])
             elif self.request['destination']['type'] == "file":
                 iemetadata_args.append(self.request['destination']['path'])
         else:
-            logger.warning("No destination in pipeline request {id}. Results will be discarded.".format(id=self.id))
+            logger.warning("No destination in pipeline request {id}."
+                           " Results will be discarded.".format(id=self.identifier))
             iemetadata_args.append("/dev/null")
 
         args.extend(iemetadata_args)

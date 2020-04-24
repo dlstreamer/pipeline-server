@@ -1,8 +1,9 @@
 '''
 * Copyright (C) 2019 Intel Corporation.
-* 
+*
 * SPDX-License-Identifier: BSD-3-Clause
 '''
+#pylint: disable=R0801
 
 tags = {
     "type": "object",
@@ -16,31 +17,32 @@ tags = {
 
 source = {
     "uri": {
-        "type":"object",
+        "type": "object",
         "properties": {
             "type": {
-                "type":"string",
-                "enum":["uri"]
+                "type": "string",
+                "enum": ["uri"]
             },
             "uri": {
-                "type":"string",
-                "format":"uri",
-                "element":[{"name":"source",
-                            "property":"uri"},
-                           {"name":"source",
-                            "property":"location"},
-                           {"name":"metaconvert","property":"source"}]}
+                "type": "string",
+                "format": "uri",
+                "element": [{"name": "source",
+                             "property": "uri"},
+                            {"name": "source",
+                             "property": "location"},
+                            {"name": "metaconvert", "property": "source"}]}
         },
-        "required":["type","uri"]
+        "required": ["type", "uri"]
     },
     "device": {
-        "type":"object",
+        "type": "object",
         "properties": {
-            "type":{"type":"string","enum":["device"]},
-            "path":{"type":"string","format":"path","element":[{"name":"source","property":"device"},
-                                                               {"name":"metaconvert","property":"source"}]}
+            "type": {"type": "string", "enum": ["device"]},
+            "path": {"type": "string",
+                     "format": "path", "element": [{"name": "source", "property": "device"},
+                                                   {"name": "metaconvert", "property": "source"}]}
         },
-        "required":["type","path"]
+        "required": ["type", "path"]
     },
     "oneOf": [
         {
@@ -54,109 +56,108 @@ source = {
 
 destination = {
     "file": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["file"],
-          "element": {
-            "name": "destination",
-            "property": "method"
-          }
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": ["file"],
+                "element": {
+                    "name": "destination",
+                    "property": "method"
+                }
+            },
+            "path": {
+                "type": "string",
+                "format": "path",
+                "element": {
+                    "name": "destination",
+                    "property": "file-path"
+                }
+            },
+            "format": {
+                "type": "string",
+                "enum": [
+                    "json-lines",
+                    "json"
+                ],
+                "element": {
+                    "name": "destination",
+                    "property": "file-format"
+                }
+            }
         },
-        "path": {
-          "type": "string",
-          "format": "path",
-          "element": {
-            "name": "destination",
-            "property": "file-path"
-          }
-        },
-        "format": {
-          "type": "string",
-          "enum": [
-            "json-lines",
-            "json"
-          ],
-          "element": {
-            "name": "destination",
-            "property": "file-format"
-          }
-        }
-      },
-        "required":["type","path"]
+        "required": ["type", "path"]
     },
     "mqtt": {
-      "type": "object",
-      "properties": {
-        "type": {
-            "type": "string",
-            "enum": ["mqtt"],
-            "element":{"name":"destination","property":"method"}
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": ["mqtt"],
+                "element": {"name": "destination", "property": "method"}
+            },
+            "host": {
+                "type": "string",
+                "element": {
+                    "name": "destination",
+                    "property": "address"
+                }
+            },
+            "topic": {
+                "type": "string",
+                "element": "destination"
+            },
+            "clientId": {
+                "type": "string",
+                "element": "destination"
+            },
+            "timeout": {
+                "type": "integer",
+                "element": "destination"
+            }
         },
-        "host": {
-          "type": "string",
-          "element": {
-            "name": "destination",
-            "property": "address"
-          }
-        },
-        "topic": {
-          "type": "string",
-          "element": "destination"
-        },
-        "clientId": {
-          "type": "string",
-          "element": "destination"
-        },
-        "timeout": {
-          "type": "integer",
-          "element": "destination"
-        }
-      },
-    "required": [
-          "host",
-          "type",
-          "topic"
-      ]
+        "required": [
+            "host",
+            "type",
+            "topic"
+        ]
     },
     "kafka": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["kafka"],
-            "element":{"name":"destination","property":"method"}
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": ["kafka"],
+                "element": {"name": "destination", "property": "method"}
+            },
+            "host": {
+                "type": "string",
+                "description": "host:port to use as bootstrap server.",
+                "element": {
+                    "name": "destination",
+                    "property": "address"
+                }
+            },
+            "topic": {
+                "type": "string",
+                "element": "destination"
+            }
         },
-        "host": {
-          "type": "string",
-          "description": "host:port to use as bootstrap server.",
-          "element": {
-            "name": "destination",
-            "property": "address"
-          }
+        "required": [
+            "type",
+            "host",
+            "topic"
+        ]
+    },
+    "oneOf": [
+        {
+            "$ref": "#/kafka"
         },
-        "topic": {
-          "type": "string",
-            "element": "destination"
+        {
+            "$ref": "#/mqtt"
+        },
+        {
+            "$ref": "#/file"
         }
-      },
-      "required": [
-          "type",
-          "host",
-          "topic"
-      ]
-    },
-  "oneOf": [
-    {
-      "$ref": "#/kafka"
-    },
-    {
-      "$ref": "#/mqtt"
-    },
-    {
-      "$ref": "#/file"
-    }
-  ]
+    ]
 }
-
