@@ -1,22 +1,22 @@
 '''
 * Copyright (C) 2019 Intel Corporation.
-* 
+*
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-"""
-    logging module
-"""
+
+#    logging module
+
 import json
 import logging
-
-from common import settings
-
+from vaserving.common import settings
 _static_loggers = []
+
 
 def set_log_level(level):
     for logger in _static_loggers:
         logger.setLevel(level)
+
 
 def get_logger(name, is_static=False):
     try:
@@ -37,6 +37,7 @@ def get_logger(name, is_static=False):
     if is_static:
         _static_loggers.append(logger)
     return logger
+
 
 class JSONFormatter(logging.Formatter):
     attrs_to_print = []

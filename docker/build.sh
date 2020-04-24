@@ -236,7 +236,7 @@ else
     BUILD_ARGS+="--build-arg PIPELINES_COMMAND=do_not_copy_pipelines "
 fi
 
-if [ $CREATE_ENTRYPOINT == TRUE ]; then
+if [ $CREATE_ENTRYPOINT == "TRUE" ]; then
    BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-service "
 else
    BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-environment "
