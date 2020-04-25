@@ -340,7 +340,7 @@ class GStreamerPipeline(Pipeline):
     @staticmethod
     def on_sample(sink, self):
 
-        logger.debug("Received Sample from Pipeline {id}".format(id=self.id))
+        logger.debug("Received Sample from Pipeline {id}".format(id=self.identifier))
         sample = sink.emit("pull-sample")
         try:
 
@@ -352,7 +352,7 @@ class GStreamerPipeline(Pipeline):
 
         except Exception as error:
             logger.error("Error on Pipeline {id}: {err}".format(
-                id=self.id, err=error))
+                id=self.identifier, err=error))
 
         self.frame_count += 1
         self.avg_fps = self.frame_count/(time.time()-self.start_time)
@@ -379,7 +379,7 @@ class GStreamerPipeline(Pipeline):
                 if old_state == Gst.State.PAUSED and new_state == Gst.State.PLAYING:
                     if self.state == "QUEUED":
                         logger.debug(
-                            "Setting Pipeline {id} State to RUNNING".format(id=self.id))
+                            "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = "RUNNING"
         else:
             pass
