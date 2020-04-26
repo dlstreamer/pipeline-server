@@ -13,8 +13,6 @@ from threading import Thread
 import shutil
 import re
 from vaserving.pipeline import Pipeline
-from vaserving.pipeline_manager import PipelineManager
-from vaserving.model_manager import ModelManager
 from vaserving.common.utils import logging
 
 
@@ -34,11 +32,12 @@ class FFmpegPipeline(Pipeline):
                     5: 'VPU',
                     6: 'HDDL'}
 
-    def __init__(self, identifier, config, models, request):
+    def __init__(self, identifier, config, model_manager, request, finished_callback):
         # TODO: refactor as abstract interface
         # pylint: disable=super-init-not-called
         self.config = config
-        self.models = models
+        self.models = model_manager.models
+        self.model_manager = model_manager
         self.template = config['template']
         self.identifier = identifier
         self._process = None
@@ -46,11 +45,12 @@ class FFmpegPipeline(Pipeline):
         self.stop_time = None
         self._ffmpeg_launch_string = None
         self.request = request
-        self.state = "QUEUED"
+        self.state = Pipeline.State.QUEUED
         self.fps = 0
+        self._finished_callback = finished_callback
 
     def stop(self):
-        self.state = "ABORTED"
+        self.state = Pipeline.State.ABORTED
         return self.status()
 
     def params(self):
@@ -97,24 +97,24 @@ class FFmpegPipeline(Pipeline):
                                          stderr=subprocess.PIPE,
                                          bufsize=1,
                                          universal_newlines=True)
-        self.state = "RUNNING"
+        self.state = Pipeline.State.RUNNING
         self._process.poll()
-        while self._process.returncode is None and self.state != "ABORTED":
+        while self._process.returncode is None and not self.state is Pipeline.State.ABORTED:
             next_line = self._process.stderr.readline()
             fps_idx = next_line.rfind('fps=')
             q_idx = next_line.rfind('q=')
             if fps_idx != -1 and q_idx != -1:
-                self.fps = int(float(next_line[fps_idx+4:q_idx].strip()))
+                self.fps = int(float(next_line[fps_idx + 4:q_idx].strip()))
             self._process.poll()
         self.stop_time = time.time()
-        if self.state == "ABORTED":
+        if self.state is Pipeline.State.ABORTED:
             self._process.kill()
         else:
             if self._process.returncode == 0:
-                self.state = "COMPLETED"
+                self.state = Pipeline.State.COMPLETED
             else:
-                self.state = "ERROR"
-        PipelineManager.pipeline_finished()
+                self.state = Pipeline.State.ERROR
+        self._finished_callback()
         self._process = None
 
     def _add_tags(self, iemetadata_args):
@@ -135,7 +135,7 @@ class FFmpegPipeline(Pipeline):
         params = re.split("=|:", _filter)
         result['type'] = params[0]
         for x in range(1, len(params[0:]), 2):
-            result[params[x]] = params[x+1]
+            result[params[x]] = params[x + 1]
         return result
 
     def _join_filter_params(self, filter_params):
@@ -147,7 +147,7 @@ class FFmpegPipeline(Pipeline):
         vf_index = args.index('-vf') if ('-vf' in args) else None
         if vf_index is None:
             return
-        filters = args[vf_index+1].split(',')
+        filters = args[vf_index + 1].split(',')
         new_filters = []
         for _filter in filters:
             filter_params = self._get_filter_params(_filter)
@@ -157,12 +157,12 @@ class FFmpegPipeline(Pipeline):
                 if "device" in filter_params:
                     device = FFmpegPipeline.DEVICEID_MAP[int(
                         filter_params['device'])]
-                filter_params["model"] = ModelManager.get_default_network_for_device(
+                filter_params["model"] = self.model_manager.get_default_network_for_device(
                     device, filter_params["model"])
                 new_filters.append(self._join_filter_params(filter_params))
             else:
                 new_filters.append(_filter)
-        args[vf_index+1] = ','.join(new_filters)
+        args[vf_index + 1] = ','.join(new_filters)
 
     def start(self):
         logger.debug("Starting Pipeline %s", self.identifier)
@@ -181,7 +181,7 @@ class FFmpegPipeline(Pipeline):
             if self.request['destination']['type'] == "kafka":
                 for item in self.request['destination']['host'].split(','):
                     iemetadata_args.append(
-                        "kafka://"+item+"/"+self.request["destination"]["topic"])
+                        "kafka://" + item + "/" + self.request["destination"]["topic"])
             elif self.request['destination']['type'] == "file":
                 iemetadata_args.append(self.request['destination']['path'])
         else:

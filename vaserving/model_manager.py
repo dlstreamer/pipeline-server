@@ -11,8 +11,6 @@ import fnmatch
 import string
 from vaserving.common.utils import logging
 
-logger = logging.get_logger('ModelManager', is_static=True)
-
 
 class ModelsDict(MutableMapping):
     def __init__(self, model_name, model_version, *args, **kw):
@@ -44,14 +42,19 @@ class ModelsDict(MutableMapping):
 
 
 class ModelManager:
-    models = defaultdict(dict)
-    network_preference = {'CPU': ["FP32"],
-                          'HDDL': ["FP16"],
-                          'GPU': ["FP16"],
-                          'VPU': ["FP16"]}
 
-    @staticmethod
-    def _get_model_proc(path):
+    def __init__(self, model_dir, network_preference=None):
+        self.logger = logging.get_logger('ModelManager', is_static=True)
+        self.model_dir = model_dir
+        self.network_preference = network_preference
+        self.models = defaultdict(dict)
+        self.network_preference = {'CPU': ["FP32"],
+                                   'HDDL': ["FP16"],
+                                   'GPU': ["FP16"],
+                                   'VPU': ["FP16"]}
+        self.load_models(self.model_dir, network_preference)
+
+    def _get_model_proc(self, path):
         candidates = fnmatch.filter(os.listdir(path), "*.json")
         if (len(candidates) > 1):
             raise Exception("Multiple model proc files found in %s" % (path,))
@@ -59,8 +62,7 @@ class ModelManager:
             return os.path.abspath(os.path.join(path, candidates[0]))
         return None
 
-    @staticmethod
-    def _get_model_network(path):
+    def _get_model_network(self, path):
         candidates = fnmatch.filter(os.listdir(path), "*.xml")
         if (len(candidates) > 1):
             raise Exception("Multiple networks found in %s" % (path,))
@@ -68,61 +70,60 @@ class ModelManager:
             return os.path.abspath(os.path.join(path, candidates[0]))
         return None
 
-    @staticmethod
-    def _get_model_networks(path):
+    def _get_model_networks(self, path):
         networks = {}
-        default = ModelManager._get_model_network(path)
+        default = self._get_model_network(path)
         if (default):
             networks["default"] = default
         for network_type in os.listdir(path):
             network_type_path = os.path.join(path, network_type)
             if (os.path.isdir(network_type_path)):
-                network = ModelManager._get_model_network(network_type_path)
+                network = self._get_model_network(network_type_path)
                 if (network):
                     networks[network_type] = {'network': network}
         return networks
 
-    @staticmethod
-    def get_network(model, network):
+    def get_network(self, model, network):
         preferred_model = model.replace("VA_DEVICE_DEFAULT", network)
         try:
             preferred_model = string.Formatter().vformat(
-                preferred_model, [], {'models': ModelManager.models})
+                preferred_model, [], {'models': self.models})
             return preferred_model
         except Exception:
             pass
         return None
 
-    @staticmethod
-    def get_default_network_for_device(device, model):
+    def get_default_network_for_device(self, device, model):
         if "VA_DEVICE_DEFAULT" in model:
-            for preference in ModelManager.network_preference[device]:
-                ret = ModelManager.get_network(model, preference)
+            for preference in self.network_preference[device]:
+                ret = self.get_network(model, preference)
                 if ret:
                     return ret
-                logger.info(
+                self.logger.info(
                     "Device preferred network {net} not found".format(net=preference))
             model = model.replace("[VA_DEVICE_DEFAULT]", "")
-            logger.error("Could not resolve any preferred network {net} for model {model}".format(
-                net=ModelManager.network_preference[device], model=model))
+            self.logger.error("Could not resolve any preferred network {net}"
+                              " for model {model}".format(
+                                  net=self.network_preference[device], model=model))
         return model
 
-    @staticmethod
-    def load_config(model_dir, network_preference):
+    def load_models(self, model_dir, network_preference):
         #TODO: refactor
         #pylint: disable=R1702
 
-        logger.info("Loading Models from Path {path}".format(
-            path=os.path.abspath(model_dir)))
-        if os.path.islink(model_dir):
-            logger.warning("Models directory is symbolic link")
-        if os.path.ismount(model_dir):
-            logger.warning("Models directory is mount point")
+        self.logger.info("Loading Models from Path {path}".format(
+            path=os.path.abspath(self.model_dir)))
+        if os.path.islink(self.model_dir):
+            self.logger.warning("Models directory is symbolic link")
+        if os.path.ismount(self.model_dir):
+            self.logger.warning("Models directory is mount point")
         models = defaultdict(dict)
-        for key in network_preference:
-            if (isinstance(network_preference[key], string)):
-                network_preference[key] = network_preference[key].split(',')
-        ModelManager.network_preference.update(network_preference)
+        if (network_preference):
+            for key in network_preference:
+                if (isinstance(network_preference[key], string)):
+                    network_preference[key] = network_preference[key].split(
+                        ',')
+            self.network_preference.update(network_preference)
         for model_name in os.listdir(model_dir):
             try:
                 model_path = os.path.join(model_dir, model_name)
@@ -130,8 +131,8 @@ class ModelManager:
                     version_path = os.path.join(model_path, version)
                     if (os.path.isdir(version_path)):
                         version = int(version)
-                        proc = ModelManager._get_model_proc(version_path)
-                        networks = ModelManager._get_model_networks(
+                        proc = self._get_model_proc(version_path)
+                        networks = self._get_model_networks(
                             version_path)
                         if (proc) and (networks):
                             for key in networks:
@@ -148,36 +149,53 @@ class ModelManager:
                                                                       "type": "IntelDLDT",
                                                                       "description": model_name
                                                                       })
+                            network_paths = {
+                                key: value["network"] for key, value in networks.items()}
+                            network_paths["model-proc"] = proc
+                            self.logger.info("Loading Model: {} version: {} "
+                                             "type: {} from {}".format(
+                                                 model_name, version, "IntelDLDT", network_paths))
 
             except Exception as error:
-                logger.error("Error Loading Model {model_name} from: {model_dir}: {err}".format(
-                    err=error, model_name=model_name, model_dir=model_dir))
+                self.logger.error("Error Loading Model {model_name}"
+                                  " from: {model_dir}: {err}".format(
+                                      err=error, model_name=model_name, model_dir=model_dir))
 
-        ModelManager.models = models
-        logger.info("Completed Loading Models")
+        self.models = models
+        self.logger.info("Completed Loading Models")
 
-    @staticmethod
-    def get_model_parameters(name, version):
-        if name not in ModelManager.models or version not in ModelManager.models[name]:
+    def get_model_parameters(self, name, version):
+        if name not in self.models or version not in self.models[name]:
             return None
         params_obj = {
             "name": name,
             "version": version
         }
-        if "type" in ModelManager.models[name][version]:
-            params_obj["type"] = ModelManager.models[name][version]["type"]
 
-        if "description" in ModelManager.models[name][version]:
-            params_obj["description"] = ModelManager.models[name][version]["description"]
+        if "networks" in self.models[name][version]:
+            proc = None
+            for _, value in self.models[name][version]['networks'].items():
+                proc = value['proc']
+                break
+            params_obj["networks"] = {
+                'model-proc': proc,
+                'networks': {key: value['network']
+                             for key, value
+                             in self.models[name][version]['networks'].items()}}
+
+        if "type" in self.models[name][version]:
+            params_obj["type"] = self.models[name][version]["type"]
+
+        if "description" in self.models[name][version]:
+            params_obj["description"] = self.models[name][version]["description"]
         return params_obj
 
-    @staticmethod
-    def get_loaded_models():
+    def get_loaded_models(self):
         results = []
-        if ModelManager.models is not None:
-            for model in ModelManager.models:
-                for version in ModelManager.models[model].keys():
-                    result = ModelManager.get_model_parameters(model, version)
+        if self.models is not None:
+            for model in self.models:
+                for version in self.models[model].keys():
+                    result = self.get_model_parameters(model, version)
                     if result:
                         results.append(result)
         return results

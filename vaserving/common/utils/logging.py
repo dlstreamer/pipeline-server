@@ -4,7 +4,6 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-
 #    logging module
 
 import json
@@ -45,7 +44,7 @@ class JSONFormatter(logging.Formatter):
     def __init__(self, attrs_to_print=None):
         super().__init__()
         if attrs_to_print is None:
-            self.attrs_to_print = ['levelname', 'asctime', 'message', 'name']
+            self.attrs_to_print = ['levelname', 'asctime', 'message', 'module']
         elif attrs_to_print == 'ALL':
             self.attrs_to_print = ['levelno', 'levelname', 'asctime', 'filename',
                                    'lineno', 'name', 'message', 'pathname',
