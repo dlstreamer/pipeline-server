@@ -15,6 +15,7 @@ FRAMEWORK=
 TAG=
 RUN_PREFIX=
 CREATE_ENTRYPOINT=
+TARGET="deploy"
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#v1.0.0"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
@@ -44,6 +45,9 @@ while :; do
             else
                 error 'ERROR: "--base" requires a non-empty option argument.'
             fi
+            ;;
+        --dev)
+            TARGET="dev"
             ;;
         --base-build-context)       # Takes an option argument; ensure it has been specified.
             if [ "$2" ]; then
@@ -179,6 +183,7 @@ show_image_options() {
        echo "   Models: '${MODELS}'" 
        echo "   Pipelines: '${PIPELINES}'" 
        echo "   Framework: '${FRAMEWORK}'" 
+       echo "   Target: '${TARGET}'" 
        echo ""
 }
 
@@ -190,6 +195,7 @@ show_help() {
   echo "  [--pipelines path to pipelines directory]"
   echo "  [--build-arg additional build args to pass to docker build]"
   echo "  [--create-entrypoint create an entrypoint to run video-analytics-serving as a service]"
+  echo "  [--dev add dependencies for testing]"
   echo "  [--dry-run print docker commands without running]"
   exit 0
 }
@@ -247,6 +253,6 @@ show_image_options
 if [ -z "$RUN_PREFIX" ]; then
   set -x
  fi
-$RUN_PREFIX docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR
+$RUN_PREFIX docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR
 
 { set +x; } 2>/dev/null

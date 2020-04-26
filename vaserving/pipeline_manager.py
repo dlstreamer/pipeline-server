@@ -8,56 +8,65 @@ import os
 import json
 from collections import deque
 import jsonschema
-import tornado
 from vaserving.common.utils import logging
-from vaserving.model_manager import ModelManager
+from vaserving.pipeline import Pipeline
 import vaserving.schema as schema
-
-logger = logging.get_logger('PipelineManager', is_static=True)
-
-
-def import_pipeline_types():
-    pipeline_types = {}
-    try:
-        from vaserving.gstreamer_pipeline import GStreamerPipeline  # pylint: disable=import-error
-        pipeline_types['GStreamer'] = GStreamerPipeline
-    except Exception as error:
-        logger.error("Error loading GStreamer: %s\n", error)
-    try:
-        from vaserving.ffmpeg_pipeline import FFmpegPipeline  # pylint: disable=import-error
-        pipeline_types['FFmpeg'] = FFmpegPipeline
-    except Exception as error:
-        logger.error("Error loading FFmpeg: %s\n", error)
-
-    return pipeline_types
 
 
 class PipelineManager:
-    MAX_RUNNING_PIPELINES = -1
-    running_pipelines = 0
-    pipeline_types = {}
-    pipeline_instances = {}
-    pipeline_state = {}
-    pipeline_id = 0
-    pipelines = {}
-    pipeline_queue = deque()
 
-    @staticmethod
-    def load_config(pipeline_dir, max_running_pipelines):
-        #TODO: refactor
-        #pylint: disable=R0912
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1):
+        self.max_running_pipelines = max_running_pipelines
+        self.model_manager = model_manager
+        self.running_pipelines = 0
+        self.pipeline_types = {}
+        self.pipeline_instances = {}
+        self.pipeline_state = {}
+        self.pipeline_id = 0
+        self.pipelines = {}
+        self.pipeline_queue = deque()
+        self.pipeline_dir = pipeline_dir
+        self.logger = logging.get_logger('PipelineManager', is_static=True)
+        self._load_pipelines()
 
-        PipelineManager.pipeline_types = import_pipeline_types()
-        logger.info("Loading Pipelines from Config Path {path}".format(
-            path=pipeline_dir))
-        if os.path.islink(pipeline_dir):
-            logger.warning("Pipelines directory is symbolic link")
-        if os.path.ismount(pipeline_dir):
-            logger.warning("Pipelines directory is mount point")
-        PipelineManager.MAX_RUNNING_PIPELINES = max_running_pipelines
+    def _import_pipeline_types(self):
+        pipeline_types = {}
+        try:
+            from vaserving.gstreamer_pipeline import GStreamerPipeline  # pylint: disable=import-error
+            pipeline_types['GStreamer'] = GStreamerPipeline
+        except Exception as error:
+            pipeline_types['GStreamer'] = None
+            self.logger.info(
+                "GStreamer Pipelines Not Enabled: %s\n", error)
+        try:
+            from vaserving.ffmpeg_pipeline import FFmpegPipeline  # pylint: disable=import-error
+            pipeline_types['FFmpeg'] = FFmpegPipeline
+        except Exception as error:
+            pipeline_types['FFmpeg'] = None
+            self.logger.info(
+                "FFmpeg Pipelines Not Enabled: %s\n", error)
+
+        pipeline_types = {key: value for key,
+                          value in pipeline_types.items() if value}
+
+        return pipeline_types
+
+    def _load_pipelines(self):
+        # TODO: refactor
+        # pylint: disable=R0912
+
+        self.pipeline_types = self._import_pipeline_types()
+        self.logger.info("Loading Pipelines from Config Path {path}".format(
+            path=self.pipeline_dir))
+        if os.path.islink(self.pipeline_dir):
+            self.logger.warning(
+                "Pipelines directory is symbolic link")
+        if os.path.ismount(self.pipeline_dir):
+            self.logger.warning(
+                "Pipelines directory is mount point")
         pipelines = {}
-        for root, subdirs, files in os.walk(pipeline_dir):
-            if os.path.abspath(root) == os.path.abspath(pipeline_dir):
+        for root, subdirs, files in os.walk(self.pipeline_dir):
+            if os.path.abspath(root) == os.path.abspath(self.pipeline_dir):
                 for subdir in subdirs:
                     pipelines[subdir] = {}
             else:
@@ -75,82 +84,73 @@ class PipelineManager:
                             with open(path, 'r') as jsonfile:
                                 config = json.load(jsonfile)
                                 if ('type' not in config) or ('description' not in config):
-                                    logger.warning(
+                                    self.logger.warning(
                                         "Skipping loading of pipeline %s"
                                         " because of missing type or description", pipeline)
                                     continue
-                                if config['type'] in PipelineManager.pipeline_types:
+                                if config['type'] in self.pipeline_types:
                                     pipelines[pipeline][version] = config
+                                    config['name'] = pipeline
+                                    config['version'] = version
                                     # validate_config will throw warning of
                                     # missing elements but continue execution
-                                    PipelineManager.pipeline_types[config['type']].validate_config(
+                                    self.pipeline_types[config['type']].validate_config(
                                         config)
+                                    self.logger.info("Loading Pipeline: {} version: "
+                                                     "{} type: {} from {}".format(
+                                                         pipeline, version, config['type'], path))
                                 else:
                                     del pipelines[pipeline][version]
-                                    logger.error("Pipeline %s with type %s not supported",
-                                                 pipeline, config['type'])
+                                    self.logger.error("Pipeline %s with type %s not supported",
+                                                      pipeline, config['type'])
         # Remove pipelines with no valid versions
         pipelines = {model: versions for model,
                      versions in pipelines.items() if len(versions) > 0}
-        PipelineManager.pipelines = pipelines
-        logger.info("Completed Loading Pipelines")
+        self.pipelines = pipelines
+        self.logger.info("Completed Loading Pipelines")
 
-    @staticmethod
-    def get_loaded_pipelines():
+    def get_loaded_pipelines(self):
         results = []
-        if PipelineManager.pipelines is not None:
-            for pipeline in PipelineManager.pipelines:
-                for version in PipelineManager.pipelines[pipeline]:
-                    result = PipelineManager.get_pipeline_parameters(
-                        pipeline, version)
-                    if result:
-                        results.append(result)
+        for pipeline in self.pipelines:
+            for version in self.pipelines[pipeline]:
+                result = self.get_pipeline_parameters(
+                    pipeline, version)
+                if result:
+                    results.append(result)
         return results
 
-    @staticmethod
-    def get_pipeline_parameters(name, version):
-        if not PipelineManager.pipeline_exists(name, version):
+    def get_pipeline_parameters(self, name, version):
+        if not self.pipeline_exists(name, version):
             return None
         params_obj = {
             "name": name,
             "version": version
         }
-        if "type" in PipelineManager.pipelines[name][version]:
-            params_obj["type"] = PipelineManager.pipelines[name][version]["type"]
-        if "description" in PipelineManager.pipelines[name][version]:
-            params_obj["description"] = PipelineManager.pipelines[name][version]["description"]
-        if "parameters" in PipelineManager.pipelines[name][version]:
-            params_obj["parameters"] = PipelineManager.pipelines[name][version]["parameters"]
+        if "type" in self.pipelines[name][version]:
+            params_obj["type"] = self.pipelines[name][version]["type"]
+        if "description" in self.pipelines[name][version]:
+            params_obj["description"] = self.pipelines[name][version]["description"]
+        if "parameters" in self.pipelines[name][version]:
+            params_obj["parameters"] = self.pipelines[name][version]["parameters"]
         return params_obj
 
-    @staticmethod
-    def is_input_valid(request, pipeline_config, section):
+    def is_input_valid(self, request, pipeline_config, section):
         config = pipeline_config.get(section, {})
         try:
             if (section in request):
                 input_validator = jsonschema.Draft4Validator(
                     schema=config, format_checker=jsonschema.draft4_format_checker)
                 input_validator.validate(request.get(section, {}))
-                logger.debug("{} Validation successful".format(section))
+                self.logger.debug(
+                    "{} Validation successful".format(section))
             return True
         except Exception as error:
-            logger.debug(
+            self.logger.debug(
                 "Validation error in request section {}, error: {}".format(section, error))
             return False
 
-    @staticmethod
-    def get_section_and_config(request, config, request_section, config_section):
-        for key in request_section:
-            request = request.get(key, {})
-
-        for key in config_section:
-            config = config.get(key, {})
-
-        return request, config
-
-    @staticmethod
-    def set_section_defaults(request, config, request_section, config_section):
-        section, config = PipelineManager.get_section_and_config(
+    def set_section_defaults(self, request, config, request_section, config_section):
+        section, config = Pipeline.get_section_and_config(
             request, config, request_section, config_section)
         for key in config:
             if (key not in section) and ("default" in config[key]):
@@ -162,8 +162,7 @@ class PipelineManager:
                 result = result.setdefault(key, {})
             result[request_section[-1]] = section
 
-    @staticmethod
-    def set_defaults(request, config):
+    def set_defaults(self, request, config):
 
         if ("destination" not in config):
             config["destination"] = schema.destination
@@ -172,117 +171,105 @@ class PipelineManager:
         if ("tags" not in config):
             config["tags"] = schema.tags
 
-        PipelineManager.set_section_defaults(request, config, ["parameters"],
-                                             ["parameters", "properties"])
+        self.set_section_defaults(request, config, ["parameters"],
+                                  ["parameters", "properties"])
         if ("destination" in request) and ("type" in request["destination"]):
-            PipelineManager.set_section_defaults(request, config, ["destination"],
-                                                 ["destination",
-                                                  request["destination"]["type"],
-                                                  "properties"])
+            self.set_section_defaults(request, config, ["destination"],
+                                      ["destination",
+                                       request["destination"]["type"],
+                                       "properties"])
         if ("source" in request) and ("type" in request["source"]):
-            PipelineManager.set_section_defaults(request, config, ["source"],
-                                                 ["source",
-                                                  request["source"]["type"],
-                                                  "properties"])
+            self.set_section_defaults(request, config, ["source"],
+                                      ["source",
+                                       request["source"]["type"],
+                                       "properties"])
 
-        PipelineManager.set_section_defaults(request, config, ["tags"],
-                                             ["tags", "properties"])
+        self.set_section_defaults(request, config, ["tags"],
+                                  ["tags", "properties"])
 
-    @staticmethod
-    def create_instance(name, version, request):
-        logger.info(
+    def create_instance(self, name, version, request):
+        self.logger.info(
             "Creating Instance of Pipeline {name}/{v}".format(name=name, v=version))
-        if not PipelineManager.pipeline_exists(name, version):
+        if not self.pipeline_exists(name, version):
             return None, "Invalid Pipeline or Version"
 
-        pipeline_type = PipelineManager.pipelines[name][str(version)]['type']
-        pipeline_config = PipelineManager.pipelines[name][str(version)]
+        pipeline_type = self.pipelines[name][str(version)]['type']
+        pipeline_config = self.pipelines[name][str(version)]
 
-        PipelineManager.set_defaults(request, pipeline_config)
+        self.set_defaults(request, pipeline_config)
 
-        if not PipelineManager.is_input_valid(request, pipeline_config, "parameters"):
+        if not self.is_input_valid(request, pipeline_config, "parameters"):
             return None, "Invalid Parameters"
-        if not PipelineManager.is_input_valid(request, pipeline_config, "destination"):
+        if not self.is_input_valid(request, pipeline_config, "destination"):
             return None, "Invalid Destination"
-        if not PipelineManager.is_input_valid(request, pipeline_config, "source"):
+        if not self.is_input_valid(request, pipeline_config, "source"):
             return None, "Invalid Source"
-        if not PipelineManager.is_input_valid(request, pipeline_config, "tags"):
+        if not self.is_input_valid(request, pipeline_config, "tags"):
             return None, "Invalid Tags"
 
-        PipelineManager.pipeline_id += 1
+        self.pipeline_id += 1
+        self.pipeline_instances[self.pipeline_id] = self.pipeline_types[pipeline_type](
+            self.pipeline_id,
+            pipeline_config,
+            self.model_manager,
+            request,
+            self._pipeline_finished)
+        self.pipeline_queue.append(self.pipeline_id)
+        self._start()
+        return self.pipeline_id, None
 
-        PipelineManager.pipeline_instances[PipelineManager.pipeline_id] = \
-            PipelineManager.pipeline_types[pipeline_type](PipelineManager.pipeline_id,
-                                                          pipeline_config,
-                                                          ModelManager.models,
-                                                          request)
-        PipelineManager.pipeline_queue.append(PipelineManager.pipeline_id)
-        PipelineManager.start()
-        return PipelineManager.pipeline_id, None
-
-    @staticmethod
-    def _get_next_pipeline_identifier():
-        if (PipelineManager.MAX_RUNNING_PIPELINES > 0):
-            if (PipelineManager.running_pipelines > PipelineManager.MAX_RUNNING_PIPELINES):
+    def _get_next_pipeline_identifier(self):
+        if (self.max_running_pipelines > 0):
+            if (self.running_pipelines >= self.max_running_pipelines):
                 return None
 
-        if (PipelineManager.pipeline_queue):
-            return PipelineManager.pipeline_queue.popleft()
+        try:
+            if (self.pipeline_queue):
+                return self.pipeline_queue.popleft()
+        except Exception:
+            pass
 
         return None
 
-    @staticmethod
-    def start():
-        pipeline_identifier = PipelineManager._get_next_pipeline_identifier()
+    def _start(self):
+        pipeline_identifier = self._get_next_pipeline_identifier()
         if (pipeline_identifier):
-            pipeline_to_start = PipelineManager.pipeline_instances[pipeline_identifier]
-            if(pipeline_to_start is not None):
-                PipelineManager.running_pipelines += 1
-                pipeline_to_start.start()
+            pipeline_to_start = self.pipeline_instances[pipeline_identifier]
+            self.running_pipelines += 1
+            pipeline_to_start.start()
 
-    @staticmethod
-    def start_next_pipeline():
-        PipelineManager.running_pipelines -= 1
-        PipelineManager.start()
+    def _pipeline_finished(self):
+        self.running_pipelines -= 1
+        self._start()
 
-    @staticmethod
-    def pipeline_finished():
-        ioloop = tornado.ioloop.IOLoop.instance()
-        ioloop.add_callback(PipelineManager.start_next_pipeline)
-
-    @staticmethod
-    def get_instance_parameters(name, version, instance_id):
-        if PipelineManager.instance_exists(name, version, instance_id):
-            return PipelineManager.pipeline_instances[instance_id].params()
+    def get_instance_parameters(self, name, version, instance_id):
+        if self.instance_exists(name, version, instance_id):
+            return self.pipeline_instances[instance_id].params()
         return None
 
-    @staticmethod
-    def get_instance_status(name, version, instance_id):
-        if PipelineManager.instance_exists(name, version, instance_id):
-            return PipelineManager.pipeline_instances[instance_id].status()
+    def get_instance_status(self, name, version, instance_id):
+        if self.instance_exists(name, version, instance_id):
+            return self.pipeline_instances[instance_id].status()
         return None
 
-    @staticmethod
-    def stop_instance(name, version, instance_id):
-        if PipelineManager.instance_exists(name, version, instance_id):
+    def stop_instance(self, name, version, instance_id):
+        if self.instance_exists(name, version, instance_id):
             try:
-                PipelineManager.pipeline_queue.remove(instance_id)
+                self.pipeline_queue.remove(instance_id)
             except Exception:
                 pass
-            return PipelineManager.pipeline_instances[instance_id].stop()
+            return self.pipeline_instances[instance_id].stop()
         return None
 
-    @staticmethod
-    def instance_exists(name, version, instance_id):
-        if (PipelineManager.pipeline_exists(name, version) and
-                instance_id in PipelineManager.pipeline_instances):
+    def instance_exists(self, name, version, instance_id):
+        if (self.pipeline_exists(name, version) and
+                instance_id in self.pipeline_instances):
             return True
-        logger.warning("Invalid Instance ID")
+        self.logger.warning("Invalid Instance ID")
         return False
 
-    @staticmethod
-    def pipeline_exists(name, version):
-        if name in PipelineManager.pipelines and str(version) in PipelineManager.pipelines[name]:
+    def pipeline_exists(self, name, version):
+        if name in self.pipelines and str(version) in self.pipelines[name]:
             return True
-        logger.warning("Invalid pipeline or version")
+        self.logger.warning("Invalid pipeline or version")
         return False

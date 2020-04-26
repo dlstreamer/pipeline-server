@@ -11,7 +11,7 @@ ARG FINAL_STAGE=video-analytics-serving-environment
 
 ########################################################
 # First stage installs video-analytics-serving and its dependencies on top of a compatible Media Analytics Base.
-# See documentation for more details on requirements for the Media Analytics Base. 
+# See documentation for more details on requirements for the Media Analytics Base.
 
 FROM ${BASE} as video-analytics-serving
 ARG FRAMEWORK=gstreamer
@@ -28,6 +28,7 @@ RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-servin
 # Dependencies installed via apt-get
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
+    python3-setuptools \
     python3-pip \
     python3 && \
     rm -rf /var/lib/apt/lists/*
@@ -91,7 +92,18 @@ ONBUILD CMD ["python3", "-m", "vaserving"]
 FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-service
 ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
 
-FROM ${FINAL_STAGE}
+FROM ${FINAL_STAGE} as deploy
+
+ARG USER=vaserving
+
+USER ${USER}
+
+FROM ${FINAL_STAGE} as dev
+
+# Dependencies installed via pip
+COPY ./requirements_dev.txt /
+RUN pip3 install  --no-cache-dir -r /requirements_dev.txt
+RUN rm -f /requirements_dev.txt
 
 ARG USER=vaserving
 

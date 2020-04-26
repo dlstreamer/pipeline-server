@@ -8,7 +8,8 @@
 # define logging settings here
 
 LOG_LEVEL = "INFO"
-LOG_ATTRS = ['levelname', 'asctime', 'message', 'name']
+LOG_ATTRS = ['levelname', 'asctime', 'message', 'module']
+
 
 def set_log_level(level):
     # pylint: disable=W0603
