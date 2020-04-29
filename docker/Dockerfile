@@ -86,24 +86,19 @@ FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines
 # Fourth stage creates the final image either with a default command or with a default entrypoint.
 # Final stage is controlled by the FINAL_STAGE build argument.
 
-FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-environment
-ONBUILD CMD ["python3", "-m", "vaserving"]
+FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-library
+ONBUILD RUN rm -rf /home/video-analytics-serving/vaserving/__main__.py
+ONBUILD RUN rm -rf /home/video-analytics-serving/vaserving/rest_api
 
 FROM video-analytics-serving-with-models-and-pipelines as video-analytics-serving-service
+
+# Dependencies installed via pip
+ONBUILD COPY ./requirements.service.txt /
+ONBUILD RUN pip3 install  --no-cache-dir -r /requirements.service.txt
+ONBUILD RUN rm -f /requirements.service.txt
 ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
 
 FROM ${FINAL_STAGE} as deploy
-
-ARG USER=vaserving
-
-USER ${USER}
-
-FROM ${FINAL_STAGE} as dev
-
-# Dependencies installed via pip
-COPY ./requirements_dev.txt /
-RUN pip3 install  --no-cache-dir -r /requirements_dev.txt
-RUN rm -f /requirements_dev.txt
 
 ARG USER=vaserving
 
