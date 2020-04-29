@@ -34,14 +34,17 @@ https://github.com/GNOME/libsoup/blob/master/COPYING
 GObject Introspection (LGPL 2) https://gi.readthedocs.io/en/latest/
 https://github.com/GNOME/gobject-introspection/blob/master/COPYING.LGPL
 
-OpenVINO Model Zoo (Apache 2.0) https://software.intel.com/en-us/openvino-toolkit/documentation/pretrained-models
+OpenVINO(TM) Toolkit - Deep Learning Deployment Toolkit (Apache 2.0) https://github.com/openvinotoolkit/openvino
+https://github.com/openvinotoolkit/openvino/blob/2020/LICENSE
+
+OpenVINO(TM) Toolkit - Open Model Zoo (Apache 2.0) https://software.intel.com/en-us/openvino-toolkit/documentation/pretrained-models
 https://github.com/opencv/open_model_zoo/blob/master/LICENSE
+
+OpenVINO(TM) Toolkit - DL Streamer (MIT) https://github.com/opencv/gst-video-analytics
+https://github.com/opencv/gst-video-analytics/blob/master/LICENSE
 
 setuptools (MIT) https://setuptools.readthedocs.io/en/latest/setuptools.html
 https://packages.debian.org/sid/python3-setuptools
-
-GStreamer Video Analytics Plugins (MIT) https://github.com/opencv/gst-video-analytics
-https://github.com/opencv/gst-video-analytics/blob/master/LICENSE
 
 six (MIT) https://pypi.org/project/six/
 https://github.com/benjaminp/six/blob/master/LICENSE
@@ -51,3 +54,39 @@ https://docs.python.org/3/license.html
 
 pip3 (MIT) https://packages.debian.org/sid/python3-pip
 https://github.com/pypa/pip/blob/master/LICENSE.txt
+
+gmmlib (MIT) https://01.org/linuxmedia/quickstart/linux-vaapi-videostack-environment
+https://github.com/intel/gmmlib/blob/master/LICENSE.md
+
+libdrm (MIT) https://01.org/linuxmedia/quickstart/linux-vaapi-videostack-environment
+https://github.com/clearlinux-pkgs/libdrm/blob/master/libdrm.license
+
+libpciaccess-dev (Custom) https://www.x.org/wiki/PciReworkHowto/
+https://gitlab.freedesktop.org/xorg/lib/libpciaccess/blob/master/COPYING
+
+libva (Custom) https://01.org/linuxmedia
+https://github.com/intel/libva/blob/master/COPYING
+
+libva-utils (Custom) https://01.org/linuxmedia
+https://github.com/intel/libva-utils/blob/master/COPYING
+
+Intel(R) Media Driver for VAAPI (MIT) https://github.com/VCDP/media-driver
+https://github.com/VCDP/media-driver/blob/master/LICENSE.md
+
+Intel(R) Graphics Compiler for OpenCL(TM) (MIT) https://01.org/compute-runtime
+https://github.com/intel/intel-graphics-compiler/blob/master/LICENSE.md
+
+Intel(R) Graphics Compute Runtime (MIT) https://01.org/compute-runtime
+https://github.com/intel/compute-runtime/blob/master/LICENSE
+
+Intel(R) OpenCL (MIT) https://01.org/compute-runtime
+https://github.com/intel/compute-runtime/blob/master/LICENSE
+
+Intel(R) Media SDK (Custom MIT) https://01.org/linuxmedia
+https://github.com/Intel-Media-SDK/MediaSDK/blob/master/LICENSE
+
+gstreamer plugin vaapi (LGPL 2.1) https://01.org/linuxmedia
+https://gstreamer.freedesktop.org/src/gstreamer-vaapi/
+
+Numpy (BSD 3-clause) https://github.com/numpy/numpy
+https://github.com/numpy/numpy/blob/master/LICENSE.txt
