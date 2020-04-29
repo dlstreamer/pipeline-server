@@ -120,7 +120,7 @@ class ModelManager:
         models = defaultdict(dict)
         if (network_preference):
             for key in network_preference:
-                if (isinstance(network_preference[key], string)):
+                if (isinstance(network_preference[key], str)):
                     network_preference[key] = network_preference[key].split(
                         ',')
             self.network_preference.update(network_preference)

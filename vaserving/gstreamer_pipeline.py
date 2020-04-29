@@ -84,6 +84,9 @@ class GStreamerPipeline(Pipeline):
     def mainloop_quit():
         if (GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop.quit()
+            GStreamerPipeline._mainloop = None
+        if (GStreamerPipeline._mainloop_thread):
+            GStreamerPipeline._mainloop_thread = None
 
     def _shutdown_and_delete_pipeline(self, new_state):
         with(self._create_delete_lock):

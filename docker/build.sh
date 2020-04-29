@@ -14,7 +14,7 @@ PIPELINES=
 FRAMEWORK=
 TAG=
 RUN_PREFIX=
-CREATE_ENTRYPOINT=
+CREATE_SERVICE=
 TARGET="deploy"
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#v1.0.0"
@@ -46,8 +46,13 @@ while :; do
                 error 'ERROR: "--base" requires a non-empty option argument.'
             fi
             ;;
-        --dev)
-            TARGET="dev"
+        --target)
+            if [ "$2" ]; then
+                TARGET=$2
+                shift
+            else
+                error 'ERROR: "--target" requires a non-empty option argument.'
+            fi
             ;;
         --base-build-context)       # Takes an option argument; ensure it has been specified.
             if [ "$2" ]; then
@@ -105,8 +110,16 @@ while :; do
                 error 'ERROR: "--tag" requires a non-empty option argument.'
             fi
             ;;
-        --create-entrypoint)
-            CREATE_ENTRYPOINT=TRUE
+        --dockerfile-dir)
+           if [ "$2" ]; then
+                DOCKERFILE_DIR=$2
+                shift
+            else
+                error 'ERROR: "--dockerfile-dir" requires a non-empty option argument.'
+            fi
+            ;;
+        --create-service)
+            CREATE_SERVICE=TRUE
             ;;
         --dry-run)
             RUN_PREFIX="echo"
@@ -141,14 +154,14 @@ if [ -z "$BASE_IMAGE" ]; then
   BASE="BUILD"
   if [ -z "$BASE_BUILD_CONTEXT" ]; then
    BASE_BUILD_CONTEXT=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_CONTEXT
-   BASE_BUILD_CONTEXT=${!BASE_BUILD_CONTEXT}  
+   BASE_BUILD_CONTEXT=${!BASE_BUILD_CONTEXT}
   fi
   if [ -z "$BASE_BUILD_DOCKERFILE" ]; then
    BASE_BUILD_DOCKERFILE=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_DOCKERFILE
-   BASE_BUILD_DOCKERFILE=${!BASE_BUILD_DOCKERFILE}  
+   BASE_BUILD_DOCKERFILE=${!BASE_BUILD_DOCKERFILE}
   fi
   if [ -z "$BASE_BUILD_TAG" ]; then
-   BASE_BUILD_TAG=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_TAG  
+   BASE_BUILD_TAG=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_TAG
    BASE_BUILD_TAG=${!BASE_BUILD_TAG}
   fi
 else
@@ -167,7 +180,7 @@ show_base_options() {
        echo "   Build Context: '${BASE_BUILD_CONTEXT}'"
        echo "   Dockerfile: '${BASE_BUILD_DOCKERFILE}'"
        echo "   Build Options: '${BUILD_OPTIONS}'"
-       echo "   Build Arguments: '${BUILD_ARGS}'" 
+       echo "   Build Arguments: '${BUILD_ARGS}'"
        echo ""
 }
 
@@ -179,23 +192,24 @@ show_image_options() {
        echo "   Build Context: '${SOURCE_DIR}'"
        echo "   Dockerfile: '${DOCKERFILE_DIR}/Dockerfile'"
        echo "   Build Options: '${BUILD_OPTIONS}'"
-       echo "   Build Arguments: '${BUILD_ARGS}'" 
-       echo "   Models: '${MODELS}'" 
-       echo "   Pipelines: '${PIPELINES}'" 
-       echo "   Framework: '${FRAMEWORK}'" 
-       echo "   Target: '${TARGET}'" 
+       echo "   Build Arguments: '${BUILD_ARGS}'"
+       echo "   Models: '${MODELS}'"
+       echo "   Pipelines: '${PIPELINES}'"
+       echo "   Framework: '${FRAMEWORK}'"
+       echo "   Target: '${TARGET}'"
        echo ""
 }
 
 show_help() {
-  echo "usage: build.sh" 
+  echo "usage: build.sh"
   echo "  [--base base image]"
   echo "  [--framework ffmpeg || gstreamer]"
-  echo "  [--models path to model directory]" 
+  echo "  [--models path to model directory]"
   echo "  [--pipelines path to pipelines directory]"
   echo "  [--build-arg additional build args to pass to docker build]"
-  echo "  [--create-entrypoint create an entrypoint to run video-analytics-serving as a service]"
-  echo "  [--dev add dependencies for testing]"
+  echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
+  echo "  [--target build a specific target]"
+  echo "  [--dockerfile-dir specify a different dockerfile directory]"
   echo "  [--dry-run print docker commands without running]"
   exit 0
 }
@@ -211,7 +225,7 @@ get_options "$@"
 
 # BUILD BASE IF BASE IS NOT SUPPLIED
 
-if [ $BASE == "BUILD" ]; then
+if [ "$BASE" == "BUILD" ]; then
  show_base_options
 
  if [ -z "$RUN_PREFIX" ]; then
@@ -242,10 +256,10 @@ else
     BUILD_ARGS+="--build-arg PIPELINES_COMMAND=do_not_copy_pipelines "
 fi
 
-if [ $CREATE_ENTRYPOINT == "TRUE" ]; then
+if [ "$CREATE_SERVICE" == "TRUE" ]; then
    BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-service "
 else
-   BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-environment "
+   BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-library "
 fi
 
 show_image_options

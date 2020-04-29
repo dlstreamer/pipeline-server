@@ -88,6 +88,10 @@ class PipelineManager:
                                         "Skipping loading of pipeline %s"
                                         " because of missing type or description", pipeline)
                                     continue
+                                if "template" in config:
+                                    if isinstance(config["template"], list):
+                                        config["template"] = "".join(
+                                            config["template"])
                                 if config['type'] in self.pipeline_types:
                                     pipelines[pipeline][version] = config
                                     config['name'] = pipeline
