@@ -65,7 +65,7 @@ while :; do
             ;;
         --pipelines)
            if [ "$2" ]; then
-                PIPELINES=$2
+                PIPELINES=$(realpath $2)
                 shift
             else
                 error 'ERROR: "--pipelines" requires a non-empty option argument.'
