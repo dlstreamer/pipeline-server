@@ -1,5 +1,5 @@
 OUTPUT_PATH=./
-OUTPUT_FILE=dlstreamer.json
+OUTPUT_FILE=vaserving.json
 OUTPUT_PATHFILE=${OUTPUT_PATH}${OUTPUT_FILE}
 
 # Assure previous file does not exist.
@@ -9,7 +9,7 @@ if [ -f $OUTPUT_PATHFILE ]; then
    echo "Removed existing file: $OUTPUT_PATHFILE"
 fi
 
-echo "Waiting for DL Streamer to create output file: $OUTPUT_PATHFILE"
+echo "Waiting for VA Serving to create output file: $OUTPUT_PATHFILE"
 while read i; do if [ "$i" = $OUTPUT_FILE ]; then break; fi; done \
    < <(inotifywait  -e create,open --format '%f' --quiet $OUTPUT_PATH --monitor)
 
