@@ -6,7 +6,7 @@
 #
 
 DIR=$(dirname $(readlink -f "$0"))
-. "$DIR/../docker/build.sh" $@ --tag video-analytics-serving-test-base --dockerfile-dir "$DIR/../docker"
+. "$DIR/../docker/build.sh" $@ --create-service --tag video-analytics-serving-test-base --dockerfile-dir "$DIR/../docker"
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)

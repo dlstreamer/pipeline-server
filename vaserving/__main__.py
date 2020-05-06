@@ -16,12 +16,15 @@ logger = logging.get_logger('main', is_static=True)
 
 
 def main(options):
-    app = connexion.App(__name__, specification_dir='rest_api/')
-    app.add_api('video-analytics-serving.yaml',
-                arguments={'title': 'Video Analytics Serving API'})
-    logger.info("Starting Tornado Server on port: %s", options.port)
-    app.run(server='tornado', port=options.port)
-
+    try:
+        app = connexion.App(__name__, specification_dir='rest_api/')
+        app.add_api('video-analytics-serving.yaml',
+                    arguments={'title': 'Video Analytics Serving API'})
+        logger.info("Starting Tornado Server on port: %s", options.port)
+        app.run(server='tornado', port=options.port)
+    except Exception as error:
+        logger.error("Error Starting Tornado Server")
+        
 
 if __name__ == '__main__':
 
@@ -37,5 +40,7 @@ if __name__ == '__main__':
     thread.start()
 
     thread.join()
+
+    VAServing.stop()
 
     logger.info("Exiting")
