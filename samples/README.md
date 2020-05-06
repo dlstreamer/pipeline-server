@@ -34,9 +34,9 @@ In terminal window 2:
      # more ./results.txt
      ```
 
-  7. Run with multiple retries to calculate performance on your system:
+  7. Run the pipeline multiple times to measure runtime performance on your system:
      ```
-     # ./sample.py --retries 3
+     # ./sample.py --repeat 3
      ```
 
      This time you will notice that the sample outputs calculated statistics upon completion. Ex:
