@@ -7,6 +7,9 @@ RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.t
 RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 RUN pip3 list
 
+# Attach tests as a layer itself
+COPY ./tests/**.* /home/video-analytics-serving/tests/
+
 ARG USER=vaserving
 
 USER ${USER}
