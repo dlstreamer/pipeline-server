@@ -9,6 +9,7 @@ BASE_IMAGE=
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
+USER_BASE_BUILD_ARGS=
 MODELS=
 PIPELINES=
 FRAMEWORK=
@@ -20,15 +21,17 @@ TARGET="deploy"
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#v1.0.0"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
+DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --build-arg ENABLE_RDKAFKA_INSTALLATION=true"
 
 DEFAULT_FFMPEG_BASE_BUILD_CONTEXT="https://github.com/VCDP/FFmpeg-patch.git#a96d280226e964639f076f8e9c55c0a71cb2e3ad:docker"
 DEFAULT_FFMPEG_BASE_BUILD_DOCKERFILE="Dockerfile.source"
 DEFAULT_FFMPEG_BASE_BUILD_TAG="video-analytics-serving-ffmpeg-base"
-
+DEFAULT_FFMPEG_BASE_BUILD_ARGS=""
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
+BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host"
 
 get_options() {
@@ -101,6 +104,14 @@ while :; do
             else
                 error 'ERROR: "--build-arg" requires a non-empty option argument.'
             fi
+           ;;
+        --base-build-arg)
+           if [ "$2" ]; then
+                USER_BASE_BUILD_ARGS+="--build-arg $2 "
+                shift
+            else
+                error 'ERROR: "--base-build-arg" requires a non-empty option argument.'
+            fi
             ;;
         --tag)
            if [ "$2" ]; then
@@ -164,6 +175,11 @@ if [ -z "$BASE_IMAGE" ]; then
    BASE_BUILD_TAG=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_TAG
    BASE_BUILD_TAG=${!BASE_BUILD_TAG}
   fi
+  if [ -z "$USER_BASE_BUILD_ARGS" ]; then
+      USER_BASE_BUILD_ARGS=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_ARGS
+      USER_BASE_BUILD_ARGS=${!USER_BASE_BUILD_ARGS}
+  fi
+  BASE_BUILD_ARGS+=$USER_BASE_BUILD_ARGS
 else
   BASE="IMAGE"
 fi
@@ -180,7 +196,7 @@ show_base_options() {
        echo "   Build Context: '${BASE_BUILD_CONTEXT}'"
        echo "   Dockerfile: '${BASE_BUILD_DOCKERFILE}'"
        echo "   Build Options: '${BUILD_OPTIONS}'"
-       echo "   Build Arguments: '${BUILD_ARGS}'"
+       echo "   Build Arguments: '${BASE_BUILD_ARGS}'"
        echo ""
 }
 
@@ -207,6 +223,7 @@ show_help() {
   echo "  [--models path to model directory]"
   echo "  [--pipelines path to pipelines directory]"
   echo "  [--build-arg additional build args to pass to docker build]"
+  echo "  [--base-build-arg additional build args to pass to docker build for base image]"
   echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
   echo "  [--target build a specific target]"
   echo "  [--dockerfile-dir specify a different dockerfile directory]"
@@ -232,7 +249,7 @@ if [ "$BASE" == "BUILD" ]; then
   set -x
  fi
 
- $RUN_PREFIX docker build $BASE_BUILD_CONTEXT -f $BASE_BUILD_DOCKERFILE $BUILD_OPTIONS $BUILD_ARGS -t $BASE_BUILD_TAG
+ $RUN_PREFIX docker build $BASE_BUILD_CONTEXT -f $BASE_BUILD_DOCKERFILE $BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG
 
  { set +x; } 2>/dev/null
  BASE_IMAGE=$BASE_BUILD_TAG

@@ -1,0 +1,42 @@
+{
+    "path": "pipelines/object_detection/1",
+    "verb": "get",
+    "body": {},
+    "status_code": 200,
+    "result": {
+        "description": "Object Detection Pipeline",
+        "name": "object_detection",
+        "parameters": {
+            "properties": {
+                "cpu-throughput-streams": {
+                    "element": "detection",
+                    "maximum": 4294967295,
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "inference-interval": {
+                    "default": 1,
+                    "element": "detection",
+                    "maximum": 4294967295,
+                    "minimum": 1,
+                    "type": "integer"
+                },
+                "n-threads": {
+                    "default": 1,
+                    "element": "videoconvert",
+                    "type": "integer"
+                },
+                "nireq": {
+                    "default": 2,
+                    "element": "detection",
+                    "maximum": 64,
+                    "minimum": 1,
+                    "type": "integer"
+                }
+            },
+            "type": "object"
+        },
+        "type": "GStreamer",
+        "version": "1"
+    }
+}

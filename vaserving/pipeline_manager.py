@@ -6,7 +6,9 @@
 
 import os
 import json
+import traceback
 from collections import deque
+from collections import defaultdict
 import jsonschema
 from vaserving.common.utils import logging
 from vaserving.pipeline import Pipeline
@@ -53,7 +55,7 @@ class PipelineManager:
 
     def _load_pipelines(self):
         # TODO: refactor
-        # pylint: disable=R0912
+        # pylint: disable=R0912,R1702
 
         self.pipeline_types = self._import_pipeline_types()
         self.logger.info("Loading Pipelines from Config Path {path}".format(
@@ -64,7 +66,7 @@ class PipelineManager:
         if os.path.ismount(self.pipeline_dir):
             self.logger.warning(
                 "Pipelines directory is mount point")
-        pipelines = {}
+        pipelines = defaultdict(dict)
         for root, subdirs, files in os.walk(self.pipeline_dir):
             if os.path.abspath(root) == os.path.abspath(self.pipeline_dir):
                 for subdir in subdirs:
@@ -81,32 +83,44 @@ class PipelineManager:
                     for file in files:
                         path = os.path.join(root, file)
                         if path.endswith(".json"):
-                            with open(path, 'r') as jsonfile:
-                                config = json.load(jsonfile)
-                                if ('type' not in config) or ('description' not in config):
-                                    self.logger.warning(
-                                        "Skipping loading of pipeline %s"
-                                        " because of missing type or description", pipeline)
-                                    continue
-                                if "template" in config:
-                                    if isinstance(config["template"], list):
-                                        config["template"] = "".join(
-                                            config["template"])
-                                if config['type'] in self.pipeline_types:
-                                    pipelines[pipeline][version] = config
-                                    config['name'] = pipeline
-                                    config['version'] = version
-                                    # validate_config will throw warning of
-                                    # missing elements but continue execution
-                                    self.pipeline_types[config['type']].validate_config(
-                                        config)
-                                    self.logger.info("Loading Pipeline: {} version: "
-                                                     "{} type: {} from {}".format(
-                                                         pipeline, version, config['type'], path))
-                                else:
-                                    del pipelines[pipeline][version]
-                                    self.logger.error("Pipeline %s with type %s not supported",
-                                                      pipeline, config['type'])
+                            try:
+                                with open(path, 'r') as jsonfile:
+                                    config = json.load(jsonfile)
+                                    if ('type' not in config) or ('description' not in config):
+                                        self.logger.warning(
+                                            "Skipping loading of pipeline %s"
+                                            " because of missing type or description", pipeline)
+                                        continue
+                                    if "template" in config:
+                                        if isinstance(config["template"], list):
+                                            config["template"] = "".join(
+                                                config["template"])
+                                    if config['type'] in self.pipeline_types:
+                                        pipelines[pipeline][version] = config
+                                        config['name'] = pipeline
+                                        config['version'] = version
+                                        # validate_config will throw warning of
+                                        # missing elements but continue execution
+                                        self.pipeline_types[config['type']].validate_config(
+                                            config)
+                                        self.logger.info("Loading Pipeline: {} version: "
+                                                         "{} type: {} from {}".format(
+                                                             pipeline,
+                                                             version,
+                                                             config['type'],
+                                                             path))
+                                    else:
+                                        del pipelines[pipeline][version]
+                                        self.logger.error("Pipeline %s with type %s not supported",
+                                                          pipeline, config['type'])
+                            except Exception as error:
+                                del pipelines[pipeline][version]
+                                self.logger.error(
+                                    "Failed to Load Pipeline from: {}".format(path))
+                                self.logger.error(
+                                    "Exception: {}".format(error))
+                                self.logger.error(traceback.format_exc())
+
         # Remove pipelines with no valid versions
         pipelines = {model: versions for model,
                      versions in pipelines.items() if len(versions) > 0}
