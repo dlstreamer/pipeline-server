@@ -7,6 +7,12 @@
 
 tags = {
     "type": "object",
+    "filter": {
+        "name": "metaconvert",
+        "type": "video",
+        "property": "tags",
+        "format": "json"
+    },
     "element": {
         "name": "metaconvert",
         "property": "tags",
@@ -26,6 +32,8 @@ source = {
             "uri": {
                 "type": "string",
                 "format": "uri",
+                "filter": [{"name": "metaconvert", "property": "source", "type": "video"},
+                           {"name": "i", "property": "_INPUT_ARG_", "type": "input"}],
                 "element": [{"name": "source",
                              "property": "uri"},
                             {"name": "source",
@@ -64,11 +72,22 @@ destination = {
                 "element": {
                     "name": "destination",
                     "property": "method"
+                },
+                "filter": {
+                    "name": "metapublish",
+                    "type": "output",
+                    "property": "method",
+                    "values": [0]
                 }
             },
             "path": {
                 "type": "string",
                 "format": "path",
+                "filter": {
+                    "name": "metapublish",
+                    "type": "output",
+                    "property": "_METAPUBLISH_ARG_"
+                },
                 "element": {
                     "name": "destination",
                     "property": "file-path"
@@ -80,6 +99,12 @@ destination = {
                     "json-lines",
                     "json"
                 ],
+                "filter": {
+                    "name": "metapublish",
+                    "type": "output",
+                    "property": "output_format",
+                    "values": ["stream", "batch"]
+                },
                 "element": {
                     "name": "destination",
                     "property": "file-format"
@@ -128,11 +153,20 @@ destination = {
             "type": {
                 "type": "string",
                 "enum": ["kafka"],
-                "element": {"name": "destination", "property": "method"}
+                "element": {"name": "destination", "property": "method"},
+                "filter": {"name": "metapublish",
+                           "property": "method",
+                           "values": [1],
+                           "type": "output"}
             },
             "host": {
                 "type": "string",
                 "description": "host:port to use as bootstrap server.",
+                "filter": {
+                    "name": "metapublish",
+                    "type": "output",
+                    "property": "_METAPUBLISH_KAFKA_HOST_"
+                },
                 "element": {
                     "name": "destination",
                     "property": "address"
@@ -140,7 +174,12 @@ destination = {
             },
             "topic": {
                 "type": "string",
-                "element": "destination"
+                "element": "destination",
+                "filter": {
+                    "name": "metapublish",
+                    "type": "output",
+                    "property": "_METAPUBLISH_KAFKA_TOPIC_"
+                }
             }
         },
         "required": [

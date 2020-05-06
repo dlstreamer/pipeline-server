@@ -300,7 +300,7 @@ ignore-imports=no
 
 # Minimum lines number of a similarity.
 # TODO FIXME
-min-similarity-lines=10
+min-similarity-lines=15
 
 
 [MISCELLANEOUS]

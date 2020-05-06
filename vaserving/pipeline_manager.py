@@ -55,7 +55,7 @@ class PipelineManager:
 
     def _load_pipelines(self):
         # TODO: refactor
-        # pylint: disable=R0912
+        # pylint: disable=R0912,R1702
 
         self.pipeline_types = self._import_pipeline_types()
         self.logger.info("Loading Pipelines from Config Path {path}".format(
@@ -105,12 +105,16 @@ class PipelineManager:
                                             config)
                                         self.logger.info("Loading Pipeline: {} version: "
                                                          "{} type: {} from {}".format(
-                                                             pipeline, version, config['type'], path))
+                                                             pipeline,
+                                                             version,
+                                                             config['type'],
+                                                             path))
                                     else:
                                         del pipelines[pipeline][version]
                                         self.logger.error("Pipeline %s with type %s not supported",
                                                           pipeline, config['type'])
                             except Exception as error:
+                                del pipelines[pipeline][version]
                                 self.logger.error(
                                     "Failed to Load Pipeline from: {}".format(path))
                                 self.logger.error(
