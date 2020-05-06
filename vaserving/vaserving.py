@@ -146,8 +146,10 @@ class __VAServing:
             try:
                 from vaserving.gstreamer_pipeline import GStreamerPipeline
                 GStreamerPipeline.mainloop_quit()
-            except:
-                pass
+            except Exception as exception:
+                self._logger.warning("Failed in quitting GStreamer main loop: %s",
+                                     exception)
+
         self._stopped = True
 
     def pipeline_instances(self):

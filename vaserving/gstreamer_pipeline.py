@@ -316,7 +316,7 @@ class GStreamerPipeline(Pipeline):
             self.template, [], self.request)
 
         with(self._create_delete_lock):
-            if (self.state.stopped()):
+            if (self.start_time is not None):
                 return
 
             logger.debug("Starting Pipeline {id}".format(id=self.identifier))
