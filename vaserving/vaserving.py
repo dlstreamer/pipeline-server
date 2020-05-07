@@ -55,13 +55,11 @@ class __VAServing:
 
         def status(self):
 
-            print(self._instance, flush=True)
             if (self._instance):
                 result = self._vaserving.pipeline_manager.get_instance_status(self.name(),
                                                                               self.version(),
                                                                               self._instance)
 
-                print(result, flush=True)
                 if 'avg_pipeline_latency' not in result:
                     result['avg_pipeline_latency'] = None
 
@@ -107,20 +105,34 @@ class __VAServing:
         self.pipeline_manager = None
         self._stopped = True
 
+    def _log_options(self):
+        heading = "Options for {}".format(os.path.basename(__file__))
+        banner = "="*len(heading)
+        self._logger.info(banner)
+        self._logger.info(heading)
+        self._logger.info(banner)
+        for arg in vars(self.options):
+            self._logger.info("{} == {}".format(arg, getattr(self.options, arg)))
+        self._logger.info(banner)
+
     def start(self, _options=None):
         #pylint: disable=C0330
         if (self._stopped):
             self.options = parse_options(_options)
             settings.set_log_level(self.options.log_level)
-            self.model_manager = ModelManager(os.path.abspath(
-                os.path.join(self.options.config_path,
-                             self.options.model_dir)),
-                self.options.network_preference)
+            self._log_options()
+            self.model_manager = ModelManager(
+                os.path.abspath(
+                    os.path.join(self.options.config_path,
+                                 self.options.model_dir)),
+                self.options.network_preference,
+                self.options.ignore_init_errors)
 
             self.pipeline_manager = PipelineManager(
                 self.model_manager,
                 os.path.abspath(os.path.join(self.options.config_path,
-                                             self.options.pipeline_dir)))
+                                             self.options.pipeline_dir)),
+                ignore_init_errors=self.options.ignore_init_errors)
             self._stopped = False
 
     def __del__(self):
@@ -130,7 +142,6 @@ class __VAServing:
         for instance in self.pipeline_instances():
             status = instance.status()
             while (not status.state.stopped()):
-                print(status, flush=True)
                 time.sleep(1)
                 status = instance.status()
 
@@ -142,7 +153,7 @@ class __VAServing:
                 while (not instance.status().state.stopped()):
                     time.sleep(1)
 
-        if (self.options) and (self.options.framework == "gstreamer"):
+        if (self.options) and (self.options.framework == "gstreamer") and (not self._stopped):
             try:
                 from vaserving.gstreamer_pipeline import GStreamerPipeline
                 GStreamerPipeline.mainloop_quit()

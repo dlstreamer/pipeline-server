@@ -6,6 +6,7 @@
 import os
 import argparse
 import json
+import distutils.util
 
 
 def parse_options(args=None):
@@ -34,6 +35,12 @@ def parse_options(args=None):
                         dest="config_path",
                         default=os.getenv('CONFIG_PATH',
                                           os.path.join(os.path.dirname(__file__) + "/..")))
+    parser.add_argument("--ignore_init_errors",
+                        dest="ignore_init_errors",
+                        action="store",
+                        type=lambda x:bool(distutils.util.strtobool(x)),
+                        default=os.getenv('IGNORE_INIT_ERRORS',False))
+
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
