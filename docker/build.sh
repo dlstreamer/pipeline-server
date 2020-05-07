@@ -10,13 +10,19 @@ BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
 USER_BASE_BUILD_ARGS=
-MODELS=
+MODELS=models
 PIPELINES=
 FRAMEWORK=
 TAG=
 RUN_PREFIX=
-CREATE_SERVICE=
+CREATE_SERVICE=TRUE
 TARGET="deploy"
+
+DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
+SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
+BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
+BUILD_OPTIONS="--network=host"
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#v1.0.0"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
@@ -28,11 +34,7 @@ DEFAULT_FFMPEG_BASE_BUILD_DOCKERFILE="Dockerfile.source"
 DEFAULT_FFMPEG_BASE_BUILD_TAG="video-analytics-serving-ffmpeg-base"
 DEFAULT_FFMPEG_BASE_BUILD_ARGS=""
 
-DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
-SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
-BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-BUILD_OPTIONS="--network=host"
+
 
 get_options() {
 while :; do
@@ -130,7 +132,12 @@ while :; do
             fi
             ;;
         --create-service)
-            CREATE_SERVICE=TRUE
+            if [ "$2" ]; then
+                CREATE_SERVICE=${2^^}
+                shift
+            else
+                error 'ERROR: "--create-service" requires a non-empty option argument.'
+            fi
             ;;
         --dry-run)
             RUN_PREFIX="echo"
@@ -154,11 +161,22 @@ while :; do
     shift
 done
 
+
+if [ "${MODELS^^}" == "NONE" ]; then
+    MODELS=
+fi
+
 if [ -z "$FRAMEWORK" ]; then
   FRAMEWORK="gstreamer"
 elif [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
   echo "Invalid framework"
   show_help
+fi
+
+if [ -z "$PIPELINES" ]; then
+    PIPELINES=pipelines/$FRAMEWORK
+elif [ "${PIPELINES^^}" == "NONE" ]; then
+    PIPELINES=
 fi
 
 if [ -z "$BASE_IMAGE" ]; then
@@ -213,6 +231,7 @@ show_image_options() {
        echo "   Pipelines: '${PIPELINES}'"
        echo "   Framework: '${FRAMEWORK}'"
        echo "   Target: '${TARGET}'"
+       echo "   Create Service: '${CREATE_SERVICE}'"
        echo ""
 }
 
@@ -220,8 +239,8 @@ show_help() {
   echo "usage: build.sh"
   echo "  [--base base image]"
   echo "  [--framework ffmpeg || gstreamer]"
-  echo "  [--models path to model directory]"
-  echo "  [--pipelines path to pipelines directory]"
+  echo "  [--models path to model directory relative to $SOURCE_DIR or NONE]"
+  echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
   echo "  [--build-arg additional build args to pass to docker build]"
   echo "  [--base-build-arg additional build args to pass to docker build for base image]"
   echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
@@ -233,7 +252,7 @@ show_help() {
 
 error() {
     printf '%s\n' "$1" >&2
-    exit d
+    exit 1
 }
 
 get_options "$@"
