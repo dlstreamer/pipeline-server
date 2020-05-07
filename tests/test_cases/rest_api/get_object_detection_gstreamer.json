@@ -1,8 +1,6 @@
 {
-    "path": "pipelines/object_detection/1",
-    "verb": "get",
     "body": {},
-    "status_code": 200,
+    "path": "pipelines/object_detection/1",
     "result": {
         "description": "Object Detection Pipeline",
         "name": "object_detection",
@@ -38,5 +36,7 @@
         },
         "type": "GStreamer",
         "version": "1"
-    }
+    },
+    "status_code": 200,
+    "verb": "get"
 }
