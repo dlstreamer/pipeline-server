@@ -43,7 +43,7 @@ class ModelsDict(MutableMapping):
 
 class ModelManager:
 
-    def __init__(self, model_dir, network_preference=None):
+    def __init__(self, model_dir, network_preference=None,ignore_init_errors=False):
         self.logger = logging.get_logger('ModelManager', is_static=True)
         self.model_dir = model_dir
         self.network_preference = network_preference
@@ -52,7 +52,11 @@ class ModelManager:
                                    'HDDL': ["FP16"],
                                    'GPU': ["FP16"],
                                    'VPU': ["FP16"]}
-        self.load_models(self.model_dir, network_preference)
+        
+        success = self.load_models(self.model_dir, network_preference)
+        if (not ignore_init_errors) and (not success):       
+            raise Exception("Error Initializing Models")
+        
 
     def _get_model_proc(self, path):
         candidates = fnmatch.filter(os.listdir(path), "*.json")
@@ -111,6 +115,13 @@ class ModelManager:
         #TODO: refactor
         #pylint: disable=R1702
 
+        heading = "Loading Models"
+        banner =  "="*len(heading)
+        self.logger.info(banner)
+        self.logger.info(heading)
+        self.logger.info(banner)
+        error_occurred = False
+     
         self.logger.info("Loading Models from Path {path}".format(
             path=os.path.abspath(self.model_dir)))
         if os.path.islink(self.model_dir):
@@ -157,12 +168,19 @@ class ModelManager:
                                                  model_name, version, "IntelDLDT", network_paths))
 
             except Exception as error:
+                error_occurred = True
                 self.logger.error("Error Loading Model {model_name}"
                                   " from: {model_dir}: {err}".format(
                                       err=error, model_name=model_name, model_dir=model_dir))
 
         self.models = models
-        self.logger.info("Completed Loading Models")
+
+        heading = "Completed Loading Models"
+        banner =  "="*len(heading)
+        self.logger.info(banner)
+        self.logger.info(heading)
+        self.logger.info(banner)
+        return not error_occurred
 
     def get_model_parameters(self, name, version):
         if name not in self.models or version not in self.models[name]:
