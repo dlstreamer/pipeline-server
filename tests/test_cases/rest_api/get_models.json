@@ -1,46 +1,29 @@
 {
-    "path": "models",
-    "verb": "get",
     "body": {},
-    "status_code": 200,
+    "path": "models",
+    "sort_key":"name",
     "result": [
         {
-            "description": "face_detection_adas",
-            "name": "face_detection_adas",
+            "description": "landmarks_regression",
+            "name": "landmarks_regression",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_detection_adas/1/face-detection-adas-0001.json",
+                "model-proc": "/home/video-analytics-serving/models/landmarks_regression/1/landmarks-regression-retail-0009.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_detection_adas/1/FP16/face-detection-adas-0001-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_detection_adas/1/FP32/face-detection-adas-0001.xml",
-                    "INT8": "/home/video-analytics-serving/models/face_detection_adas/1/INT8/face-detection-adas-0001-int8.xml"
+                    "FP16": "/home/video-analytics-serving/models/landmarks_regression/1/FP16/landmarks-regression-retail-0009-fp16.xml",
+                    "FP32": "/home/video-analytics-serving/models/landmarks_regression/1/FP32/landmarks-regression-retail-0009.xml"
                 }
             },
             "type": "IntelDLDT",
             "version": 1
         },
         {
-            "description": "face_detection_retail",
-            "name": "face_detection_retail",
+            "description": "face_reidentification",
+            "name": "face_reidentification",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json",
+                "model-proc": "/home/video-analytics-serving/models/face_reidentification/1/face-reidentification-retail-0095.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml",
-                    "INT8": "/home/video-analytics-serving/models/face_detection_retail/1/INT8/face-detection-retail-0004-int8.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": 1
-        },
-        {
-            "description": "object_detection",
-            "name": "object_detection",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml",
-                    "INT8": "/home/video-analytics-serving/models/object_detection/1/INT8/mobilenet-ssd-int8.xml"
+                    "FP16": "/home/video-analytics-serving/models/face_reidentification/1/FP16/face-reidentification-retail-0095-fp16.xml",
+                    "FP32": "/home/video-analytics-serving/models/face_reidentification/1/FP32/face-reidentification-retail-0095.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -61,30 +44,48 @@
             "version": 1
         },
         {
-            "description": "face_reidentification",
-            "name": "face_reidentification",
+            "description": "object_detection",
+            "name": "object_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_reidentification/1/face-reidentification-retail-0095.json",
+                "model-proc": "/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_reidentification/1/FP16/face-reidentification-retail-0095-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_reidentification/1/FP32/face-reidentification-retail-0095.xml"
+                    "FP16": "/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd-fp16.xml",
+                    "FP32": "/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml",
+                    "INT8": "/home/video-analytics-serving/models/object_detection/1/INT8/mobilenet-ssd-int8.xml"
                 }
             },
             "type": "IntelDLDT",
             "version": 1
         },
         {
-            "description": "landmarks_regression",
-            "name": "landmarks_regression",
+            "description": "face_detection_retail",
+            "name": "face_detection_retail",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/landmarks_regression/1/landmarks-regression-retail-0009.json",
+                "model-proc": "/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/landmarks_regression/1/FP16/landmarks-regression-retail-0009-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/landmarks_regression/1/FP32/landmarks-regression-retail-0009.xml"
+                    "FP16": "/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004-fp16.xml",
+                    "FP32": "/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml",
+                    "INT8": "/home/video-analytics-serving/models/face_detection_retail/1/INT8/face-detection-retail-0004-int8.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
+        },
+        {
+            "description": "face_detection_adas",
+            "name": "face_detection_adas",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/face_detection_adas/1/face-detection-adas-0001.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/face_detection_adas/1/FP16/face-detection-adas-0001-fp16.xml",
+                    "FP32": "/home/video-analytics-serving/models/face_detection_adas/1/FP32/face-detection-adas-0001.xml",
+                    "INT8": "/home/video-analytics-serving/models/face_detection_adas/1/INT8/face-detection-adas-0001-int8.xml"
                 }
             },
             "type": "IntelDLDT",
             "version": 1
         }
-    ]
+    ],
+    "status_code": 200,
+    "verb": "get"
 }

@@ -3,6 +3,7 @@
     "verb": "get",
     "body": {},
     "status_code": 200,
+    "sort_key":"name",
     "result": [
         {
             "description": "Object Detection",

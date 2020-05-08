@@ -17,7 +17,7 @@ import vaserving.schema as schema
 
 class PipelineManager:
 
-    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1):
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1,ignore_init_errors=False):
         self.max_running_pipelines = max_running_pipelines
         self.model_manager = model_manager
         self.running_pipelines = 0
@@ -29,7 +29,10 @@ class PipelineManager:
         self.pipeline_queue = deque()
         self.pipeline_dir = pipeline_dir
         self.logger = logging.get_logger('PipelineManager', is_static=True)
-        self._load_pipelines()
+        success = self._load_pipelines()
+        if (not ignore_init_errors) and (not success):       
+            raise Exception("Error Initializing Pipelines")
+
 
     def _import_pipeline_types(self):
         pipeline_types = {}
@@ -57,6 +60,13 @@ class PipelineManager:
         # TODO: refactor
         # pylint: disable=R0912,R1702
 
+        heading = "Loading Pipelines"
+        banner =  "="*len(heading)
+        self.logger.info(banner)
+        self.logger.info(heading)
+        self.logger.info(banner)
+
+        error_occurred = False
         self.pipeline_types = self._import_pipeline_types()
         self.logger.info("Loading Pipelines from Config Path {path}".format(
             path=self.pipeline_dir))
@@ -113,6 +123,8 @@ class PipelineManager:
                                         del pipelines[pipeline][version]
                                         self.logger.error("Pipeline %s with type %s not supported",
                                                           pipeline, config['type'])
+                                        error_occurred = True
+                                        
                             except Exception as error:
                                 del pipelines[pipeline][version]
                                 self.logger.error(
@@ -120,12 +132,19 @@ class PipelineManager:
                                 self.logger.error(
                                     "Exception: {}".format(error))
                                 self.logger.error(traceback.format_exc())
+                                error_occurred = True
 
         # Remove pipelines with no valid versions
-        pipelines = {model: versions for model,
+        pipelines = {pipeline: versions for pipeline,
                      versions in pipelines.items() if len(versions) > 0}
         self.pipelines = pipelines
-        self.logger.info("Completed Loading Pipelines")
+        
+        heading = "Completed Loading Pipelines"
+        banner =  "="*len(heading)
+        self.logger.info(banner)
+        self.logger.info(heading)
+        self.logger.info(banner)
+        return not error_occurred
 
     def get_loaded_pipelines(self):
         results = []

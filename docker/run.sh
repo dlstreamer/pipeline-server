@@ -49,7 +49,7 @@ while :; do
             ;;
         --models)
            if [ "$2" ]; then
-                MODELS=$2
+                MODELS=$(realpath $2)
                 shift
             else
                 error 'ERROR: "--models" requires a non-empty option argument.'

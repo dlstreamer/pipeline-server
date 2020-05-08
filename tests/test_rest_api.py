@@ -7,15 +7,9 @@
 import os
 import json
 import requests
-from collections import namedtuple
 import pytest
 import urllib
 
-#        launch_response = requests.post(
- #           pipeline_url, json=request, timeout=TIMEOUT)
-  #      if launch_response.status_code == 200:
-   #         instance_id = int(launch_response.text)
-    #        return instance_id
 
 TIMEOUT = 30
 
@@ -39,5 +33,21 @@ def test_rest_api(service,test_case,test_filename,generate):
             json.dump(test_case,test_output, indent=4)
     else:
         assert test_case["status_code"]==response.status_code, "Status Code Mismatch"
-        assert test_case["result"]==json.loads(response.text), "Response Text Mismatch"
+
+        comparison = json.loads(response.text)
+        expected = test_case["result"]
+
+        assert type(comparison)==type(expected), "Response Type Mismatch"
+        
+        if (isinstance(expected,list)):
+            if ('sort_key' in test_case):
+                sort_key = test_case['sort_key']
+                expected = sorted(expected,key=lambda x:x[sort_key])
+                comparison = sorted(comparison,key=lambda x:x[sort_key])
+                
+            else:
+                expected = sorted(expected)
+                comparison = sorted(comparison)
+                
+        assert expected==comparison, "Response Value Mismatch"
 
