@@ -49,5 +49,5 @@ def test_rest_api(service,test_case,test_filename,generate):
                 expected = sorted(expected)
                 comparison = sorted(comparison)
                 
-        assert expected==comparison, "Response Value Mismatch"
+        assert comparison==expected, "Response Value Mismatch"
 
