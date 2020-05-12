@@ -97,9 +97,11 @@ class PipelineManager:
                                 with open(path, 'r') as jsonfile:
                                     config = json.load(jsonfile)
                                     if ('type' not in config) or ('description' not in config):
-                                        self.logger.warning(
-                                            "Skipping loading of pipeline %s"
-                                            " because of missing type or description", pipeline)
+                                        del pipelines[pipeline][version]
+                                        self.logger.error(
+                                            "Pipeline %s"
+                                            " is missing type or description", pipeline)
+                                        error_occurred = True
                                         continue
                                     if "template" in config:
                                         if isinstance(config["template"], list):

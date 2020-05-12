@@ -138,6 +138,10 @@ class ModelManager:
         for model_name in os.listdir(model_dir):
             try:
                 model_path = os.path.join(model_dir, model_name)
+
+                if (not os.path.isdir(model_path)):
+                    continue
+
                 for version in os.listdir(model_path):
                     version_path = os.path.join(model_path, version)
                     if (os.path.isdir(version_path)):
