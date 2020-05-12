@@ -1,3 +1,9 @@
+'''
+* Copyright (C) 2019 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+'''
+
 import pytest
 import subprocess
 import json
@@ -7,6 +13,7 @@ import requests
 from collections import namedtuple
 import os
 import sys
+from vaserving.vaserving import VAServing as _VAServing
 
 TIMEOUT=30
 MAX_CONNECTION_ATTEMPTS = 5
@@ -75,11 +82,11 @@ def pytest_addoption(parser):
     parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg','gstreamer'],default=os.environ["FRAMEWORK"])
 
 
-def load_rest_api_test_cases(metafunc):
-
+def load_test_cases(metafunc,directory):
+    
     known_frameworks = ['ffmpeg','gstreamer']
     
-    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"test_cases","rest_api")
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"test_cases",directory)
 
     filenames = [(os.path.abspath(os.path.join(dir_path,fn)),os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
                  if os.path.isfile(os.path.join(dir_path,fn)) and os.path.splitext(fn)[1]=='.json']
@@ -98,20 +105,27 @@ def load_rest_api_test_cases(metafunc):
             with open(filepath) as json_file:
                 test_cases.append((json.load(json_file),filepath,generate))
                 test_names.append(testname)
-        except:
-            pass
-        
+        except Exception as error:
+            print(error)
+            assert False, "Error Reading Test Case"
     return (test_cases,test_names)
-        
-def pytest_generate_tests(metafunc):
 
-    test_cases,test_names = load_rest_api_test_cases(metafunc)
+def pytest_generate_tests(metafunc):
     if ("rest_api" in metafunc.function.__name__):
+        test_cases,test_names = load_test_cases(metafunc,"rest_api")
         metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
-    
+    if ("initialization" in metafunc.function.__name__):
+        test_cases,test_names = load_test_cases(metafunc,"initialization")
+        metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
+        
     print(metafunc.fixturenames)
     print(metafunc.function,flush=True)
 
+@pytest.fixture()
+def VAServing(request):
+    _VAServing.stop()
+    return _VAServing
+    
 @pytest.fixture(scope="session")
 def service(request):
     proxy = VAServingService()
