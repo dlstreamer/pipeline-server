@@ -1,6 +1,4 @@
 {
-    "name": "emotion_recognition",
-    "version": 1,
     "type": "FFmpeg",
     "template": [
         "-i \"{source[uri]}\" ",

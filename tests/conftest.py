@@ -80,7 +80,11 @@ class VAServingService:
 def pytest_addoption(parser):
     parser.addoption("--generate", action="store_true", help="generate expected results", default=False)
     parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg','gstreamer'],default=os.environ["FRAMEWORK"])
+    parser.addoption("--numerical_tolerance", help="percentage numerical difference to tolerate", type=float, default=0.0001)
 
+@pytest.fixture
+def numerical_tolerance(request):
+    return request.config.getoption("--numerical_tolerance")
 
 def load_test_cases(metafunc,directory):
     
@@ -117,6 +121,10 @@ def pytest_generate_tests(metafunc):
     if ("initialization" in metafunc.function.__name__):
         test_cases,test_names = load_test_cases(metafunc,"initialization")
         metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
+    if ("execution" in metafunc.function.__name__):
+        test_cases,test_names = load_test_cases(metafunc,"pipeline_execution")
+        metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
+
         
     print(metafunc.fixturenames)
     print(metafunc.function,flush=True)
@@ -124,7 +132,8 @@ def pytest_generate_tests(metafunc):
 @pytest.fixture()
 def VAServing(request):
     _VAServing.stop()
-    return _VAServing
+    yield _VAServing
+    _VAServing.stop()
     
 @pytest.fixture(scope="session")
 def service(request):

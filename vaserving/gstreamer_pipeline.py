@@ -45,7 +45,6 @@ class GStreamerPipeline(Pipeline):
             GStreamerPipeline._mainloop.run()
         except KeyboardInterrupt:
             pass
-        print("exiting")
 
     def __init__(self, identifier, config, model_manager, request, finished_callback):
         # TODO: refactor as abstract interface
