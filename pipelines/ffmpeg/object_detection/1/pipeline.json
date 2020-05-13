@@ -1,6 +1,4 @@
 {
-    "name": "object_detection",
-    "version": 1,
     "type": "FFmpeg",
     "template": [
         "-i \"{source[uri]}\" ",

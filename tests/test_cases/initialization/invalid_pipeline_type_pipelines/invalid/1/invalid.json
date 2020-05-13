@@ -1,5 +1,5 @@
 {
-    "type":"_NOT_GStreamer_",
+    "type":"_invalid_",
     "description":"Identity",
     "template":"identity ! identity"
 }
