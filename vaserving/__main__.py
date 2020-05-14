@@ -24,14 +24,14 @@ def main(options):
         app.run(server='tornado', port=options.port)
     except Exception as error:
         logger.error("Error Starting Tornado Server")
-        
+
 
 if __name__ == '__main__':
 
     try:
         VAServing.start()
     except Exception as error:
-        logger.error("Error Starting VA Serving: %s",error)
+        logger.error("Error Starting VA Serving: %s", error)
         sys.exit(1)
 
     thread = Thread(target=main, args=[VAServing.options])

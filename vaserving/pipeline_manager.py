@@ -17,7 +17,7 @@ import vaserving.schema as schema
 
 class PipelineManager:
 
-    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1,ignore_init_errors=False):
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1, ignore_init_errors=False):
         self.max_running_pipelines = max_running_pipelines
         self.model_manager = model_manager
         self.running_pipelines = 0
@@ -30,7 +30,7 @@ class PipelineManager:
         self.pipeline_dir = pipeline_dir
         self.logger = logging.get_logger('PipelineManager', is_static=True)
         success = self._load_pipelines()
-        if (not ignore_init_errors) and (not success):       
+        if (not ignore_init_errors) and (not success):
             raise Exception("Error Initializing Pipelines")
 
 
@@ -61,7 +61,7 @@ class PipelineManager:
         # pylint: disable=R0912,R1702
 
         heading = "Loading Pipelines"
-        banner =  "="*len(heading)
+        banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)
@@ -126,7 +126,7 @@ class PipelineManager:
                                         self.logger.error("Pipeline %s with type %s not supported",
                                                           pipeline, config['type'])
                                         error_occurred = True
-                                        
+
                             except Exception as error:
                                 del pipelines[pipeline][version]
                                 self.logger.error(
@@ -140,9 +140,9 @@ class PipelineManager:
         pipelines = {pipeline: versions for pipeline,
                      versions in pipelines.items() if len(versions) > 0}
         self.pipelines = pipelines
-        
+
         heading = "Completed Loading Pipelines"
-        banner =  "="*len(heading)
+        banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)
