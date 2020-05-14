@@ -11,8 +11,8 @@ from collections import namedtuple
 import pytest
 import urllib
 
-def test_initialization(VAServing,test_case,test_filename,generate):
-    
+def test_initialization(VAServing, test_case, test_filename, generate):
+
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
 
     test_model_dir = os.path.join(os.path.dirname(test_filename),
@@ -20,9 +20,9 @@ def test_initialization(VAServing,test_case,test_filename,generate):
 
     test_pipeline_dir = os.path.join(os.path.dirname(test_filename),
                                    "{0}_pipelines".format(test_prefix))
- 
-    if ("model_dir" not in test_case["options"]):
-        if (os.path.isdir(test_model_dir)):
+
+    if "model_dir" not in test_case["options"]:
+        if os.path.isdir(test_model_dir):
             test_case["options"]["model_dir"] = test_model_dir
 
     if ("pipeline_dir" not in test_case["options"]):
@@ -35,8 +35,8 @@ def test_initialization(VAServing,test_case,test_filename,generate):
             exception_class = globals()[test_case["exception"]["type"]]
         elif (test_case["exception"]["type"] in __builtins__):
             exception_class = __builtins__[test_case["exception"]["type"]]
-        
-        with pytest.raises(exception_class) as exception:            
+
+        with pytest.raises(exception_class) as exception:
             VAServing.start(test_case["options"])
 
         if("value" in test_case["exception"]):
@@ -45,4 +45,4 @@ def test_initialization(VAServing,test_case,test_filename,generate):
         VAServing.start(test_case["options"])
 
     VAServing.stop()
-    
+
