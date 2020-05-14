@@ -37,7 +37,7 @@ Video Analytics Serving may be modified to co-exist in a container alongside oth
 To get started, build the service as a standalone component execute the following command
 
 ```bash
-./build.sh
+./docker/build.sh
 ```
 
 ### Running
@@ -45,7 +45,7 @@ To get started, build the service as a standalone component execute the followin
 After a successful build, run the service using the included script
 
 ```bash
-./run.sh
+./docker/run.sh -v /tmp:/tmp
 ```
 
 This script issues a standard docker run command to launch the container. Volume mounting is used to publish the sample results to your host.
@@ -63,11 +63,11 @@ Video Analytics Serving includes two [sample](pipelines) analytics pipelines for
 
 With the service running, initiate a request to start a pipeline using the following commands.
 ```bash
-(1) curl localhost:8080/pipelines/object_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"stream"}}'
+(1) curl localhost:8080/pipelines/object_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
 
 (2) tail -f /tmp/results.txt
 ```
-Note: /tmp/results.txt cannot exist prior to running the curl command. The pipeline will not overwrite existing files and therefore will not run if it exists.
+
 ### Sample Result
 ```json
 {"objects":[{"detection":{"bounding_box":{"x_max":0.8810903429985046,"x_min":0.77934330701828,"y_max":0.8930767178535461,"y_min":0.3040514588356018},"confidence":0.5735679268836975,"label":"bottle","label_id":5},"h":213,"roi_type":"bottle","w":65,"x":499,"y":109}],"resolution":{"height":360,"width":640},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true","timestamp":972067039}

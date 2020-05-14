@@ -21,30 +21,15 @@ SLEEP_FOR_STATUS = 0.5
 
 REQUEST_TEMPLATE = {
     "source": {
-        "uri": "file:///home/video-analytics-serving/samples/pinwheel.ts",
+        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
         "type": "uri"
     },
     "destination": {
-        "path": "/home/video-analytics-serving/samples/results.txt",
+        "path": "/tmp/results.txt",
         "type": "file",
         "format": "json-lines"
     }
 }
-
-
-def supported_pipeline(string):
-    """Validates input for pipeline argument"""
-    return string
-
-
-def supported_source(string):
-    """Validates input for source argument for concerns such as unexpected symlink"""
-    return string
-
-
-def supported_destination(string):
-    """Validates input for destination argument for concerns such as unexpected symlink"""
-    return string
 
 
 def get_options():
@@ -52,15 +37,13 @@ def get_options():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--pipeline", action="store", dest="pipeline",
-                        type=supported_pipeline, default="object_detection",
+                        default="object_detection",
                         help="One of the supported pipelines you want to launch; "
                              "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
-                        type=supported_source,
                         default=REQUEST_TEMPLATE['source']['uri'],
                         help="Location of the content to play/analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
-                        type=supported_destination,
                         default=REQUEST_TEMPLATE['destination']['path'],
                         help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
