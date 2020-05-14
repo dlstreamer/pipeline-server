@@ -1,6 +1,13 @@
-
+#!/bin/bash
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
+OUTPUT_FILE=${1:-pylint.results.txt}
 
-rm -rf pylint.results.json
-python3 -m pylint ${SOURCE_DIR}/**/*.py --reports=y --output-format=json --score=y  --exit-zero >>pylint.results.json
+pylint --version
+
+# Enable Recursion into Subdirectories
+shopt -s globstar
+rm -rf $SOURCE_DIR/tests/$OUTPUT_FILE
+echo "Processing source files in $SOURCE_DIR. Results will output to: $SOURCE_DIR/tests/$OUTPUT_FILE"
+python3 -m pylint ${SOURCE_DIR}/**/*.py --reports=y --output-format=text --score=y --exit-zero >> $SOURCE_DIR/tests/$OUTPUT_FILE
+shopt -u globstar
