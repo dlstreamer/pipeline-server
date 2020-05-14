@@ -1,0 +1,10 @@
+ARG base_name=video_analytics_serving_gstreamer_base
+
+FROM ${base_name}
+
+COPY  ./<your_application_executable> /home/video-analytics/
+COPY   docker-entrypoint.sh /home/video-analytics/
+
+WORKDIR /home/video-analytics
+
+ENTRYPOINT ["./docker-entrypoint.sh","--pipeline_dir", "/pipelines","--model_dir", "/models"]
