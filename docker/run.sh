@@ -23,6 +23,7 @@ DEVICES=
 DEFAULT_GSTREAMER_IMAGE="video-analytics-serving-gstreamer"
 DEFAULT_FFMPEG_IMAGE="video-analytics-serving-ffmpeg"
 ENTRYPOINT=
+ENTRYPOINT_ARGS=
 PRIVILEGED=
 NETWORK=
 USER=
@@ -85,6 +86,14 @@ while :; do
                 shift
             else
                 error 'ERROR: "-e" requires a non-empty option argument.'
+            fi
+            ;;
+        --entrypoint-args)
+           if [ "$2" ]; then
+                ENTRYPOINT_ARGS+="$2 "
+                shift
+            else
+                error 'ERROR: "--entrypoint-args" requires a non-empty option argument.'
             fi
             ;;
         -p)
@@ -157,7 +166,8 @@ if [ -z "$IMAGE" ]; then
 fi
 
 if [ -z "$NAME" ]; then
- NAME=$IMAGE
+ # Convert tag separator if exists
+ NAME=${IMAGE//[\:]/_}
 fi
 
 }
@@ -175,6 +185,7 @@ show_options() {
        echo "   Name: '${NAME}'"
        echo "   Network: '${NETWORK}'"
        echo "   Entrypoint: '${ENTRYPOINT}'"
+       echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}"
        echo "   User: '${USER}'"
        echo ""
 }
@@ -187,6 +198,7 @@ show_help() {
   echo "  [--pipelines path to pipelines directory]"
   echo "  [-v additional volume mount to pass to docker run]"
   echo "  [-e additional environment to pass to docker run"
+  echo "  [--entrypoint-args additional parameters to pass to entrypoint in docker run"
   echo "  [-p additional ports to pass to docker run"
   echo "  [--network to pass to docker run"
   echo "  [--user to pass to docker run"
@@ -236,5 +248,5 @@ fi
 show_options
 
 set -x
-docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE
+docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
 { set +x; } 2>/dev/null
