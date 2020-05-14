@@ -19,7 +19,7 @@ RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 # Copy tests and sample files
 COPY tests/ /home/video-analytics-serving/tests/
 COPY samples/ /home/video-analytics-serving/samples/
-
+COPY .pylintrc /home/video-analytics-serving/
 
 ARG USER=vaserving
 
