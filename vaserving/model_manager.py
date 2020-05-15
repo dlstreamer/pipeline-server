@@ -43,7 +43,7 @@ class ModelsDict(MutableMapping):
 
 class ModelManager:
 
-    def __init__(self, model_dir, network_preference=None,ignore_init_errors=False):
+    def __init__(self, model_dir, network_preference=None, ignore_init_errors=False):
         self.logger = logging.get_logger('ModelManager', is_static=True)
         self.model_dir = model_dir
         self.network_preference = network_preference
@@ -52,11 +52,11 @@ class ModelManager:
                                    'HDDL': ["FP16"],
                                    'GPU': ["FP16"],
                                    'VPU': ["FP16"]}
-        
+
         success = self.load_models(self.model_dir, network_preference)
-        if (not ignore_init_errors) and (not success):       
+        if (not ignore_init_errors) and (not success):
             raise Exception("Error Initializing Models")
-        
+
 
     def _get_model_proc(self, path):
         candidates = fnmatch.filter(os.listdir(path), "*.json")
@@ -116,12 +116,12 @@ class ModelManager:
         #pylint: disable=R1702
 
         heading = "Loading Models"
-        banner =  "="*len(heading)
+        banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)
         error_occurred = False
-     
+
         self.logger.info("Loading Models from Path {path}".format(
             path=os.path.abspath(self.model_dir)))
         if os.path.islink(self.model_dir):
@@ -180,7 +180,7 @@ class ModelManager:
         self.models = models
 
         heading = "Completed Loading Models"
-        banner =  "="*len(heading)
+        banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)

@@ -38,8 +38,8 @@ def parse_options(args=None):
     parser.add_argument("--ignore_init_errors",
                         dest="ignore_init_errors",
                         action="store",
-                        type=lambda x:bool(distutils.util.strtobool(x)),
-                        default=os.getenv('IGNORE_INIT_ERRORS',False))
+                        type=lambda x: bool(distutils.util.strtobool(x)),
+                        default=os.getenv('IGNORE_INIT_ERRORS', False))
 
 
     if (isinstance(args, dict)):

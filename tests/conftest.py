@@ -15,11 +15,11 @@ import os
 import sys
 from vaserving.vaserving import VAServing as _VAServing
 
-TIMEOUT=30
+TIMEOUT = 30
 MAX_CONNECTION_ATTEMPTS = 5
 class VAServingService:
 
-    VASERVING_ARGS=["python3", "-m","vaserving"]
+    VASERVING_ARGS = ["python3", "-m", "vaserving"]
 
     def __del__(self):
         if (self._process):
@@ -29,8 +29,8 @@ class VAServingService:
         for proc in psutil.process_iter():
             if "vaserving" in proc.cmdline():
                 proc.kill()
-            
-    def __init__(self):    
+
+    def __init__(self):
 
         self.kill_all()
         self.host = "http://localhost:8080"
@@ -40,7 +40,7 @@ class VAServingService:
                                          stderr=subprocess.PIPE,
                                          bufsize=1,
                                          universal_newlines=True)
-       
+
         self._process.poll()
         while self._process.returncode is None:
             next_line = self._process.stderr.readline()
@@ -49,15 +49,15 @@ class VAServingService:
                     message = json.loads(next_line)
                     if message["levelname"] == "ERROR":
                         raise Exception(next_line)
-                    
+
                     if message["message"] == "Starting Tornado Server on port: 8080":
                         attempts = MAX_CONNECTION_ATTEMPTS
                         while (attempts):
                             try:
-                                result = requests.get("http://localhost:8080",timeout=TIMEOUT)
+                                result = requests.get("http://localhost:8080", timeout=TIMEOUT)
                             except requests.ConnectionError as error:
                                 time.sleep(1)
-                                attempts-=1
+                                attempts -= 1
                             else:
                                 return
                         raise Exception("VA Serving Not Launched")
@@ -68,76 +68,74 @@ class VAServingService:
                 raise
 
             self._process.poll()
-            
+
         if self._process.returncode != 0:
             assert False
 
-            
+
     def get_models():
         pass
 
 
 def pytest_addoption(parser):
     parser.addoption("--generate", action="store_true", help="generate expected results", default=False)
-    parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg','gstreamer'],default=os.environ["FRAMEWORK"])
+    parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg', 'gstreamer'], default=os.environ["FRAMEWORK"])
     parser.addoption("--numerical_tolerance", help="percentage numerical difference to tolerate", type=float, default=0.0001)
 
 @pytest.fixture
 def numerical_tolerance(request):
     return request.config.getoption("--numerical_tolerance")
 
-def load_test_cases(metafunc,directory):
-    
-    known_frameworks = ['ffmpeg','gstreamer']
-    
-    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"test_cases",directory)
+def load_test_cases(metafunc, directory):
 
-    filenames = [(os.path.abspath(os.path.join(dir_path,fn)),os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
-                 if os.path.isfile(os.path.join(dir_path,fn)) and os.path.splitext(fn)[1]=='.json']
+    known_frameworks = ['ffmpeg', 'gstreamer']
+
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test_cases", directory)
+
+    filenames = [(os.path.abspath(os.path.join(dir_path, fn)), os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
+                 if os.path.isfile(os.path.join(dir_path, fn)) and os.path.splitext(fn)[1] == '.json']
 
     framework = metafunc.config.getoption("framework")
 
-    filenames = [ filename for filename in filenames
+    filenames = [filename for filename in filenames
                   if filename[1].split('_')[-1] == framework or
                   filename[1].split('_')[-1] not in known_frameworks]
 
     test_cases = []
     test_names = []
     generate = metafunc.config.getoption("generate")
-    for filepath,testname in filenames:
+    for filepath, testname in filenames:
         try:
             with open(filepath) as json_file:
-                test_cases.append((json.load(json_file),filepath,generate))
+                test_cases.append((json.load(json_file), filepath, generate))
                 test_names.append(testname)
         except Exception as error:
             print(error)
             assert False, "Error Reading Test Case"
-    return (test_cases,test_names)
+    return (test_cases, test_names)
 
 def pytest_generate_tests(metafunc):
-    if ("rest_api" in metafunc.function.__name__):
-        test_cases,test_names = load_test_cases(metafunc,"rest_api")
-        metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
-    if ("initialization" in metafunc.function.__name__):
-        test_cases,test_names = load_test_cases(metafunc,"initialization")
-        metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
-    if ("execution" in metafunc.function.__name__):
-        test_cases,test_names = load_test_cases(metafunc,"pipeline_execution")
-        metafunc.parametrize("test_case,test_filename,generate",test_cases,ids=test_names)
+    if "rest_api" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "rest_api")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "initialization" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "initialization")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "execution" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "pipeline_execution")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 
-        
     print(metafunc.fixturenames)
-    print(metafunc.function,flush=True)
+    print(metafunc.function, flush=True)
 
 @pytest.fixture()
 def VAServing(request):
     _VAServing.stop()
     yield _VAServing
     _VAServing.stop()
-    
+
 @pytest.fixture(scope="session")
 def service(request):
     proxy = VAServingService()
     yield proxy
     del proxy
-        
