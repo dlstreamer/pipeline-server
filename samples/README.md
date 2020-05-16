@@ -1,42 +1,42 @@
-# Using Video Analytics Serving Samples
+# Using Video Analytics Serving Sample Client
 
-These steps walk you through how to launch the sample application that is included within the built docker image. We show steps for using the GStreamer based image, but you will find that altering to run for FFmpeg is very similar.
+These steps walk you through how to launch the sample client that is included in the repository to exercise the VA Serving REST-API. 
 
 1. Open two terminal windows.
 
 In terminal window 1:
 
-  2. Build the latest sources:
+  2. Build the service container with sample pipelines:
      ```
-     ~/video-analytics-serving$ ./build.sh gstreamer
+     ~/video-analytics-serving$ ./docker/build.sh
      ```
 
-  3. Run the container. This launches the Video Analytics Serving service with GStreamer support:
+  3. Run the container with the temp folder volume mounted to capture results.
      ```
-     ~/video-analytics-serving$ ./run.sh gstreamer
+     ~/video-analytics-serving$ ./docker/run.sh -v /tmp:/tmp --name vaserving
      ```
 
 In terminal window 2:
 
-  4. Launch an interactive session to explore the sample application already located in the same container we ran in step 3:
+  4. Launch a second container as an interactive session with the sample application volume mounted into the image (this is handled automatically by the run.sh script when given the --dev flag)
      ```
-     ~/video-analytics-serving$ docker exec -it -e http_proxy=$http_proxy -e https_proxy=$https_proxy -e no_proxy=$no_proxy -e FRAMEWORK=gstreamer video_analytics_serving_gstreamer /bin/bash
-     ```
-
-  5. Invoke the sample Python application.
-     ```
-     # cd /home/video-analytics/samples
-     # python3 sample.py
+     ~/video-analytics-serving$ ./docker/run.sh --dev --name vaclient
      ```
 
-  6. Review the produced inferences. By default, these are saved to ./results.txt.
+  5. Invoke the sample python application
+  
      ```
-     # more ./results.txt
+     # ./samples/sample.py --quiet
      ```
 
-  7. Run with multiple retries to calculate performance on your system:
+  6. Review the produced inferences. By default, these are saved to /tmp/results.txt.
      ```
-     # ./sample.py --retries 3
+     # tail /tmp/results.txt
+     ```
+
+  7. Run the pipeline multiple times to see runtime statistics on your system:
+     ```
+     # ./samples/sample.py --quiet --repeat 3 
      ```
 
      This time you will notice that the sample outputs calculated statistics upon completion. Ex:
@@ -61,11 +61,11 @@ In terminal window 2:
 
   8. Explore running new pipelines, passing other sources, destination targets, and other options described in sample.py.
      ```
-     # ./sample.py --help
+     # ./samples/sample.py --help
      ```
 
-  9. Stop the container by typing `exit` and running the `stop.sh` script. Notice that this stops activities in both terminal windows.
-     ```
-     # exit
-     $ ./stop.sh gstreamer
-     ```
+  9. Exit the interactive session and stop the service contianer.
+  ```
+	 # exit
+	 # docker kill vaserving
+  ```

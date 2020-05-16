@@ -1,30 +1,28 @@
 {
-    "name": "emotion_recognition",
-    "version": 1,
-    "type": "GStreamer",
-    "template":"urisourcebin name=\"source\" ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=\"videoconvert\" ! gvadetect model=\"{models[face_detection_retail][1][network]}\" model-proc=\"{models[face_detection_retail][1][proc]}\" name=\"detection\" ! queue ! gvaclassify model=\"{models[emotion_recognition][1][network]}\" model-proc=\"{models[emotion_recognition][1][proc]}\" name=\"classification\" ! queue ! gvametaconvert converter=json method=detection name=\"metaconvert\" ! queue ! gvametapublish name=\"destination\" ! appsink name=appsink",
-    "description": "Emotion Recognition Pipeline",
-    "parameters": {
-		"type" : "object",
-		"properties" : {
-			"every-nth-frame": {
-				"element":"detection",
+	"type": "GStreamer",
+	"template": "urisourcebin name=\"source\" ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=\"videoconvert\" ! gvadetect model=\"{models[face_detection_retail][1][network]}\" model-proc=\"{models[face_detection_retail][1][proc]}\" name=\"detection\" ! queue ! gvaclassify model=\"{models[emotion_recognition][1][network]}\" model-proc=\"{models[emotion_recognition][1][proc]}\" name=\"classification\" ! queue ! gvametaconvert name=\"metaconvert\" ! queue ! gvametapublish name=\"destination\" ! appsink name=appsink",
+	"description": "Emotion Recognition Pipeline",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"inference-interval": {
+				"element": "detection",
 				"type": "integer",
 				"minimum": 1,
 				"maximum": 4294967295,
 				"default": 1
 			},
-			"cpu-streams": {
-				"element":"detection",
+			"cpu-throughput-streams": {
+				"element": "detection",
 				"type": "integer"
 			},
 			"n-threads": {
-				"element":"videoconvert",
+				"element": "videoconvert",
 				"type": "integer",
 				"default": 1
 			},
 			"nireq": {
-				"element":"detection",
+				"element": "detection",
 				"type": "integer",
 				"minimum": 1,
 				"maximum": 1024,

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-* Copyright (C) 2019 Intel Corporation.
+* Copyright (C) 2019-2020 Intel Corporation.
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
@@ -21,41 +21,29 @@ SLEEP_FOR_STATUS = 0.5
 
 REQUEST_TEMPLATE = {
     "source": {
-        "uri": "file:///home/video-analytics/samples/pinwheel.ts",
+        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
         "type": "uri"
     },
     "destination": {
-        "path": "/home/video-analytics/samples/results.txt",
+        "path": "/tmp/results.txt",
         "type": "file",
-        "format": "stream"
+        "format": "json-lines"
     }
 }
 
-def supported_pipeline(string):
-    """Validates input for pipeline argument"""
-    return string
-
-def supported_source(string):
-    """Validates input for source argument for concerns such as unexpected symlink"""
-    return string
-
-def supported_destination(string):
-    """Validates input for destination argument for concerns such as unexpected symlink"""
-    return string
 
 def get_options():
     """Process command line options"""
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--pipeline", action="store", dest="pipeline",
-                        type=supported_pipeline, default="object_detection",
+                        default="object_detection",
                         help="One of the supported pipelines you want to launch; "
                              "e.g., 'object_detection' or 'emotion_recognition'.")
     parser.add_argument("--source", action="store", dest="source",
-                        type=supported_source,
                         default=REQUEST_TEMPLATE['source']['uri'],
                         help="Location of the content to play/analyze.")
     parser.add_argument("--destination", action="store", dest="destination",
-                        type=supported_destination,
                         default=REQUEST_TEMPLATE['destination']['path'],
                         help="Output file for storing analysis results.")
     parser.add_argument("--repeat", action="store", dest="repeat",
@@ -67,12 +55,14 @@ def get_options():
 
     return parser.parse_args()
 
+
 def print_json(obj):
     """Output as JSON formatted data"""
     print(json.dumps(obj,
                      sort_keys=True,
                      indent=4,
                      separators=[',', ': ']))
+
 
 def read_detection_results(destination, verbose=True):
     """Process received detection metadata"""
@@ -92,18 +82,20 @@ def read_detection_results(destination, verbose=True):
                             object_lines = []
                         else:
                             line = None
-                    if line:
+                    if line and (len(line.strip()) != 0):
                         print("Detection Result: \n")
                         print_json(json.loads(line))
-                except Exception as error: # pylint: disable=broad-except
+                except Exception as error:
+                    print("Error: '{}'".format(line))
                     print(error)
+
 
 def wait_for_pipeline(instance_id,
                       pipeline="object_detection",
                       version="1",
                       verbose=True):
     """Await pipeline completion"""
-    status = {"state":"RUNNING"}
+    status = {"state": "RUNNING"}
     while ((status["state"] is None) or
            (status["state"] == "QUEUED") or
            (status["state"] == "RUNNING")):
@@ -115,6 +107,7 @@ def wait_for_pipeline(instance_id,
             print_json(status)
         time.sleep(SLEEP_FOR_STATUS)
     return status
+
 
 def get_status(instance_id,
                pipeline="object_detection",
@@ -134,6 +127,8 @@ def get_status(instance_id,
     return None
 
 # pylint: disable=too-many-arguments
+
+
 def start_pipeline(stream_uri,
                    pipeline,
                    destination,
@@ -158,7 +153,8 @@ def start_pipeline(stream_uri,
     if verbose:
         print("Starting Pipeline: %s" % (pipeline_url))
     try:
-        launch_response = requests.post(pipeline_url, json=request, timeout=TIMEOUT)
+        launch_response = requests.post(
+            pipeline_url, json=request, timeout=TIMEOUT)
         if launch_response.status_code == 200:
             instance_id = int(launch_response.text)
             return instance_id
@@ -166,20 +162,22 @@ def start_pipeline(stream_uri,
         print(request_error)
     return None
 
+
 def print_stats(status, key='avg_fps'):
     """Output pipeline statistics"""
     values = [x[key] for x in status if x and key in x and
               'state' in x and x['state'] == "COMPLETED"]
     if values:
-        stats = {"value":key,
-                 "Average":statistics.mean(values),
-                 "Variance":statistics.variance(values),
-                 "Max":max(values),
-                 "Min":min(values),
-                 "Count":len(status)}
+        stats = {"value": key,
+                 "Average": statistics.mean(values),
+                 "Variance": statistics.variance(values),
+                 "Max": max(values),
+                 "Min": min(values),
+                 "Count": len(status)}
         print_json(stats)
     else:
         print("No results")
+
 
 def launch_pipelines(options):
     """Launch the set of pipelines defined for startup"""
@@ -198,18 +196,20 @@ def launch_pipelines(options):
                                verbose=options.verbose)
         print("Repeating {this_instance}/{total_instances}"
               .format(this_instance=i+1, total_instances=options.repeat))
-    if len(pipeline_stats) > 1: # Requires at least two datapoints
-        print_stats(pipeline_stats) # Output avg_fps
+    if len(pipeline_stats) > 1:  # Requires at least two datapoints
+        print_stats(pipeline_stats)  # Output avg_fps
         print_stats(pipeline_stats, key="elapsed_time")
+
 
 def main():
     """Program entrypoint"""
     try:
         options = get_options()
-    except Exception as error: # pylint: disable=broad-except
+    except Exception as error:
         print(error)
         sys.exit(1)
     launch_pipelines(options)
+
 
 if __name__ == "__main__":
     main()
