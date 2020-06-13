@@ -41,9 +41,8 @@ To get started, build the service as a standalone component execute the followin
 To use the `build.sh` and `run.sh` on MacOS you must ensure your `bash` is running on the latest version (MacOS comes with `bash` dating back to 2006). Use a package manager like [`brew`](https://brew.sh) to install it:
 
 ```
-brew install bash   # Installs latest version of bash.
-brew link bash      # Links bash in the current shell.
-./docker/build.sh   # Builds Docker container.
+brew install bash                       # Installs latest version of bash.
+/usr/local/bin/bash ./docker/build.sh   # Builds Docker container with newly installed bash.
 ```
 
 ### Running
