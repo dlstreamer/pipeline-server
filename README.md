@@ -36,6 +36,16 @@ To get started, build the service as a standalone component execute the followin
 ./docker/build.sh
 ```
 
+#### MacOS
+
+To use the `build.sh` and `run.sh` on MacOS you must ensure your `bash` is running on the latest version (MacOS comes with `bash` dating back to 2006). Use a package manager like [`brew`](https://brew.sh) to install it:
+
+```
+brew install bash   # Installs latest version of bash.
+brew link bash      # Links bash in the current shell.
+./docker/build.sh   # Builds Docker container.
+```
+
 ### Running
 
 After a successful build, run the service using the included script
@@ -68,4 +78,3 @@ With the service running, initiate a request to start a pipeline using the follo
 ```json
 {"objects":[{"detection":{"bounding_box":{"x_max":0.8810903429985046,"x_min":0.77934330701828,"y_max":0.8930767178535461,"y_min":0.3040514588356018},"confidence":0.5735679268836975,"label":"bottle","label_id":5},"h":213,"roi_type":"bottle","w":65,"x":499,"y":109}],"resolution":{"height":360,"width":640},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true","timestamp":972067039}
 ```
-
