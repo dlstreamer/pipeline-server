@@ -16,6 +16,7 @@ FRAMEWORK=
 TAG=
 RUN_PREFIX=
 CREATE_SERVICE=TRUE
+ENVIRONMENT_FILES=()
 TARGET="deploy"
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
@@ -137,6 +138,14 @@ get_options() {
                 error 'ERROR: "--create-service" requires an argument.'
             fi
             ;;
+	--environment-file)
+            if [ "$2" ]; then
+                ENVIRONMENT_FILES+=($2)
+                shift
+            else
+                error 'ERROR: "--environment-file" requires an argument.'
+            fi
+            ;;
         --dry-run)
             RUN_PREFIX="echo"
             echo ""
@@ -149,8 +158,11 @@ get_options() {
             shift
             break
             ;;
-        -?*)
-            printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+         -?*)
+	    error 'ERROR: Unknown option: ' $1
+            ;;
+	 ?*)
+	    error 'ERROR: Unknown option: ' $1
             ;;
         *)
             break
@@ -236,6 +248,7 @@ show_image_options() {
     echo "   Framework: '${FRAMEWORK}'"
     echo "   Target: '${TARGET}'"
     echo "   Create Service: '${CREATE_SERVICE}'"
+    echo "   Environment Files: '${ENVIRONMENT_FILE_LIST}'"
     echo ""
 }
 
@@ -250,12 +263,13 @@ show_help() {
     echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
     echo "  [--target build a specific target]"
     echo "  [--dockerfile-dir specify a different dockerfile directory]"
+    echo "  [--environment-file read and set environment variables from a file. Can be supplied multiple times.]"
     echo "  [--dry-run print docker commands without running]"
     exit 0
 }
 
 error() {
-    printf '%s\n' "$1" >&2
+    printf '%s %s\n' "$1" "$2" >&2
     exit 1
 }
 
@@ -300,11 +314,31 @@ else
     BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-library "
 fi
 
+cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
+ENVIRONMENT_FILE_LIST=
+
+if [[ "$BASE_IMAGE" == "openvino/"* ]]; then
+    $RUN_PREFIX docker run -t --rm --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
+    ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
+fi
+
+for ENVIRONMENT_FILE in ${ENVIRONMENT_FILES[@]}; do
+    if [ ! -z "$ENVIRONMENT_FILE" ]; then
+	ENVIRONMENT_FILE_LIST+="$ENVIRONMENT_FILE "
+    fi
+done
+
+if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
+    cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
+    echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
+fi
+
 show_image_options
 
 if [ -z "$RUN_PREFIX" ]; then
     set -x
 fi
-$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR
+
+$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR
 
 { set +x; } 2>/dev/null
