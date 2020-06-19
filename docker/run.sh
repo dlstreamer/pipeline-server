@@ -190,18 +190,20 @@ show_options() {
 }
 
 show_help() {
-    echo "usage: run.sh"
-    echo "  [--image image]"
-    echo "  [--framework ffmpeg || gstreamer]"
-    echo "  [--models path to model directory]"
-    echo "  [--pipelines path to pipelines directory]"
-    echo "  [-v additional volume mount to pass to docker run]"
-    echo "  [-e additional environment to pass to docker run"
-    echo "  [--entrypoint-args additional parameters to pass to entrypoint in docker run"
-    echo "  [-p additional ports to pass to docker run"
-    echo "  [--network to pass to docker run"
-    echo "  [--user to pass to docker run"
-    exit 0
+  echo "usage: run.sh" 
+  echo "  [--image image]"
+  echo "  [--framework ffmpeg || gstreamer]"
+  echo "  [--models path to models directory]" 
+  echo "  [--pipelines path to pipelines directory]"
+  echo "  [-v additional volume mount to pass to docker run]"
+  echo "  [-e additional environment to pass to docker run]"
+  echo "  [--entrypoint-args additional parameters to pass to entrypoint in docker run]"
+  echo "  [-p additional ports to pass to docker run]"
+  echo "  [--network name network to pass to docker run]"
+  echo "  [--user name of user to pass to docker run]"
+  echo "  [--name container name to pass to docker run]"
+  echo "  [--dev run in developer mode]"  
+  exit 0
 }
 
 error() {
