@@ -232,7 +232,7 @@ if [ "${MODE}" == "DEV" ]; then
     PRIVILEGED="--privileged "
 elif [ "${MODE}" == "SERVICE" ]; then
     PORTS+="-p 8080:8080 "
-    DEVICES+='-device /dev/dri '
+    DEVICES+='--device /dev/dri '
 else
     echo "Invalid Mode"
     show_help
@@ -248,5 +248,5 @@ fi
 show_options
 
 set -x
-docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
+docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
 { set +x; } 2>/dev/null
