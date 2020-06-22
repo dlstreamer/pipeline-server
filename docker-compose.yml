@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+    video-analytics-serving:
+        container_name: video-analytics-serving
+        image: video-analytics-serving-gstreamer
+        privileged: true
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+            args:
+                - noproxy
+                - https_proxy
+                - http_proxy
+                - BASE=video-analytics-serving-gstreamer-base 
+                - FRAMEWORK=gstreamer
+                - MODELS_PATH=models
+                - PIPELINES_PATH=pipelines/gstreamer
+                - PIPELINES_COMMAND=copy_pipelines
+        ports:
+            - "8080:8080"
+        devices:
+            - /dev/dri:/dev/dri

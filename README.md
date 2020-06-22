@@ -28,6 +28,16 @@ Video Analytics Serving may be modified to co-exist in a container alongside oth
 (2) Install [docker compose](https://docs.docker.com/compose/install), if you plan to deploy through docker compose. Version 1.20+ is required.
 
 
+### docker-compose
+
+To get started you may either build the service (detailed below), or automatically start it via docker-compose. To use docker-compose, run the following:
+
+```
+docker-compose up
+```
+
+Configuration values can be changed inside the `docker-compose.yml` file to fit your needs.
+
 ### Building
 
 To get started, build the service as a standalone component execute the following command
