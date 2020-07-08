@@ -24,7 +24,7 @@ USER root
 
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
 ARG USER=vaserving
-RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-serving && \
+RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
     chown ${USER} -R /home/video-analytics-serving /root
 
 # Dependencies installed via apt-get

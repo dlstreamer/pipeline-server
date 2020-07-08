@@ -94,6 +94,7 @@ def pipelines_name_version_instance_id_delete(name, version, instance_id):  # no
         result = VAServing.pipeline_manager.stop_instance(
             name, version, instance_id)
         if result:
+            result['state'] = result['state'].name
             return result
         return (bad_request_response, HTTPStatus.BAD_REQUEST)
     except Exception as error:
