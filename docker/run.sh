@@ -63,6 +63,14 @@ get_options() {
                 error 'ERROR: "--models" requires a non-empty option argument.'
             fi
             ;;
+        --device)
+            if [ "$2" ]; then
+                DEVICES+="--device $2 "
+                shift
+            else
+                error 'ERROR: "--device" requires a non-empty option argument.'
+            fi
+            ;;
         --pipelines)
             if [ "$2" ]; then
                 PIPELINES=$(realpath $2)

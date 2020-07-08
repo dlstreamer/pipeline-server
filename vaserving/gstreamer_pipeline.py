@@ -30,7 +30,8 @@ class GStreamerPipeline(Pipeline):
     Gst.init(None)
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
                                    "GstGvaClassify",
-                                   "GstGvaInference"]
+                                   "GstGvaInference",
+                                   "GvaAudioDetect"]
 
     _inference_element_cache = {}
     _mainloop = None
@@ -205,11 +206,13 @@ class GStreamerPipeline(Pipeline):
                                 " but no element found".format(property_name, element_name))
 
     def _cache_inference_elements(self):
+        model_instance_id = "model-instance-id"
         gva_elements = [(element, element.__gtype__.name + '_'
-                         + element.get_property('model-instance-id'))
+                         + element.get_property(model_instance_id))
                         for element in self.pipeline.iterate_elements()
                         if (element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES
-                            and element.get_property("model-instance-id"))]
+                            and model_instance_id in [x.name for x in element.list_properties()]
+                            and element.get_property(model_instance_id))]
         for element, key in gva_elements:
             if key not in GStreamerPipeline._inference_element_cache:
                 GStreamerPipeline._inference_element_cache[key] = element
@@ -426,7 +429,7 @@ class GStreamerPipeline(Pipeline):
             if message.src == self.pipeline:
                 if old_state == Gst.State.PAUSED and new_state == Gst.State.PLAYING:
                     if self.state is Pipeline.State.ABORTED:
-                        self._shutdown_and_delete_pipeline(Pipeline)
+                        self._shutdown_and_delete_pipeline(Pipeline.State.ABORTED)
                     if self.state is Pipeline.State.QUEUED:
                         logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
