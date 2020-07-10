@@ -72,6 +72,33 @@
             },
             "type": "GStreamer",
             "version": "1"
+        },
+	{
+            "description": "Audio Detection Pipeline",
+            "name": "audio_detection",
+            "parameters": {
+                "properties": {
+                    "output-buffer-duration": {
+                        "default": 100000000,
+                        "element": "audiomixer",
+                        "type": "integer"
+                    },
+                    "post-messages": {
+                        "element": "level",
+                        "type": "boolean"
+                    },
+                    "sliding-window": {"element": "detection",
+                        "type": "number"
+                    },
+                    "threshold": {
+                        "element": "detection",
+                        "type": "number"
+		    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "1"
         }
     ],
     "status_code": 200,
