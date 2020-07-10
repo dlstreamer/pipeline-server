@@ -25,7 +25,7 @@ BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host"
 
-DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#v1.0.0"
+DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://gitlab.devtools.intel.com/video-analytics/gst-video-analytics.git#v1.1_preview_audio"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
 DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --build-arg ENABLE_RDKAFKA_INSTALLATION=true"

@@ -1,0 +1,34 @@
+{
+	"name": "audio_detection",
+	"type": "GStreamer",
+	"template": ["urisourcebin name=\"source\" ! decodebin ! audioresample ! audioconvert",
+                " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
+                " ! level name=\"level\"",
+                " ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" model-proc=\"{models[audio_detection][1][proc]}\" name=\"detection\"",
+                " ! gvametaconvert ! gvametapublish file-format=json-lines name=destination",
+                " ! appsink name=appsink"
+                ],
+	"description": "Audio Detection Pipeline",
+	"parameters": {
+	  "type": "object",
+	  "properties": {
+		"output-buffer-duration": {
+		  "element": "audiomixer",
+		  "type": "integer",
+		  "default": 100000000
+		},
+		"threshold": {
+		  "element": "detection",
+		  "type": "number"
+		},
+		"sliding-window": {
+		  "element": "detection",
+		  "type": "number"
+		},
+		"post-messages": {
+			"element": "level",
+			"type": "boolean"
+		  }
+	  }
+	}
+  }

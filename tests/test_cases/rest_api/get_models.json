@@ -84,6 +84,18 @@
             },
             "type": "IntelDLDT",
             "version": 1
+        },
+        {
+            "description": "audio_detection",
+            "name": "audio_detection",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/audio_detection/1/aclnet_des_53_fp32.json",
+                "networks": {
+                    "FP32": "/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet_des_53_fp32.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
         }
     ],
     "status_code": 200,
