@@ -12,6 +12,11 @@
 	"parameters": {
 	  "type": "object",
 	  "properties": {
+		"bus-messages": {
+			"description": "Prints GstBus messages as logger info",
+			"type": "boolean",
+			"default": false
+		  },
 		"output-buffer-duration": {
 		  "element": "audiomixer",
 		  "type": "integer",

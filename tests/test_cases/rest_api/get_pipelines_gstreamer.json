@@ -78,6 +78,11 @@
             "name": "audio_detection",
             "parameters": {
                 "properties": {
+                    "bus-messages": {
+                        "description": "Prints GstBus messages as logger info",
+                        "type": "boolean",
+                        "default": false
+                      },
                     "output-buffer-duration": {
                         "default": 100000000,
                         "element": "audiomixer",

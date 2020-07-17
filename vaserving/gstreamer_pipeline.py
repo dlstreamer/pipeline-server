@@ -75,6 +75,7 @@ class GStreamerPipeline(Pipeline):
         self._bus_connection_id = None
         self._create_delete_lock = Lock()
         self._finished_callback = finished_callback
+        self._bus_messages = False
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
@@ -165,10 +166,18 @@ class GStreamerPipeline(Pipeline):
             return (element["name"], element["property"], element.get("format", None))
         return None
 
+    def _set_bus_messages_flag(self):
+        request_parameters, config_parameters = Pipeline.get_section_and_config(
+            self.request, self.config, ["parameters"],
+            ["parameters", "properties"])
+        bus_msgs = "bus-messages"
+        if bus_msgs in config_parameters and bus_msgs in request_parameters and \
+           isinstance(request_parameters[bus_msgs], bool):
+            self._bus_messages = request_parameters[bus_msgs]
+
     def _set_section_properties(self, request_section, config_section):
         # TODO: refactor
         # pylint: disable=R1702
-
         request, config = Pipeline.get_section_and_config(
             self.request, self.config, request_section, config_section)
 
@@ -326,6 +335,7 @@ class GStreamerPipeline(Pipeline):
 
             self.pipeline = Gst.parse_launch(self._gst_launch_string)
             self._set_properties()
+            self._set_bus_messages_flag()
             self._set_default_models()
             self._cache_inference_elements()
             sink = self.pipeline.get_by_name("appsink")
@@ -435,5 +445,10 @@ class GStreamerPipeline(Pipeline):
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = Pipeline.State.RUNNING
         else:
-            pass
+            if self._bus_messages:
+                structure = Gst.Message.get_structure(message)
+                if structure:
+                    logger.info("Message header: {name} , Message: {message}".format(
+                        name=Gst.Structure.get_name(structure),
+                        message=Gst.Structure.to_string(structure)))
         return True
