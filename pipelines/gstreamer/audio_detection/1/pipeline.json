@@ -28,7 +28,8 @@
 		},
 		"sliding-window": {
 		  "element": "detection",
-		  "type": "number"
+		  "type": "number",
+		  "default": 0.2
 		},
 		"post-messages": {
 			"element": "level",
