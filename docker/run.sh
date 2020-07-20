@@ -4,13 +4,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-# modes
-# Dev: priviledged, volume mount source, bash entrypoint, volume mount models and pipelines (default or specified)
-# Service: expose port, volume mount models and pipelines if specified, entrypoint python3 -m openapiserver
-# mount anything else that is passed as -v, graphics device
-# name is video-analytics-serving-gstreamer
-# name is video-analytics-serving-ffmpeg
-# dev network = host
+
 
 MODELS=
 PIPELINES=
