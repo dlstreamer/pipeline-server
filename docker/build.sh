@@ -23,7 +23,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-BUILD_OPTIONS="--network=host"
+BUILD_OPTIONS="--network=host "
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#preview/audio-detect"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
@@ -72,6 +72,14 @@ get_options() {
                 shift
             else
                 error 'ERROR: "--base-build-dockerfile" requires an argument.'
+            fi
+            ;;
+        --build-options)
+            if [ "$2" ]; then
+                BUILD_OPTIONS+="$2 "
+                shift
+            else
+                error 'ERROR: "--build-options" requires an argument.'
             fi
             ;;
         --models)
@@ -288,6 +296,9 @@ if [ "$BASE" == "BUILD" ]; then
 
     { set +x; } 2>/dev/null
     BASE_IMAGE=$BASE_BUILD_TAG
+else
+    #Ensure image is latest from Docker Hub
+    docker pull $BASE_IMAGE
 fi
 
 # BUILD IMAGE
