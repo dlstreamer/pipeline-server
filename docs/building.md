@@ -9,6 +9,8 @@ usage: build.sh
   [--pipelines path to pipelines directory relative to /path/to/Projects/video-analytics-serving or NONE]
   [--base-build-context docker context for building base image]
   [--base-build-dockerfile docker file used to build base image]
+  [--build-option additional docker build option that run in the context of docker build. ex. --no-cache]
+  [--base-build-option additional docker build option for docker build of base image]
   [--build-arg additional build args to pass to docker build]
   [--base-build-arg additional build args to pass to docker build for base image]
   [--tag docker image tag]

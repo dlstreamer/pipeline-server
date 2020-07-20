@@ -23,7 +23,8 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-BUILD_OPTIONS="--network=host"
+BUILD_OPTIONS="--network=host "
+BASE_BUILD_OPTIONS="--network=host "
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#preview/audio-detect"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
@@ -72,6 +73,22 @@ get_options() {
                 shift
             else
                 error 'ERROR: "--base-build-dockerfile" requires an argument.'
+            fi
+            ;;
+        --build-option)
+            if [ "$2" ]; then
+                BUILD_OPTIONS+="$2 "
+                shift
+            else
+                error 'ERROR: "--build-option" requires an argument.'
+            fi
+            ;;
+        --base-build-option)
+            if [ "$2" ]; then
+                BASE_BUILD_OPTIONS+="$2 "
+                shift
+            else
+                error 'ERROR: "--base-build-option" requires an argument.'
             fi
             ;;
         --models)
@@ -229,7 +246,7 @@ show_base_options() {
     echo ""
     echo "   Build Context: '${BASE_BUILD_CONTEXT}'"
     echo "   Dockerfile: '${BASE_BUILD_DOCKERFILE}'"
-    echo "   Build Options: '${BUILD_OPTIONS}'"
+    echo "   Build Options: '${BASE_BUILD_OPTIONS}'"
     echo "   Build Arguments: '${BASE_BUILD_ARGS}'"
     echo ""
 }
@@ -258,6 +275,8 @@ show_help() {
     echo "  [--framework ffmpeg || gstreamer]"
     echo "  [--models path to model directory relative to $SOURCE_DIR or NONE]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
+    echo "  [--build-option additional docker build option that run in the context of docker build. ex. --no-cache]"
+    echo "  [--base-build-option additional docker build option for docker build of base image]"
     echo "  [--build-arg additional build args to pass to docker build]"
     echo "  [--base-build-arg additional build args to pass to docker build for base image]"
     echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
@@ -284,10 +303,13 @@ if [ "$BASE" == "BUILD" ]; then
         set -x
     fi
 
-    $RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG
+    $RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG
 
     { set +x; } 2>/dev/null
     BASE_IMAGE=$BASE_BUILD_TAG
+else
+    #Ensure image is latest from Docker Hub
+    docker pull $BASE_IMAGE
 fi
 
 # BUILD IMAGE
