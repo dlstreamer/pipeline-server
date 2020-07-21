@@ -102,7 +102,6 @@ def cmp_results(measured, expected, tolerance):
 
     if isinstance(measured, int) or isinstance(measured, float):
         if expected != 0:
-            print((abs(measured-expected) / abs(expected)) < tolerance)
             assert  (abs(measured-expected) / abs(expected)) < tolerance, \
             "Measured Value {} not within tolerance ({}) of Expected Value {}".format(measured, tolerance, expected)
         else:
