@@ -1,20 +1,53 @@
 #!/bin/bash
+RUN_ON_HOST=false
 
-WORK_DIR=$(dirname $(readlink -f "$0"))
-PYTEST_OUTPUT_GSTREAMER=$WORK_DIR/pytest.gstreamer.txt
+function show_help {
+  echo "usage: run_gstreamer_tests.sh"
+  echo "  [ --run-on-host : Run test on host instead of a container ]"
+}
 
-echo "Removing previous devcheck output files"
-rm -f $PYTEST_OUTPUT_GSTREAMER
-  
+#Get options passed into script
+function get_options {
+  while :; do
+    case $1 in
+      -h | -\? | --help)
+        show_help
+        exit
+        ;;
+      --run-on-host)
+        RUN_ON_HOST=true
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+}
+
+function error {
+    printf '%s\n' "$1" >&2
+    exit
+}
+
+get_options "$@"
+
 echo "Running VA Serving Functional Tests (GStreamer)"
-if [[ "$(docker images -q video-analytics-serving-gstreamer-tests:latest 2> /dev/null)" == "" ]]; then
-  # do something
-  echo "error, test image does not exist. Please build gstreamer test image"
-else
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-gstreamer-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_GSTREAMER
-fi
 
-echo "Output result of PyTest GStreamer: $PYTEST_OUTPUT_GSTREAMER"
+if $RUN_ON_HOST; then
+  #Run test on host
+  export FRAMEWORK=gstreamer
+  pytest
+else
+  #Run test in container
+  if [[ "$(docker images -q video-analytics-serving-gstreamer-tests:latest 2> /dev/null)" == "" ]]; then
+    # do something
+    echo "error, test image does not exist. Please build gstreamer test image"
+  else
+    #Container should already have FRAMEWORK set
+    $WORK_DIR/../docker/run.sh --image video-analytics-serving-gstreamer-tests:latest \
+    -v $WORK_DIR:/home/video-analytics-serving/tests \
+    --entrypoint pytest
+  fi
+fi
