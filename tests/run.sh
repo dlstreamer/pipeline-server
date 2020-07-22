@@ -7,40 +7,87 @@ PYLINT_OUTPUT_FNAME=pylint.results.txt
 PYLINT_OUTPUT=$WORK_DIR/$PYLINT_OUTPUT_FNAME
 #CHECK_TESTS="pytest,pylint"
 #FRAMEWORK="ffmpeg,gstreamer"
+RUN_BUILD=true
+RUN_GST_TESTS=true
+RUN_FFMPEG_TESTS=true
+RUN_PYLINT_TESTS=true
+
+#Get options passed into script
+function get_options {
+  while :; do
+    case $1 in
+      -h | -\? | --help)
+        show_help
+        exit
+        ;;
+      --skip-build)
+        RUN_BUILD=false
+        ;;
+      --skip-gst-tests)
+        RUN_GST_TESTS=false
+        ;;
+      --skip-ffmpeg-tests)
+        RUN_FFMPEG_TESTS=false
+        ;;
+      --skip-pylint-tests)
+        RUN_PYLINT_TESTS=false
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+}
+
+function show_help {
+  echo "usage: run.sh"
+  echo "  [ --skip-build : Skip building test image as part of run script]"
+  echo "  [ --skip-gst-tests : Skip GStreamer tests]"
+  echo "  [ --skip-ffmpeg-tests : Skip FFMPEG tests]"
+  echo "  [ --skip-pylint-tests : Skip Pylint tests]"
+}
+
+function error {
+    printf '%s\n' "$1" >&2
+    exit
+}
+
+get_options "$@"
 
 echo "Removing previous devcheck output files"
 rm -f $PYLINT_OUTPUT
 rm -f $PYTEST_OUTPUT_FFMPEG
 rm -f $PYTEST_OUTPUT_GSTREAMER
 
-echo "Build image for VA Serving FFmpeg scan"
-$WORK_DIR/build.sh --framework ffmpeg
+if $RUN_BUILD; then
+  echo "Build image for VA Serving FFmpeg scan"
+  $WORK_DIR/build.sh --framework ffmpeg
   
-echo "Build image for VA Serving GStreamer tests"
-$WORK_DIR/build.sh --framework gstreamer
+  echo "Build image for VA Serving GStreamer tests"
+  $WORK_DIR/build.sh --framework gstreamer
+else
+  echo "Skipping build of test images"
+fi
 
-echo "Running VA Serving Functional Tests (GStreamer)"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-gstreamer-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_GSTREAMER
+if $RUN_GST_TESTS; then
+  # Running VA Serving Functional Tests (GStreamer)
+  $WORK_DIR/helper_scripts/run_gstreamer_tests.sh
+else
+  echo "Skipping Gstreamer tests"
+fi
 
-echo "Running VA Serving Functional Tests (FFmpeg)"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-ffmpeg-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_FFMPEG
+if $RUN_FFMPEG_TESTS; then
+  # Running VA Serving Functional Tests (FFmpeg)
+  $WORK_DIR/helper_scripts/run_ffmpeg_tests.sh
+else
+  echo "Skipping FFMPEG tests"
+fi
 
-echo "Running PyLint Scan within FFmpeg container"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-ffmpeg-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
--v /tmp/vas:/tmp  \
---entrypoint ./tests/pylint.sh \
---entrypoint-args "$PYLINT_OUTPUT_FNAME"
-
-echo "Output result of PyTest FFmpeg: $PYTEST_OUTPUT_FFMPEG"
-#cat $PYTEST_OUTPUT_FFMPEG
-echo "Output result of PyTest GStreamer: $PYTEST_OUTPUT_GSTREAMER"
-#cat $PYTEST_OUTPUT_GSTREAMER
-echo "Output result of PyLint Scan: $PYLINT_OUTPUT"
-#cat $PYLINT_OUTPUT
+if $RUN_PYLINT_TESTS; then
+  # Running PyLint Scan within FFmpeg container
+  $WORK_DIR/helper_scripts/run_pylint_tests.sh
+else
+  echo "Skipping Pylint tests"
+fi
