@@ -1,4 +1,5 @@
 #!/bin/bash
+WORK_DIR=$(dirname $(readlink -f "$0"))
 RUN_ON_HOST=false
 
 function show_help {
@@ -38,7 +39,7 @@ echo "Running VA Serving Functional Tests (GStreamer)"
 if $RUN_ON_HOST; then
   #Run test on host
   export FRAMEWORK=gstreamer
-  pytest
+  pytest $WORK_DIR/..
 else
   #Run test in container
   if [[ "$(docker images -q video-analytics-serving-gstreamer-tests:latest 2> /dev/null)" == "" ]]; then
