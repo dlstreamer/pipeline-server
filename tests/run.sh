@@ -73,21 +73,21 @@ fi
 
 if $RUN_GST_TESTS; then
   # Running VA Serving Functional Tests (GStreamer)
-  $WORK_DIR/helper_scripts/run_gstreamer_tests.sh
+  $WORK_DIR/run_gstreamer_tests.sh
 else
   echo "Skipping Gstreamer tests"
 fi
 
 if $RUN_FFMPEG_TESTS; then
   # Running VA Serving Functional Tests (FFmpeg)
-  $WORK_DIR/helper_scripts/run_ffmpeg_tests.sh
+  $WORK_DIR/run_ffmpeg_tests.sh
 else
   echo "Skipping FFMPEG tests"
 fi
 
 if $RUN_PYLINT_TESTS; then
   # Running PyLint Scan within FFmpeg container
-  $WORK_DIR/helper_scripts/run_pylint_tests.sh
+  $WORK_DIR/run_pylint_tests.sh
 else
   echo "Skipping Pylint tests"
 fi

@@ -1,20 +1,23 @@
 #!/bin/bash
 
-WORK_DIR=$(dirname $(readlink -f "$0"))/..
-PYTEST_OUTPUT_FFMPEG=$WORK_DIR/pytest.ffmpeg.txt
+WORK_DIR=$(dirname $(readlink -f "$0"))
+PYLINT_OUTPUT_FNAME=pylint.results.txt
+PYLINT_OUTPUT=$WORK_DIR/$PYLINT_OUTPUT_FNAME
 
 echo "Removing previous devcheck output files"
-rm -f $PYTEST_OUTPUT_FFMPEG
+rm -f $PYLINT_OUTPUT
 
-echo "Running VA Serving Functional Tests (FFmpeg)"
+echo "Running PyLint Scan within FFmpeg container"
 if [[ "$(docker images -q video-analytics-serving-ffmpeg-tests:latest 2> /dev/null)" == "" ]]; then
   # do something
   echo "error, test image does not exist. Please build ffmpeg test image"
 else
 $WORK_DIR/../docker/run.sh --image video-analytics-serving-ffmpeg-tests:latest \
 -v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_FFMPEG
+-v /tmp/vas:/tmp  \
+--entrypoint ./tests/pylint.sh \
+--entrypoint-args "$PYLINT_OUTPUT_FNAME"
 fi
 
-echo "Output result of PyTest FFmpeg: $PYTEST_OUTPUT_FFMPEG"
+echo "Output result of PyLint Scan: $PYLINT_OUTPUT"
+#cat $PYLINT_OUTPUT

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-WORK_DIR=$(dirname $(readlink -f "$0"))/..
+WORK_DIR=$(dirname $(readlink -f "$0"))
 PYTEST_OUTPUT_GSTREAMER=$WORK_DIR/pytest.gstreamer.txt
 
 echo "Removing previous devcheck output files"
