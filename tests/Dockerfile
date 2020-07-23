@@ -24,3 +24,5 @@ COPY .pylintrc /home/video-analytics-serving/
 ARG USER=vaserving
 
 USER ${USER}
+
+ENTRYPOINT [ "./tests/pytest.sh" ]

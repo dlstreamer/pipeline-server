@@ -5,16 +5,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 FRAMEWORK=gstreamer
-BUILD_VASERVING_IMAGE=true
+SUFFIX=latest
 
-#Get options passed into script
+#Get options passed into script to use with building the test
 function get_options {
   while :; do
     case $1 in
-      -h | -\? | --help)
-        show_help
-        exit
-        ;;
       --framework)
         if [ "$2" ]; then
           FRAMEWORK=$2
@@ -23,9 +19,9 @@ function get_options {
           error 'ERROR: "--framework" requires a non-empty option argument.'
         fi
         ;;
-      --build-vaserving-image)
+      --suffix)
         if [ "$2" ]; then
-          BUILD_VASERVING_IMAGE=$2
+          SUFFIX=$2
           shift
         else
           error 'ERROR: "--build-vaserving-image" requires a non-empty option argument.'
@@ -40,23 +36,13 @@ function get_options {
   done
 }
 
-function show_help {
-  echo "usage: build.sh"
-  echo "  [ --framework : Framework to build test image]"
-  echo "  [ --build-vaserving-image : Build VA-Serving image as part of this script]"
-}
-
-function error {
-    printf '%s\n' "$1" >&2
-    exit
-}
-
+#Preserve arguments to replace
+args=("$@")
 get_options "$@"
+set -- "${args[@]}"
 
-if $BUILD_VASERVING_IMAGE; then
-  DIR=$(dirname $(readlink -f "$0"))
-  . "$DIR/../docker/build.sh" --framework $FRAMEWORK --dockerfile-dir "$DIR/../docker"
-fi
+DIR=$(dirname $(readlink -f "$0"))
+. "$DIR/../docker/build.sh" $@ --dockerfile-dir "$DIR/../docker"
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
@@ -64,6 +50,6 @@ BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build
 BUILD_OPTIONS="--network=host --no-cache"
 VA_SERVING_IMAGE=video-analytics-serving-$FRAMEWORK
 BUILD_ARGS+=" --build-arg BASE=$VA_SERVING_IMAGE "
-TAG="video-analytics-serving-${FRAMEWORK}-tests"
+TAG="video-analytics-serving-${FRAMEWORK}-tests:$SUFFIX"
 
 docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR
