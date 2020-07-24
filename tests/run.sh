@@ -42,7 +42,9 @@ function get_options {
 
 function show_help {
   echo "usage: run.sh"
-  echo "  [ --tag : ]"
+  echo "  [ --image : Specify the image to run the tests on ]"
+  echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
+  echo "  [ --pylint : Set the flag to run the pylint test ] "
 }
 
 function error {

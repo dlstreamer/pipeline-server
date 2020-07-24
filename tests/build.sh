@@ -5,48 +5,12 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-#Get options passed into script to use with building the test
-#Get the TAG that will be used for the base image
-#While its not explicitly needed here (if it follows the same principles as
-#how FRAMEWORK is set, then this script should be able to refer to it as $TAG)
-#it makes it easier to read this script and understand where the tag is coming from
-function get_options {
-  while :; do
-    case $1 in
-      --tag)
-        if [ "$2" ]; then
-          VA_SERVING_TAG=$2
-          shift
-        else
-          error 'ERROR: "--tag" requires a non-empty option argument.'
-        fi
-        ;;
-      "")
-        break
-	;;
-      *)
-        ;;
-    esac
-
-    shift
-  done
-}
-
-#Preserve arguments to replace
-args=("$@")
-get_options "$@"
-set -- "${args[@]}"
-
-#Build the VA-Serving image
-#FRAMEWORK variable is set through the build script
 DIR=$(dirname $(readlink -f "$0"))
 . "$DIR/../docker/build.sh" $@ --dockerfile-dir "$DIR/../docker"
 
-#If tag is not used, set VA_SERVING_TAG to default
-if [ "$VA_SERVING_TAG" ]; then
-  VA_SERVING_TAG=video-analytics-serving-$FRAMEWORK
-fi
-
+#VA_SERVING_TAG is used to explicitly define the TAG that was used for building VA Serving
+#TAG variable is set through the build script above
+VA_SERVING_TAG=$TAG
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
