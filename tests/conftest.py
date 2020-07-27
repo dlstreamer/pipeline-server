@@ -30,6 +30,15 @@ class VAServingService:
             if "vaserving" in proc.cmdline():
                 proc.kill()
 
+    def get_log_message(self, line):
+        try:
+            log_message = json.loads(line)
+            if "levelname" in log_message and "message" in log_message:
+                return log_message
+        except ValueError:
+            print("Invalid JSON: %s" % (line))
+        return None
+
     def __init__(self):
 
         self.kill_all()
@@ -45,8 +54,8 @@ class VAServingService:
         while self._process.returncode is None:
             next_line = self._process.stderr.readline()
             try:
-                if next_line:
-                    message = json.loads(next_line)
+                message = self.get_log_message(next_line)
+                if message:
                     if message["levelname"] == "ERROR":
                         raise Exception(next_line)
 
