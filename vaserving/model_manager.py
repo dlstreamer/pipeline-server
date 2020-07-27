@@ -62,7 +62,7 @@ class ModelManager:
         candidates = fnmatch.filter(os.listdir(path), "*.json")
         if (len(candidates) > 1):
             raise Exception("Multiple model proc files found in %s" % (path,))
-        if(len(candidates) == 1):
+        if (len(candidates) == 1):
             return os.path.abspath(os.path.join(path, candidates[0]))
         return None
 
@@ -170,6 +170,8 @@ class ModelManager:
                             self.logger.info("Loading Model: {} version: {} "
                                              "type: {} from {}".format(
                                                  model_name, version, "IntelDLDT", network_paths))
+                        else:
+                            raise Exception("%s/%s is missing Model-Proc or Network" % (model_name, version))
 
             except Exception as error:
                 error_occurred = True
