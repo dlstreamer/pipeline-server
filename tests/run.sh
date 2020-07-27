@@ -67,7 +67,7 @@ fi
 $WORK_DIR/../docker/run.sh --image $IMAGE \
  -v $WORK_DIR:/home/video-analytics-serving/tests $DEV
 
-if $RUN_PYLINT; then
+if [[ $RUN_PYLINT && -z $DEV ]] ; then
   $WORK_DIR/../docker/run.sh --image $IMAGE \
   -v $WORK_DIR:/home/video-analytics-serving/tests \
   --entrypoint ./tests/pylint.sh
