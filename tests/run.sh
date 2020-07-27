@@ -2,7 +2,8 @@
 
 WORK_DIR=$(dirname $(readlink -f "$0"))
 FRAMEWORK=gstreamer
-RUN_PYLINT=true
+RUN_PYLINT=false
+DEV=
 
 #Get options passed into script
 function get_options {
@@ -31,6 +32,9 @@ function get_options {
       --pylint)
         RUN_PYLINT=true
         ;;
+      --dev)
+        DEV=--dev
+        ;;
       *)
         break
         ;;
@@ -45,6 +49,7 @@ function show_help {
   echo "  [ --image : Specify the image to run the tests on ]"
   echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
   echo "  [ --pylint : Set the flag to run the pylint test ] "
+  echo "  [ --dev : Bash into the test container ] "
 }
 
 function error {
@@ -55,12 +60,12 @@ function error {
 get_options "$@"
 
 #If tag is not used, set VA_SERVING_TAG to default
-if [ "$IMAGE" ]; then
+if [ -z "$IMAGE" ]; then
   IMAGE=video-analytics-serving-$FRAMEWORK-tests:latest
 fi
 
 $WORK_DIR/../docker/run.sh --image $IMAGE \
- -v $WORK_DIR:/home/video-analytics-serving/tests \
+ -v $WORK_DIR:/home/video-analytics-serving/tests $DEV
 
 if $RUN_PYLINT; then
   $WORK_DIR/../docker/run.sh --image $IMAGE \
