@@ -1,4 +1,4 @@
-# Customizing Pipelines
+# Pipeline Definition
 VA Serving pipelines are a sequence of processing elements used to implement a video analytics solution. 
 This document explains how pipelines are described and how they refer to models.
 This document is broken into a number of sections:
@@ -7,12 +7,17 @@ This document is broken into a number of sections:
 * [Pipeline Description Files](#pipeline-description-files): Syntax of pipeline definition files.
 
 ## Model Discovery
-VA Serving discovers models using the directory structure below:
+Deep learning models can be stored in a number of formats, usually defined by the inference framework that uses them.
+[ONNX*](https://onnx.ai/), [PyTorch*](https://pytorch.org/) and [TensorFlow*](https://www.tensorflow.org/) are some examples. 
+The OpenVINO* inference engine used by VA Serving uses a format called [Intermediate Representation](https://docs.openvinotoolkit.org/latest/_docs_MO_DG_IR_and_opsets.html) (IR) that comprises a `bin` file for the model and metadata in XML format termed a `network file`. Models are encoded with a `precision` which can be floating point or integer and have a range of bit widths. Finally models have an optional `model-proc` file which defines supported input formats and describes the output thus ensuring they are 
+compatible with upstream and downstream elements.  
+
+VA Serving discovers models using the directory structure below for a sample model.
 * Root folder name is `models`. This can be specified at build or run time.
 * Model name is `emotion_recognition`
 * Model version is `1`
 * Model proc file `emotions-recognition-retail-0003.json` is in root folder as it is used by all model precisions.
-* Bin and network files are in directories named after precision (e.g. INT8, INT16 etc.)
+* IR bin and network files are in directories named after precision (e.g. INT8, INT16 etc.)
 ```
 models/
 ├── emotion_recognition                                           // name
@@ -40,61 +45,49 @@ Some examples:
 * Running on GPU [emotion_recognition][1][network] expands to emotions-recognition-retail-0003-fp16.xml
 * [emotion_recognition][1][INT8][network] expands to emotions-recognition-retail-0003-int8.xml
 
-
-## GStreamer 
-### Background
-[GStreamer](https://gstreamer.freedesktop.org/) is a flexible, fast and multi-platform open-source multimedia framework. 
-It has an easy to use command line tool for running pipelines, as well as an API with bindings in C, Python, 
-Javascript and [more](https://gstreamer.freedesktop.org/bindings/).
-
-Pipelines use the syntax of the GStreamer command line tool gst-launch-1.0.  The list of elements, their configuration properties, and their connections are all specified as a list of strings separated by exclamation marks (!).  Internally the GStreamer library constructs a pipeline object that contains the individual elements and handles common operations such as clocking, messaging, and state changes.
-
-**Example:** ```gst-launch-1.0 videotestsrc ! ximagesink```
-
-For more information and examples please refer to the [gst-launch-1.0](https://gstreamer.freedesktop.org/documentation/tools/gst-launch.html?gi-language=c) online documentation.
-
-### Elements
-An [element](https://gstreamer.freedesktop.org/documentation/application-development/basics/elements.html?gi-language=c) is the fundamental building block of a pipeline. Elements performs specific operations on incoming frames and then push the resulting frames 
-downstream for further processing. Elements are linked together textually by exclamation marks (`!`) with the full chain of elements 
-representing the entire pipeline. Each element will take data from its upstream element, process it and then output the data for further processing by the next element.
-
-Elements designated as **source** elements provide input into the pipeline from external sources. In this tutorial we use the [filesrc](https://gstreamer.freedesktop.org/documentation/coreelements/filesrc.html?gi-language=c#filesrc) element that reads input from a local file.
-
-Elements designated as **sink** elements represent the final stage of a pipeline. As an example a sink element could write transcoded 
-frames to a file on the local disk or open a window to render the video content to the screen or even re-stream the content via rtsp. 
-In this tutorial our primary focus is to compare the performance of media analytics pipelines on different types of hardware and we will 
-use the standard [fakesink](https://gstreamer.freedesktop.org/documentation/coreelements/fakesink.html?gi-language=c#fakesink) element to end the pipeline immediately after the analytics is complete without further processing.
-
-Object detection pipelines typically use the [decodebin](https://gstreamer.freedesktop.org/documentation/playback/decodebin.html#decodebin) utility element 
-to construct a set of decode operations based on the given input format, decoder and demuxer elements available in the system. 
-The next step in the pipeline is often color space conversion which is handled by the 
-[videoconvert](https://gstreamer.freedesktop.org/documentation/videoconvert/index.html?gi-language=c#videoconvert) element. 
-
-### Properties
-Elements are configured using key-value pairs called properties. As an example the `filesrc` element has a property named `location` which specifies the file path for input.
-
-**Example**:
- ```filesrc location=cars_1900.mp4```
-
-A list of properties supported by each element can be viewed using the command line tool `gst-inspect-1.0`. The tool also provides a property description and the valid range of values that can be set.
-
 ## Pipeline Description Files
-
 Pipelines are defined using JSON and comprise four top level attributes:
 
 |Attribute|Notes|
 |---------|-----|
-|type|Framework type. Can be either `GStreamer` or `FFmpeg`|
+|type|Framework type. Can be either [GStreamer](./gstreamer.md) or [FFmpeg](https://ffmpeg.org/ffmpeg.html)|
 |description|Brief description of pipeline|
 |template|Pipeline template (i.e. pipeline without source or sink)|
 |parameters|Optional attribute than sets element properties|
 
 The type and description attributes are self explanatory, however `template` and `parameters` are more complex and will be described below.
 
+Description files are always named `pipeline.json` and laid out in the following directory structure: `framework/name/version/pipeline.json`. 
+Here is a sample directory listing:
+```
+pipelines/
+├── ffmpeg
+│   ├── emotion_recognition
+│   │   └── 1
+│   │       └── pipeline.json
+│   └── object_detection
+│       └── 1
+│           └── pipeline.json
+└── gstreamer
+    ├── audio_detection
+    │   └── 1
+    │       └── pipeline.json
+    ├── emotion_recognition
+    │   └── 1
+    │       └── pipeline.json
+    └── object_detection
+        └── 1
+            └── pipeline.json
+```
 ### Template
-The template attribute describes the pipeline and is specific to the underlying framework. 
+The template attribute describes the pipeline and is specific to the underlying framework. Templates use the concept of a media framework `source` and `sink`. A source provides media input into the pipeline and a sink represents the final stage of a pipeline. VA Serving configures the source component to select the media and the sink component to set the pipeline's output destination. GStreamer and FFMpeg templates will be documented in the following sections.
+
+#### GStreamer Template
+This section assumes an understanding of the GStreamer framework. If you are new to GStreamer you can get some background by reading [this overview](./gstreamer.md).
+
+Templates use the [GStreamer pipeline description](https://gstreamer.freedesktop.org/documentation/tools/gst-launch.html?gi-language=c#pipeline-description) syntax to concatenate elements to form a pipeline. The VA Serving `pipeline manager` component parses the template, configures the source and sink elements and then constructs pipeline. 
+
 The `source` and `sink` elements in a pipeline template intentionally avoid assigning explicit media source and destination. This enables the properties to be dynamically defined by the calling application. 
-This will be covered in the API section. Templates use the gst-launch format to concatenate elements to form a pipeline. The VA Serving `pipeline manager` component parses the template, configures the source and sink elements and then constructs pipeline. 
 
 Here is the template for the `object_detection` sample pipeline.
 We'll focus on some of the elements to help explain how a template is parsed and
@@ -112,9 +105,13 @@ gvadetect model-instance-id=inf0 model={models[object_detection][1][network]} mo
 ```
 The `model` property needs path to a model file and uses the array syntax explained in the [Model Discovery](#model-discovery) section. It is enclosed with curly brackets to indicate the value is a variable rather than a path.
 
+#### FFmpeg Template
+A full description of FFmpeg pipeline templates will be provided in a later release. 
+Conceptually templates are similar to GStreamer but the gst-launch string is replaced by an [FFmpeg command line](https://ffmpeg.org/ffmpeg.html).
+
 #### Improving Template Readability
 If there are a large number of elements in a template it can become hard to read. A way to improve readability is to use `array format` 
-where each GStreamer element becomes an array element. The above `object_detection` sample pipeline would now look like this:
+where each GStreamer element becomes an array element. The GStreamer `object_detection` sample pipeline would now look like this:
 
 ```
 "template" : [ "urisourcebin name=source",
@@ -138,9 +135,7 @@ The attribute is in JSON schema format which enables its validation. The attribu
 
 The attribute contains two sub-attributes `type` and `properties`. 
 `type` is always the string value `"object"` and `properties` is a list of element properties.
-
-#### Properties
-The `properties` attribute is a list of element properties. Each attribute in the list is an element property name whose value is an object.
+Each attribute in the list is an element property name whose value is an object.
 The object must have the following attributes:
 * `element` a string that must match the name of an element in the pipeline
 * `type` property type, either `integer` or `boolean`
@@ -164,6 +159,31 @@ This is a sample parameter from the `emotion_recognition` sample pipeline that c
     }
 }
 ```
-This sets the property `inference-interval` in the element named `detection` to the default value of 1. 
+This sets the property `inference-interval` in the element named `detection` to a value of 1. 
 It is a valid value as it is between 0 and 4294967295.
 
+### Reserved Parameter Properties
+#### bus-messages
+This is a boolean property specific to GStreamer pipelines. If set to true GStreamer element bus messages will be sent to stdout. 
+This is useful for debugging pipelines that work with gst-launch but not in the VA Serving environment. If `default` key not set `bus-messages` defaults to `false`. 
+```json
+"parameters": {
+	  "type": "object",
+	  "properties": {
+		  "bus-messages": {
+			  "type": "boolean",
+			  "default": true
+      }
+    }
+}
+```
+You must add the `bus-messages` property to the pipeline description file's `parameters attribute` and set it to `true` for message logging to work.
+Currently only the `audio_detection` pipeline includes the bus-messages property.
+
+This example shows how to use `bus-messages` property to disable message logging in the audio pipeline with curl request. 
+```bash
+curl localhost:8080/pipelines/audio_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "parameters":{"bus-messages":false}}'
+```
+
+## Legal Information
+[*] Other names and brands may be claimed as the property of others.
