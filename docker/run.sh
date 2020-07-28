@@ -21,6 +21,7 @@ ENTRYPOINT_ARGS=
 PRIVILEGED=
 NETWORK=
 USER=
+INTERACTIVE=-it
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -140,6 +141,9 @@ get_options() {
                 error 'ERROR: "--entrypoint" requires a non-empty option argument.'
             fi
             ;;
+        --non-interactive)
+            unset INTERACTIVE
+            ;;
         --) # End of all options.
             shift
             break
@@ -250,5 +254,5 @@ fi
 show_options
 
 set -x
-docker run -it --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
+docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
 { set +x; } 2>/dev/null

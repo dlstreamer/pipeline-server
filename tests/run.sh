@@ -64,11 +64,11 @@ if [ -z "$IMAGE" ]; then
   IMAGE=video-analytics-serving-$FRAMEWORK-tests:latest
 fi
 
-$WORK_DIR/../docker/run.sh --image $IMAGE \
+$WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
  -v $WORK_DIR:/home/video-analytics-serving/tests $DEV
 
-if [[ $RUN_PYLINT && -z $DEV ]] ; then
-  $WORK_DIR/../docker/run.sh --image $IMAGE \
+if $RUN_PYLINT && [ -z $DEV ] ; then
+  $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
   -v $WORK_DIR:/home/video-analytics-serving/tests \
   --entrypoint ./tests/pylint.sh
 fi
