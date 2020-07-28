@@ -1,46 +1,74 @@
 #!/bin/bash
 
 WORK_DIR=$(dirname $(readlink -f "$0"))
-PYTEST_OUTPUT_FFMPEG=$WORK_DIR/pytest.ffmpeg.txt
-PYTEST_OUTPUT_GSTREAMER=$WORK_DIR/pytest.gstreamer.txt
-PYLINT_OUTPUT_FNAME=pylint.results.txt
-PYLINT_OUTPUT=$WORK_DIR/$PYLINT_OUTPUT_FNAME
-#CHECK_TESTS="pytest,pylint"
-#FRAMEWORK="ffmpeg,gstreamer"
+FRAMEWORK=gstreamer
+RUN_PYLINT=false
+DEV=
 
-echo "Removing previous devcheck output files"
-rm -f $PYLINT_OUTPUT
-rm -f $PYTEST_OUTPUT_FFMPEG
-rm -f $PYTEST_OUTPUT_GSTREAMER
+#Get options passed into script
+function get_options {
+  while :; do
+    case $1 in
+      -h | -\? | --help)
+        show_help
+        exit
+        ;;
+      --framework)
+        if [ "$2" ]; then
+          FRAMEWORK=$2
+          shift
+        else
+          error "Framework expects a value"
+        fi
+        ;;
+      --image)
+        if [ "$2" ]; then
+          IMAGE=$2
+          shift
+        else
+          error "Image expects a value"
+        fi
+        ;;
+      --pylint)
+        RUN_PYLINT=true
+        ;;
+      --dev)
+        DEV=--dev
+        ;;
+      *)
+        break
+        ;;
+    esac
 
-echo "Build image for VA Serving FFmpeg scan"
-$WORK_DIR/build.sh --framework ffmpeg
-  
-echo "Build image for VA Serving GStreamer tests"
-$WORK_DIR/build.sh --framework gstreamer
+    shift
+  done
+}
 
-echo "Running VA Serving Functional Tests (GStreamer)"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-gstreamer-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_GSTREAMER
+function show_help {
+  echo "usage: run.sh"
+  echo "  [ --image : Specify the image to run the tests on ]"
+  echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
+  echo "  [ --pylint : Set the flag to run the pylint test ] "
+  echo "  [ --dev : Bash into the test container ] "
+}
 
-echo "Running VA Serving Functional Tests (FFmpeg)"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-ffmpeg-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
---entrypoint ./tests/pytest.sh \
- > $PYTEST_OUTPUT_FFMPEG
+function error {
+    printf '%s\n' "$1" >&2
+    exit
+}
 
-echo "Running PyLint Scan within FFmpeg container"
-$WORK_DIR/../docker/run.sh --image video-analytics-serving-ffmpeg-tests:latest \
--v $WORK_DIR:/home/video-analytics-serving/tests \
--v /tmp/vas:/tmp  \
---entrypoint ./tests/pylint.sh \
---entrypoint-args "$PYLINT_OUTPUT_FNAME"
+get_options "$@"
 
-echo "Output result of PyTest FFmpeg: $PYTEST_OUTPUT_FFMPEG"
-#cat $PYTEST_OUTPUT_FFMPEG
-echo "Output result of PyTest GStreamer: $PYTEST_OUTPUT_GSTREAMER"
-#cat $PYTEST_OUTPUT_GSTREAMER
-echo "Output result of PyLint Scan: $PYLINT_OUTPUT"
-#cat $PYLINT_OUTPUT
+#If tag is not used, set VA_SERVING_TAG to default
+if [ -z "$IMAGE" ]; then
+  IMAGE=video-analytics-serving-$FRAMEWORK-tests:latest
+fi
+
+$WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
+ -v $WORK_DIR:/home/video-analytics-serving/tests $DEV
+
+if $RUN_PYLINT && [ -z $DEV ] ; then
+  $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
+  -v $WORK_DIR:/home/video-analytics-serving/tests \
+  --entrypoint ./tests/pylint.sh
+fi
