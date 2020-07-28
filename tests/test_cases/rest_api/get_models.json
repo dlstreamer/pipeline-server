@@ -89,9 +89,10 @@
             "description": "audio_detection",
             "name": "audio_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/audio_detection/1/aclnet_des_53_fp32.json",
+                "model-proc": "/home/video-analytics-serving/models/audio_detection/1/aclnet.json",
                 "networks": {
-                    "FP32": "/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet_des_53_fp32.xml"
+                    "FP16": "/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml",
+                    "FP32": "/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml"
                 }
             },
             "type": "IntelDLDT",
