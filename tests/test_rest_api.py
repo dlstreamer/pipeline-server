@@ -23,6 +23,10 @@ def test_rest_api(service, test_case, test_filename, generate):
         response = requests.get(url,
                                 json=test_case["body"],
                                 timeout=TIMEOUT)
+    elif test_case["verb"] == "delete":
+        response = requests.delete(url,
+                                json=test_case["body"],
+                                timeout=TIMEOUT)
     else:
         assert False, "Unknown Test Case Verb"
 

@@ -127,10 +127,13 @@ def pytest_generate_tests(metafunc):
     if "rest_api" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "rest_api")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "rest_execution" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "rest_execution")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
     if "initialization" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "initialization")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
-    if "execution" in metafunc.function.__name__:
+    if "pipeline_execution" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_execution")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 

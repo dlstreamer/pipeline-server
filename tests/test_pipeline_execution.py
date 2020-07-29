@@ -131,7 +131,7 @@ def cmp_results(measured, expected, tolerance):
     return True
 
 
-def test_execution(VAServing, test_case, test_filename, generate, numerical_tolerance):
+def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance):
 
     _test_case = copy.deepcopy(test_case)
 
