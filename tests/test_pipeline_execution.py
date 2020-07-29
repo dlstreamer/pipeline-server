@@ -177,7 +177,6 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     transitions.append(status)
 
     assert transitions[0].state == Pipeline.State.QUEUED
-    assert transitions[1].state == Pipeline.State.RUNNING
     assert transitions[-1].state == Pipeline.State.COMPLETED
 
     VAServing.stop()

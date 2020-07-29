@@ -2,12 +2,12 @@
 	"name": "audio_detection",
 	"type": "GStreamer",
 	"template": ["urisourcebin name=\"source\" ! decodebin ! audioresample ! audioconvert",
-				" ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
-				" ! level name=\"level\"",
-				" ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" model-proc=\"{models[audio_detection][1][proc]}\" name=\"detection\"",
-				" ! gvametaconvert ! gvametapublish name=destination",
-				" ! appsink name=appsink"
-				],
+                " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
+                " ! level name=\"level\"",
+                " ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" model-proc=\"{models[audio_detection][1][proc]}\" name=\"detection\"",
+                " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+                " ! appsink name=appsink"
+                ],
 	"description": "Audio Detection Pipeline",
 	"parameters": {
 		"type": "object",
