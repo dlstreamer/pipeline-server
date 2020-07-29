@@ -73,7 +73,7 @@
             "type": "GStreamer",
             "version": "1"
         },
-	{
+        {
             "description": "Audio Detection Pipeline",
             "name": "audio_detection",
             "parameters": {
@@ -97,10 +97,14 @@
                         "type": "number",
                         "default": 0.2
                     },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
                     "threshold": {
                         "element": "detection",
                         "type": "number"
-		    }
+                    }
                 },
                 "type": "object"
             },
