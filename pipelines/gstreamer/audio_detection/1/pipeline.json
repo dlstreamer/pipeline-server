@@ -12,6 +12,10 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
+			"device": {
+				"element": "detection",
+				"type": "string"
+			},
 			"bus-messages": {
 				"description": "Prints GstBus messages as logger info",
 				"type": "boolean",
@@ -30,10 +34,6 @@
 				"element": "detection",
 				"type": "number",
 				"default": 0.2
-			},
-			"device": {
-				"element": "detection",
-				"type": "string"
 			},
 			"post-messages": {
 				"element": "level",

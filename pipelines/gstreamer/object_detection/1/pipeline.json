@@ -9,6 +9,10 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
+			"device": {
+				"element": "detection",
+				"type": "string"
+			},
 			"inference-interval": {
 				"element": "detection",
 				"type": "integer",

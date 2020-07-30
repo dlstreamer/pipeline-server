@@ -6,6 +6,10 @@
         "name": "object_detection",
         "parameters": {
             "properties": {
+                "device": {
+                    "element": "detection",
+                    "type": "string"
+                },
                 "cpu-throughput-streams": {
                     "element": "detection",
                     "maximum": 4294967295,
