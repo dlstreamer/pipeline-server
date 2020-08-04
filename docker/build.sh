@@ -26,7 +26,7 @@ BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
-DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#preview/audio-detect"
+DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#2401af65982c27307458a1283ea39aaed7ddb681"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
 DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --build-arg ENABLE_RDKAFKA_INSTALLATION=true"
