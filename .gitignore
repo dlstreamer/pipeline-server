@@ -1,3 +1,6 @@
 __pycache__/
 *.txt
+*.generated
+docker/Dockerfile.env
+docker/final.env
 

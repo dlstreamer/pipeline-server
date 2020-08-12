@@ -30,7 +30,8 @@ class GStreamerPipeline(Pipeline):
     Gst.init(None)
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
                                    "GstGvaClassify",
-                                   "GstGvaInference"]
+                                   "GstGvaInference",
+                                   "GvaAudioDetect"]
 
     _inference_element_cache = {}
     _mainloop = None
@@ -74,6 +75,7 @@ class GStreamerPipeline(Pipeline):
         self._bus_connection_id = None
         self._create_delete_lock = Lock()
         self._finished_callback = finished_callback
+        self._bus_messages = False
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
@@ -164,10 +166,18 @@ class GStreamerPipeline(Pipeline):
             return (element["name"], element["property"], element.get("format", None))
         return None
 
+    def _set_bus_messages_flag(self):
+        request_parameters, config_parameters = Pipeline.get_section_and_config(
+            self.request, self.config, ["parameters"],
+            ["parameters", "properties"])
+        bus_msgs = "bus-messages"
+        if bus_msgs in config_parameters and bus_msgs in request_parameters and \
+           isinstance(request_parameters[bus_msgs], bool):
+            self._bus_messages = request_parameters[bus_msgs]
+
     def _set_section_properties(self, request_section, config_section):
         # TODO: refactor
         # pylint: disable=R1702
-
         request, config = Pipeline.get_section_and_config(
             self.request, self.config, request_section, config_section)
 
@@ -205,11 +215,13 @@ class GStreamerPipeline(Pipeline):
                                 " but no element found".format(property_name, element_name))
 
     def _cache_inference_elements(self):
+        model_instance_id = "model-instance-id"
         gva_elements = [(element, element.__gtype__.name + '_'
-                         + element.get_property('model-instance-id'))
+                         + element.get_property(model_instance_id))
                         for element in self.pipeline.iterate_elements()
                         if (element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES
-                            and element.get_property("model-instance-id"))]
+                            and model_instance_id in [x.name for x in element.list_properties()]
+                            and element.get_property(model_instance_id))]
         for element, key in gva_elements:
             if key not in GStreamerPipeline._inference_element_cache:
                 GStreamerPipeline._inference_element_cache[key] = element
@@ -323,6 +335,7 @@ class GStreamerPipeline(Pipeline):
 
             self.pipeline = Gst.parse_launch(self._gst_launch_string)
             self._set_properties()
+            self._set_bus_messages_flag()
             self._set_default_models()
             self._cache_inference_elements()
             sink = self.pipeline.get_by_name("appsink")
@@ -426,11 +439,16 @@ class GStreamerPipeline(Pipeline):
             if message.src == self.pipeline:
                 if old_state == Gst.State.PAUSED and new_state == Gst.State.PLAYING:
                     if self.state is Pipeline.State.ABORTED:
-                        self._shutdown_and_delete_pipeline(Pipeline)
+                        self._shutdown_and_delete_pipeline(Pipeline.State.ABORTED)
                     if self.state is Pipeline.State.QUEUED:
                         logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = Pipeline.State.RUNNING
         else:
-            pass
+            if self._bus_messages:
+                structure = Gst.Message.get_structure(message)
+                if structure:
+                    logger.info("Message header: {name} , Message: {message}".format(
+                        name=Gst.Structure.get_name(structure),
+                        message=Gst.Structure.to_string(structure)))
         return True

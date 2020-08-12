@@ -19,10 +19,12 @@ ARG FRAMEWORK=gstreamer
 # Multi-License Disclaimer
 RUN echo "IMPORTANT: This script will build third party components licensed under various open source licenses into your container images. The terms under which those components may be used and distributed can be found with the license document that is provided with those components. Please familiarize yourself with those terms to ensure your distribution of those components complies with the terms of those licenses."
 
-ARG USER=vaserving
+# Switching to root user to create user and install packages
+USER root
 
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
-RUN useradd -ms /bin/bash -G video,users ${USER} -d /home/video-analytics-serving && \
+ARG USER=vaserving
+RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
     chown ${USER} -R /home/video-analytics-serving /root
 
 # Dependencies installed via apt-get
