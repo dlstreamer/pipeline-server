@@ -433,7 +433,7 @@ To view incremental results, execute the following command from the shell.
 tail -f /tmp/results_audio_events.txt
 ```
 
-As the audio is being analyzed and as objects appear and disappear you will see detection results in the output.
+As the audio is being analyzed and as events start and stop you will see detection results in the output.
 
 Expected Output:
 
