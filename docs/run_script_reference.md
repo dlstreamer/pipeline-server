@@ -1,7 +1,7 @@
 ## Run Script Reference
-Docker images should be run using the `run.sh` script.
+The `run.sh` script passes common options to the underlying `docker run` command.
 
-Use the --help option to see how the use the script. All arguments are optional.
+Use the --help option to see how to use the script. All arguments are optional.
 
 ```
 $ docker/run.sh --help
@@ -40,9 +40,9 @@ In `service` mode this argument does __not__ select the framework used at runtim
 The default value is `gstreamer`.
 
 ### Image (--image)
-The image filename. If not specified default is name is a follows:
-* For `gstreamer` framework: `video-analytics-serving-gstreamer`
-* For `ffmpeg` framework: `video-analytics-serving-ffmpeg`
+The image name. If not specified the default image name is:
+* `video-analytics-serving-gstreamer`, for the `gstreamer` framework
+* `video-analytics-serving-ffmpeg`, for the `ffmpeg` framework
 
 ### Pipeline Directory (--pipelines)
 Path to pipelines folder. Default values depend on mode:
@@ -50,16 +50,19 @@ Path to pipelines folder. Default values depend on mode:
 * for `developer` mode default value is path to pipelines in the local source code ($source_dir/$framework/pipelines). If a different path is specified, the location must be volume mounted using the '-v' option.
 
 ### Model Directory (--models)
-Similar to `--pipelines` but in developer mode default path is $source_dir/models.
+Path to models folder. Treated similar to `--pipelines` but in developer mode default path is $source_dir/models.
 
 ### Developer Mode (--dev)
 This argument runs the image in `developer` mode which configures the environment as follows:
-* VA Serving source code is supplied by the host
-* Framework is defined by the host
-* Pipeline and model paths are assumed to be in local source. If not they are specified, host paths must be voluimed mounted.
-* /tmp and /dev volumes are mounted from host
-* Docker is run in privileged mode
-* If entry point is not set, it is set to /bin/bash
+
+* Starts the container with an interactive bash shell.
+* Volume mounts the local source code, models and pipelines
+  directories. Any changes made to the local files on the host are
+  immediately reflected in the running container. 
+* Volume mounts /tmp and /dev paths from the host.
+* Uses the docker option `--network=host`. All ports and network interfaces for the host are shared with the container.
+* Uses the docker option `--privileged`. Operates the container with elevated privileges.
+
 
 ### Docker run pass-through options
 The following parameters simply map to docker run arguments:

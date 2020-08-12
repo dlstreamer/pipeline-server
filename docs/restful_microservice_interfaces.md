@@ -1,3 +1,14 @@
+## Microservice Endpoints 
+
+| Path | Description |
+|----|------|
+| [`GET` /models](#get-models) | Return supported models. |
+| [`GET` /pipelines](#get-pipelines) | Return supported pipelines. |
+| [`GET` /pipelines/{name}/{version}](#get-pipelinesnameversion)  | Return pipeline description.|
+| [`POST` /pipelines/{name}/{version}](#post-pipelinesnameversion) | Start new pipeline instance. |
+| [`GET` /pipelines/{name}/{version}/{instance_id}](#get-pipelinesnameversioninstance_id) | Return pipeline instance summary. |
+| [`GET` /pipelines/{name}/{version}/{instance_id}/status](#get-pipelinesnameversioninstance_idstatus) | Return pipeline instance status. |
+| [`DELETE` /pipelines/{name}/{version}/{instance_id}](#delete-pipelinesnameversioninstance_id) | Stops a running pipeline or cancels a queued pipeline. |
 
 
 ### `GET` /models
