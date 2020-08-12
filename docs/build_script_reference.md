@@ -1,5 +1,8 @@
 # Docker Build Script Reference
-The `build.sh` script enables customization of the docker image with command line options. Start by getting help
+The `build.sh` script passes common options to the underlying `docker build` commands for the base and derived images. It enables developers the ability to customize the included components.
+
+Use the --help option to see how the use the script. All arguments are optional.
+
 ```
 $ docker/build.sh --help
 usage: build.sh
@@ -50,13 +53,3 @@ Specify and docker build argument when building the base image.
 Set tag of VA serving image you build. Default value is `framework` based.
 * For `gstreamer` framework: `video-analytics-serving-gstreamer`
 * For `ffmpeg` framework: `video-analytics-serving-ffmpeg`
-
-## Compatible base images
-The following base images are compatible:
-* GStreamer Framework
-  * [DL Streamer](https://github.com/opencv/gst-video-analytics/tree/master/docker)
-  * OpenVisualCloud XeonE3 analytics (both [by building](https://github.com/OpenVisualCloud/Dockerfiles/tree/master/XeonE3/ubuntu-18.04/analytics/gst) and [docker hub image](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1604-analytics-gst))
-
-* FFmpeg
-  * [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch)
-  * OpenVisualCloud XeonE3 analytics (both [by building](https://github.com/OpenVisualCloud/Dockerfiles/tree/master/XeonE3/ubuntu-18.04/analytics/ffmpeg) and [docker hub image](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1604-analytics-ffmpeg))  
