@@ -1,6 +1,6 @@
 # Installing a Newer Version of Bash on macOS&reg;*
 
-To use the `build.sh` and `run.sh` on MacOS you must ensure your `bash` is running on the latest version (macOS&reg;* comes with `bash` dating back to 2006). Use a package manager like [`brew`](https://brew.sh) to install it:
+To use the `build.sh` and `run.sh` on macOS&reg;* you must ensure your `bash` is running on the latest version (macOS&reg;* comes with `bash` dating back to 2006). Use a package manager like [`brew`](https://brew.sh) to install it:
 
 ```
 brew install bash                       # Installs latest version of bash.
