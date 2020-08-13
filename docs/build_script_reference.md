@@ -36,7 +36,7 @@ This option is used in conjunction with `--base-build-dockerfile` to specify the
 This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
 
 ## Pipeline Directory (--pipelines)
-Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../README.md#example-pipelines) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
+Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
 
 ## Model Directory (--models)
 Models used by pipelines are expected to be in this directory. It is a relative path from root of video-analytics-serving project. If not specified, models for sample pipelines are included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
