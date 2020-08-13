@@ -125,8 +125,7 @@ deep learning model as discovered and populated by the Video Analytics
 Serving `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
-name. More details are provided in the [Model
-Discovery](#model-discovery) section.
+name. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
 #### More Information
 
