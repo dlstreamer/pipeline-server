@@ -99,7 +99,7 @@ generated automatically or set by using the standard element property:
 `name`. Using the `name` property in a template creates an explicit
 alias for the element that can then be used in the `parameters`
 section of a pipeline definition. More details on parameters can be
-found in the [Parameters](#parameters) section.
+found in the [Pipeline Parameters](#pipeline-parameters) section.
 
 Certain element names also trigger special default handling by the
 Video Analytics Serving modules. For example in the `object_detection`
