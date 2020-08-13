@@ -99,7 +99,7 @@ generated automatically or set by using the standard element property:
 `name`. Using the `name` property in a template creates an explicit
 alias for the element that can then be used in the `parameters`
 section of a pipeline definition. More details on parameters can be
-found in the [Parameters](#parameters) section.
+found in the [Pipeline Parameters](#pipeline-parameters) section.
 
 Certain element names also trigger special default handling by the
 Video Analytics Serving modules. For example in the `object_detection`
@@ -125,8 +125,7 @@ deep learning model as discovered and populated by the Video Analytics
 Serving `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
-name. More details are provided in the [Model
-Discovery](#model-discovery) section.
+name. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
 #### More Information
 
