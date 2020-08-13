@@ -4,7 +4,7 @@
 For instance, GStreamer can be used to build a system that reads files in one format, processes them, and exports them in another.
 
 GStreamer pipelines adhere to the [GStreamer Pipeline Description](https://gstreamer.freedesktop.org/documentation/tools/gst-launch.html?gi-language=c#pipeline-description) and
-consist of an ordered sequence of [elements](#elements), their [configuration properties](#properties), and connections are all specified as a list of strings separated by exclamation
+consist of an ordered sequence of [elements](https://gstreamer.freedesktop.org/documentation/application-development/basics/elements.html?gi-language=c), their [configuration properties](#properties), and connections are all specified as a list of strings separated by exclamation
 marks (!). Internally the GStreamer library constructs a pipeline object that contains the individual elements and handles common operations such as clocking, messaging, and state changes.
 
 **Example:** `gst-launch-1.0 videotestsrc ! ximagesink`
