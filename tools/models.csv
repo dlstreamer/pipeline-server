@@ -1,0 +1,6 @@
+mobilenet-ssd,object_detection,1
+emotions-recognition-retail-0003,emotions_recognition,1
+face-detection-adas-0001,face_detection_adas,1
+face-detection-retail-0004,face_detection_retail,1
+face-reidentification-retail-0095,face_reidentification,1
+landmarks-regression-retail-0009,landmarks_regression,1
