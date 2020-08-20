@@ -71,7 +71,7 @@ $ docker/run.sh -v /tmp:/tmp
 ```
 
 #### Open Visual Cloud Base Image or OpenVINO<sup>&#8482;</sup> Base Image Microservice
-Base image doesn't include gvaaudiodetect element, ignoring missing gvaaudiodetect element error at run time.
+Base image doesn't include gvaaudiodetect element, by default the service will  fail at pipeline loading with missing gvaaudiodetect element. With IGNORE_INIT_ERRORS flag enabled ignoring eroors at service initialization time.
 **Example:**
 
 ```bash
