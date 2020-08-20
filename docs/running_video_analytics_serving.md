@@ -74,6 +74,7 @@ $ docker/run.sh -v /tmp:/tmp
 Since the Open Visual Cloud and OpenVINO base images don't contain the gvaaudiodetect element, the service will fail to start unless we remove the audio_detect pipeline definition that refers to this missing element.
 
 A quick alternative is to allow the service to start normally by enabling IGNORE_INIT_ERRORS.
+
 **Example:**
 
 ```bash
