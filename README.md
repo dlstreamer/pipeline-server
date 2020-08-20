@@ -410,7 +410,7 @@ Pipeline Instance Id
 Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [audio](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/samples/gst_launch/audio_detect/how_are_you_doing.wav?raw=true).
 
 ```bash
-curl localhost:8080/pipelines/object_detection/1 -X POST -H \
+curl localhost:8080/pipelines/audio_detection/1 -X POST -H \
 'Content-Type: application/json' -d \
 '{ 
   "source": {
@@ -433,7 +433,7 @@ To view incremental results, execute the following command from the shell.
 tail -f /tmp/results_audio_events.txt
 ```
 
-As the audio is being analyzed and as events start and stop you will see detection results in the output.
+As the audio is being analyzed and as events detected, you will see detection results in the output.
 
 Expected Output:
 
