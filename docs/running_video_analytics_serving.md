@@ -61,16 +61,17 @@ based image or the `FFmpeg` based image.
 To start the microservice use standard `docker run` commands via the
 provided utility script.
 
+### GStreamer Video Analytics based Microservice
 
-### DL Streamer based Microservice
+#### DL Streamer Base Image Microservice
 **Example:**
 
 ```bash
 $ docker/run.sh -v /tmp:/tmp
 ```
 
-### OpenVINO, Ubuntu 18.0.4 and DL Streamer Support based Microservice
-OpenVINO, Ubuntu 18.0.4 and DL Streamer doesn't include gvaaudiodetect element, ignoring missing gvaaudiodetect element error. 
+#### Open Visual Cloud Base Image or OpenVINO<sup>&#8482;</sup> Base Image Microservice
+Base image doesn't include gvaaudiodetect element, ignoring missing gvaaudiodetect element error at run time.
 **Example:**
 
 ```bash
