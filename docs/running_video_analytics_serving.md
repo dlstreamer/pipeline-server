@@ -69,6 +69,14 @@ provided utility script.
 $ docker/run.sh -v /tmp:/tmp
 ```
 
+### OpenVINO, Ubuntu 18.0.4 and DL Streamer Support based Microservice
+OpenVINO, Ubuntu 18.0.4 and DL Streamer doesn't include gvaaudiodetect element, ignoring missing gvaaudiodetect element error. 
+**Example:**
+
+```bash
+$ docker/run.sh -v /tmp:/tmp -e IGNORE_INIT_ERRORS=True
+```
+
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 
