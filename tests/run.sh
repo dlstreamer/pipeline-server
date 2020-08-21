@@ -4,6 +4,7 @@ WORK_DIR=$(dirname $(readlink -f "$0"))
 FRAMEWORK=gstreamer
 RUN_PYLINT=false
 DEV=
+CI=
 
 #Get options passed into script
 function get_options {
@@ -35,6 +36,9 @@ function get_options {
       --dev)
         DEV=--dev
         ;;
+      --ci)
+        CI="-e TEAMCITY_VERSION=2019.1.3"
+        ;;
       *)
         break
         ;;
@@ -50,6 +54,7 @@ function show_help {
   echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
   echo "  [ --pylint : Set the flag to run the pylint test ] "
   echo "  [ --dev : Bash into the test container ] "
+  echo "  [ --ci : Output results for Team City integration ] "
 }
 
 function error {
@@ -65,10 +70,10 @@ if [ -z "$IMAGE" ]; then
 fi
 
 $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
- -v $WORK_DIR:/home/video-analytics-serving/tests $DEV
+ -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI
 
 if $RUN_PYLINT && [ -z $DEV ] ; then
   $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
-  -v $WORK_DIR:/home/video-analytics-serving/tests \
+  -v $WORK_DIR:/home/video-analytics-serving/tests $CI \
   --entrypoint ./tests/pylint.sh
 fi
