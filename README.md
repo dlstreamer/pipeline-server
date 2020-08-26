@@ -54,12 +54,14 @@ Build the sample microservice with the following command:
 
 The script will automatically include the sample models, pipelines and
 required dependencies.
-
 > **Note:** When running this command for the first time, the default
 > base image for Video Analytics Serving will take a long time to
 > build (likely over an hour).  For instructions on how to re-use
 > pre-built base images to speed up the build time please see the
 > following [documentation](docs/building_video_analytics_serving.md#using-pre-built-media-analytics-base-images).
+
+> **Note:** If the build fails with the error `ModuleNotFoundError: No module named 'skbuild'` 
+> follow instructions in this [github issue](https://github.com/intel/video-analytics-serving/issues/25) for a workaround.
 
 To verify the build succeeded execute the following command:
 
