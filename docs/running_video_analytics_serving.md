@@ -41,7 +41,7 @@ the status of media analytics pipelines.
 # Interacting with the Microservice
 
 The following examples demonstrate how to start and issue requests to
-a Video Analytics Serving Microservice either using the `GStreamer`
+a Video Analytics Serving Microservice either using the `DL Streamer`
 based image or the `FFmpeg` based image.
 
 > **Note:** The following examples assume that the Video Analytics
@@ -50,7 +50,7 @@ based image or the `FFmpeg` based image.
 > Guide](../README.md) or [Building Video Analytics Serving Docker
 > Images](../docs/building_video_analytics_serving.md)
 
-> **Note:** Both the `GStreamer` based microservice and the `FFmpeg`
+> **Note:** Both the `DL Streamer` based microservice and the `FFmpeg`
 > based microservice use the same default port: `8080` and only one
 > can be started at a time. To change the port please see the command
 > line options for the Video Analytics Serving microservice.
@@ -61,24 +61,10 @@ based image or the `FFmpeg` based image.
 To start the microservice use standard `docker run` commands via the
 provided utility script.
 
-### GStreamer Video Analytics based Microservice
-
-#### DL Streamer Base Image Microservice
+### DL Streamer based Microservice
 **Example:**
-
 ```bash
 $ docker/run.sh -v /tmp:/tmp
-```
-
-#### Open Visual Cloud Base Image or OpenVINO<sup>&#8482;</sup> Base Image Microservice
-Since the Open Visual Cloud and OpenVINO base images don't contain the gvaaudiodetect element, the service will fail to start unless we remove the audio_detect pipeline definition that refers to this missing element.
-
-A quick alternative is to allow the service to start normally by enabling IGNORE_INIT_ERRORS.
-
-**Example:**
-
-```bash
-$ docker/run.sh -v /tmp:/tmp -e IGNORE_INIT_ERRORS=True
 ```
 
 ### FFmpeg Video Analytics based Microservice
@@ -209,7 +195,3 @@ vaserving@my-host:~$ python3 -m vaserving
 
 ---
 \* Other names and brands may be claimed as the property of others.
-
-
-
-

@@ -1,5 +1,5 @@
 # Video Analytics Serving
-| [Getting Started](#getting-started) | [Documentation](#further-reading) | [Reference Guides](#further-reading) | [Related Links](#related-links) |
+| [Getting Started](#getting-started) | [Documentation](#further-reading) | [Reference Guides](#further-reading) | [Related Links](#related-links) | [Known Issues](#known-issues) |
 
 Video Analytics Serving is a python package and microservice for
 deploying optimized media analytics pipelines. It supports pipelines
@@ -59,9 +59,6 @@ required dependencies.
 > build (likely over an hour).  For instructions on how to re-use
 > pre-built base images to speed up the build time please see the
 > following [documentation](docs/building_video_analytics_serving.md#using-pre-built-media-analytics-base-images).
-
-> **Note:** If the build fails with the error `ModuleNotFoundError: No module named 'skbuild'` 
-> follow instructions in this [github issue](https://github.com/intel/video-analytics-serving/issues/25) for a workaround.
 
 To verify the build succeeded execute the following command:
 
@@ -483,3 +480,21 @@ After pretty-printing:
 ---
 \* Other names and brands may be claimed as the property of others.
 
+# Known Issues
+## Default GStreamer Build Fails
+If the build fails with the error `ModuleNotFoundError: No module named 'skbuild'`
+follow instructions in this [github issue](https://github.com/intel/video-analytics-serving/issues/25) for a workaround.
+
+## Service Will Not Start Due to Missing Audio Plugin
+`GStreamer` framework base images are expected to include the
+[audio detection inference](https://github.com/opencv/gst-video-analytics/wiki/gvaaudiodetect) plugin `libgstaudioanalytics.so`. If this plugin is missing the audio detection pipeline will not load, see error message below, and the Video Analytics Serving service will not start.
+```
+{"levelname": "ERROR", "asctime": "2020-08-26 01:49:40,114", "message": "Failed to Load Pipeline from: /home/video-analytics-serving/pipelines/audio_detection/1/pipeline.json", "module": "pipeline_manager"}
+```
+Currently this plugin is only present in the DL Streamer audio preview so will be not be in any base images obtained from dockerhub. 
+Thus GStreamer images based on Open Visual Cloud or OpenVINO<sup>&#8482;</sup> will exhibit this problem. 
+
+As a workaround you can configure the service to ignore initialization errors when you start it.
+```bash
+docker/run.sh -v /tmp:/tmp -e IGNORE_INIT_ERRORS=True
+```
