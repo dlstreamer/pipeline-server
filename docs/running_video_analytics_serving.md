@@ -41,7 +41,7 @@ the status of media analytics pipelines.
 # Interacting with the Microservice
 
 The following examples demonstrate how to start and issue requests to
-a Video Analytics Serving Microservice either using the `GStreamer`
+a Video Analytics Serving Microservice either using the `DL Streamer`
 based image or the `FFmpeg` based image.
 
 > **Note:** The following examples assume that the Video Analytics
@@ -50,7 +50,7 @@ based image or the `FFmpeg` based image.
 > Guide](../README.md) or [Building Video Analytics Serving Docker
 > Images](../docs/building_video_analytics_serving.md)
 
-> **Note:** Both the `GStreamer` based microservice and the `FFmpeg`
+> **Note:** Both the `DL Streamer` based microservice and the `FFmpeg`
 > based microservice use the same default port: `8080` and only one
 > can be started at a time. To change the port please see the command
 > line options for the Video Analytics Serving microservice.
@@ -61,10 +61,8 @@ based image or the `FFmpeg` based image.
 To start the microservice use standard `docker run` commands via the
 provided utility script.
 
-
 ### DL Streamer based Microservice
 **Example:**
-
 ```bash
 $ docker/run.sh -v /tmp:/tmp
 ```
@@ -197,7 +195,3 @@ vaserving@my-host:~$ python3 -m vaserving
 
 ---
 \* Other names and brands may be claimed as the property of others.
-
-
-
-
