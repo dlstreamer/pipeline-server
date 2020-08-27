@@ -148,7 +148,9 @@ Return pipeline description.
 ### `POST` /pipelines/{name}/{version}
 <a id="op-post-pipelines-name-version" />
 
-Start new pipeline instance. Four sections are supported by default: source, destination, parameters, and tags. These sections have special handling based on the [default schema](vaserving/schema.py) and/or the schema defined in the pipeline.json file for the requested pipeline.
+Start new pipeline instance. Four sections are supported by default: source, destination, parameters, and tags. 
+These sections have special handling based on the [default schema](/vaserving/schema.py) and/or the schema 
+defined in the pipeline.json file for the requested pipeline.
 
 
 #### Path parameters
