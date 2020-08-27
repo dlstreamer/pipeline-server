@@ -30,15 +30,13 @@ VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Sel
 This is the image that docker builds on. It must contain the full set of framework dependencies needed for either [DL Streamer](https://github.com/opencv/gst-video-analytics) or [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch) and must match the framework selected with the `--framework` option. If a base image is not defined you must provide the location of the Dockerfile to build the base image (see `--base-build-context` and `--base-build-dockerfile`).
 
 ## Base Build Context (--base-build-context)
-This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder. Default values are as follows
-* if framework is `gstreamer` the context is set to [DL Streamer v1.0.0 git URL](https://github.com/opencv/gst-video-analytics.git#v1.0.0)
-* if framework is `ffmpeg` the context is set to [FFmpeg Video Analytics git URL](https://github.com/VCDP/FFmpeg-patch).
+This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder. 
 
 ## Base Build Dockerfile (--base-build-dockerfile)
 This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
 
 ## Pipeline Directory (--pipelines)
-Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../README.md#example-pipelines) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
+Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
 
 ## Model Directory (--models)
 Models used by pipelines are expected to be in this directory. It is a relative path from root of video-analytics-serving project. If not specified, models for sample pipelines are included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
