@@ -3,8 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-
-
 from http import HTTPStatus
 import connexion
 from vaserving.common.utils import logging
@@ -184,7 +182,7 @@ def pipelines_name_version_post(name, version):  # noqa: E501
                 return pipeline_id
             return (err, HTTPStatus.BAD_REQUEST)
         except Exception as error:
-            logger.error('pipelines_name_version_post %s', error)
+            logger.error('Exception in pipelines_name_version_post %s', error)
             return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
 
     return('Invalid Request, Body must be valid JSON', HTTPStatus.BAD_REQUEST)

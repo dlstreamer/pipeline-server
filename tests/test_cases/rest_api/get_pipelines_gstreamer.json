@@ -10,7 +10,13 @@
                 "properties": {
                     "device": {
                         "element": "detection",
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "CPU",
+                            "HDDL",
+                            "GPU",
+                            "VPU"
+                        ]
                     },
                     "cpu-throughput-streams": {
                         "element": "detection",

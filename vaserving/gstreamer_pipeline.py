@@ -89,20 +89,26 @@ class GStreamerPipeline(Pipeline):
         if (GStreamerPipeline._mainloop_thread):
             GStreamerPipeline._mainloop_thread = None
 
-    def _shutdown_and_delete_pipeline(self, new_state):
-        with(self._create_delete_lock):
-            self.state = new_state
-            self.stop_time = time.time()
-            logger.debug("Setting Pipeline {id}"
-                         " State to {next_state}".format(id=self.identifier,
-                                                         next_state=new_state.name))
+    def _delete_pipeline(self, new_state):
+        self.state = new_state
+        self.stop_time = time.time()
+        logger.debug("Setting Pipeline {id}"
+                    " State to {next_state}".format(id=self.identifier,
+                                                    next_state=new_state.name))
+        if self.pipeline:
             bus = self.pipeline.get_bus()
-            bus.remove_signal_watch()
-            bus.disconnect(self._bus_connection_id)
+            if self._bus_connection_id:
+                bus.remove_signal_watch()
+                bus.disconnect(self._bus_connection_id)
+                self._bus_connection_id = None
             self.pipeline.set_state(Gst.State.NULL)
             del self.pipeline
             self.pipeline = None
         self._finished_callback()
+
+    def _delete_pipeline_with_lock(self, new_state):
+        with(self._create_delete_lock):
+            self._delete_pipeline(new_state)
 
     def stop(self):
         with(self._create_delete_lock):
@@ -333,46 +339,52 @@ class GStreamerPipeline(Pipeline):
             logger.debug("Starting Pipeline {id}".format(id=self.identifier))
             logger.debug(self._gst_launch_string)
 
-            self.pipeline = Gst.parse_launch(self._gst_launch_string)
-            self._set_properties()
-            self._set_bus_messages_flag()
-            self._set_default_models()
-            self._cache_inference_elements()
-            sink = self.pipeline.get_by_name("appsink")
+            try:
+                self.pipeline = Gst.parse_launch(self._gst_launch_string)
+                self._set_properties()
+                self._set_bus_messages_flag()
+                self._set_default_models()
+                self._cache_inference_elements()
+                sink = self.pipeline.get_by_name("appsink")
 
-            if sink is not None:
-                sink.set_property("emit-signals", True)
-                sink.set_property('sync', False)
-                sink.connect("new-sample", GStreamerPipeline.on_sample, self)
-                self.avg_fps = 0
+                if sink is not None:
+                    sink.set_property("emit-signals", True)
+                    sink.set_property('sync', False)
+                    sink.connect("new-sample", GStreamerPipeline.on_sample, self)
+                    self.avg_fps = 0
 
-            src = self.pipeline.get_by_name("source")
+                src = self.pipeline.get_by_name("source")
 
-            if src and sink:
-                src_pad = src.get_static_pad("src")
-                if (src_pad):
-                    src_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                      GStreamerPipeline.source_probe_callback, self)
-                else:
-                    src.connect(
-                        "pad-added", GStreamerPipeline.source_pad_added_callback, self)
-                sink_pad = sink.get_static_pad("sink")
-                sink_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                   GStreamerPipeline.appsink_probe_callback, self)
+                if src and sink:
+                    src_pad = src.get_static_pad("src")
+                    if (src_pad):
+                        src_pad.add_probe(Gst.PadProbeType.BUFFER,
+                                        GStreamerPipeline.source_probe_callback, self)
+                    else:
+                        src.connect(
+                            "pad-added", GStreamerPipeline.source_pad_added_callback, self)
+                    sink_pad = sink.get_static_pad("sink")
+                    sink_pad.add_probe(Gst.PadProbeType.BUFFER,
+                                    GStreamerPipeline.appsink_probe_callback, self)
 
-            bus = self.pipeline.get_bus()
-            bus.add_signal_watch()
-            self._bus_connection_id = bus.connect("message", self.bus_call)
-            splitmuxsink = self.pipeline.get_by_name("splitmuxsink")
-            self._real_base = None
+                bus = self.pipeline.get_bus()
+                bus.add_signal_watch()
+                self._bus_connection_id = bus.connect("message", self.bus_call)
+                splitmuxsink = self.pipeline.get_by_name("splitmuxsink")
+                self._real_base = None
 
-            if (not splitmuxsink is None):
-                splitmuxsink.connect("format-location-full",
-                                     self.format_location_callback,
-                                     None)
+                if (not splitmuxsink is None):
+                    splitmuxsink.connect("format-location-full",
+                                        self.format_location_callback,
+                                        None)
 
-            self.pipeline.set_state(Gst.State.PLAYING)
-            self.start_time = time.time()
+                self.pipeline.set_state(Gst.State.PLAYING)
+                self.start_time = time.time()
+            except Exception as error:
+                logger.error("Error on Pipeline {id}: {err}".format(
+                    id=self.identifier, err=error))
+                # Context is already within _create_delete_lock
+                self._delete_pipeline(Pipeline.State.ERROR)
 
     @staticmethod
     def source_pad_added_callback(unused_element, pad, self):
@@ -423,23 +435,23 @@ class GStreamerPipeline(Pipeline):
         message_type = message.type
         if message_type == Gst.MessageType.APPLICATION:
             logger.info("Pipeline {id} Aborted".format(id=self.identifier))
-            self._shutdown_and_delete_pipeline(Pipeline.State.ABORTED)
+            self._delete_pipeline_with_lock(Pipeline.State.ABORTED)
         if message_type == Gst.MessageType.EOS:
             logger.info("Pipeline {id} Ended".format(id=self.identifier))
-            self._shutdown_and_delete_pipeline(Pipeline.State.COMPLETED)
+            self._delete_pipeline_with_lock(Pipeline.State.COMPLETED)
         elif message_type == Gst.MessageType.ERROR:
             err, debug = message.parse_error()
             logger.error(
                 "Error on Pipeline {id}: {err}: {debug}".format(id=self.identifier,
                                                                 err=err,
                                                                 debug=debug))
-            self._shutdown_and_delete_pipeline(Pipeline.State.ERROR)
+            self._delete_pipeline_with_lock(Pipeline.State.ERROR)
         elif message_type == Gst.MessageType.STATE_CHANGED:
             old_state, new_state, unused_pending_state = message.parse_state_changed()
             if message.src == self.pipeline:
                 if old_state == Gst.State.PAUSED and new_state == Gst.State.PLAYING:
                     if self.state is Pipeline.State.ABORTED:
-                        self._shutdown_and_delete_pipeline(Pipeline.State.ABORTED)
+                        self._delete_pipeline_with_lock(Pipeline.State.ABORTED)
                     if self.state is Pipeline.State.QUEUED:
                         logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))

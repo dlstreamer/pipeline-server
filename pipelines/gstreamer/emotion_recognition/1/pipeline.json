@@ -13,7 +13,13 @@
 		"properties": {
 			"device": {
 				"element": "detection",
-				"type": "string"
+				"type": "string",
+				"enum": [
+					"CPU",
+					"HDDL",
+					"GPU",
+					"VPU"
+				]
 			},
 			"inference-interval": {
 				"element": "detection",
