@@ -14,6 +14,7 @@ from collections import namedtuple
 import os
 import sys
 from vaserving.vaserving import VAServing as _VAServing
+import signal
 
 TIMEOUT = 30
 MAX_CONNECTION_ATTEMPTS = 5
@@ -21,9 +22,29 @@ class VAServingService:
 
     VASERVING_ARGS = ["python3", "-m", "vaserving"]
 
-    def __del__(self):
+    def kill(self, timeout=10):
+
+        graceful_exit = True
+        
         if (self._process):
-            self._process.kill()
+            self._process.send_signal(signal.SIGINT)
+            start = time.time()
+            
+            while ((self._process.poll()==None) and ((time.time()-start)<timeout)):
+                time.sleep(1)
+
+            if ((self._process.returncode==None) or (self._process.returncode!=0)):
+                graceful_exit = False
+            else:
+                self._process.kill()
+
+            self._process = None
+
+        return graceful_exit
+
+            
+    def __del__(self):
+        self.kill()
 
     def kill_all(self):
         for proc in psutil.process_iter():
@@ -150,4 +171,4 @@ def VAServing(request):
 def service(request):
     proxy = VAServingService()
     yield proxy
-    del proxy
+    assert proxy.kill(), "VA Serving failed to exit gracefully on sig int"

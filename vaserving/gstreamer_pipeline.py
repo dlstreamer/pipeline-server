@@ -41,10 +41,10 @@ class GStreamerPipeline(Pipeline):
     def gobject_mainloop():
         gi.require_version('Gst', '1.0')
         from gi.repository import GLib
-        GStreamerPipeline._mainloop = GLib.MainLoop()
+        GStreamerPipeline._mainloop = GLib.MainLoop.new(None, False)
         try:
             GStreamerPipeline._mainloop.run()
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, SystemExit):
             pass
 
     def __init__(self, identifier, config, model_manager, request, finished_callback):
@@ -79,6 +79,7 @@ class GStreamerPipeline(Pipeline):
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
+            GStreamerPipeline._mainloop_thread.daemon = True
             GStreamerPipeline._mainloop_thread.start()
 
     @staticmethod
