@@ -6,18 +6,19 @@ Use the --help option to see how to use the script. All arguments are optional.
 ```
 $ docker/run.sh --help
 usage: run.sh
-  [--framework ffmpeg || gstreamer]
   [--image image]
+  [--framework ffmpeg || gstreamer]
+  [--models path to models directory]
+  [--pipelines path to pipelines directory]
   [-v additional volume mount to pass to docker run]
   [-e additional environment to pass to docker run]
   [--entrypoint-args additional parameters to pass to entrypoint in docker run]
   [-p additional ports to pass to docker run]
-  [--network to pass to docker run]
-  [--user to pass to docker run]
-  [--name to pass to docker run]
+  [--network name network to pass to docker run]
+  [--user name of user to pass to docker run]
+  [--name container name to pass to docker run]
+  [--device device to pass to docker run]
   [--dev run in developer mode]
-  [--models path to model directory]
-  [--pipelines path to pipelines directory]
 ```
 
 In the following description, `$source_dir` refers to the root project folder and `$framework` is the selected framework.
@@ -73,4 +74,5 @@ The following parameters simply map to docker run arguments:
   [--network additional network]
   [--user to pass to docker run]
   [--name to pass to docker run]  
+  [--device to pass to docker run] 
 ```
