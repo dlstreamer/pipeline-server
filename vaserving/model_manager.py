@@ -51,7 +51,8 @@ class ModelManager:
         self.network_preference = {'CPU': ["FP32"],
                                    'HDDL': ["FP16"],
                                    'GPU': ["FP16"],
-                                   'VPU': ["FP16"]}
+                                   'VPU': ["FP16"],
+                                   'KMB': ["U8"]}
 
         success = self.load_models(self.model_dir, network_preference)
         if (not ignore_init_errors) and (not success):
@@ -67,11 +68,14 @@ class ModelManager:
         return None
 
     def _get_model_network(self, path):
-        candidates = fnmatch.filter(os.listdir(path), "*.xml")
+        extensions = (".xml",".blob")
+        candidates = [os.path.abspath(os.path.join(path, candidate))
+                    for candidate in os.listdir(path)
+                    if candidate.endswith(extensions)]
         if (len(candidates) > 1):
             raise Exception("Multiple networks found in %s" % (path,))
-        if(len(candidates) == 1):
-            return os.path.abspath(os.path.join(path, candidates[0]))
+        if (len(candidates) == 1):
+            return candidates[0]
         return None
 
     def _get_model_networks(self, path):
