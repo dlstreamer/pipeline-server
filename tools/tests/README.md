@@ -6,3 +6,5 @@ test_default_models.py This test gets the main models.csv file that accompanies 
 
 test_alias_version_directories.py Tests variations of alias and version included or not in terms of directory structure
 
+test_default_models_yml.py This test gets the default models.list.yml file that accompanies the model download tools and checks to see resulting files in IR and model-proc format
+
