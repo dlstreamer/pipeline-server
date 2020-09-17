@@ -5,6 +5,7 @@ import pytest
 from check_directory import check_directory_yml
 
 # Test the default models from models.list.yml
+@pytest.mark.skip(reason="skipping until permission issue on openvino-data-dev image is resolved")
 def test_default_models_yml(tmpdir,capfd):
     workdir_path = tmpdir.strpath
     model_folder_path = os.path.join(workdir_path, 'models')

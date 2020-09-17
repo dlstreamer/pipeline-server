@@ -28,7 +28,7 @@ if __name__ == '__main__':
     args = parse_args()
     print_args(args)
 
-    if os.path.isfile(cfg.model_downloader):  
+    if os.path.isfile(cfg.model_downloader) and os.path.isfile(cfg.model_converter) and os.path.isfile(cfg.model_optimizer):
         download(args.model_list, args.output_dir, args.force)
     else:
         print("Necessary tools needed from OpenVINO not found. Please check if all dependant tools are installed and try again.")
