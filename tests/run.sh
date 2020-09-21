@@ -5,6 +5,8 @@ FRAMEWORK=gstreamer
 RUN_PYLINT=false
 DEV=
 CI=
+ENVIRONMENT=
+PYTEST_ARGS=
 
 #Get options passed into script
 function get_options {
@@ -30,6 +32,14 @@ function get_options {
           error "Image expects a value"
         fi
         ;;
+      --pytest-args)
+        if [ "$2" ]; then
+          PYTEST_ARGS+="--entrypoint-args $2 "
+          shift
+        else
+          error "Pytest-args expects a value"
+        fi
+        ;;
       --pylint)
         RUN_PYLINT=true
         ;;
@@ -38,6 +48,14 @@ function get_options {
         ;;
       --ci)
         CI="-e TEAMCITY_VERSION=2019.1.3"
+        ;;
+      -e)
+        if [ "$2" ]; then
+          ENVIRONMENT+="-e $2 "
+          shift
+        else
+          error "Environment expects a value"
+        fi
         ;;
       *)
         break
@@ -55,6 +73,7 @@ function show_help {
   echo "  [ --pylint : Set the flag to run the pylint test ] "
   echo "  [ --dev : Bash into the test container ] "
   echo "  [ --ci : Output results for Team City integration ] "
+  echo "  [ -e : Add environment variable to container ] "
 }
 
 function error {
@@ -70,7 +89,7 @@ if [ -z "$IMAGE" ]; then
 fi
 
 $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
- -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI
+ -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI $ENVIRONMENT $PYTEST_ARGS
 
 if $RUN_PYLINT && [ -z $DEV ] ; then
   $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \

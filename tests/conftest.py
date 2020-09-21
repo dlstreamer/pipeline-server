@@ -77,7 +77,8 @@ class VAServingService:
             try:
                 message = self.get_log_message(next_line)
                 if message:
-                    if message["levelname"] == "ERROR":
+                    ignore_init_errors = os.getenv('IGNORE_INIT_ERRORS', False)
+                    if message["levelname"] == "ERROR" and not ignore_init_errors:
                         raise Exception(next_line)
 
                     if message["message"] == "Starting Tornado Server on port: 8080":

@@ -6,5 +6,4 @@ SOURCE_DIR=$(dirname $SCRIPT_DIR)
 # ./pytest.sh --framework ffmpeg -k valid_pipeline_ffmpeg -vv
 
 PYTEST_PARAMS="$@"
-
-cd ${SOURCE_DIR}; python3 -m pytest -s --cov=vaserving $PYTEST_PARAMS
+cd ${SOURCE_DIR}; python3 -m pytest -s --cov=vaserving "$PYTEST_PARAMS"

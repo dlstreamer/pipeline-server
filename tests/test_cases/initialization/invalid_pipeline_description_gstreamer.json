@@ -1,5 +1,6 @@
 {
     "options": {
+	    "ignore_init_errors" : "False"
     },
     "exception": {"type":"Exception","value":"Error Initializing Pipelines"}
 }
