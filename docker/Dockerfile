@@ -105,4 +105,6 @@ FROM ${FINAL_STAGE} as deploy
 
 ARG USER=vaserving
 
+ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
+
 USER ${USER}

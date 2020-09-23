@@ -120,6 +120,22 @@
                         "maximum": 64,
                         "minimum": 1,
                         "type": "integer"
+                    },
+                    "max-size-time": {
+                        "element": "splitmuxsink",
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 200000000000,
+                        "default": 2000000000
+                    },
+                    "recording_prefix": {
+                        "default": "/tmp/vaserving",
+                        "element": {
+                            "name": "splitmuxsink",
+                            "property": "location"
+                        },
+                        "type": "string"
+
                     }
                 },
                 "type": "object"

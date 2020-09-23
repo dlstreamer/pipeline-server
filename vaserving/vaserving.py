@@ -136,7 +136,10 @@ class __VAServing:
             self._stopped = False
 
     def __del__(self):
-        self.stop()
+        try:
+            self.stop()
+        except Exception:
+            pass
 
     def wait(self):
         for instance in self.pipeline_instances():
