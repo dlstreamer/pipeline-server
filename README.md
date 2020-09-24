@@ -283,7 +283,7 @@ Pipeline Instance Id
 Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/head-pose-face-detection-male.gif).
 
 ```bash
-curl localhost:8080/pipelines/object_detection/1 -X POST -H \
+curl localhost:8080/pipelines/emotion_recognition/1 -X POST -H \
 'Content-Type: application/json' -d \
 '{ 
   "source": {
