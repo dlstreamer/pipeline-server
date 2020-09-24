@@ -42,11 +42,26 @@ def create_directory(directory, remove=True):
     print_action("Creating: {}".format(directory))
     os.makedirs(directory,exist_ok=True)
 
-def create_download_command(model, output_dir):
-    return shlex.split("python3 {0} --name {1} -o {2}".format(cfg.model_downloader,
-                                                              model,
+def create_download_command(model_name, output_dir, precisions):
+    if precisions != None:
+        return shlex.split("python3 {0} --name {1} --precisions {2} -o {3}".format(cfg.model_downloader,
+                                                              model_name,
+                                                              ','.join(map(str,precisions)),
+                                                              output_dir))
+    else:
+        return shlex.split("python3 {0} --name {1} -o {2}".format(cfg.model_downloader,
+                                                              model_name,
                                                               output_dir))
 
-def create_convert_command(model, output_dir):
-    return shlex.split("python3 {0} -d {2} --name {1} -o {2} --mo {3}".format(cfg.model_converter,
-                                                                           model,output_dir,cfg.model_optimizer))
+def create_convert_command(model_name, output_dir, precisions):
+    if precisions != None:
+        return shlex.split("python3 {0} -d {3} --name {1} --precisions {2} -o {3} --mo {4}".format(cfg.model_converter,
+                                                                              model_name,
+                                                                              ','.join(map(str,precisions)),
+                                                                              output_dir,
+                                                                              cfg.model_optimizer))
+    else:
+        return shlex.split("python3 {0} -d {2} --name {1} -o {2} --mo {3}".format(cfg.model_converter,
+                                                                              model_name,
+                                                                              output_dir,
+                                                                              cfg.model_optimizer))

@@ -47,13 +47,19 @@ def find_model_proc(model):
         return os.path.abspath('{0}.json'.format(model))
 
 def download_and_convert_model(target_root, model, force):
+    precisions = None
     if isinstance(model, dict):
         model_name = model.get('model', None)
+        alias = model.get('alias', None)
+        precisions = model.get('precision', None)
         if model_name != None:
-            target_model = os.path.join(target_root, model_name)
+            if alias != None:
+                target_model = os.path.join(target_root, alias)
+            else:
+                target_model = os.path.join(target_root, model_name)
         else:
-            print("Model name not present for {0}. Skipping this model.".format(model))
-            return
+            print("Model name not present for {0}. Exiting.".format(model))
+            exit(1)
         model_version = model.get('version', None)
         if model_version != None:
             target_model = os.path.join(target_model, str(model_version))
@@ -64,26 +70,28 @@ def download_and_convert_model(target_root, model, force):
         target_model = os.path.join(os.path.join(target_root, model_name), "1")
 
     if (not force) and (os.path.isdir(target_model)):
-        print("Model Directory {0} Exists - Skipping".format(model_name))
+        print("Model Directory {0} Exists - Skipping".format(target_model))
         return
         
     with tempfile.TemporaryDirectory() as output_dir:
-        command = create_download_command(model_name,output_dir)
+        command = create_download_command(model_name, output_dir, precisions)
         print(' '.join(command))
         result = subprocess.run(command)
         if result.returncode != 0:
-            return
-        command = create_convert_command(model_name,output_dir)
+            print("Error occured while downloading {0} model. Please remove from input yml file and try again.".format(model_name))
+            exit (1)
+        command = create_convert_command(model_name, output_dir, precisions)
         print(' '.join(command))
         subprocess.run(command)
         
-        model_path = find_model_root(model_name,output_dir)
+        model_path = find_model_root(model_name, output_dir)
 
+        if os.path.isdir(target_model):
+            #print("Directory {0} already exists, overwriting it.".format(target_model))
+            shutil.rmtree(target_model)
         for filename in os.listdir(model_path):
             if os.path.isdir(os.path.join(model_path,filename)):
-                if os.path.isdir(os.path.join(target_model,filename)):
-                    shutil.rmtree(os.path.join(target_model,filename))
-                shutil.move(os.path.join(model_path,filename),os.path.join(target_model,filename))
+                shutil.move(os.path.join(model_path, filename),os.path.join(target_model, filename))
        
         model_proc = find_model_proc(model_name)
         shutil.move(model_proc, os.path.join(target_model, '{}.json'.format(model_name)))
@@ -93,9 +101,9 @@ def download(model_list_path, output_dir, force):
     model_list = load_document(model_list_path)
     if model_list == None:
         print("Exception while loading yaml file. File could be malformed. Please check the format and retry.")
-        return
+        exit(1)
 
-    target_root = os.path.join(output_dir,"models")
+    target_root = os.path.join(output_dir, "models")
     
     create_directory(target_root,False)
 
