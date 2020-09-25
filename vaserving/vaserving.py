@@ -181,8 +181,7 @@ class __VAServing:
                 for pipeline in self.pipeline_manager.get_loaded_pipelines()]
 
     def pipeline(self, name, version):
-        if (isinstance(version, int)):
-            version = str(version)
+        version = str(version)
         return self.PipelineProxy(self,
                                   self.pipeline_manager.get_pipeline_parameters(
                                       name, version),

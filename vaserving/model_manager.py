@@ -68,10 +68,10 @@ class ModelManager:
         return None
 
     def _get_model_network(self, path):
-        extensions = (".xml",".blob")
+        extensions = (".xml", ".blob")
         candidates = [os.path.abspath(os.path.join(path, candidate))
-                    for candidate in os.listdir(path)
-                    if candidate.endswith(extensions)]
+                      for candidate in os.listdir(path)
+                      if candidate.endswith(extensions)]
         if (len(candidates) > 1):
             raise Exception("Multiple networks found in %s" % (path,))
         if (len(candidates) == 1):
@@ -115,6 +115,14 @@ class ModelManager:
                                   net=self.network_preference[device], model=model))
         return model
 
+    def convert_version(self, version):
+        #To support both int and string versions
+        try:
+            version = int(version)
+        except Exception:
+            pass
+        return version
+
     def load_models(self, model_dir, network_preference):
         #TODO: refactor
         #pylint: disable=R1702
@@ -149,7 +157,7 @@ class ModelManager:
                 for version in os.listdir(model_path):
                     version_path = os.path.join(model_path, version)
                     if (os.path.isdir(version_path)):
-                        version = int(version)
+                        version = self.convert_version(version)
                         proc = self._get_model_proc(version_path)
                         networks = self._get_model_networks(
                             version_path)
@@ -175,7 +183,8 @@ class ModelManager:
                                              "type: {} from {}".format(
                                                  model_name, version, "IntelDLDT", network_paths))
                         else:
-                            raise Exception("%s/%s is missing Model-Proc or Network" % (model_name, version))
+                            raise Exception("{model}/{ver} is missing Model-Proc or Network"
+                                            .format(model=model_name, ver=version))
 
             except Exception as error:
                 error_occurred = True

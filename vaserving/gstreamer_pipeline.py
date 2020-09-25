@@ -94,8 +94,8 @@ class GStreamerPipeline(Pipeline):
         self.state = new_state
         self.stop_time = time.time()
         logger.debug("Setting Pipeline {id}"
-                    " State to {next_state}".format(id=self.identifier,
-                                                    next_state=new_state.name))
+                     " State to {next_state}".format(id=self.identifier,
+                                                     next_state=new_state.name))
         if self.pipeline:
             bus = self.pipeline.get_bus()
             if self._bus_connection_id:
@@ -360,13 +360,13 @@ class GStreamerPipeline(Pipeline):
                     src_pad = src.get_static_pad("src")
                     if (src_pad):
                         src_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                        GStreamerPipeline.source_probe_callback, self)
+                                          GStreamerPipeline.source_probe_callback, self)
                     else:
                         src.connect(
                             "pad-added", GStreamerPipeline.source_pad_added_callback, self)
                     sink_pad = sink.get_static_pad("sink")
                     sink_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                    GStreamerPipeline.appsink_probe_callback, self)
+                                       GStreamerPipeline.appsink_probe_callback, self)
 
                 bus = self.pipeline.get_bus()
                 bus.add_signal_watch()
@@ -376,8 +376,8 @@ class GStreamerPipeline(Pipeline):
 
                 if (not splitmuxsink is None):
                     splitmuxsink.connect("format-location-full",
-                                        self.format_location_callback,
-                                        None)
+                                         self.format_location_callback,
+                                         None)
 
                 self.pipeline.set_state(Gst.State.PLAYING)
                 self.start_time = time.time()

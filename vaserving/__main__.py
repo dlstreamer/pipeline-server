@@ -22,7 +22,7 @@ def main(options):
         logger.info("Starting Tornado Server on port: %s", options.port)
         app.run(server='tornado', port=options.port)
     except Exception as error:
-        logger.error("Error Starting Tornado Server")
+        logger.error("Error Starting Tornado Server: %s", error)
 
 if __name__ == '__main__':
     
