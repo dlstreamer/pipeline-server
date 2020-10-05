@@ -2,11 +2,11 @@
 
 WORK_DIR=$(dirname $(readlink -f "$0"))
 FRAMEWORK=gstreamer
-RUN_PYLINT=false
-DEV=
+INTERACTIVE=--non-interactive
 CI=
 ENVIRONMENT=
-PYTEST_ARGS=
+ENTRYPOINT_ARGS=
+ENTRYPOINT=
 
 #Get options passed into script
 function get_options {
@@ -34,17 +34,18 @@ function get_options {
         ;;
       --pytest-args)
         if [ "$2" ]; then
-          PYTEST_ARGS+="--entrypoint-args $2 "
+          ENTTRYPOINT_ARGS+="--entrypoint-args $2 "
           shift
         else
           error "Pytest-args expects a value"
         fi
         ;;
       --pylint)
-        RUN_PYLINT=true
+        ENTRYPOINT="--entrypoint ./tests/pylint.sh"
         ;;
       --dev)
         DEV=--dev
+        unset INTERACTIVE
         ;;
       --ci)
         CI="-e TEAMCITY_VERSION=2019.1.3"
@@ -70,7 +71,7 @@ function show_help {
   echo "usage: run.sh"
   echo "  [ --image : Specify the image to run the tests on ]"
   echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
-  echo "  [ --pylint : Set the flag to run the pylint test ] "
+  echo "  [ --pylint : Run the pylint test ] "
   echo "  [ --dev : Bash into the test container ] "
   echo "  [ --ci : Output results for Team City integration ] "
   echo "  [ -e : Add environment variable to container ] "
@@ -88,11 +89,5 @@ if [ -z "$IMAGE" ]; then
   IMAGE=video-analytics-serving-$FRAMEWORK-tests:latest
 fi
 
-$WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
- -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI $ENVIRONMENT $PYTEST_ARGS
-
-if $RUN_PYLINT && [ -z $DEV ] ; then
-  $WORK_DIR/../docker/run.sh --image $IMAGE --non-interactive \
-  -v $WORK_DIR:/home/video-analytics-serving/tests $CI \
-  --entrypoint ./tests/pylint.sh
-fi
+$WORK_DIR/../docker/run.sh --image $IMAGE  \
+  -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS
