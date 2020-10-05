@@ -1,7 +1,6 @@
 {
     "body": {},
     "path": "pipelines",
-    "sort_key":"name",
     "result": [
         {
             "description": "Emotion Recognition Pipeline",

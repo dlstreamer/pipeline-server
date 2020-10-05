@@ -52,9 +52,11 @@ def test_rest_api(service, test_case, test_filename, generate):
                 sort_key = test_case['sort_key']
                 expected = sorted(expected, key=lambda x: x[sort_key])
                 comparison = sorted(comparison, key=lambda x: x[sort_key])
-
+                assert comparison == expected, "Response Value Mismatch"
             else:
-                expected = sorted(expected)
-                comparison = sorted(comparison)
+                assert len(comparison) == len(expected), "Response List Length Mismatch"
+                for entry in expected:
+                    assert entry in comparison, "Response Value Mismatch"
 
-        assert comparison == expected, "Response Value Mismatch"
+
+
