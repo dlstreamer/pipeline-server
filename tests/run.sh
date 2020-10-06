@@ -32,9 +32,9 @@ function get_options {
           error "Image expects a value"
         fi
         ;;
-      --pytest-args)
+      --pytest-args|--pytest-arg|--pylint-arg)
         if [ "$2" ]; then
-          ENTTRYPOINT_ARGS+="--entrypoint-args $2 "
+          ENTRYPOINT_ARGS+="--entrypoint-args $2 "
           shift
         else
           error "Pytest-args expects a value"
