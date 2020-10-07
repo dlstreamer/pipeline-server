@@ -1,0 +1,7 @@
+{
+    "type": "GStreamer",
+    "template": ["appsrc ",
+		 " ! gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]}",
+		 " ! appsink"],
+    "description": "Object Detection Pipeline"
+}

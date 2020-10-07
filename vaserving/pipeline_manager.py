@@ -129,7 +129,8 @@ class PipelineManager:
                                         error_occurred = True
 
                             except Exception as error:
-                                del pipelines[pipeline][version]
+                                if (pipeline in pipelines) and (version in pipelines[pipeline]):
+                                    del pipelines[pipeline][version]
                                 self.logger.error(
                                     "Failed to Load Pipeline from: {}".format(path))
                                 self.logger.error(

@@ -15,11 +15,13 @@ import gi
 from gstgva.util import GVAJSONMeta
 from vaserving.pipeline import Pipeline
 from vaserving.common.utils import logging
-
+from vaserving.app_source import AppSource
+from vaserving.app_destination import AppDestination
 
 # pylint: disable=wrong-import-order, wrong-import-position
-from gi.repository import Gst
 gi.require_version('Gst', '1.0')
+gi.require_version('GstApp', '1.0')
+from gi.repository import Gst, GstApp, GLib
 # pylint: enable=wrong-import-order, wrong-import-position
 
 
@@ -76,6 +78,10 @@ class GStreamerPipeline(Pipeline):
         self._create_delete_lock = Lock()
         self._finished_callback = finished_callback
         self._bus_messages = False
+        self.appsrc_element = None
+        self._app_source = None
+        self.appsink_element = None
+        self._app_destination = None
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
@@ -105,6 +111,10 @@ class GStreamerPipeline(Pipeline):
             self.pipeline.set_state(Gst.State.NULL)
             del self.pipeline
             self.pipeline = None
+        if self._app_source:
+            self._app_source.finish()
+        if self._app_destination:
+            self._app_destination.finish()
         self._finished_callback()
 
     def _delete_pipeline_with_lock(self, new_state):
@@ -199,7 +209,10 @@ class GStreamerPipeline(Pipeline):
                             config[key]["element"], key)]
 
                     for element_name, property_name, format_type in element_properties:
-                        element = self.pipeline.get_by_name(element_name)
+                        if (element_name == "source"):
+                            element = self._get_source()
+                        else:
+                            element = self.pipeline.get_by_name(element_name)
                         if element:
                             if (property_name in [x.name for x in element.list_properties()]):
                                 if (format_type == "json"):
@@ -245,14 +258,22 @@ class GStreamerPipeline(Pipeline):
             element.set_property("model", network)
 
     @staticmethod
+    def _get_elements_by_type(pipeline, type_strings):
+        return [ element for element in pipeline.iterate_elements() if element.__gtype__.name in type_strings ]
+
+
+    @staticmethod
     def validate_config(config):
         template = config["template"]
         pipeline = Gst.parse_launch(template)
-        appsink = pipeline.get_by_name("appsink")
+        appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline,["GstAppSink"])
         metaconvert = pipeline.get_by_name("metaconvert")
         metapublish = pipeline.get_by_name("destination")
-        if appsink is None:
-            logger.warning("Missing appsink element")
+        appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline,["GstAppSrc"])
+        if (len(appsrc_elements)>1):
+            logger.warning("Multiple appsrc elements found")
+        if len(appsink_elements)!=1:
+            logger.warning("Missing or multiple appsink elements")
         if metaconvert is None:
             logger.warning("Missing metaconvert element")
         if metapublish is None:
@@ -322,10 +343,19 @@ class GStreamerPipeline(Pipeline):
                                           self.request["destination"]["type"], "properties"])
         self._set_section_properties(["source"],
                                      ["source", "properties"])
+
         if "source" in self.request and "type" in self.request["source"]:
             self._set_section_properties(["source"],
                                          ["source", self.request["source"]["type"], "properties"])
         self._set_section_properties([], [])
+
+
+    def _get_source(self):
+        src = self.pipeline.get_by_name("source")
+        if (not src):
+            for src in self.pipeline.iterate_sources():
+                break
+        return src
 
     def start(self):
 
@@ -346,16 +376,12 @@ class GStreamerPipeline(Pipeline):
                 self._set_bus_messages_flag()
                 self._set_default_models()
                 self._cache_inference_elements()
+
+                src = self._get_source()
+
                 sink = self.pipeline.get_by_name("appsink")
-
-                if sink is not None:
-                    sink.set_property("emit-signals", True)
-                    sink.set_property('sync', False)
-                    sink.connect("new-sample", GStreamerPipeline.on_sample, self)
-                    self.avg_fps = 0
-
-                src = self.pipeline.get_by_name("source")
-
+                if (not sink):
+                    sink = self.pipeline.get_by_name("sink")
                 if src and sink:
                     src_pad = src.get_static_pad("src")
                     if (src_pad):
@@ -379,6 +405,8 @@ class GStreamerPipeline(Pipeline):
                                          self.format_location_callback,
                                          None)
 
+                self._set_application_source()
+                self._set_application_destination()
                 self.pipeline.set_state(Gst.State.PLAYING)
                 self.start_time = time.time()
             except Exception as error:
@@ -386,6 +414,72 @@ class GStreamerPipeline(Pipeline):
                     id=self.identifier, err=error))
                 # Context is already within _create_delete_lock
                 self._delete_pipeline(Pipeline.State.ERROR)
+
+
+    def _set_application_destination(self):
+        self._app_destination = None
+        self.appsink_element = None
+
+        app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline,["GstAppSink"])
+        if (app_sink_elements):
+            self.appsink_element = app_sink_elements[0]
+
+        if "destination" in self.request and self.request["destination"]["type"] == "application":
+
+            self._app_destination = AppDestination.create_app_destination(self.request, self)
+
+            if (not self._app_destination) or (not self.appsink_element):
+                raise Exception("Unsupported Application Destination: {}".format(self.request["destination"]["class"]))
+
+        if self.appsink_element is not None:
+            self.appsink_element.set_property("emit-signals", True)
+            self.appsink_element.set_property('sync', False)
+            self.avg_fps = 0
+
+            if (self._app_destination):
+                self.appsink_element.connect("new-sample", self.on_sample_app_destination)
+            else:
+                self.appsink_element.connect("new-sample", self.on_sample)
+
+    def on_need_data_app_source(self, src, length):
+        try:
+            self._app_source.start_frames()
+        except Exception as error:
+            logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
+                id=self.identifier, err=error))
+            src.post_message(Gst.Message.new_error(src,GLib.GError(),"AppSource: {}".format(str(error))))
+
+    def on_enough_data_app_source(self, src):
+        try:
+            self._app_source.pause_frames()
+        except Exception as error:
+            logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
+                id=self.identifier, err=error))
+            src.post_message(Gst.Message.new_error(src,GLib.GError(),"AppSource: {}".format(str(error))))
+
+    def _set_application_source(self):
+        self._app_source = None
+        self.appsrc_element = None
+
+        if self.request["source"]["type"] == "application":
+
+            appsrc_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, ["GstAppSrc"])
+
+            if (len(appsrc_elements) == 1):
+                self.appsrc_element = appsrc_elements[0]
+
+            self._app_source = AppSource.create_app_source(self.request, self)
+
+            if (not self._app_source) or (not self.appsrc_element):
+                raise Exception("Unsupported Application Source: {}".format(self.request["source"]["class"]))
+
+            self.appsrc_element.set_property("format",Gst.Format.TIME)
+            self.appsrc_element.set_property("block",True)
+            self.appsrc_element.set_property("do-timestamp",True)
+            self.appsrc_element.set_property("is-live",True)
+            self.appsrc_element.set_property("emit-signals",True)
+            self.appsrc_element.connect('need-data',self.on_need_data_app_source)
+            self.appsrc_element.connect('enough-data',self.on_enough_data_app_source)
 
     @staticmethod
     def source_pad_added_callback(unused_element, pad, self):
@@ -410,8 +504,22 @@ class GStreamerPipeline(Pipeline):
             self.count_pipeline_latency += 1
         return Gst.PadProbeReturn.OK
 
-    @staticmethod
-    def on_sample(sink, self):
+    def on_sample_app_destination(self, sink):
+        logger.debug("Received Sample from Pipeline {id}".format(
+            id=self.identifier))
+        sample = sink.emit("pull-sample")
+        result = Gst.FlowReturn.OK
+        try:
+            self._app_destination.process_frame(sample)
+        except Exception as error:
+            logger.error("Error on Pipeline {id}: Error in App Destination: {err}".format(
+                id=self.identifier, err=error))
+            result = Gst.FlowReturn.ERROR
+        self.frame_count += 1
+        self.avg_fps = self.frame_count / (time.time() - self.start_time)
+        return result
+
+    def on_sample(self, sink):
 
         logger.debug("Received Sample from Pipeline {id}".format(
             id=self.identifier))

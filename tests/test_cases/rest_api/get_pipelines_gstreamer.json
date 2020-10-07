@@ -3,23 +3,168 @@
     "path": "pipelines",
     "result": [
         {
+            "description": "Audio Detection Pipeline",
+            "name": "audio_detection",
+            "parameters": {
+                "properties": {
+                    "bus-messages": {
+                        "default": false,
+                        "description": "Prints GstBus messages as logger info",
+                        "type": "boolean"
+                    },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "output-buffer-duration": {
+                        "default": 100000000,
+                        "element": "audiomixer",
+                        "type": "integer"
+                    },
+                    "post-messages": {
+                        "element": "level",
+                        "type": "boolean"
+                    },
+                    "sliding-window": {
+                        "default": 0.2,
+                        "element": "detection",
+                        "type": "number"
+                    },
+                    "threshold": {
+                        "element": "detection",
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "1"
+        },
+        {
+            "description": "Decode Pipeline",
+            "name": "video_decode",
+            "type": "GStreamer",
+            "version": "app_dst"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "cpu-throughput-streams": {
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "inference-interval": {
+                        "default": 1,
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "max-size-time": {
+                        "default": 2000000000,
+                        "element": "splitmuxsink",
+                        "maximum": 200000000000,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "n-threads": {
+                        "default": 1,
+                        "element": "videoconvert",
+                        "type": "integer"
+                    },
+                    "nireq": {
+                        "default": 2,
+                        "element": "detection",
+                        "maximum": 64,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "recording_prefix": {
+                        "default": "/tmp/vaserving",
+                        "element": {
+                            "name": "splitmuxsink",
+                            "property": "location"
+                        },
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "2"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "type": "GStreamer",
+            "version": "app_src_dst"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "cpu-throughput-streams": {
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "inference-interval": {
+                        "default": 1,
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "n-threads": {
+                        "default": 1,
+                        "element": "videoconvert",
+                        "type": "integer"
+                    },
+                    "nireq": {
+                        "default": 2,
+                        "element": "detection",
+                        "maximum": 64,
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "1"
+        },
+        {
             "description": "Emotion Recognition Pipeline",
             "name": "emotion_recognition",
             "parameters": {
                 "properties": {
+                    "cpu-throughput-streams": {
+                        "element": "detection",
+                        "type": "integer"
+                    },
                     "device": {
                         "element": "detection",
-                        "type": "string",
                         "enum": [
                             "CPU",
                             "HDDL",
                             "GPU",
                             "VPU"
-                        ]
-                    },
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "type": "integer"
+                        ],
+                        "type": "string"
                     },
                     "inference-interval": {
                         "default": 1,
@@ -39,140 +184,6 @@
                         "maximum": 1024,
                         "minimum": 1,
                         "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "1"
-        },
-        {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
-                        "type": "integer"
-                    },
-                    "inference-interval": {
-                        "default": 1,
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "n-threads": {
-                        "default": 1,
-                        "element": "videoconvert",
-                        "type": "integer"
-                    },
-                    "nireq": {
-                        "default": 2,
-                        "element": "detection",
-                        "maximum": 64,
-                        "minimum": 1,
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "1"
-        },
-        {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
-                        "type": "integer"
-                    },
-                    "inference-interval": {
-                        "default": 1,
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "n-threads": {
-                        "default": 1,
-                        "element": "videoconvert",
-                        "type": "integer"
-                    },
-                    "nireq": {
-                        "default": 2,
-                        "element": "detection",
-                        "maximum": 64,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "max-size-time": {
-                        "element": "splitmuxsink",
-                        "type": "integer",
-                        "minimum": 1,
-                        "maximum": 200000000000,
-                        "default": 2000000000
-                    },
-                    "recording_prefix": {
-                        "default": "/tmp/vaserving",
-                        "element": {
-                            "name": "splitmuxsink",
-                            "property": "location"
-                        },
-                        "type": "string"
-
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "2"
-        },
-        {
-            "description": "Audio Detection Pipeline",
-            "name": "audio_detection",
-            "parameters": {
-                "properties": {
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "bus-messages": {
-                        "description": "Prints GstBus messages as logger info",
-                        "type": "boolean",
-                        "default": false
-                    },
-                    "output-buffer-duration": {
-                        "default": 100000000,
-                        "element": "audiomixer",
-                        "type": "integer"
-                    },
-                    "post-messages": {
-                        "element": "level",
-                        "type": "boolean"
-                    },
-                    "sliding-window": {
-                        "element": "detection",
-                        "type": "number",
-                        "default": 0.2
-                    },
-                    "threshold": {
-                        "element": "detection",
-                        "type": "number"
                     }
                 },
                 "type": "object"

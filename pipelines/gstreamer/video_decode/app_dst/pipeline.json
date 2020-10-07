@@ -1,0 +1,7 @@
+{
+    "type": "GStreamer",
+    "template": ["uridecodebin ",
+		 " ! appsink "],
+    "description": "Decode Pipeline"
+
+}

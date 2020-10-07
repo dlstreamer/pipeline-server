@@ -22,6 +22,19 @@ tags = {
 
 
 source = {
+    "application":{
+        "type": "object",
+        "properties": {
+            "type": {
+                "type":"string",
+                "enum":["application"]
+            },
+            "class":{
+                "type":"string"
+            }
+        },
+        "required":["type","class"]
+    },
     "uri": {
         "type": "object",
         "properties": {
@@ -58,11 +71,27 @@ source = {
         },
         {
             "$ref": "#/device"
+        },
+        {
+            "$ref": "#/application"
         }
     ]
 }
 
 destination = {
+    "application": {
+        "type":"object",
+        "properties": {
+            "type": {
+                "type":"string",
+                "enum":["application"]
+            },
+            "class": {
+                "type":"string"
+            }
+        },
+        "required":["type","class"]
+    },
     "file": {
         "type": "object",
         "properties": {
@@ -197,6 +226,9 @@ destination = {
         },
         {
             "$ref": "#/file"
+        },
+        {
+            "$ref": "#/application"
         }
     ]
 }
