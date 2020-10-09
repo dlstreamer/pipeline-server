@@ -209,10 +209,7 @@ class GStreamerPipeline(Pipeline):
                             config[key]["element"], key)]
 
                     for element_name, property_name, format_type in element_properties:
-                        if (element_name == "source"):
-                            element = self._get_source()
-                        else:
-                            element = self.pipeline.get_by_name(element_name)
+                        element = self.pipeline.get_by_name(element_name)
                         if element:
                             if (property_name in [x.name for x in element.list_properties()]):
                                 if (format_type == "json"):
@@ -259,7 +256,8 @@ class GStreamerPipeline(Pipeline):
 
     @staticmethod
     def _get_elements_by_type(pipeline, type_strings):
-        return [ element for element in pipeline.iterate_elements() if element.__gtype__.name in type_strings ]
+        return [element for element in pipeline.iterate_elements()
+                if element.__gtype__.name in type_strings]
 
 
     @staticmethod
@@ -350,7 +348,7 @@ class GStreamerPipeline(Pipeline):
         self._set_section_properties([], [])
 
 
-    def _get_source(self):
+    def _get_any_source(self):
         src = self.pipeline.get_by_name("source")
         if (not src):
             for src in self.pipeline.iterate_sources():
@@ -377,7 +375,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_default_models()
                 self._cache_inference_elements()
 
-                src = self._get_source()
+                src = self._get_any_source()
 
                 sink = self.pipeline.get_by_name("appsink")
                 if (not sink):
@@ -428,8 +426,10 @@ class GStreamerPipeline(Pipeline):
 
             self._app_destination = AppDestination.create_app_destination(self.request, self)
 
-            if (not self._app_destination) or (not self.appsink_element):
-                raise Exception("Unsupported Application Destination: {}".format(self.request["destination"]["class"]))
+            if ((not self._app_destination) or (not self.appsink_element)
+                    or (not self.appsink_element.name == "destination")):
+                raise Exception("Unsupported Application Destination: {}".format(
+                    self.request["destination"]["class"]))
 
         if self.appsink_element is not None:
             self.appsink_element.set_property("emit-signals", True)
@@ -447,7 +447,8 @@ class GStreamerPipeline(Pipeline):
         except Exception as error:
             logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
                 id=self.identifier, err=error))
-            src.post_message(Gst.Message.new_error(src,GLib.GError(),"AppSource: {}".format(str(error))))
+            src.post_message(Gst.Message.new_error(src, GLib.GError(),
+                                                   "AppSource: {}".format(str(error))))
 
     def on_enough_data_app_source(self, src):
         try:
@@ -455,7 +456,8 @@ class GStreamerPipeline(Pipeline):
         except Exception as error:
             logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
                 id=self.identifier, err=error))
-            src.post_message(Gst.Message.new_error(src,GLib.GError(),"AppSource: {}".format(str(error))))
+            src.post_message(Gst.Message.new_error(src, GLib.GError(),
+                                                   "AppSource: {}".format(str(error))))
 
     def _set_application_source(self):
         self._app_source = None
@@ -463,23 +465,24 @@ class GStreamerPipeline(Pipeline):
 
         if self.request["source"]["type"] == "application":
 
-            appsrc_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, ["GstAppSrc"])
+            appsrc_element = self.pipeline.get_by_name("source")
 
-            if (len(appsrc_elements) == 1):
-                self.appsrc_element = appsrc_elements[0]
+            if (appsrc_element) and (appsrc_element.__gtype__.name == "GstAppSrc"):
+                self.appsrc_element = appsrc_element
 
             self._app_source = AppSource.create_app_source(self.request, self)
 
             if (not self._app_source) or (not self.appsrc_element):
-                raise Exception("Unsupported Application Source: {}".format(self.request["source"]["class"]))
+                raise Exception("Unsupported Application Source: {}".format(
+                    self.request["source"]["class"]))
 
-            self.appsrc_element.set_property("format",Gst.Format.TIME)
-            self.appsrc_element.set_property("block",True)
-            self.appsrc_element.set_property("do-timestamp",True)
-            self.appsrc_element.set_property("is-live",True)
-            self.appsrc_element.set_property("emit-signals",True)
-            self.appsrc_element.connect('need-data',self.on_need_data_app_source)
-            self.appsrc_element.connect('enough-data',self.on_enough_data_app_source)
+            self.appsrc_element.set_property("format", Gst.Format.TIME)
+            self.appsrc_element.set_property("block", True)
+            self.appsrc_element.set_property("do-timestamp", True)
+            self.appsrc_element.set_property("is-live", True)
+            self.appsrc_element.set_property("emit-signals", True)
+            self.appsrc_element.connect('need-data', self.on_need_data_app_source)
+            self.appsrc_element.connect('enough-data', self.on_enough_data_app_source)
 
     @staticmethod
     def source_pad_added_callback(unused_element, pad, self):
