@@ -49,6 +49,21 @@ def parse_args(args=None,program_name="App Source and Destination Sample"):
                         choices=["pull", "push"],
                         default="pull")
 
+    parser.add_argument("--pipeline", action="store",
+                        dest="pipeline",
+                        required=False,
+                        default="object_detection")
+
+    parser.add_argument("--version", action="store",
+                        dest="pipeline_version",
+                        required=False,
+                        default="app_src_dst")
+
+    parser.add_argument("--parameters", action="store",
+                        dest="parameters",
+                        required=False,
+                        default=None)
+
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
@@ -66,9 +81,13 @@ if __name__=="__main__":
 
     VAServing.start({'log_level': 'INFO', "ignore_init_errors":True})
 
+    parameters = None
+    if args.parameters:
+        parameters = json.loads(args.parameters)
+
     # Start object detection pipeline
     # It will wait until it receives frames via the detect_input queue
-    detect_pipeline = VAServing.pipeline("object_detection", "app_src_dst")
+    detect_pipeline = VAServing.pipeline(args.pipeline, args.pipeline_version)
     detect_pipeline.start(source={"type": "application",
                                   "class": "GStreamerAppSource",
                                   "input": detect_input,
@@ -76,7 +95,8 @@ if __name__=="__main__":
                           destination={"type": "application",
                                        "class": "GStreamerAppDestination",
                                        "output": detect_output,
-                                       "mode": "frames"})
+                                       "mode": "frames"},
+                          parameters= parameters)
 
     # Start decode only pipeline.
     # Its only purpose is to generate decoded frames to be fed into the object detection pipeline
@@ -122,11 +142,20 @@ if __name__=="__main__":
 
                 print("Frame: sequence_number:{} timestamp:{}".format(timestamp["sequence_number"],
                                                                     timestamp["timestamp"]))
-                if (regions) and (len(regions)):
-                    for region in regions:
-                        print("\tRegion: {}, Label: {}".format(region.rect(), region.label()))
-                else:
+                if not regions:
                     print("Nothing detected")
+
+                for region in regions:
+                    print("\tDetection: Region = {}, Label = {}".format(region.rect(), region.label()))
+                    object_id =region.object_id()
+                    if object_id:
+                        print("\tTracking: object_id = {}".format(object_id))
+                    tensors=list(region.tensors())
+                    for tensor in tensors:
+                        if not tensor.is_detection():
+                            layer_name = tensor["layer_name"]
+                            label = tensor["label"]
+                            print("\tClassification: {} = {}".format(layer_name, label))
                 print()
 
     print("Received {} results".format(result_count))
