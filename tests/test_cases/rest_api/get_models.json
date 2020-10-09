@@ -1,15 +1,28 @@
 {
     "body": {},
     "path": "models",
-    "sort_key":"name",
+    "sort_key": "name",
     "result": [
+        {
+            "description": "object_detection",
+            "name": "object_detection",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml",
+                    "FP32": "/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
+        },
         {
             "description": "landmarks_regression",
             "name": "landmarks_regression",
             "networks": {
                 "model-proc": "/home/video-analytics-serving/models/landmarks_regression/1/landmarks-regression-retail-0009.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/landmarks_regression/1/FP16/landmarks-regression-retail-0009-fp16.xml",
+                    "FP16": "/home/video-analytics-serving/models/landmarks_regression/1/FP16/landmarks-regression-retail-0009.xml",
                     "FP32": "/home/video-analytics-serving/models/landmarks_regression/1/FP32/landmarks-regression-retail-0009.xml"
                 }
             },
@@ -17,41 +30,26 @@
             "version": 1
         },
         {
-            "description": "face_reidentification",
-            "name": "face_reidentification",
+            "description": "person_vehicle_bike_detection",
+            "name": "person_vehicle_bike_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_reidentification/1/face-reidentification-retail-0095.json",
+                "model-proc": "/home/video-analytics-serving/models/person_vehicle_bike_detection/1/person-vehicle-bike-detection-crossroad-0078.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_reidentification/1/FP16/face-reidentification-retail-0095-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_reidentification/1/FP32/face-reidentification-retail-0095.xml"
+                    "FP16": "/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP16/person-vehicle-bike-detection-crossroad-0078.xml",
+                    "FP32": "/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP32/person-vehicle-bike-detection-crossroad-0078.xml"
                 }
             },
             "type": "IntelDLDT",
             "version": 1
         },
         {
-            "description": "emotion_recognition",
-            "name": "emotion_recognition",
+            "description": "vehicle_attributes_recognition",
+            "name": "vehicle_attributes_recognition",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/emotion_recognition/1/emotions-recognition-retail-0003.json",
+                "model-proc": "/home/video-analytics-serving/models/vehicle_attributes_recognition/1/vehicle-attributes-recognition-barrier-0039.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/emotion_recognition/1/FP16/emotions-recognition-retail-0003-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/emotion_recognition/1/FP32/emotions-recognition-retail-0003.xml",
-                    "INT8": "/home/video-analytics-serving/models/emotion_recognition/1/INT8/emotions-recognition-retail-0003-int8.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": 1
-        },
-        {
-            "description": "object_detection",
-            "name": "object_detection",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml",
-                    "INT8": "/home/video-analytics-serving/models/object_detection/1/INT8/mobilenet-ssd-int8.xml"
+                    "FP16": "/home/video-analytics-serving/models/vehicle_attributes_recognition/1/FP16/vehicle-attributes-recognition-barrier-0039.xml",
+                    "FP32": "/home/video-analytics-serving/models/vehicle_attributes_recognition/1/FP32/vehicle-attributes-recognition-barrier-0039.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -63,23 +61,8 @@
             "networks": {
                 "model-proc": "/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml",
-                    "INT8": "/home/video-analytics-serving/models/face_detection_retail/1/INT8/face-detection-retail-0004-int8.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": 1
-        },
-        {
-            "description": "face_detection_adas",
-            "name": "face_detection_adas",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_detection_adas/1/face-detection-adas-0001.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_detection_adas/1/FP16/face-detection-adas-0001-fp16.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_detection_adas/1/FP32/face-detection-adas-0001.xml",
-                    "INT8": "/home/video-analytics-serving/models/face_detection_adas/1/INT8/face-detection-adas-0001-int8.xml"
+                    "FP16": "/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml",
+                    "FP32": "/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -93,6 +76,45 @@
                 "networks": {
                     "FP16": "/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml",
                     "FP32": "/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
+        },
+        {
+            "description": "emotion_recognition",
+            "name": "emotion_recognition",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/emotion_recognition/1/emotions-recognition-retail-0003.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/emotion_recognition/1/FP16/emotions-recognition-retail-0003.xml",
+                    "FP32": "/home/video-analytics-serving/models/emotion_recognition/1/FP32/emotions-recognition-retail-0003.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
+        },
+        {
+            "description": "person_attributes_recognition",
+            "name": "person_attributes_recognition",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/person_attributes_recognition/1/person-attributes-recognition-crossroad-0230.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/person_attributes_recognition/1/FP16/person-attributes-recognition-crossroad-0230.xml",
+                    "FP32": "/home/video-analytics-serving/models/person_attributes_recognition/1/FP32/person-attributes-recognition-crossroad-0230.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": 1
+        },
+        {
+            "description": "age_gender_recognition",
+            "name": "age_gender_recognition",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/age_gender_recognition/1/age-gender-recognition-retail-0013.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/age_gender_recognition/1/FP16/age-gender-recognition-retail-0013.xml",
+                    "FP32": "/home/video-analytics-serving/models/age_gender_recognition/1/FP32/age-gender-recognition-retail-0013.xml"
                 }
             },
             "type": "IntelDLDT",

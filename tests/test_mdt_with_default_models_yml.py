@@ -1,5 +1,4 @@
 import os
-import sys
 import subprocess
 import pytest
 
@@ -32,15 +31,14 @@ def check_directory(path, name, alias, version=1, precision="FP32"):
 @pytest.mark.skip(reason="skipping until permission issue on openvino-data-dev image is resolved")
 def test_mdt_with_default_models_yml(tmpdir,capfd):
     workdir_path = tmpdir.strpath
-    model_folder_path = os.path.join(workdir_path, 'models')
     model_download_tool_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../tools/model_downloader')
-    model_yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../tools/model_downloader/models.list.yml')
+    model_yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../models/models.list.yml')
     # Run the tool
-    results = subprocess.run(['python3', model_download_tool_path, '--model-list', model_yml_path, '--output-dir', workdir_path, '--force'])
+    results = subprocess.run(['python3', model_download_tool_path, '--model-list', model_yml_path, '--output-dir', workdir_path, '--force'], check=False)
 
     # Set the path of expected output based on the yml file
-    model_names = ["mobilenet-ssd", "emotions-recognition-retail-0003", "face-detection-adas-0001", "landmarks-regression-retail-0009", "face-detection-retail-0004", ]
-    alias_names = ["object_detection", "emotion_recognition", "face_detection_adas", "landmarks_regression", "face_detection_retail"]
+    model_names = ["mobilenet-ssd", "emotions-recognition-retail-0003", "landmarks-regression-retail-0009", "face-detection-retail-0004"]
+    alias_names = ["object_detection", "emotion_recognition", "landmarks_regression", "face_detection_retail"]
     version = 1
 
     if results.returncode != 0:

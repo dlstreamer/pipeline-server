@@ -5,7 +5,6 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 import os
-import sys
 import config as cfg
 from arguments import parse_args
 from downloader import download
@@ -19,7 +18,7 @@ def print_args(args):
     print(heading)
     print(banner)
     for arg in vars(args):
-        print ("\t{} == {}".format(arg, getattr(args, arg)))
+        print("\t{} == {}".format(arg, getattr(args, arg)))
     print()
 
 

@@ -11,7 +11,7 @@ the tool while in developer mode in Docker (`./docker/run.sh --dev`).
 The tool will download models from Open Model Zoo(OMZ), so it will need network access.
 
 The tool accepts as input argument a yaml file that will have the model info in it. The yaml file can provide model name and the downloader will get all the model precisions from OMZ.
-If no input file given, by default the tool looks for a `models.list.yml` file inside the model_downloader folder. This file will list a model name, alias, version and precision. Alias, version and precision are optional. If none provided, the default values for these would be:
+If no input file given, by default the tool looks for the `models.list.yml` file inside the models folder. This file will list a model name, alias, version and precision. Alias, version and precision are optional. If none provided, the default values for these would be:
 * alias = model name
 * version = 1
 * precision = all available precisions

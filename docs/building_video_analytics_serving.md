@@ -88,7 +88,13 @@ By default the Video Analytics Serving build scripts include a set of sample pip
 ./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst --pipelines /path/to/my-pipelines --models /path/to/my-models 
 ```
 
+VA Serving includes by default the models listed in `models.list.yml` in the models folder. These models are downloaded and converted to IR format during the build using the [model download tool](../tools/model_downloader/README.md).  
+The above example shows a directory being passed as argument to `--models` option. When its a directory name, the models are expected to be there. You can also pass a yml file as input with a list of models you wish to be included from Open Model Zoo.
 
+**Example:**
+```bash
+./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst --pipelines /path/to/my-pipelines --models /path/to/my-models.list.yml
+```
 ---
 \* Other names and brands may be claimed as the property of others.
 
