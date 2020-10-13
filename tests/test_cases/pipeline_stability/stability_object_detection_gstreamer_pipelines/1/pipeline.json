@@ -6,10 +6,6 @@
 				" ! appsink name=appsink"
 				],
 	"description": "Object Detection Pipeline",
-	"pipeline": {
-        "name": "stability",
-        "version": 1
-    },
 	"parameters": {
 		"type": "object",
 		"properties": {

@@ -1,7 +1,7 @@
 {
 	"name": "audio_detection",
 	"type": "GStreamer",
-	"template": ["multifilesrc location=/home/video-analytics-serving/samples/how_are_you_doing.wav loop=True ! decodebin ! audioresample ! audioconvert",
+	"template": ["multifilesrc location=/home/video-analytics-serving/samples/how_are_you_doing.wav loop=True ! wavparse ignore-length=1 ! decodebin ! audioresample ! audioconvert",
                 " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
                 " ! level name=\"level\"",
                 " ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" model-proc=\"{models[audio_detection][1][proc]}\" name=\"detection\"",
@@ -9,10 +9,6 @@
                 " ! appsink name=appsink"
                 ],
 	"description": "Audio Detection Pipeline",
-	"pipeline": {
-        "name": "stability",
-        "version": 1
-    },
 	"parameters": {
 		"type": "object",
 		"properties": {
