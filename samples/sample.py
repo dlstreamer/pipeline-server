@@ -196,6 +196,7 @@ def launch_pipelines(options):
                                              verbose=options.verbose)
         pipeline_stats.append(wait_for_pipeline(started_instance_id,
                                                 options.pipeline,
+                                                options.version,
                                                 verbose=options.verbose))
         read_detection_results(options.destination,
                                verbose=options.verbose)
