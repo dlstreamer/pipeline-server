@@ -112,6 +112,18 @@ def pytest_addoption(parser):
     parser.addoption("--generate", action="store_true", help="generate expected results", default=False)
     parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg', 'gstreamer'], default=os.environ["FRAMEWORK"])
     parser.addoption("--numerical_tolerance", help="percentage numerical difference to tolerate", type=float, default=0.0001)
+    parser.addoption("--stability", action="store_true", help="run stability tests", default=False)
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "stability: run stability tests")
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--stability"):
+        return
+    skip_stability = pytest.mark.skip(reason="add --stability option to run stability tests")
+    for item in items:
+        if "stability" in item.keywords:
+            item.add_marker(skip_stability)
 
 @pytest.fixture
 def numerical_tolerance(request):
@@ -157,6 +169,9 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
     if "pipeline_execution" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_execution")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "pipeline_stability" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "pipeline_stability")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 
     print(metafunc.fixturenames)
