@@ -173,6 +173,9 @@ def pytest_generate_tests(metafunc):
     if "pipeline_stability" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_stability")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "pipeline_performance" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "pipeline_performance")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 
     print(metafunc.fixturenames)
     print(metafunc.function, flush=True)
