@@ -216,7 +216,7 @@ get_options() {
         show_help
     fi
 
-    if [ -f "$MODELS" ]; then
+    if [ -f "$SOURCE_DIR/$MODELS" ]; then
         VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving"
         if [ -z "$OPEN_MODEL_ZOO_VERSION" ] && [ $FRAMEWORK = 'ffmpeg' ]; then
             OPEN_MODEL_ZOO_VERSION=2020.3
@@ -225,10 +225,10 @@ get_options() {
         fi
         $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /home/video-analytics-serving/$MODELS --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
         MODELS_PATH=models
-    elif [ -d "$MODELS" ]; then
+    elif [ -d "$SOURCE_DIR/$MODELS" ]; then
         MODELS_PATH=$MODELS
     else
-        error 'ERROR: "'$MODELS'" does not exist.'
+        error 'ERROR: "'$SOURCE_DIR/$MODELS'" does not exist.'
     fi
 
     if [ -z "$PIPELINES" ]; then
