@@ -21,6 +21,12 @@ COPY tests/ /home/video-analytics-serving/tests/
 COPY samples/ /home/video-analytics-serving/samples/
 COPY .pylintrc /home/video-analytics-serving/
 
+# Copy and rename for stringified version
+
+RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version; cp -rf /home/video-analytics-serving/models/emotion_recognition/1/* /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version
+
+RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1; cp -rf /home/video-analytics-serving/models/face_detection_retail/1/*   /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1
+
 ARG USER=vaserving
 
 USER ${USER}

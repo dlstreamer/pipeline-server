@@ -90,4 +90,4 @@ if [ -z "$IMAGE" ]; then
 fi
 
 $WORK_DIR/../docker/run.sh --image $IMAGE  \
-  -v $WORK_DIR:/home/video-analytics-serving/tests $DEV $CI $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS
+  $DEV $CI $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS
