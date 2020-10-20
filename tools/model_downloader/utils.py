@@ -15,7 +15,7 @@ def load_document(document_path):
     try:
         with open(document_path) as document_file:
             if document_path.endswith('.yml'):
-                document = yaml.full_load(document_file)
+                document = yaml.safe_load(document_file)
             else:
                 print("Please make sure model list file is in correct yml file format.")
                 print("Expected Schema: ")
