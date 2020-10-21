@@ -14,19 +14,3 @@
   alias: face_detection_retail
   version: 1
   precision: [FP16,FP32]
-- model: age-gender-recognition-retail-0013
-  alias: age_gender_recognition
-  version: 1
-  precision: [FP16,FP32]
-- model: person-vehicle-bike-detection-crossroad-0078
-  alias: person_vehicle_bike_detection
-  version: 1
-  precision: [FP16,FP32]
-- model: person-attributes-recognition-crossroad-0230
-  alias: person_attributes_recognition
-  version: 1
-  precision: [FP16,FP32]
-- model: vehicle-attributes-recognition-barrier-0039
-  alias: vehicle_attributes_recognition
-  version: 1
-  precision: [FP16,FP32]
