@@ -8,7 +8,7 @@ $ docker/build.sh --help
 usage: build.sh
   [--base base image]
   [--framework ffmpeg || gstreamer]
-  [--models path to models directory or path to model list file relative to /path/to/video-analytics-serving or NONE]
+  [--models path to models directory or model list file or NONE]
   [--pipelines path to pipelines directory relative to /path/to/Projects/video-analytics-serving or NONE]
   [--base-build-context docker context for building base image]
   [--base-build-dockerfile docker file used to build base image]
@@ -39,7 +39,7 @@ This option is used in conjunction with `--base-build-context` to specify the do
 Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
 
 ## Model Directory/File List (--models)
-This option can be used to specify path to model directory or a model list file. When its a directory, models used by pipelines are expected to be in this directory. It is a relative path from root of video-analytics-serving project. When its a file, the models listed in the file are downloaded and converted to IR format if needed by the [model download tool](../tools/model_downloader/README.md) during build time. If nothing is specified, default models listed in the file `models/models.list.yml` are downloaded, converted to IR format if needed and included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
+This option can be used to specify path to models directory or a model list file. When its a directory, models used by pipelines are expected to be in this directory. When its a file, the models listed in the file are downloaded and converted to IR format if needed by the [model download tool](../tools/model_downloader/README.md) during build time. If nothing is specified, default models listed in the file `models_list/models.list.yml` are downloaded, converted to IR format if needed and included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
 
 ## Build Arg (--build-arg)
 Specify a docker build argument when building the VA Serving image.

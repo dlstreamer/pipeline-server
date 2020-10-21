@@ -5,13 +5,17 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
+
+DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
+SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+
 BASE_IMAGE=
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
 USER_BASE_BUILD_ARGS=
-MODELS=models/models.list.yml
-MODELS_PATH=
+MODELS=$SOURCE_DIR/models_list/models.list.yml
+MODELS_PATH=models
 PIPELINES=
 FRAMEWORK=
 TAG=
@@ -21,8 +25,7 @@ ENVIRONMENT_FILES=()
 DOCKER_RUN_ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n' ' ')
 TARGET="deploy"
 
-DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
-SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host "
@@ -98,7 +101,7 @@ get_options() {
             ;;
         --models)
             if [ "$2" ]; then
-                MODELS=$2
+                MODELS=$(realpath $2)
                 shift
             else
                 error 'ERROR: "--models" requires an argument.'
@@ -216,19 +219,31 @@ get_options() {
         show_help
     fi
 
-    if [ -f "$SOURCE_DIR/$MODELS" ]; then
-        VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving"
+    if [ -f "$MODELS" ]; then
         if [ -z "$OPEN_MODEL_ZOO_VERSION" ] && [ $FRAMEWORK = 'ffmpeg' ]; then
             OPEN_MODEL_ZOO_VERSION=2020.3
         elif [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
             OPEN_MODEL_ZOO_VERSION=2020.4
         fi
-        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /home/video-analytics-serving/$MODELS --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
-        MODELS_PATH=models
-    elif [ -d "$SOURCE_DIR/$MODELS" ]; then
-        MODELS_PATH=$MODELS
+        YML_DIR=$(dirname "${MODELS}")
+        YML_FILE_NAME=$(basename "${MODELS}")
+        VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
+        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
+
+        #TODO: remove below if condition once aclnet model downloads with model downloader
+        if [ $MODELS = $(realpath $SOURCE_DIR/models_list/models.list.yml) ] && [ -d $SOURCE_DIR/models_list/audio_detection ] ; then
+            if [ ! -d "$SOURCE_DIR/models/audio_detection" ]; then
+                mkdir $SOURCE_DIR/models/audio_detection
+            fi
+            cp -R $SOURCE_DIR/models_list/audio_detection/. $SOURCE_DIR/models/audio_detection
+        fi    
+    elif [ -d "$MODELS" ]; then
+        if [ ! -d "$SOURCE_DIR/models" ]; then
+            mkdir $SOURCE_DIR/models
+        fi
+        cp -R $MODELS/. $SOURCE_DIR/models
     else
-        error 'ERROR: "'$SOURCE_DIR/$MODELS'" does not exist.'
+        error 'ERROR: "'$MODELS'" does not exist.'
     fi
 
     if [ -z "$PIPELINES" ]; then
@@ -305,7 +320,7 @@ show_help() {
     echo "usage: build.sh"
     echo "  [--base base image]"
     echo "  [--framework ffmpeg || gstreamer]"
-    echo "  [--models path to model directory or path to model list file relative to $SOURCE_DIR or NONE]"
+    echo "  [--models path to models directory or model list file or NONE]"
     echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
     echo "  [--force-model-download force the download of models from Open Model Zoo]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
