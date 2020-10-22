@@ -41,38 +41,32 @@ from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
 from gstgva.video_frame import VideoFrame
 from threading import Thread
 from contextlib import contextmanager
-
-from vaserving_server import VAServingServer
+from vaserving.vaserving import VAServing
+from media_graph_extension import MediaGraphExtension
 import grpc
 import extension_pb2_grpc
 from concurrent import futures
 
-# pylint: disable=wrong-import-order, wrong-import-position
-gi.require_version('Gst', '1.0')
-gi.require_version('GstApp', '1.0')
-from gi.repository import Gst, GstApp
-# pylint: enable=wrong-import-order, wrong-import-position
-
-source_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-
-def parse_args(args=None,program_name="Protocol Server Application Sample"):
+def parse_args(args=None, program_name="VA Serving AI Extension"):
 
     parser = argparse.ArgumentParser(prog=program_name,fromfile_prefix_chars='@',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("-p", action="store", dest="port",
                         help='Port number to serve gRPC server',
-                        type=int, default=5001)
+                        type=int, default=int(os.getenv('PORT', "5001")))
 
     parser.add_argument("--pipeline-name", action="store",
                         dest="pipeline",
                         help='name of the pipeline to run',
-                        type=str, default=os.getenv('PIPELINE_NAME', 'object_detection'))
+                        type=str, default=os.getenv('PIPELINE_NAME',
+                                                    'object_detection'))
 
     parser.add_argument("--pipeline-version", action="store",
                         dest="version",
                         help='name of the pipeline to run',
-                        type=str, default=os.getenv('PIPELINE_VERSION', 'person_vehicle_bike_detection'))
+                        type=str, default=os.getenv('PIPELINE_VERSION',
+                                                    'person_vehicle_bike_detection'))
 
 
     if (isinstance(args, dict)):
@@ -82,19 +76,25 @@ def parse_args(args=None,program_name="Protocol Server Application Sample"):
     return parser.parse_args(args)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
 
     args = parse_args()
     try:
+        VAServing.start({'log_level': 'INFO', "ignore_init_errors":True})
+    
+        
         # create gRPC server and start running
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=3))
-        extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(VAServingServer(args.pipeline, args.version), server)
-        print("Pipeline Name",args.pipeline)
-        print("Pipeline Version",args.version)
+        extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(
+            MediaGraphExtension(args.pipeline, args.version), server)
+        print("Pipeline Name", args.pipeline)
+        print("Pipeline Version", args.version)
         server.add_insecure_port(f'[::]:{args.port}')
-        print("Starting Protocol Server Application on port",args.port)
+        print("Starting Protocol Server Application on port", args.port)
         server.start()
         server.wait_for_termination()
-    except:
-        exit(-1)
+        VAServing.stop()
 
+    except:
+        VAServing.stop()
+        exit(-1)

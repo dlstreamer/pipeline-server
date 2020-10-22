@@ -20,6 +20,9 @@ COPY ./ /home/video-analytics-serving/tests/
 #COPY samples/ /home/video-analytics-serving/samples/
 #COPY .pylintrc /home/video-analytics-serving/
 
+ENV PIPELINE_NAME 'object_detection'
+ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
+
 ARG USER=vaserving
 
 USER ${USER}

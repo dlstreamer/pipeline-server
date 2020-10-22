@@ -26,7 +26,7 @@ import linecache
 import sys
 import logging
 
-def PrintGetExceptionDetails():
+def log_exception(logger = None):
     exType, exValue, exTraceback = sys.exc_info()
 
     tbFrame = exTraceback.tb_frame
@@ -38,6 +38,9 @@ def PrintGetExceptionDetails():
 
     exMessage = 'Exception:\n\tFile name: {0}\n\tLine number: {1}\n\tLine: {2}\n\tValue: {3}'.format(fileName, lineNo, line.strip(), exValue)
 
-    logging.info(exMessage)
+    if (logger):
+        logger.info(exMessage)
+    else:
+        logging.info(exMessage)
 
     return exType, exValue, exTraceback

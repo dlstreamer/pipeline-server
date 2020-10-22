@@ -11,8 +11,8 @@ def test_lva_client_server():
     if not os.getenv('PIPELINE_NAME') and not os.getenv('PIPELINE_VERSION'):
         print("LVA environment not detected, skipping test")
         return
-    server_args = [ "python3", "/server/protocol_server_application.py", "-p", str(port)]
-    client_args = [ "python3", "/client/client.py", "-s", "127.0.0.1:" + str(port), "-l", str(loops), "-f", "/client/sampleframes/sample01.png"]
+    server_args = [ "python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port)]
+    client_args = [ "python3", "/home/video-analytics-serving/samples/lva_ai_extension/client", "-s", "127.0.0.1:" + str(port), "-l", str(loops), "-f", "/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png"]
     print(' '.join(server_args))
     server_process = subprocess.Popen(server_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True)
     time.sleep(sleep_period)

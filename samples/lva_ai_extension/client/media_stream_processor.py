@@ -4,200 +4,212 @@ import cv2
 import os
 import time
 
-from utils.exception_handler import PrintGetExceptionDetails
-from utils.shared_memory import SharedMemoryManager
+from samples.lva_ai_extension.common.exception_handler import log_exception
+from samples.lva_ai_extension.common.shared_memory import SharedMemoryManager
 
-import media_pb2
-import extension_pb2
-import extension_pb2_grpc
+import samples.lva_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
+import samples.lva_ai_extension.common.grpc_autogen.extension_pb2 as extension_pb2
+import samples.lva_ai_extension.common.grpc_autogen.extension_pb2_grpc as extension_pb2_grpc
 
 
 class MediaStreamProcessor:
     class RequestGenerator():
         def __init__(self, parent):
             try:
-                self._requestSeqNum = 1
-                self._mediaStreamProcessor = parent
+                self._request_seq_num = 1
+                self._media_stream_processor = parent
 
-                self._descriptorSent = False
+                self._descriptor_sent = False
             except:
-                PrintGetExceptionDetails()
+                log_exception()
                 raise
 
         def __iter__(self):
             return self
 
         def __next__(self):
-            if self._descriptorSent is not True:
+            request = None
+            if not self._descriptor_sent:
                 # Return first message
-                mediaSampleMessage = self._mediaStreamProcessor.GetMediaStreamDescriptorMessage(self._requestSeqNum)
-                self._descriptorSent = True
+                request = self._media_stream_processor.get_media_stream_descriptor_message(
+                    self._request_seq_num)
+                self._descriptor_sent = True
             else:
-                if self._mediaStreamProcessor._loopCount > 0:
-                    mediaSampleMessage = self._mediaStreamProcessor.GetMediaSampleMessage(self._requestSeqNum)
-                    self._mediaStreamProcessor._loopCount -= 1
+                if self._media_stream_processor.loop_count > 0:
+                    request = self._media_stream_processor.get_media_sample_message(
+                        self._request_seq_num)
+                    self._media_stream_processor.loop_count -= 1
                 else:
                     raise StopIteration
-            
-            self._requestSeqNum += 1
-            return mediaSampleMessage
+          
+            self._request_seq_num += 1
+            return request
 
-    def __init__(self, grpcServerAddress, mediaSourceAddress, loopCount, sharedMemoryFlag):
+    def __init__(self, grpc_server_address,
+                 media_source_address,
+                 loop_count,
+                 use_shared_memory):
         try:
-            self._grpcServerAddress = grpcServerAddress  # Full address including port number i.e. "localhost:44001"
-            self._mediaSourceAddress = mediaSourceAddress # Full path to video file name, IP Camera address
-            self._loopCount = loopCount # how many time the sample will be send to aix server
-            self._useSharedMemory = sharedMemoryFlag
+            self._grpc_server_address = grpc_server_address  # Full address including port number i.e. "localhost:44001"
+            self._media_source_address = media_source_address # Full path to video file name, IP Camera address
+            self.loop_count = loop_count # how many time the sample will be send to aix server
+            self._use_shared_memory = use_shared_memory
 
             # Just make the sample frame ready to be sent to inference server
-            self._cvImageSampleFrame = cv2.imread(mediaSourceAddress, cv2.IMREAD_COLOR)
+            self._image = cv2.imread(media_source_address, cv2.IMREAD_COLOR)
+            self._height, self._width, _ = self._image.shape
             # AIX Server sample requires the images sent to pre-sized as 416x416 size. This size is requirement by Tiny Yolo V3. 
             # You may prefer to update the sample server code to resize the received images into 416x416 independent from their original 
             # size. But since LVA have the capability of sending any size image requested, why create redundent computation cycle? 
             # So in this aix_client (which mimics LVA), we resize the sample video frames into 416x416 size.
-            self._cvImageSampleFrame = cv2.resize(self._cvImageSampleFrame, (416, 416), interpolation = cv2.INTER_AREA)
+#            self._cvImageSampleFrame = cv2.resize(self._cvImageSampleFrame, (416, 416), interpolation = cv2.INTER_AREA)
 
             # Shared Memory Manager to share data, keep track of reserved/released memory slots
-            self._sharedMemoryManager = SharedMemoryManager(os.O_RDWR | os.O_SYNC | os.O_CREAT, name=None, size=10*1024*1024) # auto name will be assigned
+            self._shared_memory_manager = SharedMemoryManager(os.O_RDWR | os.O_SYNC | os.O_CREAT,
+                                                              name=None,
+                                                              size=100*1024*1024) # auto name will be assigned
 
             # Create grpc commmunication channel / stub
-            self._grpcChannel = grpc.insecure_channel(self._grpcServerAddress)
-            self._grpcStub = extension_pb2_grpc.MediaGraphExtensionStub(self._grpcChannel)
+            self._grpc_channel = grpc.insecure_channel(self._grpc_server_address)
+            self._grpc_stub = extension_pb2_grpc.MediaGraphExtensionStub(
+                self._grpc_channel)
 
-            self._requestGenerator = self.RequestGenerator(self)
+            self._request_generator = self.RequestGenerator(self)
 
         except:
-            PrintGetExceptionDetails()
+            log_exception()
             raise
 
 
-    def GetMediaStreamDescriptorMessage(self, sequenceNumber):
-        msdMessage = None
+    def get_media_stream_descriptor_message(self, sequence_number):
+        msd_message = None
         try:
             smbtp = None                # shared_memory_buffer_transfer_properties
-            if self._useSharedMemory:
-                    smbtp = extension_pb2.SharedMemoryBufferTransferProperties (
-                        handle_name = self._sharedMemoryManager._shmFileName,
-                        length_bytes = self._sharedMemoryManager._shmFileSize
-                    )
-            msdMessage = extension_pb2.MediaStreamMessage(
-                sequence_number = sequenceNumber,                                       # Counter, starting at 1
-                ack_sequence_number = 0,                                                # Initial value is 0
+            if self._use_shared_memory:
+                smbtp = extension_pb2.SharedMemoryBufferTransferProperties(
+                    handle_name=self._shared_memory_manager.shm_file_name,
+                    length_bytes=self._shared_memory_manager.shm_file_size
+                )
+            msd_message = extension_pb2.MediaStreamMessage(
+                sequence_number=sequence_number,    # Counter, starting at 1
+                ack_sequence_number=0,             # Initial value is 0
 
-                media_stream_descriptor = extension_pb2.MediaStreamDescriptor(
-                    graph_identifier = extension_pb2.GraphIdentifier( 
-                        media_services_arm_id = '',
-                        graph_instance_name = 'SampleGraph1',
-                        graph_node_name = 'SampleGraph1'
+                media_stream_descriptor=extension_pb2.MediaStreamDescriptor(
+                    graph_identifier=extension_pb2.GraphIdentifier(
+                        media_services_arm_id='',
+                        graph_instance_name='SampleGraph1',
+                        graph_node_name='SampleGraph1'
                     ),
 
-                    media_descriptor = media_pb2.MediaDescriptor(
-                        timescale = 90000,
+                    media_descriptor=media_pb2.MediaDescriptor(
+                        timescale=90000,
 
-                        video_frame_sample_format = media_pb2.VideoFrameSampleFormat(
-                            encoding = media_pb2.VideoFrameSampleFormat.Encoding.Value('RAW'),
-                            pixel_format = media_pb2.VideoFrameSampleFormat.PixelFormat.Value('BGR24'),
-
-                            dimensions = media_pb2.Dimensions(
-                                width = 416,
-                                height = 416,
+                        video_frame_sample_format=media_pb2.VideoFrameSampleFormat(
+                            encoding=media_pb2.VideoFrameSampleFormat.Encoding.Value('RAW'),
+                            pixel_format=media_pb2.VideoFrameSampleFormat.PixelFormat.Value('BGR24'),
+                            
+                            dimensions=media_pb2.Dimensions(
+                                width=self._width,
+                                height=self._height,
                             )
                         )
                     ),
-                    shared_memory_buffer_transfer_properties = smbtp
+                    shared_memory_buffer_transfer_properties=smbtp
                 )
             )
         except:
-            PrintGetExceptionDetails()
+            log_exception()
             raise
 
-        return msdMessage
+        return msd_message
 
 
-    def GetMediaSampleMessage(self, sequenceNumber):
-        msMessage = None
+    def get_media_sample_message(self, sequence_number):
+        message = None
 
         try:
-            contentReference = None
-            contentBytes = None
-            if self._useSharedMemory:
+            content_reference = None
+            content_bytes = None
+            if self._use_shared_memory:
                 # Memory might be full and may no media sample returned
-                memorySlot = self.GetMediaSample(sequenceNumber)
-                while memorySlot is None:
+                memory_slot = self.get_media_sample(sequence_number)
+                while memory_slot is None:
                     logging.info('***************** Shared Memory Full *****************')
-                    time.sleep(0.1)
-                    memorySlot = self.GetMediaSample(sequenceNumber)
+                    time.sleep(1)
+                    memory_slot = self.get_media_sample(sequence_number)
 
-                memorySlotOffset = memorySlot[0]
-                memorySlotLength = (memorySlot[1] - memorySlot[0]) + 1
+                memory_slot_offfset = memory_slot[0]
+                memory_slot_length = (memory_slot[1] - memory_slot[0]) + 1
 
-                contentReference = media_pb2.ContentReference(
-                        address_offset = memorySlotOffset,
-                        length_bytes = memorySlotLength
+                content_reference = media_pb2.ContentReference(
+                        address_offset=memory_slot_offfset,
+                        length_bytes=memory_slot_length
                     )
             else:
-                contentBytes = media_pb2.ContentBytes(
-                     bytes = self._cvImageSampleFrame.tostring()
+                content_bytes = media_pb2.ContentBytes(
+                     bytes=self._image.tostring()
                 )
 
-            msMessage = extension_pb2.MediaStreamMessage(
-                sequence_number = sequenceNumber,                       # Counter
-                ack_sequence_number = 0,                                # Initial value is 0
+            message = extension_pb2.MediaStreamMessage(
+                sequence_number=sequence_number,                       # Counter
+                ack_sequence_number=0,                                # Initial value is 0
 
-                media_sample = extension_pb2.MediaSample(
-                    timestamp = 0,
-                    content_reference = contentReference,
-                    content_bytes = contentBytes
+                media_sample=extension_pb2.MediaSample(
+                    timestamp=0,
+                    content_reference=content_reference,
+                    content_bytes=content_bytes
                 )
             )
         except:
-            PrintGetExceptionDetails()
+            log_exception()
             raise
 
-        return msMessage
+        return message
 
 
     # Get sample from media streamer, writes in shared memory, returns offset & length
-    def GetMediaSample(self, sequenceNumber):
+    def get_media_sample(self, sequence_number):
         try:
-            contentBytes = self._cvImageSampleFrame.tobytes()
-            imageBlobLength = len(contentBytes)
+            content_bytes = self._image.tobytes()
+            image_blob_length = len(content_bytes)
 
             # Get empty memory slot with size of JPEG data
-            memorySlot = self._sharedMemoryManager.GetEmptySlot(sequenceNumber, imageBlobLength)
-            if memorySlot is None:
+            memory_slot = self._shared_memory_manager.get_empty_slot(sequence_number,
+                                                                   image_blob_length)
+            if memory_slot is None:
                 return None
 
-            self._sharedMemoryManager.WriteBytes(memorySlot[0], contentBytes)
+            self._shared_memory_manager.write_bytes(memory_slot[0], content_bytes)
 
         except:
-            PrintGetExceptionDetails()
+            log_exception()
             raise
-        return memorySlot
+        return memory_slot
 
 
-    def Start(self):
+    def start(self):
         try:
             # Use "wait_for_ready" (still in grpc preview...) to handle failure in case server not ready yet
-            sequenceIterator = self._grpcStub.ProcessMediaStream(self._requestGenerator, wait_for_ready=True)
+            sequence_iterator = self._grpc_stub.ProcessMediaStream(self._request_generator,
+                                                                  wait_for_ready=True)
 
             # Send the first message (MediaStreamDescriptor) and receive its response
-            mediaStreamMessageResponse = next(sequenceIterator)
-            ackSeqNo = mediaStreamMessageResponse.ack_sequence_number
-            logging.info('[Received] AckNum: {0}'.format(ackSeqNo))
+            response = next(sequence_iterator)
+            ack_seq_no = response.ack_sequence_number
+            logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
 
-            for mediaStreamMessageResponse in sequenceIterator:
-                ackSeqNo = mediaStreamMessageResponse.ack_sequence_number
-                logging.info('[Received] AckNum: {0}'.format(ackSeqNo))
+            for response in sequence_iterator:
+                ack_seq_no = response.ack_sequence_number
+                logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
                 
                 # Release the memory slot
-                self._sharedMemoryManager.DeleteSlot(ackSeqNo)
+                self._shared_memory_manager.delete_slot(ack_seq_no)
 
                 # print inference result
-                logging.info(mediaStreamMessageResponse)
+                logging.info(response)
         except StopIteration:
             pass
         except:
-            PrintGetExceptionDetails()
+            log_exception()
             raise
 
