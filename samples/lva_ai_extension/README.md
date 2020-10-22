@@ -148,3 +148,31 @@ To test the docker container you will need to create a graph topology with gRPC 
     ]
 }
 ```
+
+## Testing
+System level testing is performed with pytest. Currently test starts server then runs client and checks for successful exit code.
+
+First build test container
+```
+$ tests/build.sh
+```
+Container name is `video-analytics-serving-lva-tests`
+
+Run tests in developer mode. To avoid test being run by VA Serving test container which doesn't have LVA support,
+the test will be skipped if environment variables `PIPELINE_NAME` and `PIPELINE_VERSION` are not set.
+```
+$ tests/run.sh
+openvino@host:/home/video-analytics-serving$ export PIPELINE_NAME=object_detection
+openvino@host:/home/video-analytics-serving$ export PIPELINE_VERSION=person_vehicle_bike_detection
+openvino@host:/home/video-analytics-serving$ pytest samples/lva_ai_extension
+=========================================== test session starts ===========================================
+platform linux -- Python 3.6.9, pytest-5.4.1, py-1.9.0, pluggy-0.13.1
+rootdir: /home/video-analytics-serving
+plugins: cov-2.8.1, teamcity-messages-1.28
+collected 1 item
+
+samples/lva_ai_extension/tests/test_client_server.py .                                              [100%]
+
+============================================ 1 passed in 1.78s ============================================
+openvino@hbruce-nuc1:/home/video-analytics-serving$
+```
