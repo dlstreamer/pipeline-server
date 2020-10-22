@@ -17,4 +17,4 @@ COPY grpc_autogen/ /grpc_autogen
 ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
 ENV PYTHONPATH=$PYTHONPATH:/grpc_autogen
 #ENTRYPOINT [ "/bin/bash" ]
-ENTRYPOINT [ "python3", "/server/protocol_server_application.py", "-p", "5001"]
+ENTRYPOINT [ "python3", "/server/protocol_server_application.py"]

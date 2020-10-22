@@ -90,7 +90,9 @@ class State:
             raise
 
 class VAServingServer(extension_pb2_grpc.MediaGraphExtensionServicer):
-    def __init__(self):
+    def __init__(self, pipeline, version):
+        self.pipeline = pipeline
+        self.version = version
         return
 
     def GenerateMediaStreamMessageFromGVASample(self, gvaSample):
@@ -150,12 +152,24 @@ class VAServingServer(extension_pb2_grpc.MediaGraphExtensionServicer):
                                 value = attr[1],
                                 confidence = attr[2]
                             )
-
                             entity.attributes.append(attribute)
+
+                        classification = inferencing_pb2.Classification()
+                        tensors=list(roi.tensors())
+                        for tensor in tensors:
+                            if not tensor.is_detection() and tensor["label"]:
+                                attribute = inferencing_pb2.Attribute(
+                                    name = obj_label,
+                                    confidence = obj_confidence,
+                                    value = tensor["label"]
+                                )
+                                classification.attributes.append(attribute)
+                        if classification.attributes:
+                            classification_inference = msg.media_sample.inferences.add()
+                            classification_inference.classification.CopyFrom(classification)
                     except:
                         print("Exception occured in GenerateMediaStreamMessageFromGVASample")
                         #PrintGetExceptionDetails()
-
                     inference.entity.CopyFrom(entity)
 
         return msg
@@ -250,7 +264,7 @@ class VAServingServer(extension_pb2_grpc.MediaGraphExtensionServicer):
         detect_output = Queue()
         # Start object detection pipeline
         # It will wait until it receives frames via the detect_input queue
-        detect_pipeline = VAServing.pipeline("object_detection", "person_vehicle_bike_detection")
+        detect_pipeline = VAServing.pipeline(self.pipeline, self.version)
         detect_pipeline.start(source={"type": "application",
                                       "class": "GStreamerAppSource",
                                       "input": detect_input,

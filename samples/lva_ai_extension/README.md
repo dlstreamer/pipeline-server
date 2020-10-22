@@ -18,7 +18,7 @@ Run the docker image build script.
 ```
 $ ./docker/build.sh
 ```
-Image name is `lva_vas_server_instance`
+Image name is `video-analytics-serving-lva-ai-extension`
 
 ## Running Container
 The extension server is a VAServing-based application that runs in a docker container. Start container with the following script which uses port 5001 for gRPC.
@@ -29,7 +29,7 @@ Starting Protocol Server Application
 
 Run the following command to monitor the logs from the docker container
 ```bash
-$ docker logs lvaExtension -f
+$ docker logs video-analytics-serving-lva-ai-extension_latest -f
 ```
 
 ## Test Client
@@ -69,6 +69,45 @@ media_sample {
 
 [AIXC] [2020-10-07 14:10:53,378] [MainThread  ] [INFO]: Client finished execution
 ```
+
+## Run Scripts Reference
+
+### `run_server.sh` Script Reference
+`run_server.sh` passes common options to the underlying `docker run` command.
+
+Use the --help option to see how to use the script. All arguments are optional.
+
+```
+$ docker/run_server.sh --help
+usage: ./run_server.sh
+  [ -p : Specify the port to use ] 
+  [ --pipeline-name : Specify the pipeline name to use ] 
+  [ --pipeline-version : Specify the pipeline version to use ]
+```
+Pipeline name and version can also be set through environment variables PIPELINE_NAME and PIPELINE_VERSION respectively. Note: Command line options take precendence over environment variables .
+
+Available pipelines and version combinations
+
+| Pipeline Name  | Pipeline Version |
+| ------------- | ------------- |
+| object_detection | person_vehicle_bike_detection  |
+| object_classification  | vehicle_attributes_recognition  |
+| object_tracking  | person_vehicle_bike_tracking  |
+
+### `run_client.sh` Script Reference
+`run_client.sh` passes common options to the underlying `docker run` command.
+
+Use the --help option to see how to use the script. All arguments are optional.
+
+```
+$ docker/run_client.sh --help
+usage: ./run_client.sh
+  [ --server-ip : Specify the server ip to connect to ]
+  [ --server-port : Specify the server port to connect to ] 
+  [ --shared-memory : Enables and uses shared memory between client and server ] 
+  [ --sample-file-path : Specify the sample file path to run(file must be inside container or in volume mounted path)]
+```
+
 ## LVA Deployment and Testing
 To use the container you just built along with LVA, you can use the deployment manifest template located in deployment folder in conjunction with either the [C#](https://github.com/Azure-Samples/live-video-analytics-iot-edge-csharp) or [Python](https://github.com/Azure-Samples/live-video-analytics-iot-edge-python) samples for LVA on IoT Edge. Make sure to replace the image URI of the lvaExtension module with where you uploaded the container image you just built.
 
