@@ -104,7 +104,7 @@ class VAServingService:
             assert False
 
 
-    def get_models():
+    def get_models(self):
         pass
 
 
