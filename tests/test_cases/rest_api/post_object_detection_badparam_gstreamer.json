@@ -1,8 +1,0 @@
-{
-    "body": { "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/emotion_results.txt", "format":"json-lines"}, "parameters":{"device":"BPU"}},
-    "path": "pipelines/object_detection/1",
-    "sort_key":"name",
-    "result": 1,
-    "status_code": 200,
-    "verb": "post"
-}
