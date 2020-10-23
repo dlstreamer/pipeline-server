@@ -1,8 +1,8 @@
-# ==============================================================================
-# Copyright (C) 2018-2020 Intel Corporation
-#
-# SPDX-License-Identifier: BSD-3-Clause
-# ==============================================================================
+'''
+* Copyright (C) 2019-2020 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+'''
 
 import sys
 import traceback

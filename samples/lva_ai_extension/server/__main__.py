@@ -1,4 +1,10 @@
 '''
+* Copyright (C) 2019-2020 Intel Corporation.
+*
+* SPDX-License-Identifier: MIT License
+'''
+
+'''
 * MIT License
 *
 * Copyright (c) Microsoft Corporation.
@@ -21,13 +27,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE
 '''
-
-'''
-* Copyright (C) 2019 Intel Corporation.
-*
-* SPDX-License-Identifier: BSD-3-Clause
-'''
-
 import os
 import json
 import time
