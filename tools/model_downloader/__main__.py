@@ -30,7 +30,7 @@ if __name__ == '__main__':
     if os.path.isfile(cfg.model_downloader) and os.path.isfile(cfg.model_converter) and os.path.isfile(cfg.model_optimizer):
         download(args.model_list, args.output_dir, args.force)
     else:
-        print("Necessary tools needed from OpenVINO not found. Please check if all dependant tools are installed and try again.")
+        print("Necessary tools needed from Intel(R) distribution of OpenVINO(TM) Toolkit not found. Please check if all dependant tools are installed and try again.")
         exit(1)
 
 
