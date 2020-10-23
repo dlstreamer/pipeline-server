@@ -21,7 +21,29 @@ $ ./docker/build.sh
 Image name is `video-analytics-serving-lva-ai-extension`
 
 ## Running Container
-The extension server is a VAServing-based application that runs in a docker container. Start container with the following script which uses port 5001 for gRPC.
+The extension server is a VA Serving application that runs in a docker container.
+Use the `run_server.sh` script to start the container. The --help option shows how to use the script. All arguments are optional.
+```
+$ ./docker/run_server.sh --help
+usage: ./run_server.sh
+  [ -p : Specify the port to use ] (defaults to 5001)
+  [ --pipeline-name : Specify the pipeline name to use ] (defaults to object_detection)
+  [ --pipeline-version : Specify the pipeline version to use ] (defaults to person_vehicle_bike_detection)
+```
+Pipeline name and version can also be set through environment variables PIPELINE_NAME and PIPELINE_VERSION respectively.
+> Command line options take precedence over environment variables.
+
+Available pipelines and version combinations:
+
+| Pipeline Name  | Pipeline Version |
+| ------------- | ------------- |
+| object_detection | person_vehicle_bike_detection  |
+| object_classification  | vehicle_attributes_recognition  |
+| object_tracking  | person_vehicle_bike_tracking  |
+
+The script also supports all `docker/run.sh` options.
+
+Run with default options as follows
 ```bash
 $ ./docker/run_server.sh
 Starting Protocol Server Application
@@ -33,13 +55,28 @@ $ docker logs video-analytics-serving-lva-ai-extension_latest -f
 ```
 
 ## Test Client
-This Python application sends a single frame to the extension server.
-If you are behind a firewall then before running make sure `no_proxy` contains `127.0.0.1` in docker config and system proxy. Use `./docker/run_client.sh -h` to know how to change server ip, port or sample file path.
+The test client script `run_client.sh` sends frames(s) to the extension server.
+> The above mentioned test client script is not available in GitHub at this time. We may include it in future. If you try to use it, you will get this error:
+>> python3: can't open file '/home/video-analytics-serving/samples/lva_ai_extension/client': [Errno 2] No such file or directory
+
+Use the --help option to see how to use the script. All arguments are optional.
+
+```
+$ ./docker/run_client.sh --help
+usage: ./run_client.sh
+  [ --server-ip : Specify the server ip to connect to ] (defaults to 127.0.0.1)
+  [ --server-port : Specify the server port to connect to ] (defaults to 5001)
+  [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
+  [ --sample-file-path : Specify the sample file path to run(file must be inside container or in volume mounted path)] (defaults to samples/lva_ai_extension/sampleframes/sample01.png)
+)
+```
+The script also supports all `docker/run.sh` options.
+
+If you are behind a firewall ensure `no_proxy` contains `127.0.0.1` in docker config and system settings.
+
+Run client with default options as follows
 ```bash
 $ ./docker/run_client.sh
-```
-Expected Output
-```
 [AIXC] [2020-10-07 14:10:52,269] [MainThread  ] [INFO]: gRPC server address: 127.0.0.1:5001
 [AIXC] [2020-10-07 14:10:52,269] [MainThread  ] [INFO]: Sample video frame address: sampleframes/sample01.png
 [AIXC] [2020-10-07 14:10:52,269] [MainThread  ] [INFO]: How many times to send sample frame to aix server: 1
@@ -68,44 +105,6 @@ media_sample {
 }
 
 [AIXC] [2020-10-07 14:10:53,378] [MainThread  ] [INFO]: Client finished execution
-```
-
-## Run Scripts Reference
-
-### `run_server.sh` Script Reference
-`run_server.sh` passes common options to the underlying `docker run` command.
-
-Use the --help option to see how to use the script. All arguments are optional.
-
-```
-$ docker/run_server.sh --help
-usage: ./run_server.sh
-  [ -p : Specify the port to use ]
-  [ --pipeline-name : Specify the pipeline name to use ]
-  [ --pipeline-version : Specify the pipeline version to use ]
-```
-Pipeline name and version can also be set through environment variables PIPELINE_NAME and PIPELINE_VERSION respectively. Note: Command line options take precendence over environment variables .
-
-Available pipelines and version combinations
-
-| Pipeline Name  | Pipeline Version |
-| ------------- | ------------- |
-| object_detection | person_vehicle_bike_detection  |
-| object_classification  | vehicle_attributes_recognition  |
-| object_tracking  | person_vehicle_bike_tracking  |
-
-### `run_client.sh` Script Reference
-`run_client.sh` passes common options to the underlying `docker run` command.
-
-Use the --help option to see how to use the script. All arguments are optional.
-
-```
-$ docker/run_client.sh --help
-usage: ./run_client.sh
-  [ --server-ip : Specify the server ip to connect to ]
-  [ --server-port : Specify the server port to connect to ]
-  [ --shared-memory : Enables and uses shared memory between client and server ]
-  [ --sample-file-path : Specify the sample file path to run(file must be inside container or in volume mounted path)]
 ```
 
 ## LVA Deployment and Testing
