@@ -16,10 +16,6 @@ COPY ./requirements.tests.txt /home/video-analytics-serving
 RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.tests.txt
 RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 
-COPY ./ /home/video-analytics-serving/tests/
-#COPY samples/ /home/video-analytics-serving/samples/
-#COPY .pylintrc /home/video-analytics-serving/
-
 ENV PIPELINE_NAME 'object_detection'
 ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
 
@@ -27,4 +23,5 @@ ARG USER=vaserving
 
 USER ${USER}
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "pytest",  "/home/video-analytics-serving/samples/lva_ai_extension" ]
+#ENTRYPOINT [ "/bin/bash" ]
