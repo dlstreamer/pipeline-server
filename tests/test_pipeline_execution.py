@@ -88,7 +88,7 @@ def _get_results_app(test_case, results):
                     #print(result_dict)
 
 def get_results_app(test_case, results):
-    thread = Thread(target=_get_results_app, args=[test_case, results])
+    thread = Thread(target=_get_results_app, args=[test_case, results], daemon=True)
     thread.start()
     return thread
 

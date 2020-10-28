@@ -45,7 +45,7 @@ def get_results_file(test_case, results):
 def get_results_fifo(test_case, results):
     if test_case["request"]["destination"]["type"] == "file":
         if "fifo" in test_case["request"]["destination"]["path"]:
-            thread = Thread(target=_get_results_fifo, args=[test_case, results])
+            thread = Thread(target=_get_results_fifo, args=[test_case, results], daemon=True)
             thread.start()
             return thread
     return None
