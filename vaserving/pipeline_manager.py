@@ -17,7 +17,8 @@ import vaserving.schema as schema
 
 class PipelineManager:
 
-    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1, ignore_init_errors=False):
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1,
+                 ignore_init_errors=False):
         self.max_running_pipelines = max_running_pipelines
         self.model_manager = model_manager
         self.running_pipelines = 0
@@ -128,7 +129,8 @@ class PipelineManager:
                                         error_occurred = True
 
                             except Exception as error:
-                                del pipelines[pipeline][version]
+                                if (pipeline in pipelines) and (version in pipelines[pipeline]):
+                                    del pipelines[pipeline][version]
                                 self.logger.error(
                                     "Failed to Load Pipeline from: {}".format(path))
                                 self.logger.error(

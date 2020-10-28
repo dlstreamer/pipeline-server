@@ -1,5 +1,5 @@
 '''
-* Copyright (C) 2019 Intel Corporation.
+* Copyright (C) 2019-2020 Intel Corporation.
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
@@ -53,6 +53,13 @@ class __VAServing:
                                                                   self.version(),
                                                                   self._instance)
 
+        def wait(self):
+            status = self.status()
+            while (status) and (not status.state.stopped()):
+                time.sleep(1)
+                status = self.status()
+            return status
+
         def status(self):
 
             if (self._instance):
@@ -90,7 +97,6 @@ class __VAServing:
             self._set_or_update(request, "destination", destination)
             self._set_or_update(request, "parameters", parameters)
             self._set_or_update(request, "tags", tags)
-
             self._instance, err = self._vaserving.pipeline_instance(
                 self.name(), self.version(), request)
 
@@ -136,7 +142,10 @@ class __VAServing:
             self._stopped = False
 
     def __del__(self):
-        self.stop()
+        try:
+            self.stop()
+        except Exception:
+            pass
 
     def wait(self):
         for instance in self.pipeline_instances():
@@ -180,10 +189,12 @@ class __VAServing:
     def pipeline(self, name, version):
         if (isinstance(version, int)):
             version = str(version)
-        return self.PipelineProxy(self,
-                                  self.pipeline_manager.get_pipeline_parameters(
-                                      name, version),
-                                  self._logger)
+        pipeline = self.pipeline_manager.get_pipeline_parameters(name, version)
+        if (pipeline):
+            pipeline = self.PipelineProxy(self,
+                                      pipeline,
+                                      self._logger)
+        return pipeline
 
     def models(self):
         return [self.ModelProxy(self, x, self._logger)

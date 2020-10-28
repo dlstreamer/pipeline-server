@@ -1,0 +1,116 @@
+﻿// -----------------------------------------------------------------------
+//  <copyright company="Microsoft Corporation">
+//    Copyright (C) Microsoft Corporation. All rights reserved.
+//  </copyright>
+// -----------------------------------------------------------------------
+
+syntax = "proto3";
+
+package microsoft.azure.media.live_video_analytics.extensibility.grpc.v1;
+
+import "inferencing.proto";
+import "media.proto";
+
+//
+//  Media Graph Extension Service
+// 
+//  Media graph extension service definition allows graphs to be extended through a 
+//  gRPC server implementation of a graph processor node.
+// 
+service MediaGraphExtension {
+  //
+  // Continuously process a single media stream (audio/video)
+  // 
+  // Note to Implementers:
+  //   Client authentication can be achieved through an authentication token set on the "x-ms-authentication"
+  //   request metadata key. The token format follows standard HTTP Basic auth scheme. Implementers of this
+  //   service are responsible for validating this token. This token may be set through the REST API. 
+  //
+  rpc ProcessMediaStream(stream MediaStreamMessage) returns (stream MediaStreamMessage);
+}
+
+//
+// Media Stream Message 
+//
+// Encapsulates different kinds of payloads that can be exchanged by the client and server.
+//
+// Key aspects:
+//
+//   1) MediaStreamDescriptor MUST be the first message exchanged from both parties.
+//   2) Messages containing shared memory reference MUST be acknowledged
+//      a) This ensures release of shared memory when processing sample references.
+//      b) Acknowledgments can be sent as part of a payload, thus reducing the traffic in half.
+//   3) It is encouraged that servers process messages asynchronously and possibly in parallel, 
+//      in order to leverage pipelining and achieve best performance.
+//
+message MediaStreamMessage {
+
+  uint64 sequence_number = 1;       // Monotonically increasing directional message identifier starting from 1 when the gRPC connection is created
+  uint64 ack_sequence_number = 2;   // 0 if this message is not referencing any sent message.
+
+  // Possible payloads are strongly defined by the contract below
+  oneof payload {
+    MediaStreamDescriptor media_stream_descriptor = 5;
+    MediaSample media_sample = 6;
+  }
+}
+
+// 
+// Media Stream Descriptor 
+//
+// Describes the media type that will flow in a single direction of the stream.
+//
+message MediaStreamDescriptor {
+  
+  oneof stream_identifier {
+    GraphIdentifier graph_identifier = 1;     // Media Stream graph identifier
+    string extension_identifier = 2;          // Media Stream extension identifier
+  }
+
+  MediaDescriptor media_descriptor = 5;       // Session media information.
+
+  // Additional data transfer properties. If none is set, it is assumed
+  // that all content will be transferred through messages (embedded transfer).
+  oneof data_transfer_properties {
+    SharedMemoryBufferTransferProperties shared_memory_buffer_transfer_properties = 10;
+  }
+}
+
+//
+// Media Sample 
+//
+// Encapsulates a media sample or chunk transfer.
+//
+message MediaSample {
+
+  // Sample timestamp (PTS) (first sample timestamp in case of chunked samples)
+  uint64 timestamp = 1;
+
+  // Sample (can be none when sending inferences only)
+  oneof content {
+    ContentBytes content_bytes = 5;
+    ContentReference content_reference = 6;
+  }
+
+  // Inferences associated with the sample/timestamp
+  repeated Inference inferences = 10;
+}
+
+//
+// Identifies the graph node to the extension AI
+//
+message GraphIdentifier {
+  string media_services_arm_id = 1;
+  string graph_instance_name = 2;
+  string graph_node_name = 3;
+}
+
+//
+// Media sample transfer through single shared buffer allocation
+// of shared memory.
+//
+message SharedMemoryBufferTransferProperties{
+  string handle_name = 1;
+  uint64 length_bytes = 2;
+}
+

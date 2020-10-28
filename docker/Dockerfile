@@ -22,6 +22,11 @@ RUN echo "IMPORTANT: This script will build third party components licensed unde
 # Switching to root user to create user and install packages
 USER root
 
+# Dependencies for OpenVINO
+RUN if [ -f /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ]; then \
+       /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ;\
+    fi    
+
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
 ARG USER=vaserving
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
@@ -30,9 +35,9 @@ RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-
 # Dependencies installed via apt-get
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
+    python3 \
     python3-setuptools \
-    python3-pip \
-    python3 && \
+    python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 # Dependencies installed via pip
@@ -42,6 +47,7 @@ RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules
 COPY ./vaserving /home/video-analytics-serving/vaserving
+COPY --chown=vaserving ./tools /home/video-analytics-serving/tools
 
 # Media Analytics Framework set via environment variable
 ENV FRAMEWORK=${FRAMEWORK}
@@ -103,5 +109,7 @@ ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
 FROM ${FINAL_STAGE} as deploy
 
 ARG USER=vaserving
+
+ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
 
 USER ${USER}

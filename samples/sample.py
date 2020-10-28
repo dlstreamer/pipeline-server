@@ -40,6 +40,10 @@ def get_options():
                         default="object_detection",
                         help="One of the supported pipelines you want to launch; "
                              "e.g., 'object_detection' or 'emotion_recognition'.")
+    parser.add_argument("--version", action="store", dest="version",
+                        default="1",
+                        help="Version associated with the pipeline to launch; "
+                             "e.g., '1' or '2'.")
     parser.add_argument("--source", action="store", dest="source",
                         default=REQUEST_TEMPLATE['source']['uri'],
                         help="Location of the content to play/analyze.")
@@ -188,9 +192,11 @@ def launch_pipelines(options):
         started_instance_id = start_pipeline(options.source,
                                              options.pipeline,
                                              options.destination,
+                                             options.version,
                                              verbose=options.verbose)
         pipeline_stats.append(wait_for_pipeline(started_instance_id,
                                                 options.pipeline,
+                                                options.version,
                                                 verbose=options.verbose))
         read_detection_results(options.destination,
                                verbose=options.verbose)

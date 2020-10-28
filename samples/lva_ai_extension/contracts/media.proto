@@ -1,0 +1,96 @@
+﻿// -----------------------------------------------------------------------
+//  <copyright company="Microsoft Corporation">
+//    Copyright (C) Microsoft Corporation. All rights reserved.
+//  </copyright>
+// -----------------------------------------------------------------------
+
+syntax = "proto3";
+
+package microsoft.azure.media.live_video_analytics.extensibility.grpc.v1;
+
+//
+// Media information
+//
+message MediaDescriptor {
+  uint32 timescale = 1;                                   // Example: 90000 when the media clock tick is 90KHz
+
+  // None indicates that the sample contains only inferences
+  oneof media_sample_format {
+    VideoFrameSampleFormat video_frame_sample_format = 5; // Sample is a video frame
+  }
+};
+
+//
+// Video Frame Format information
+//
+message VideoFrameSampleFormat {
+
+  // Encoding Type
+  enum Encoding {
+    BMP = 0;
+    JPG = 1;
+    PNG = 2;
+    RAW = 3;
+  };
+  Encoding encoding = 1;
+
+  // Pixel Format when transferring RAW samples
+  enum PixelFormat {
+    NONE = 0;
+
+    // 12 bpp (native)
+    YUV420P = 20;
+
+    // 16 bpp
+    RGB565BE = 40;
+    RGB565LE = 41;
+    RGB555BE = 42;
+    RGB555LE = 43;
+
+    // 24 bpp
+    RGB24 = 60;
+    BGR24 = 61;
+
+    // 32 bpp
+    ARGB = 80;
+    RGBA = 81;
+    ABGR = 82;
+    BGRA = 83;
+  };
+  PixelFormat pixel_format = 2;
+
+  // Frame Dimensions in pixels
+  Dimensions dimensions = 3;
+
+  //
+  // The number of bytes from one row of pixels in memory to the next row of pixels in memory.
+  // If padding bytes are present, than the stride is wider than the width of the image.
+  // Only set when transferring RAW samples
+  //
+  uint32 stride_bytes = 4;
+}
+
+//
+// Generic Dimensions message
+//
+message Dimensions {
+  uint32 width = 1;
+  uint32 height = 2;
+};
+
+//
+// Media sample with embedded content
+//
+message ContentBytes {
+  bytes bytes = 1;
+};
+
+//
+// Media sample with memory address reference within a pre-established shared
+// memory 
+//
+message ContentReference {
+  uint64 address_offset = 1;  // Relative to the beginning of the shared memory file
+  uint64 length_bytes = 2;
+}
+

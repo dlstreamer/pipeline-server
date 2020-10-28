@@ -5,26 +5,34 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
+
+DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
+SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+
 BASE_IMAGE=
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
 USER_BASE_BUILD_ARGS=
-MODELS=models
+MODELS=$SOURCE_DIR/models_list/models.list.yml
+MODELS_PATH=models
 PIPELINES=
 FRAMEWORK=
 TAG=
 RUN_PREFIX=
 CREATE_SERVICE=TRUE
 ENVIRONMENT_FILES=()
+DOCKER_RUN_ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n' ' ')
 TARGET="deploy"
 
-DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
-SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
+
+OPEN_MODEL_ZOO_VERSION=
+FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#0d95b489f03d30bd94ffa25a2472eaab7b774821"
 DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
@@ -93,10 +101,21 @@ get_options() {
             ;;
         --models)
             if [ "$2" ]; then
-                MODELS=$2
+                MODELS=$(realpath $2)
                 shift
             else
                 error 'ERROR: "--models" requires an argument.'
+            fi
+            ;;
+        --force-model-download)
+            FORCE_MODEL_DOWNLOAD="--force"
+            ;;
+        --open-model-zoo-version)
+            if [ "$2" ]; then
+                OPEN_MODEL_ZOO_VERSION=$2
+                shift
+            else
+                error 'ERROR: "--openvino-version" requires an argument.'
             fi
             ;;
         --pipelines)
@@ -155,7 +174,7 @@ get_options() {
                 error 'ERROR: "--create-service" requires an argument.'
             fi
             ;;
-	--environment-file)
+	    --environment-file)
             if [ "$2" ]; then
                 ENVIRONMENT_FILES+=($2)
                 shift
@@ -175,10 +194,10 @@ get_options() {
             shift
             break
             ;;
-         -?*)
+        -?*)
 	    error 'ERROR: Unknown option: ' $1
             ;;
-	 ?*)
+        ?*)
 	    error 'ERROR: Unknown option: ' $1
             ;;
         *)
@@ -198,6 +217,33 @@ get_options() {
     elif [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
         echo "Invalid framework"
         show_help
+    fi
+
+    if [ -f "$MODELS" ]; then
+        if [ -z "$OPEN_MODEL_ZOO_VERSION" ] && [ $FRAMEWORK = 'ffmpeg' ]; then
+            OPEN_MODEL_ZOO_VERSION=2020.3
+        elif [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
+            OPEN_MODEL_ZOO_VERSION=2020.4
+        fi
+        YML_DIR=$(dirname "${MODELS}")
+        YML_FILE_NAME=$(basename "${MODELS}")
+        VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
+        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
+
+        #TODO: remove below if condition once aclnet model downloads with model downloader
+        if [ $MODELS = $(realpath $SOURCE_DIR/models_list/models.list.yml) ] && [ -d $SOURCE_DIR/models_list/audio_detection ] ; then
+            if [ ! -d "$SOURCE_DIR/models/audio_detection" ]; then
+                mkdir $SOURCE_DIR/models/audio_detection
+            fi
+            cp -R $SOURCE_DIR/models_list/audio_detection/. $SOURCE_DIR/models/audio_detection
+        fi    
+    elif [ -d "$MODELS" ]; then
+        if [ ! -d "$SOURCE_DIR/models" ]; then
+            mkdir $SOURCE_DIR/models
+        fi
+        cp -R $MODELS/. $SOURCE_DIR/models
+    else
+        error 'ERROR: "'$MODELS'" does not exist.'
     fi
 
     if [ -z "$PIPELINES" ]; then
@@ -261,6 +307,7 @@ show_image_options() {
     echo "   Build Options: '${BUILD_OPTIONS}'"
     echo "   Build Arguments: '${BUILD_ARGS}'"
     echo "   Models: '${MODELS}'"
+    echo "   Openvino Image: 'openvino/ubuntu18_data_dev:${OPEN_MODEL_ZOO_VERSION}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"
     echo "   Target: '${TARGET}'"
@@ -273,7 +320,9 @@ show_help() {
     echo "usage: build.sh"
     echo "  [--base base image]"
     echo "  [--framework ffmpeg || gstreamer]"
-    echo "  [--models path to model directory relative to $SOURCE_DIR or NONE]"
+    echo "  [--models path to models directory or model list file or NONE]"
+    echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
+    echo "  [--force-model-download force the download of models from Open Model Zoo]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
     echo "  [--build-option additional docker build option that run in the context of docker build. ex. --no-cache]"
     echo "  [--base-build-option additional docker build option for docker build of base image]"
@@ -309,7 +358,7 @@ if [ "$BASE" == "BUILD" ]; then
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     #Ensure image is latest from Docker Hub
-    docker pull $BASE_IMAGE
+    $RUN_PREFIX docker pull $BASE_IMAGE
 fi
 
 # BUILD IMAGE
@@ -317,7 +366,7 @@ fi
 BUILD_ARGS+=" --build-arg BASE=$BASE_IMAGE "
 BUILD_ARGS+=" --build-arg FRAMEWORK=$FRAMEWORK "
 if [ -n "$MODELS" ]; then
-    BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS "
+    BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS_PATH "
     BUILD_ARGS+="--build-arg MODELS_COMMAND=copy_models "
 else
     BUILD_ARGS+="--build-arg MODELS_COMMAND=do_not_copy_models "
@@ -340,7 +389,7 @@ cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
 if [[ "$BASE_IMAGE" == "openvino/"* ]]; then
-    $RUN_PREFIX docker run -t --rm --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
+    $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi
 

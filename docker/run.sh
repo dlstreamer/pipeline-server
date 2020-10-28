@@ -192,6 +192,7 @@ show_options() {
     echo "   Entrypoint: '${ENTRYPOINT}'"
     echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}"
     echo "   User: '${USER}'"
+    echo "   Devices: '${DEVICES}'"
     echo ""
 }
 
@@ -208,6 +209,7 @@ show_help() {
   echo "  [--network name network to pass to docker run]"
   echo "  [--user name of user to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
+  echo "  [--device device to pass to docker run]"
   echo "  [--dev run in developer mode]"  
   exit 0
 }

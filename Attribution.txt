@@ -49,7 +49,7 @@ https://packages.debian.org/sid/python3-setuptools
 six (MIT) https://pypi.org/project/six/
 https://github.com/benjaminp/six/blob/master/LICENSE
 
-Python 3 (Custom) https://packages.debian.org/sid/python3
+Python 3 (PSF) https://packages.debian.org/sid/python3
 https://docs.python.org/3/license.html
 
 pip3 (MIT) https://packages.debian.org/sid/python3-pip
@@ -90,3 +90,42 @@ https://gstreamer.freedesktop.org/src/gstreamer-vaapi/
 
 Numpy (BSD 3-clause) https://github.com/numpy/numpy
 https://github.com/numpy/numpy/blob/master/LICENSE.txt
+
+jsonschema (MIT) https://github.com/Julian/jsonschema/
+https://github.com/Julian/jsonschema/blob/main/COPYING
+
+strict-rfc3339 (GPLv3) https://pypi.org/project/strict-rfc3339/
+https://pypi.org/project/strict-rfc3339/
+
+pyyaml (MIT) https://pypi.org/project/strict-rfc3339/
+https://pypi.org/project/strict-rfc3339/
+
+protobuf (BSD 3-clause) https://github.com/protocolbuffers/protobuf
+https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
+
+pillow (PIL) https://pillow.readthedocs.io/en/latest/handbook/index.html
+https://github.com/python-pillow/Pillow/blob/master/LICENSE
+
+gunicorn (MIT) http://docs.gunicorn.org/
+https://pypi.org/project/gunicorn/
+
+grpcio (Apache 2.0) https://grpc.io/docs/guides/
+https://pypi.org/project/grpcio/
+
+rfc3987 (GPLv3) https://pypi.org/project/rfc3987/
+https://pypi.org/project/rfc3987/
+
+Live Video Analytics (MIT) https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/
+https://github.com/Azure/live-video-analytics/blob/master/LICENSE
+
+RunIt (three-clause BSD alike license) http://smarden.org/runit
+http://smarden.org/runit/faq.html#license
+
+nginx (BSD 2-clause) http://nginx.org/
+https://nginx.org/LICENSE
+
+libnginx-mod-nchan (MIT) https://nchan.io/
+https://github.com/slact/nchan/blob/master/LICENCE
+
+python-psutil (BSD 3-clause) https://psutil.readthedocs.io/en/latest/
+https://github.com/giampaolo/psutil/blob/master/LICENSE

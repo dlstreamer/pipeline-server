@@ -1,0 +1,127 @@
+﻿// -----------------------------------------------------------------------
+//  <copyright company="Microsoft Corporation">
+//    Copyright (C) Microsoft Corporation. All rights reserved.
+//  </copyright>
+// -----------------------------------------------------------------------
+
+syntax = "proto3";
+
+package microsoft.azure.media.live_video_analytics.extensibility.grpc.v1;
+
+//
+// Wrapper for different inference result types
+//
+message Inference {
+  enum InferenceType {
+    AUTO = 0;                       // Automatically set by the graph based on content
+    CLASSIFICATION = 1;             // Image tagging/classification
+    MOTION = 2;                     // Motion detection
+    ENTITY = 3;                     // Entity detection & identification
+    TEXT = 4;                       // Timed text
+    EVENT = 5;                      // A generic event with key value pairs
+    OTHER = 15;                     // Not a match
+  }
+
+  InferenceType type = 1;
+  string subtype = 2;                      // Free form subtype id
+  string inference_id = 3;                 // Optional identifier for this inference event
+  repeated string related_inferences = 4;  // Ids of inferences which are related to this inference 
+
+  oneof value {                            // Must match type
+    Classification classification = 5;         
+    Motion motion = 6;              
+    Entity entity = 7;              
+    Text text = 8;
+    Event event = 9;
+    InferenceOther other = 13;
+  }
+
+  // Complementary data that can be used to augment the original inference. These
+  // are transmitted opaquely through the pipeline and are meant for application 
+  // consumption only.
+  map<string, string> extensions = 15;
+}
+
+//
+// Classification
+//
+message Classification {
+  Tag tag = 1;                        // Class tag. Examples: daylight, moonlight, etc.
+  repeated Attribute attributes = 2;  // Additional entity attributes. Examples: isBlackWhite=false
+}
+
+//
+// Motion Detection
+//
+message Motion {
+  Rectangle box = 1;        // Motion bounding box
+}
+
+//
+// Entity Detection & Identification
+//
+message Entity {
+  Tag tag = 1;                        // Entity tag. Examples: person, bicycle, car, ...
+  repeated Attribute attributes = 2;  // Additional entity attributes. Examples: color=red, body=sedan, etc.
+  Rectangle box = 3;                  // Entity bounding box
+}
+
+//
+// OCR and Captions
+//
+message Text {
+  string value = 1;             // Inferred text
+  string language = 2;          // Optional BCP47 Language Code (https://tools.ietf.org/html/bcp47)
+  uint64 start_timestamp = 5;   // Optional start PTS
+  uint64 end_timestamp = 6;     // Optional end PTS
+}
+
+//
+// Generic Events
+//
+message Event {
+  string name = 1;                      // Event name
+  map<string, string> properties = 7;   // Event properties
+}
+
+//
+// Generic content to be returned as inference results.
+//
+message InferenceOther {
+  string content_type = 1;      // Content type (IANA Media Type identifier: https://www.iana.org/assignments/media-types/media-types.xhtml)
+  bytes content_bytes = 2;      // Content Bytes. For textual formats which do not specify an encoding, UTF-8 should be used.
+}
+
+//
+// Generic attributes. Attributes are use to augment an entity.
+//
+message Attribute {
+  string name = 1;          // Attribute name: color, make, model, etc.
+  string value = 2;         // Attribute value: red, honda, civic, etc.
+  float confidence = 3;     // Confidence (normalized between 0.0 and 1.0)
+}
+
+//
+// Generic tags.
+//
+message Tag {
+  string value = 2;         // Tag value
+  float confidence = 3;     // Confidence (normalized between 0.0 and 1.0)
+}
+
+//
+// Generic rectangle for region bounding boxes
+//
+// - Values are normalized between 0.0 and 1.0 as fraction of the input image.
+// - Extensions which are receiving padded images (pillarbox or letterbox) should return the bounding boxes
+//   based on the padded image. The Live Video Analytics pipeline will adjust the bounding boxes based on 
+//   the padding before publishing the inferences. For example, if the image has .2 padding on the left and
+//   right sides of the image, the rectangle (0.2, 0.0, 0.6, 1.0) will be adjusted to (0.0, 0.0, 1.0, 1.0)
+//   by Live Video Analytics.
+//
+message Rectangle {
+  float l = 1;              // Left:    distance from the image's left edge to the rectangle's left edge 
+  float t = 2;              // Top:     distance from the image's top edge to the rectangle's top edge
+  float w = 3;              // Width:   rectangle width
+  float h = 4;              // Height:  rectangle height
+}

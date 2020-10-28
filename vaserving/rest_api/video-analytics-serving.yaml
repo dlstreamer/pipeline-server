@@ -77,8 +77,7 @@ paths:
         name: version
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       requestBody:
         content:
@@ -107,8 +106,7 @@ paths:
         name: version
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       - explode: false
         in: path
@@ -138,8 +136,7 @@ paths:
         name: version
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       - explode: false
         in: path
@@ -174,8 +171,7 @@ paths:
         name: version
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       - explode: false
         in: path
@@ -378,8 +374,7 @@ components:
         name:
           type: string
         version:
-          format: int32
-          type: integer
+          type: string
         type:
           enum:
           - IntelDLDT

@@ -84,6 +84,7 @@ class FFmpegPipeline(Pipeline):
         self._video_filter_map = {}
         self._output_format_index = Counter()
         self._output_format_map = {}
+        self.pipeline_type = "FFmpeg"
 
     def stop(self):
         with self._create_delete_lock:

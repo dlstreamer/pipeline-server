@@ -5,7 +5,6 @@
 '''
 from enum import Enum, auto
 
-
 class Pipeline:
     class State(Enum):
         QUEUED = auto()

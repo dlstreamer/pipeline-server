@@ -1,0 +1,16 @@
+- model: mobilenet-ssd
+  alias: object_detection
+  version: 1
+  precision: [FP16,FP32]
+- model: emotions-recognition-retail-0003
+  alias: emotion_recognition
+  version: 1
+  precision: [FP16,FP32]
+- model: landmarks-regression-retail-0009
+  alias: landmarks_regression
+  version: 1
+  precision: [FP16,FP32]
+- model: face-detection-retail-0004
+  alias: face_detection_retail
+  version: 1
+  precision: [FP16,FP32]
