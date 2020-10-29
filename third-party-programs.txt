@@ -4,7 +4,10 @@ This file contains the list of third party software ("third party programs") con
 Third party programs and their corresponding required notices and/or license terms are listed below.
 -------------------------------------------------------------
 1. how_are_you_doing.wav
+   Copyright 2020 Intel Corporation
 
+   Live Video Analytics
+   Copyright 2020 Intel Corporation
 
 MIT License
 
@@ -16,12 +19,14 @@ Copyright 2020 Intel Corporation
 
 -------------------------------------------------------------
 2. aclnet_des_53_fp32.bin
-   
+   Copyright 2020 Intel Corporation
+
    aclnet_des_53_fp32.xml
+   Copyright 2020 Intel Corporation
 
 
 Apache 2.0 License
- 
+
                                 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -216,4 +221,4 @@ Apache 2.0 License
 
 -------------------------------------------------------------
 
-Other names and brands may be claimed as the property of others. 
+Other names and brands may be claimed as the property of others.

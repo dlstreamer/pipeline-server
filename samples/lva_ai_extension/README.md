@@ -55,10 +55,7 @@ $ docker logs video-analytics-serving-lva-ai-extension_latest -f
 ```
 
 ## Test Client
-The test client script `run_client.sh` sends frames(s) to the extension server.
-> The above mentioned test client script is not available in GitHub at this time. We may include it in future. If you try to use it, you will get this error:
->> python3: can't open file '/home/video-analytics-serving/samples/lva_ai_extension/client': [Errno 2] No such file or directory
-
+The test client script `run_client.sh` sends frames(s) to the extension server and prints inference results.
 Use the --help option to see how to use the script. All arguments are optional.
 
 ```
