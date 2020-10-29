@@ -1,3 +1,33 @@
+'''
+* Copyright (C) 2019-2020 Intel Corporation.
+*
+* SPDX-License-Identifier: MIT License
+'''
+
+'''
+* MIT License
+*
+* Copyright (c) Microsoft Corporation.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE
+'''
+
 import grpc
 import logging
 import cv2
@@ -41,7 +71,7 @@ class MediaStreamProcessor:
                     self._media_stream_processor.loop_count -= 1
                 else:
                     raise StopIteration
-          
+
             self._request_seq_num += 1
             return request
 
@@ -58,9 +88,9 @@ class MediaStreamProcessor:
             # Just make the sample frame ready to be sent to inference server
             self._image = cv2.imread(media_source_address, cv2.IMREAD_COLOR)
             self._height, self._width, _ = self._image.shape
-            # AIX Server sample requires the images sent to pre-sized as 416x416 size. This size is requirement by Tiny Yolo V3. 
-            # You may prefer to update the sample server code to resize the received images into 416x416 independent from their original 
-            # size. But since LVA have the capability of sending any size image requested, why create redundent computation cycle? 
+            # AIX Server sample requires the images sent to pre-sized as 416x416 size. This size is requirement by Tiny Yolo V3.
+            # You may prefer to update the sample server code to resize the received images into 416x416 independent from their original
+            # size. But since LVA have the capability of sending any size image requested, why create redundent computation cycle?
             # So in this aix_client (which mimics LVA), we resize the sample video frames into 416x416 size.
 #            self._cvImageSampleFrame = cv2.resize(self._cvImageSampleFrame, (416, 416), interpolation = cv2.INTER_AREA)
 
@@ -107,7 +137,7 @@ class MediaStreamProcessor:
                         video_frame_sample_format=media_pb2.VideoFrameSampleFormat(
                             encoding=media_pb2.VideoFrameSampleFormat.Encoding.Value('RAW'),
                             pixel_format=media_pb2.VideoFrameSampleFormat.PixelFormat.Value('BGR24'),
-                            
+
                             dimensions=media_pb2.Dimensions(
                                 width=self._width,
                                 height=self._height,
@@ -201,7 +231,7 @@ class MediaStreamProcessor:
             for response in sequence_iterator:
                 ack_seq_no = response.ack_sequence_number
                 logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
-                
+
                 # Release the memory slot
                 self._shared_memory_manager.delete_slot(ack_seq_no)
 
