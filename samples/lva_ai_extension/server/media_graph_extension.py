@@ -33,6 +33,8 @@ import json
 import time
 import numpy as np
 from queue import Queue
+import tempfile
+import datetime
 
 import samples.lva_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
 import samples.lva_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
@@ -88,11 +90,12 @@ class State:
             raise
 
 class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
-    def __init__(self, pipeline, version, input_queue_size=1):
+    def __init__(self, pipeline, version, debug=False, input_queue_size=1):
         self._pipeline = pipeline
         self._version = version
         self._input_queue_size = input_queue_size
         self._logger = get_logger("MediaGraphExtension")
+        self._debug = debug
       
     def _generate_media_stream_message(self, gva_sample):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
@@ -254,6 +257,16 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         responses_sent += 1
         yield media_stream_message
 
+        parameters = None
+        if self._debug :
+            self._version = "debug_" + self._version 
+            dt = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            location = os.path.join(tempfile.gettempdir(), "vaserving", self._version, dt)
+            os.makedirs(os.path.abspath(location))
+            parameters = {"location": os.path.join(location, "frame_%07d.jpeg"), "max-files":10}
+
+        self._logger.info('Pipeline Name : {}'.format(self._pipeline))
+        self._logger.info('Pipeline Version : {}'.format(self._version))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
         # Start object detection pipeline
@@ -266,7 +279,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                               destination={"type": "application",
                                            "class": "GStreamerAppDestination",
                                            "output": detect_output,
-                                           "mode": "frames"})
+                                           "mode": "frames"},
+                              parameters= parameters)
 
         # Process rest of the MediaStream message sequence
         for request in requestIterator:

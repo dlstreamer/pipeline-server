@@ -27,10 +27,11 @@ Use the `run_server.sh` script to start the container. The --help option shows h
 $ ./docker/run_server.sh --help
 usage: ./run_server.sh
   [ -p : Specify the port to use ] (defaults to 5001)
-  [ --pipeline-name : Specify the pipeline name to use ] (defaults to object_detection)
-  [ --pipeline-version : Specify the pipeline version to use ] (defaults to person_vehicle_bike_detection)
+  [ --pipeline-name : Specify the pipeline name to use ] (can also set through environment variable PIPELINE_NAME) (defaults to object_detection) 
+  [ --pipeline-version : Specify the pipeline version to use ] (can also set through environment variable PIPELINE_VERSION) (defaults to person_vehicle_bike_detection)
+  [ --debug : Use debug pipeline ] (can also set through environment variables DEBUG_PIPELINE)
 ```
-Pipeline name and version can also be set through environment variables PIPELINE_NAME and PIPELINE_VERSION respectively.
+With `--debug` option, debug pipelines are used. Debug pipelines watermark inference results and save watermarked images at /tmp/vaserving/{--pipeline-version}/{timestamp}/
 > Command line options take precedence over environment variables.
 
 Available pipelines and version combinations:

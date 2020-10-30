@@ -67,6 +67,10 @@ def parse_args(args=None, program_name="VA Serving AI Extension"):
                         type=str, default=os.getenv('PIPELINE_VERSION',
                                                     'person_vehicle_bike_detection'))
 
+    parser.add_argument("--debug", action="store_true",
+                        dest="debug",
+                        help='Use debug pipeline',
+                        default=(os.getenv('DEBUG_PIPELINE', None) != None))
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
@@ -74,20 +78,16 @@ def parse_args(args=None, program_name="VA Serving AI Extension"):
 
     return parser.parse_args(args)
 
-
 if __name__ == "__main__":
 
     args = parse_args()
     try:
         VAServing.start({'log_level': 'INFO', "ignore_init_errors":True})
-    
-        
+
         # create gRPC server and start running
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=3))
         extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(
-            MediaGraphExtension(args.pipeline, args.version), server)
-        print("Pipeline Name", args.pipeline)
-        print("Pipeline Version", args.version)
+            MediaGraphExtension(args.pipeline, args.version, args.debug), server)
         server.add_insecure_port(f'[::]:{args.port}')
         print("Starting Protocol Server Application on port", args.port)
         server.start()

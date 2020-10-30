@@ -34,6 +34,7 @@ function show_help {
   echo "  [ -p : Specify the port to use ] "
   echo "  [ --pipeline-name : Specify the pipeline name to use ] "
   echo "  [ --pipeline-version : Specify the pipeline version to use ] "
+  echo "  [ --debug : Use debug pipeline ] "
 }
 
 function error {
@@ -53,4 +54,8 @@ if [ ! -z "$PIPELINE_VERSION" ]; then
   ENV+="-e PIPELINE_VERSION=$PIPELINE_VERSION "
 fi
 
-docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm --user openvino --name $NAME $IMAGE $@
+if [ ! -z "$DEBUG_PIPELINE" ]; then
+  ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
+fi
+
+docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --name $NAME $IMAGE $@
