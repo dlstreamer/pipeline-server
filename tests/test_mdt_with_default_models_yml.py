@@ -1,6 +1,7 @@
 import os
 import subprocess
 import pytest
+import tempfile
 
 # function to check if the model directory was created properly
 def check_directory(path, name, alias, version=1, precision="FP32"):
@@ -28,13 +29,12 @@ def check_directory(path, name, alias, version=1, precision="FP32"):
     assert os.path.isfile(model_bin_file)
     
 # Test the default models from models.list.yml, check to see if in IR and model-proc format
-@pytest.mark.skip(reason="skipping until permission issue on openvino-data-dev image is resolved")
-def test_mdt_with_default_models_yml(tmpdir,capfd):
-    workdir_path = tmpdir.strpath
+def test_mdt_with_default_models_yml(capfd):
+    workdir_path = tempfile.TemporaryDirectory()
     model_download_tool_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../tools/model_downloader')
     model_yml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../models/models.list.yml')
     # Run the tool
-    results = subprocess.run(['python3', model_download_tool_path, '--model-list', model_yml_path, '--output-dir', workdir_path, '--force'], check=False)
+    results = subprocess.run(['python3', model_download_tool_path, '--model-list', model_yml_path, '--output-dir', workdir_path.name, '--force'], check=False)
 
     # Set the path of expected output based on the yml file
     model_names = ["mobilenet-ssd", "emotions-recognition-retail-0003", "landmarks-regression-retail-0009", "face-detection-retail-0004"]
@@ -43,11 +43,11 @@ def test_mdt_with_default_models_yml(tmpdir,capfd):
 
     if results.returncode != 0:
         captured = capfd.readouterr()
-        assert 'Necessary tools needed from OpenVINO not found' in captured.out
+        assert 'Necessary tools needed from Intel(R) distribution of OpenVINO(TM) Toolkit not found' in captured.out
     else:
         for num, name in enumerate(model_names):
             current_alias = alias_names[num]
             current_version = version
             current_model = name
         
-            check_directory(workdir_path, current_model, current_alias, current_version)
+            check_directory(workdir_path.name, current_model, current_alias, current_version)

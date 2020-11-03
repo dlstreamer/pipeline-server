@@ -23,27 +23,30 @@ def find_model_root(model, output_dir):
             return os.path.abspath(os.path.join(root, model))
     return None
 
-def find_model_proc(model):
+def download_model_proc(target_model, model):
     if os.path.isdir(cfg.model_proc_root):
         for root, directories, files in os.walk(cfg.model_proc_root):
             for filepath in files:
                 if os.path.splitext(filepath)[0] == model:
-                    return os.path.join(root, filepath)
+                    model_proc = os.path.join(root, filepath)
     else:
         url = cfg.base_gst_video_analytics_repo_url + '{0}.json'.format(model)
         r = requests.get(url)
 
+        tempDir = tempfile.TemporaryDirectory()
         if r.status_code == 200:
-            with open('/tmp/{0}.json'.format(model), 'wb') as f:
+            with open('{0}/{1}.json'.format(tempDir.name, model), 'wb') as f:
                 f.write(r.content)
             print("Downloaded {0} model-proc file from gst-video-analytics repo".format(model))
         else:
             print("Warning, model-proc not found in gst-video-analytics repo.")
             print("Creating empty json file for {0} to allow model to load in VA-Serving".format(model))
             print("Do not specify model-proc in pipeline that utilizes this model")
-            Path('/tmp/{0}.json'.format(model)).touch()
+            Path('{0}/{1}.json'.format(tempDir.name, model)).touch()
+        
+        model_proc = os.path.abspath('{0}/{1}.json'.format(tempDir.name, model))
 
-        return os.path.abspath('/tmp/{0}.json'.format(model))
+    shutil.move(model_proc, os.path.join(target_model, '{}.json'.format(model)))
 
 def validate_schema(model_list):
     schema = {
@@ -123,8 +126,7 @@ def download_and_convert_model(target_root, model, force):
             if os.path.isdir(os.path.join(model_path, filename)):
                 shutil.move(os.path.join(model_path, filename), os.path.join(target_model, filename))
        
-        model_proc = find_model_proc(model_name)
-        shutil.move(model_proc, os.path.join(target_model, '{}.json'.format(model_name)))
+        download_model_proc(target_model, model_name)
             
         
 def download(model_list_path, output_dir, force):     

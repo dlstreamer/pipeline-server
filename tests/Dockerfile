@@ -20,6 +20,7 @@ RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 COPY tests/ /home/video-analytics-serving/tests/
 COPY samples/ /home/video-analytics-serving/samples/
 COPY .pylintrc /home/video-analytics-serving/
+COPY models_list/models.list.yml /home/video-analytics-serving/models/models.list.yml
 
 # Copy and rename for stringified version
 
