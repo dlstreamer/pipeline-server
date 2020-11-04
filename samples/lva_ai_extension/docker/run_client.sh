@@ -5,6 +5,7 @@ SERVER_PORT=5001
 LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
 SAMPLE_FILE_PATH=$LVA_ROOT/sampleframes/sample01.png
 SHARED_MEMORY=
+INTERACTIVE=
 IMAGE=video-analytics-serving-lva-ai-extension:latest
 
 #Get options passed into script
@@ -43,6 +44,10 @@ function get_options {
           error "--sample-file-path expects a value"
         fi
         ;;
+      -it)
+        INTERACTIVE="-it"
+        shift
+        ;;
       *)
         break
         ;;
@@ -54,6 +59,7 @@ function get_options {
 
 function show_help {
   echo "usage: ./run_client.sh"
+  echo "  [ -it : Run client in interactive mode ] "
   echo "  [ --server-ip : Specify the server ip to connect to ]"
   echo "  [ --server-port : Specify the server port to connect to ] "
   echo "  [ --shared-memory : Enables and uses shared memory between client and server ] "
@@ -68,4 +74,4 @@ function error {
 get_options "$@"
 RUN_COMMAND="python3 $LVA_ROOT/client -s $SERVER_IP:$SERVER_PORT -l 1 $SHARED_MEMORY -f $SAMPLE_FILE_PATH"
 
-docker run -it --rm --network=host -v /dev/shm:/dev/shm --user openvino --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"
+docker run $INTERACTIVE --rm --network=host -v /dev/shm:/dev/shm --user openvino --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"

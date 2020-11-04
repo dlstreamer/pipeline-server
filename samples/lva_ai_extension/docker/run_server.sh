@@ -3,6 +3,7 @@
 IMAGE=video-analytics-serving-lva-ai-extension:latest
 NAME=${IMAGE//[\:]/_}
 PORT=5001
+MAX_RUNNING_PIPELINES=
 
 #Get options passed into script
 function get_options {
@@ -35,6 +36,7 @@ function show_help {
   echo "  [ --pipeline-name : Specify the pipeline name to use ] "
   echo "  [ --pipeline-version : Specify the pipeline version to use ] "
   echo "  [ --debug : Use debug pipeline ] "
+  echo "  [ --max-running-pipelines : Specify the maximum number of concurrent pipelines, default is 10 ] "
 }
 
 function error {
@@ -58,4 +60,4 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --name $NAME $IMAGE $@
+docker run --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --name $NAME $IMAGE $MAX_RUNNING_PIPELINES $@

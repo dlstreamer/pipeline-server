@@ -17,3 +17,4 @@ ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving/samples/lva_ai_extensio
 
 #ENTRYPOINT [ "/bin/bash" ]
 ENTRYPOINT [ "python3", "/home/video-analytics-serving/samples/lva_ai_extension/server"]
+
