@@ -258,8 +258,10 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         yield media_stream_message
 
         parameters = None
-        if self._debug :
-            self._version = "debug_" + self._version 
+        if self._debug and (not self._version.startswith("debug")) :
+            self._version = "debug_" + self._version
+
+        if self._version.startswith("debug") :
             dt = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
             location = os.path.join(tempfile.gettempdir(), "vaserving", self._version, dt)
             os.makedirs(os.path.abspath(location))
