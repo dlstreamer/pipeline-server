@@ -59,7 +59,8 @@ def main():
                                    args.sample_file,
                                    args.loop_count,
                                    args.use_shared_memory)
-        msp.start()
+
+        msp.start(args.output_file)
 
     except:
         log_exception()

@@ -4,6 +4,7 @@ SERVER_IP=127.0.0.1
 SERVER_PORT=5001
 LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
 SAMPLE_FILE_PATH=$LVA_ROOT/sampleframes/sample01.png
+OUTPUT_FILE_PATH=
 SHARED_MEMORY=
 INTERACTIVE=
 IMAGE=video-analytics-serving-lva-ai-extension:latest
@@ -48,6 +49,14 @@ function get_options {
         INTERACTIVE="-it"
         shift
         ;;
+      --output-file-path)
+        if [ "$2" ]; then
+          OUTPUT_FILE_PATH="-o $2"
+          shift
+        else
+          error "--output-file-path expects a value"
+        fi
+        ;;
       *)
         break
         ;;
@@ -64,6 +73,7 @@ function show_help {
   echo "  [ --server-port : Specify the server port to connect to ] "
   echo "  [ --shared-memory : Enables and uses shared memory between client and server ] "
   echo "  [ --sample-file-path : Specify the sample file path to run(file must be inside container or in volume mounted path)] "
+  echo "  [ --output-file-path : Specify the output file path to save inference results to (file must be inside container or in volume mounted path)] "
 }
 
 function error {
@@ -72,6 +82,6 @@ function error {
 }
 
 get_options "$@"
-RUN_COMMAND="python3 $LVA_ROOT/client -s $SERVER_IP:$SERVER_PORT -l 1 $SHARED_MEMORY -f $SAMPLE_FILE_PATH"
+RUN_COMMAND="python3 $LVA_ROOT/client -s $SERVER_IP:$SERVER_PORT -l 1 $SHARED_MEMORY -f $SAMPLE_FILE_PATH $OUTPUT_FILE_PATH"
 
-docker run $INTERACTIVE --rm --network=host -v /dev/shm:/dev/shm --user openvino --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"
+docker run $INTERACTIVE --rm --network=host -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"

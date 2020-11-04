@@ -59,6 +59,11 @@ def parse_args(args=None, program_name="AI Extension Sample Client"):
                         default=False,
                         help='set to use shared memory')
 
+    parser.add_argument('-o', metavar=('output_file'),
+                        dest = "output_file",
+                        help='Output file path'
+    )
+
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
 
     if (isinstance(args, dict)):

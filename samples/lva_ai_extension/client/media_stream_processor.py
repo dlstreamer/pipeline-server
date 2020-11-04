@@ -34,6 +34,9 @@ import cv2
 import os
 import time
 
+import json
+from google.protobuf.json_format import MessageToDict
+
 from samples.lva_ai_extension.common.exception_handler import log_exception
 from samples.lva_ai_extension.common.shared_memory import SharedMemoryManager
 
@@ -217,7 +220,7 @@ class MediaStreamProcessor:
         return memory_slot
 
 
-    def start(self):
+    def start(self, output_file="results.jsonl"):
         try:
             # Use "wait_for_ready" (still in grpc preview...) to handle failure in case server not ready yet
             sequence_iterator = self._grpc_stub.ProcessMediaStream(self._request_generator,
@@ -228,15 +231,17 @@ class MediaStreamProcessor:
             ack_seq_no = response.ack_sequence_number
             logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
 
-            for response in sequence_iterator:
-                ack_seq_no = response.ack_sequence_number
-                logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
+            with open(output_file, "w") as f:
+                for response in sequence_iterator:
+                    ack_seq_no = response.ack_sequence_number
+                    logging.info('[Received] AckNum: {0}'.format(ack_seq_no))
 
-                # Release the memory slot
-                self._shared_memory_manager.delete_slot(ack_seq_no)
+                    # Release the memory slot
+                    self._shared_memory_manager.delete_slot(ack_seq_no)
 
-                # print inference result
-                logging.info(response)
+                    # print inference result
+                    logging.info(response)
+                    f.write("{}\n".format(json.dumps(MessageToDict(response.media_sample))))
         except StopIteration:
             pass
         except:
