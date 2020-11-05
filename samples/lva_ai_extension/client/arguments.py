@@ -61,7 +61,8 @@ def parse_args(args=None, program_name="AI Extension Sample Client"):
 
     parser.add_argument('-o', metavar=('output_file'),
                         dest = "output_file",
-                        help='Output file path'
+                        help='Output file path',
+                        default="/tmp/results.jsonl"
     )
 
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')

@@ -220,7 +220,7 @@ class MediaStreamProcessor:
         return memory_slot
 
 
-    def start(self, output_file="results.jsonl"):
+    def start(self, output_file):
         try:
             # Use "wait_for_ready" (still in grpc preview...) to handle failure in case server not ready yet
             sequence_iterator = self._grpc_stub.ProcessMediaStream(self._request_generator,
