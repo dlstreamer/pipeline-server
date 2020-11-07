@@ -9,9 +9,11 @@ usage: build.sh
   [--base base image]
   [--framework ffmpeg || gstreamer]
   [--models path to models directory or model list file or NONE]
-  [--pipelines path to pipelines directory relative to /path/to/Projects/video-analytics-serving or NONE]
+  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]
+  [--force-model-download force the download of models from Open Model Zoo]
+  [--pipelines path to pipelines directory relative to /home/thanaji/git/vaServing or NONE]
   [--base-build-context docker context for building base image]
-  [--base-build-dockerfile docker file used to build base image]
+  [--base-build-dockerfile docker file path used to build base image from build context]
   [--build-option additional docker build option that run in the context of docker build. ex. --no-cache]
   [--base-build-option additional docker build option for docker build of base image]
   [--build-arg additional build args to pass to docker build]
@@ -20,6 +22,7 @@ usage: build.sh
   [--create-service create an entrypoint to run video-analytics-serving as a service]
   [--target build a specific target]
   [--dockerfile-dir specify a different dockerfile directory]
+  [--environment-file read and set environment variables from a file. Can be supplied multiple times.]
   [--dry-run print docker commands without running]
 ```
 All command line options are optional. Details of key options and their default values are shown below: 
