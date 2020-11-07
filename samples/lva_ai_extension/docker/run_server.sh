@@ -60,4 +60,8 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
+if [ ! -z "$PARAMETERS" ]; then
+  ENV+="-e PARAMETERS=$PARAMETERS "
+fi
+
 docker run --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --name $NAME $IMAGE $MAX_RUNNING_PIPELINES $@

@@ -73,6 +73,9 @@ def parse_args(args=None, program_name="VA Serving AI Extension"):
     parser.add_argument("--max-running-pipelines", action="store",
                         dest="max_running_pipelines",
                         type=int, default=int(os.getenv('MAX_RUNNING_PIPELINES', '10')))
+    parser.add_argument("--parameters", action="store",
+                        dest="parameters",
+                        type=str, default=os.getenv('PARAMETERS', '{}'))
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
@@ -89,7 +92,7 @@ if __name__ == "__main__":
         # create gRPC server and start running
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.max_running_pipelines))
         extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(
-            MediaGraphExtension(args.pipeline, args.version, args.debug), server)
+            MediaGraphExtension(args.pipeline, args.version, args.debug, args.parameters), server)
         server.add_insecure_port(f'[::]:{args.port}')
         print("Starting Protocol Server Application on port", args.port)
         server.start()

@@ -90,12 +90,13 @@ class State:
             raise
 
 class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
-    def __init__(self, pipeline, version, debug=False, input_queue_size=1):
+    def __init__(self, pipeline, version, debug=False, parameters=None, input_queue_size=1):
         self._pipeline = pipeline
         self._version = version
         self._input_queue_size = input_queue_size
         self._logger = get_logger("MediaGraphExtension")
         self._debug = debug
+        self._parameters = parameters
       
     def _generate_media_stream_message(self, gva_sample):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
@@ -257,15 +258,31 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         responses_sent += 1
         yield media_stream_message
 
-        parameters = None
         if self._debug and (not self._version.startswith("debug")) :
             self._version = "debug_" + self._version
+
+        parameters = {}
+        if self._parameters:
+            if os.path.isfile(self._parameters):
+                with open(self._parameters) as json_file:
+                    try:
+                        parameters = json.load(json_file)
+                    except ValueError:
+                        self._logger.error('Issue loading json parameters from file')
+                        parameters = {}
+            else:
+                try:
+                    parameters = json.loads(self._parameters)
+                except ValueError:
+                    self._logger.error('Issue loading json parameters from string')
+                    parameters = {}
 
         if self._version.startswith("debug") :
             dt = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
             location = os.path.join(tempfile.gettempdir(), "vaserving", self._version, dt)
             os.makedirs(os.path.abspath(location))
-            parameters = {"location": os.path.join(location, "frame_%07d.jpeg"), "max-files":10}
+            debug_parameters = {"location": os.path.join(location, "frame_%07d.jpeg"), "max-files":10}
+            parameters.update(debug_parameters)
 
         self._logger.info('Pipeline Name : {}'.format(self._pipeline))
         self._logger.info('Pipeline Version : {}'.format(self._version))
