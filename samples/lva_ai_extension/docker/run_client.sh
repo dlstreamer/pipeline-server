@@ -84,4 +84,4 @@ function error {
 get_options "$@"
 RUN_COMMAND="python3 $LVA_ROOT/client -s $SERVER_IP:$SERVER_PORT -l 1 $SHARED_MEMORY -f $SAMPLE_FILE_PATH $OUTPUT_FILE_PATH"
 
-docker run $INTERACTIVE --rm --network=host -v /dev/shm:/dev/shm -v /tmp:/tmp --user openvino --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"
+docker run $INTERACTIVE --rm --network=host -v /dev/shm:/dev/shm -v /tmp:/tmp --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"
