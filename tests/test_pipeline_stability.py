@@ -14,6 +14,7 @@ import time
 from vaserving.pipeline import Pipeline
 from threading import Thread
 import copy
+import tempfile
 from tests.common import results_processing
 
 PAUSE = 0.1
@@ -71,28 +72,29 @@ def test_pipeline_stability(VAServing, test_case, test_filename, generate, numer
     start_time = time.time()
     if relaunch_on_complete:
         num_loops = 1
-        while not duration_met:
-            _test_case["request"]["destination"]["path"] = "/tmp/stability" + str(num_loops) + ".json"
-            pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
-                                          _test_case["pipeline"]["version"])
-            
-            results_processing.clear_results(_test_case)
-            results = []
-            thread = results_processing.get_results_fifo(_test_case, results)
-            duration_met = start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
+        with tempfile.TemporaryDirectory() as tempDir:
+            while not duration_met:
+                _test_case["request"]["destination"]["path"] = tempDir + "/stability" + str(num_loops) + ".json"
+                pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
+                                            _test_case["pipeline"]["version"])
 
-            if (thread):
-                thread.join()
-            elif not duration_met:
-                results_processing.get_results_file(_test_case, results)
+                results_processing.clear_results(_test_case)
+                results = []
+                thread = results_processing.get_results_fifo(_test_case, results)
+                duration_met = start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
 
-            if generate:
-                test_case["result"] = results
-                with open(test_filename+'.generated', "w") as test_output:
-                    json.dump(test_case, test_output, indent=4)
-            elif not duration_met:
-                assert results_processing.cmp_results(results, _test_case["result"], numerical_tolerance), "Inference Result Mismatch"
-                num_loops = num_loops + 1
+                if (thread):
+                    thread.join()
+                elif not duration_met:
+                    results_processing.get_results_file(_test_case, results)
+
+                if generate:
+                    test_case["result"] = results
+                    with open(test_filename+'.generated', "w") as test_output:
+                        json.dump(test_case, test_output, indent=4)
+                elif not duration_met:
+                    assert results_processing.cmp_results(results, _test_case["result"], numerical_tolerance), "Inference Result Mismatch"
+                    num_loops = num_loops + 1
 
     else:
         pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],

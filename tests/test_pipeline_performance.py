@@ -5,6 +5,8 @@
 '''
 
 import os
+import subprocess
+import shlex
 import json
 import requests
 from collections import namedtuple
@@ -74,8 +76,9 @@ def test_pipeline_performance(VAServing, test_case, test_filename, generate):
 
     for i in range(iterations):
         start_times_gst_launch.append(time.time())
-        os.system(gst_launch_string)
+        comp_process = subprocess.run(shlex.split(gst_launch_string))
         stop_times_gst_launch.append(time.time())
+        assert comp_process.returncode == 0
 
     VAServing.start(_test_case["options"])
     for i in range(iterations):

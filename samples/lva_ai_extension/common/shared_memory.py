@@ -34,7 +34,8 @@ from .exception_handler import log_exception
 class SharedMemoryManager:
     def __init__(self, shm_flags=None, name=None, size=None):
         try:
-            self.shm_file_path = '/dev/shm'
+            #nosec skips pybandit hits
+            self.shm_file_path = '/dev/shm'     # nosec
             self.shm_file_name = name
             if self.shm_file_name is None:
                 self.shm_file_name = next(tempfile._get_candidate_names())
