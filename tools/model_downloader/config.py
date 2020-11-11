@@ -14,4 +14,5 @@ model_converter = os.path.join(omz_root, "tools/downloader/converter.py")
 model_optimizer = os.path.join(mo_root, "model-optimizer/mo.py") if mo_root == "/opt/intel/dldt" else os.path.join(mo_root, "model_optimizer/mo.py")
 model_proc_root = "/opt/intel/dl_streamer/samples/model_proc"
 
-base_gst_video_analytics_repo_url = "https://raw.githubusercontent.com/opencv/gst-video-analytics/preview/audio-detect/samples/model_proc/"
+base_gst_video_analytics_version = "v1.2.1"
+base_gst_video_analytics_repo_url = "https://raw.githubusercontent.com/openvinotoolkit/dlstreamer_gst/{0}/samples/model_proc/".format(base_gst_video_analytics_version)

@@ -96,9 +96,7 @@ All validation is done in docker environment. Host built configurations are not 
 | **Base Image** | **Framework** | **Openvino Version** | **Link** | **Default** |
 |---------------------|---------------|---------------|------------------------|-------------|
 | OpenVINO 2021.1 ubuntu18_runtime | GStreamer | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_runtime) | Y |
-| OpenVINO 2021.1 ubuntu18_data_dev | GStreamer | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_data_dev) | N |
 | Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-gst | GStreamer | 2021.1| [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-gst) | N |
-| OpenVINO 2020.4 ubuntu18_runtime | GStreamer | 2020.4 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_runtime) | N |
 | Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | Y |
 
 ---

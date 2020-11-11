@@ -237,14 +237,7 @@ get_options() {
         fi
         
         $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
-
-        #TODO: remove below if condition once aclnet model downloads with model downloader
-        if [ $MODELS = $(realpath $SOURCE_DIR/models_list/models.list.yml) ] && [ -d $SOURCE_DIR/models_list/audio_detection ] ; then
-            if [ ! -d "$SOURCE_DIR/models/audio_detection" ]; then
-                mkdir $SOURCE_DIR/models/audio_detection
-            fi
-            cp -R $SOURCE_DIR/models_list/audio_detection/. $SOURCE_DIR/models/audio_detection
-        fi    
+   
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
             mkdir $SOURCE_DIR/models
