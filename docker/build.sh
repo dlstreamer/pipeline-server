@@ -32,7 +32,8 @@ BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
-OPEN_MODEL_ZOO_VERSION=2021.1
+SUPPORTED_IMAGES=(openvino/ubuntu18_runtime:2021.1 openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10)
+OPEN_MODEL_ZOO_VERSION=
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
@@ -226,6 +227,15 @@ get_options() {
         YML_DIR=$(dirname "${MODELS}")
         YML_FILE_NAME=$(basename "${MODELS}")
         VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
+
+        if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
+           if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
+            error 'ERROR: Unknown version of Intel(R) distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
+           fi
+        else
+           OPEN_MODEL_ZOO_VERSION=2021.1
+        fi
+        
         $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
 
         #TODO: remove below if condition once aclnet model downloads with model downloader
