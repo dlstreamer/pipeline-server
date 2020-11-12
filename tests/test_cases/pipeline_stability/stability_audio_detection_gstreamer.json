@@ -7,7 +7,7 @@
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/samples/how_are_you_doing.wav"
+            "uri": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav"
         },
         "destination": {
             "type": "file",
