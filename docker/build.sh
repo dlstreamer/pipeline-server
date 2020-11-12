@@ -7,7 +7,11 @@
 
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
-SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
+
+if [[ "$SOURCE_DIR" =~ " " ]]; then
+        error 'ERROR: Found space in path: '"$SOURCE_DIR"'. Remove space and retry.'
+fi
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
 BASE_IMAGE_GSTREAMER="openvino/ubuntu18_runtime:2021.1"
