@@ -105,9 +105,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.ack_sequence_number = message["sequence_number"]
         msg.media_sample.timestamp = message["timestamp"]
 
-        video_width = gva_sample.video_frame.video_info().width
-        video_height = gva_sample.video_frame.video_info().height
-
         for region in gva_sample.video_frame.regions():
             inference = msg.media_sample.inferences.add()
 
@@ -126,10 +123,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     obj_confidence = region.confidence()
                     obj_label = region.label()
 
-                    obj_left = region.meta().x / video_width
-                    obj_top = region.meta().y / video_height
-                    obj_width = region.meta().w / video_width
-                    obj_height = region.meta().h / video_height
+                    obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
 
                     inference.type = inferencing_pb2.Inference.InferenceType.ENTITY
                 elif (name == 'object_id'): #Tracking
