@@ -39,5 +39,16 @@ get_options "$@"
 # Build VA Serving
 $SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml
 echo $SAMPLE_DIR
+
+VAS_BUILD_EXITCODE=$?
+if [ $VAS_BUILD_EXITCODE -eq 0 ]
+then
+  echo "Successfully built VA parent image..."
+else
+  echo "Could not build VA parent image! Exit: $VAS_BUILD_EXITCODE" >&2
+  exit $VAS_BUILD_EXITCODE
+fi
+
 # Build AI Extention
-docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t video-analytics-serving-lva-ai-extension $SAMPLE_DIR/..
+echo $SAMPLE_DIR/..
+docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t video-analytics-serving-lva-ai-extension $SAMPLE_DIR

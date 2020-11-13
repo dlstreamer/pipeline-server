@@ -12,5 +12,14 @@ SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/
 # Build LVA image
 $LVA_DIR/docker/build.sh --remove-gstlibav
 
+VAS_BUILD_EXITCODE=$?
+if [ $VAS_BUILD_EXITCODE -eq 0 ]
+then
+  echo "Successfully built VA parent image..."
+else
+  echo "Could not build VA parent image! Exit: $VAS_BUILD_EXITCODE" >&2
+  exit $VAS_BUILD_EXITCODE
+fi
+
 # Add tests layer
 docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t video-analytics-serving-lva-tests $WORK_DIR
