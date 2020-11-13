@@ -241,7 +241,11 @@ class MediaStreamProcessor:
 
                     # print inference result
                     logging.info(response)
-                    f.write("{}\n".format(json.dumps(MessageToDict(response.media_sample))))
+                    media_sample_obj = MessageToDict(response.media_sample)
+                    #Schema Validation requires that string representation of enums are lowercase
+                    for inference in media_sample_obj["inferences"]:
+                        inference["type"] = inference["type"].lower()
+                    f.write("{}\n".format(json.dumps(media_sample_obj)))
         except StopIteration:
             pass
         except:

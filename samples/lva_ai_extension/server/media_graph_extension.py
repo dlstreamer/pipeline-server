@@ -105,21 +105,43 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.ack_sequence_number = message["sequence_number"]
         msg.media_sample.timestamp = message["timestamp"]
 
+        video_width = gva_sample.video_frame.video_info().width
+        video_height = gva_sample.video_frame.video_info().height
+
         for region in gva_sample.video_frame.regions():
             inference = msg.media_sample.inferences.add()
 
-            obj_label = region.label()
-            obj_confidence = region.confidence()
-            obj_left = region.meta().x
-            obj_top = region.meta().y
-            obj_width = region.meta().w
-            obj_height = region.meta().h
-            attr_name = "object"
-            attr_label = region.label()
-            attr_confidence = region.confidence()
-            attributes = [[attr_name, attr_label, attr_confidence]]
+            attributes = []
+            obj_label = None
+            obj_confidence = 0
+            obj_left = 0
+            obj_width = 0
+            obj_top = 0
+            obj_height = 0
 
-            if obj_label:
+            for tensor in region.tensors():
+                name = tensor.name()
+
+                if (name == 'detection'):
+                    obj_confidence = region.confidence()
+                    obj_label = region.label()
+
+                    obj_left = region.meta().x / video_width
+                    obj_top = region.meta().y / video_height
+                    obj_width = region.meta().w / video_width
+                    obj_height = region.meta().h / video_height
+
+                    inference.type = inferencing_pb2.Inference.InferenceType.ENTITY
+                elif (name == 'object_id'): #Tracking
+                    obj_id = region.object_id()
+                    attributes.append([name, str(obj_id), 0])
+                else: #Classification
+                    attr_name = name
+                    attr_label = region.label()
+                    attr_confidence = region.confidence()
+                    attributes.append([attr_name, attr_label, attr_confidence])
+
+            if obj_label is not None:
                 try:
                     entity = inferencing_pb2.Entity(
                         tag=inferencing_pb2.Tag(
@@ -142,18 +164,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                         )
                         entity.attributes.append(attribute)
 
-                    classification = inferencing_pb2.Classification()
-                    for tensor in region.tensors():
-                        if not tensor.is_detection() and tensor["label"]:
-                            attribute = inferencing_pb2.Attribute(
-                                name=obj_label,
-                                confidence=obj_confidence,
-                                value=tensor["label"]
-                            )
-                            classification.attributes.append(attribute)
-                    if classification.attributes:
-                        classification_inference = msg.media_sample.inferences.add()
-                        classification_inference.classification.CopyFrom(classification)
                 except:
                     log_exception(self._logger)
                     raise
