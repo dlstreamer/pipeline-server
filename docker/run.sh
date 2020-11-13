@@ -238,6 +238,9 @@ if [ "${MODE}" == "DEV" ]; then
         PIPELINES=$SOURCE_DIR/pipelines/$FRAMEWORK
     fi
     PRIVILEGED="--privileged "
+    if [ -z "$USER" ]; then
+	    USER="--user $UID"
+    fi
 elif [ "${MODE}" == "SERVICE" ]; then
     PORTS+="-p 8080:8080 "
     DEVICES+='--device /dev/dri '
@@ -248,9 +251,15 @@ fi
 
 if [ ! -z "$MODELS" ]; then
     VOLUME_MOUNT+="-v $MODELS:/home/video-analytics-serving/models "
+    if [ -z "$USER" ]; then
+	    USER="--user $UID"
+    fi
 fi
 if [ ! -z "$PIPELINES" ]; then
     VOLUME_MOUNT+="-v $PIPELINES:/home/video-analytics-serving/pipelines "
+    if [ -z "$USER" ]; then
+	    USER="--user $UID"
+    fi
 fi
 
 show_options

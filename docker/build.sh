@@ -9,10 +9,6 @@
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
-if [[ "$SOURCE_DIR" =~ " " ]]; then
-        error 'ERROR: Found space in path: '"$SOURCE_DIR"'. Remove space and retry.'
-fi
-
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
 BASE_IMAGE_GSTREAMER="openvino/ubuntu18_runtime:2021.1"
 BASE_IMAGE=
@@ -240,7 +236,7 @@ get_options() {
            OPEN_MODEL_ZOO_VERSION=2021.1
         fi
         
-        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
+        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --user "$UID" --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
    
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
@@ -345,6 +341,10 @@ error() {
     printf '%s %s\n' "$1" "$2" >&2
     exit 1
 }
+
+if [[ "$SOURCE_DIR" =~ " " ]]; then
+        error 'ERROR: Found space in path: '"$SOURCE_DIR"'. Remove space and retry.'
+fi
 
 get_options "$@"
 

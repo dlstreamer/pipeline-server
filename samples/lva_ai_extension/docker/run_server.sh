@@ -60,4 +60,4 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --name $NAME $IMAGE $@
+docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user "$UID" --name $NAME $IMAGE $@
