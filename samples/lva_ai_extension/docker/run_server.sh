@@ -1,9 +1,13 @@
 #!/bin/bash
 
+CURRENT_DIR=$(dirname $(readlink -f "$0"))
+ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
+LVA_DIR=$(dirname $CURRENT_DIR)
 IMAGE=video-analytics-serving-lva-ai-extension:latest
 NAME=${IMAGE//[\:]/_}
 PORT=5001
 MAX_RUNNING_PIPELINES=
+DEV_MODE=
 
 #Get options passed into script
 function get_options {
@@ -20,6 +24,9 @@ function get_options {
         else
           error "-p expects a value"
         fi
+        ;;
+      --dev)
+        DEV_MODE="--dev --pipelines $LVA_DIR/pipelines"
         ;;
       *)
         break
@@ -60,4 +67,4 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-docker run -it --rm $ENV -p $PORT:$PORT -v /dev/shm:/dev/shm -v /tmp:/tmp --user "$UID" --name $NAME $IMAGE $@
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm -p $PORT:$PORT $DEV_MODE "$@"
