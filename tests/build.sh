@@ -6,7 +6,17 @@
 #
 
 DIR=$(dirname $(readlink -f "$0"))
-. "$DIR/../docker/build.sh" $@ --dockerfile-dir "$DIR/../docker"
+
+function launch { $@
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "ERROR: error with $1" >&2
+        exit $exit_code
+    fi
+    return $exit_code
+}
+
+launch ". $DIR/../docker/build.sh $@ --dockerfile-dir $DIR/../docker"
 
 #VA_SERVING_TAG is used to explicitly define the TAG that was used for building VA Serving
 #TAG variable is set through the build script above
@@ -19,4 +29,4 @@ BUILD_OPTIONS="--network=host --no-cache"
 BUILD_ARGS+=" --build-arg BASE=$VA_SERVING_TAG "
 TAG="$VA_SERVING_TAG-tests:latest"
 
-docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR
+launch "docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR"

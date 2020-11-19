@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 WORK_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $WORK_DIR)
@@ -23,7 +23,6 @@ function get_options {
         ;;
     esac
 
-    shift
   done
 }
 
@@ -32,23 +31,21 @@ function show_help {
   echo "  [ --remove-gstlibav : Remove gstlibav package from build ] "
 }
 
+function launch { echo $@
+    $@
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "ERROR: error with $1" >&2
+        exit $exit_code
+    fi
+    return $exit_code
+}
+
 get_options "$@"
 
-
-
 # Build VA Serving
-$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml
-echo $SAMPLE_DIR
-
-VAS_BUILD_EXITCODE=$?
-if [ $VAS_BUILD_EXITCODE -eq 0 ]
-then
-  echo "Successfully built VA parent image..."
-else
-  echo "Could not build VA parent image! Exit: $VAS_BUILD_EXITCODE" >&2
-  exit $VAS_BUILD_EXITCODE
-fi
+launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml"
 
 # Build AI Extention
 echo $SAMPLE_DIR/..
-docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t video-analytics-serving-lva-ai-extension $SAMPLE_DIR
+launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t video-analytics-serving-lva-ai-extension $SAMPLE_DIR"

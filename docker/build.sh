@@ -42,6 +42,16 @@ DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --b
 DEFAULT_FFMPEG_BASE_BUILD_TAG="video-analytics-serving-ffmpeg-base"
 DEFAULT_FFMPEG_BASE_BUILD_ARGS=""
 
+function launch { echo $@
+    $@
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "ERROR: error with $1" >&2
+        exit $exit_code
+    fi
+    return $exit_code
+}
+
 get_options() {
     while :; do
         case $1 in
@@ -352,17 +362,12 @@ get_options "$@"
 if [ "$BASE" == "BUILD" ]; then
     show_base_options
 
-    if [ -z "$RUN_PREFIX" ]; then
-        set -x
-    fi
+    launch "$RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG"
 
-    $RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG
-
-    { set +x; } 2>/dev/null
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     #Ensure image is latest from Docker Hub
-    $RUN_PREFIX docker pull $BASE_IMAGE
+    launch "$RUN_PREFIX docker pull $BASE_IMAGE"
 fi
 
 # BUILD IMAGE
@@ -392,7 +397,7 @@ fi
 cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
-if [[ "$BASE_IMAGE" == "openvino/"* ]]; then
+if [[ "$BASE_IMAGE" == *"openvino/"* ]]; then
     $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi
@@ -410,10 +415,4 @@ fi
 
 show_image_options
 
-if [ -z "$RUN_PREFIX" ]; then
-    set -x
-fi
-
-$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR
-
-{ set +x; } 2>/dev/null
+launch "$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR"

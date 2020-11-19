@@ -26,7 +26,7 @@ USER root
 ARG BASE=video-analytics-serving-gstreamer-base
 ENV VA_SERVING_BASE=${BASE}
 SHELL ["/bin/bash", "-c"]
-RUN if [[ ${VA_SERVING_BASE} = "openvino"* ]]; then \
+RUN if [[ ${VA_SERVING_BASE} = *"openvino"* ]]; then \
         if [ -f /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ]; then \
             /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ;\
         fi\
