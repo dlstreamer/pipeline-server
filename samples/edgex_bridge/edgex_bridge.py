@@ -56,7 +56,7 @@ def parse_args(args=None):
 
 def print_args(args, program_name=__file__):
     heading = "Arguments for {}".format(program_name)
-    banner = "="*len(heading) 
+    banner = "="*len(heading)
     print(banner)
     print(heading)
     print(banner)
@@ -81,14 +81,16 @@ if __name__ == "__main__":
             TEMPLATE = "name: \"{edgexdevice}\"\n" \
             "manufacturer: \"VideoAnalyticsServing\"\n"\
             "model: \"MQTT-2\"\n"\
-            "description: \"Device profile for inference events published by Video Analytics Serving over MQTT.\"\n"\
+            "description: \"Device profile for inference events published by Video Analytics "\
+            "Serving over MQTT.\"\n"\
             "labels:\n"\
             "- \"MQTT\"\n"\
             "- \"VideoAnalyticsServing\"\n"\
             "\n"\
             "deviceResources:\n"\
             "- name: \"{edgexresource}\"\n"\
-            "  description: \"Inference with one or more detections on an analyzed media frame.\"\n"\
+            "  description: \"Inference with one or more detections on an analyzed media "\
+            "frame.\"\n"\
             "  properties:\n"\
             "    value:\n"\
             "      {{ type: \"String\", readWrite: \"R\", defaultValue: \"\"}}\n"\
@@ -98,7 +100,8 @@ if __name__ == "__main__":
             "deviceCommands:\n"\
             "- name: \"{edgexcommand}\"\n"\
             "  get:\n"\
-            "  - {{ operation: \"get\", object: \"{edgexresource}\", parameter: \"{edgexresource}\" }}\n"\
+            "  - {{ operation: \"get\", object: \"{edgexresource}\", "\
+            "parameter: \"{edgexresource}\" }}\n"\
             "\n"
             mqtt_folder = "res/device-mqtt-go/"
             output_path = os.path.abspath(
@@ -158,13 +161,15 @@ if __name__ == "__main__":
                 VAServing.start({'log_level': 'INFO', "ignore_init_errors":False})
                 pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
                 source = {"uri":args.source, "type":"uri"}
-                destination = {"type":"mqtt", "host":args.destination, "topic":'edgex_bridge/'+args.topic}
+                destination = {"type":"mqtt",
+                               "host":args.destination,
+                               "topic":'edgex_bridge/'+args.topic}
                 pipeline.start(source=source, destination=destination, parameters=parameters)
                 start_time = None
                 start_size = 0
                 VAServing.wait()
             else:
-                print("ERROR: You must first invoke edgex_bridge.py with --generate flag to prepare EdgeX Foundry.")
+                print("ERROR: Invoke edgex_bridge.py with '--generate' to prepare EdgeX Foundry.")
     except KeyboardInterrupt:
         pass
     except Exception:

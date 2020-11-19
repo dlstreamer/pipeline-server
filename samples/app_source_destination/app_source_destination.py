@@ -4,38 +4,27 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-import os
-import json
-import time
-import resource
-import subprocess
 import argparse
-import shutil
-import gi
+import json
+import os
+import time
 from queue import Queue
-from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
-from gstgva.video_frame import VideoFrame
-from threading import Thread
-from contextlib import contextmanager
 
-# pylint: disable=wrong-import-order, wrong-import-position
+import gi
+
 gi.require_version('Gst', '1.0')
-gi.require_version('GstApp', '1.0')
-from gi.repository import Gst, GstApp
-# pylint: enable=wrong-import-order, wrong-import-position
-
-from vaserving.vaserving import VAServing
-from vaserving.app_source import AppSource
-from vaserving.app_destination import AppDestination
-from vaserving.gstreamer_app_source import GStreamerAppSource
+# pylint: disable=wrong-import-position
+from gi.repository import Gst
+from gstgva.util import gst_buffer_data
 from vaserving.gstreamer_app_source import GvaFrameData
-from vaserving.gstreamer_app_destination import GStreamerAppDestination
+from vaserving.vaserving import VAServing
+# pylint: enable=wrong-import-position
 
 source_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 
-def parse_args(args=None,program_name="App Source and Destination Sample"):
+def parse_args(args=None, program_name="App Source and Destination Sample"):
 
-    parser = argparse.ArgumentParser(prog=program_name,fromfile_prefix_chars='@',
+    parser = argparse.ArgumentParser(prog=program_name, fromfile_prefix_chars='@',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("--uri", action="store",
@@ -71,20 +60,15 @@ def parse_args(args=None,program_name="App Source and Destination Sample"):
     return parser.parse_args(args)
 
 
-if __name__=="__main__":
-
+if __name__ == "__main__":
     args = parse_args()
-
     decode_output = Queue()
     detect_input = Queue()
     detect_output = Queue()
-
     VAServing.start({'log_level': 'INFO', "ignore_init_errors":True})
-
     parameters = None
     if args.parameters:
         parameters = json.loads(args.parameters)
-
     # Start object detection pipeline
     # It will wait until it receives frames via the detect_input queue
     detect_pipeline = VAServing.pipeline(args.pipeline, args.pipeline_version)
@@ -96,7 +80,7 @@ if __name__=="__main__":
                                        "class": "GStreamerAppDestination",
                                        "output": detect_output,
                                        "mode": "frames"},
-                          parameters= parameters)
+                          parameters=parameters)
 
     # Start decode only pipeline.
     # Its only purpose is to generate decoded frames to be fed into the object detection pipeline
@@ -119,8 +103,8 @@ if __name__=="__main__":
                 with gst_buffer_data(decoded_frame.sample.get_buffer(), Gst.MapFlags.READ) as data:
                     new_sample = GvaFrameData(bytes(data),
                                               decoded_frame.sample.get_caps(),
-                                              message = {'sequence_number':sequence_number,
-                                                         'timestamp':time.time()})
+                                              message={'sequence_number':sequence_number,
+                                                       'timestamp':time.time()})
                     detect_input.put(new_sample)
                     sequence_number += 1
             else:
@@ -129,7 +113,7 @@ if __name__=="__main__":
         while (not detect_output.empty()):
             results = detect_output.get()
             if (results):
-                result_count+=1
+                result_count += 1
             else:
                 end_of_stream = True
                 break
@@ -141,16 +125,17 @@ if __name__=="__main__":
                 timestamp = json.loads(messages[0])
 
                 print("Frame: sequence_number:{} timestamp:{}".format(timestamp["sequence_number"],
-                                                                    timestamp["timestamp"]))
+                                                                      timestamp["timestamp"]))
                 if not regions:
                     print("Nothing detected")
 
                 for region in regions:
-                    print("\tDetection: Region = {}, Label = {}".format(region.rect(), region.label()))
-                    object_id =region.object_id()
+                    print("\tDetection: Region = {}, Label = {}".format(region.rect(),
+                                                                        region.label()))
+                    object_id = region.object_id()
                     if object_id:
                         print("\tTracking: object_id = {}".format(object_id))
-                    tensors=list(region.tensors())
+                    tensors = list(region.tensors())
                     for tensor in tensors:
                         if not tensor.is_detection():
                             layer_name = tensor["layer_name"]

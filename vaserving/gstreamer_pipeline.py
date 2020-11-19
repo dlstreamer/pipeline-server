@@ -3,30 +3,26 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-import string
-import json
-import time
-import os
 import copy
-from threading import Lock
-from threading import Thread
+import json
+import os
+import string
+import time
+from threading import Lock, Thread
+
 import gi
-
-from gstgva.util import GVAJSONMeta
-from vaserving.pipeline import Pipeline
-from vaserving.common.utils import logging
-from vaserving.app_source import AppSource
-from vaserving.app_destination import AppDestination
-
-# pylint: disable=wrong-import-order, wrong-import-position
 gi.require_version('Gst', '1.0')
 gi.require_version('GstApp', '1.0')
-from gi.repository import Gst, GstApp, GLib
-# pylint: enable=wrong-import-order, wrong-import-position
-
+# pylint: disable=wrong-import-position
+from gi.repository import GLib, Gst, GstApp  # pylint: disable=unused-import
+from gstgva.util import GVAJSONMeta
+from vaserving.app_destination import AppDestination
+from vaserving.app_source import AppSource
+from vaserving.common.utils import logging
+from vaserving.pipeline import Pipeline
+# pylint: enable=wrong-import-position
 
 logger = logging.get_logger('GSTPipeline', is_static=True)
-
 
 class GStreamerPipeline(Pipeline):
     Gst.init(None)
@@ -264,13 +260,13 @@ class GStreamerPipeline(Pipeline):
     def validate_config(config):
         template = config["template"]
         pipeline = Gst.parse_launch(template)
-        appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline,["GstAppSink"])
+        appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSink"])
         metaconvert = pipeline.get_by_name("metaconvert")
         metapublish = pipeline.get_by_name("destination")
-        appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline,["GstAppSrc"])
-        if (len(appsrc_elements)>1):
+        appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSrc"])
+        if (len(appsrc_elements) > 1):
             logger.warning("Multiple appsrc elements found")
-        if len(appsink_elements)!=1:
+        if len(appsink_elements) != 1:
             logger.warning("Missing or multiple appsink elements")
         if metaconvert is None:
             logger.warning("Missing metaconvert element")
@@ -418,7 +414,7 @@ class GStreamerPipeline(Pipeline):
         self._app_destination = None
         self.appsink_element = None
 
-        app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline,["GstAppSink"])
+        app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, ["GstAppSink"])
         if (app_sink_elements):
             self.appsink_element = app_sink_elements[0]
 
@@ -441,7 +437,7 @@ class GStreamerPipeline(Pipeline):
             else:
                 self.appsink_element.connect("new-sample", self.on_sample)
 
-    def on_need_data_app_source(self, src, length):
+    def on_need_data_app_source(self, src, _):
         try:
             self._app_source.start_frames()
         except Exception as error:

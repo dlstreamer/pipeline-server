@@ -20,7 +20,6 @@ tags = {
     }
 }
 
-
 source = {
     "application":{
         "type": "object",
@@ -33,7 +32,7 @@ source = {
                 "type":"string"
             }
         },
-        "required":["type","class"]
+        "required":["type", "class"]
     },
     "uri": {
         "type": "object",
@@ -90,7 +89,7 @@ destination = {
                 "type":"string"
             }
         },
-        "required":["type","class"]
+        "required":["type", "class"]
     },
     "file": {
         "type": "object",

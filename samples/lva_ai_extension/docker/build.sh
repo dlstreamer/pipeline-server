@@ -5,6 +5,8 @@ SAMPLE_DIR=$(dirname $WORK_DIR)
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 
 REMOVE_GSTLIBAV=
+BASE_IMAGE="openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
+OMZ_VERSION="2021.1"
 
 #Get options passed into script
 function get_options {
@@ -13,6 +15,14 @@ function get_options {
       -h | -\? | --help)
         show_help
         exit
+        ;;
+      --base)
+        if [ "$2" ]; then
+          BASE_IMAGE=$2
+          shift
+        else
+          error 'ERROR: "--base" requires an argument.'
+        fi
         ;;
       --remove-gstlibav)
         REMOVE_GSTLIBAV="--build-arg INCLUDE_GSTLIBAV=false"
@@ -29,6 +39,7 @@ function get_options {
 function show_help {
   echo "usage: ./run_server.sh"
   echo "  [ --remove-gstlibav : Remove gstlibav package from build ] "
+  echo "  [ --base : Base image for VA Serving build ] "
 }
 
 function launch { echo $@
@@ -44,7 +55,7 @@ function launch { echo $@
 get_options "$@"
 
 # Build VA Serving
-launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml"
+launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base $BASE_IMAGE --open-model-zoo-version $OMZ_VERSION --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml"
 
 # Build AI Extention
 echo $SAMPLE_DIR/..

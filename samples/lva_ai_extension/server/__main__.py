@@ -2,9 +2,9 @@
 * Copyright (C) 2019-2020 Intel Corporation.
 *
 * SPDX-License-Identifier: MIT License
-'''
-
-'''
+*
+*****
+*
 * MIT License
 *
 * Copyright (c) Microsoft Corporation.
@@ -27,28 +27,20 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE
 '''
-import os
-import json
-import time
-import resource
-import subprocess
+
 import argparse
-import shutil
-import gi
-from queue import Queue
-from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
-from gstgva.video_frame import VideoFrame
-from threading import Thread
-from contextlib import contextmanager
+import os
+import sys
+from concurrent import futures
+import grpc
+import extension_pb2_grpc  # pylint: disable=import-error
 from vaserving.vaserving import VAServing
 from media_graph_extension import MediaGraphExtension
-import grpc
-import extension_pb2_grpc
-from concurrent import futures
+
 
 def parse_args(args=None, program_name="VA Serving AI Extension"):
 
-    parser = argparse.ArgumentParser(prog=program_name,fromfile_prefix_chars='@',
+    parser = argparse.ArgumentParser(prog=program_name, fromfile_prefix_chars='@',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("-p", action="store", dest="port",
@@ -69,10 +61,12 @@ def parse_args(args=None, program_name="VA Serving AI Extension"):
     parser.add_argument("--debug", action="store_true",
                         dest="debug",
                         help='Use debug pipeline',
-                        default=(os.getenv('DEBUG_PIPELINE', None) != None))
+                        default=(os.getenv('DEBUG_PIPELINE', None) is not None))
+
     parser.add_argument("--max-running-pipelines", action="store",
                         dest="max_running_pipelines",
                         type=int, default=int(os.getenv('MAX_RUNNING_PIPELINES', '10')))
+
     parser.add_argument("--parameters", action="store",
                         dest="parameters",
                         type=str, default=os.getenv('PARAMETERS', '{}'))
@@ -87,7 +81,8 @@ if __name__ == "__main__":
 
     args = parse_args()
     try:
-        VAServing.start({'log_level': 'INFO', "ignore_init_errors":True, 'max_running_pipelines': args.max_running_pipelines})
+        VAServing.start({'log_level': 'INFO', "ignore_init_errors":True,
+                         'max_running_pipelines': args.max_running_pipelines})
 
         # create gRPC server and start running
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.max_running_pipelines))
@@ -101,4 +96,4 @@ if __name__ == "__main__":
 
     except:
         VAServing.stop()
-        exit(-1)
+        sys.exit(-1)

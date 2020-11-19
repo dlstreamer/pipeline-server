@@ -2,9 +2,9 @@
 * Copyright (C) 2019-2020 Intel Corporation.
 *
 * SPDX-License-Identifier: MIT License
-'''
-
-'''
+*
+*****
+*
 * MIT License
 *
 * Copyright (c) Microsoft Corporation.
@@ -27,14 +27,13 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE
 '''
-
-import sys
-
 import logging
 import os
-from media_stream_processor import MediaStreamProcessor
-from arguments import parse_args
+import sys
 from samples.lva_ai_extension.common.exception_handler import log_exception
+from arguments import parse_args
+from media_stream_processor import MediaStreamProcessor
+
 
 def _log_options(args):
     heading = "Options for {}".format(os.path.basename(__file__))
@@ -64,7 +63,7 @@ def main():
 
     except:
         log_exception()
-        exit(-1)
+        sys.exit(-1)
 
 if __name__ == "__main__":
     # Set logging parameters
@@ -72,7 +71,7 @@ if __name__ == "__main__":
         level=logging.INFO,
         format='[AIXC] [%(asctime)-15s] [%(threadName)-12.12s] [%(levelname)s]: %(message)s',
         handlers=[
-            #logging.FileHandler(LOG_FILE_NAME),     # write in a log file
+            #logging.FileHandler(LOG_FILE_NAME),    # write in a log file
             logging.StreamHandler(sys.stdout)       # write in stdout
         ]
     )
@@ -81,4 +80,3 @@ if __name__ == "__main__":
     main()
 
     logging.info('Client finished execution')
-

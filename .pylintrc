@@ -11,11 +11,21 @@ ignore=CVS
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
-ignore-patterns=
+#ignore-patterns=**autogen**
+
+# VAS0.4.0 - Until --ignore parameter and other methods are fixed,
+# we manually ignore subfolders using init-hook (until PyLint issue #2686 is resolved)
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-#init-hook=
+init-hook=
+    import sys; sys.path.append(os.getcwd());
+    from tests.vas_pylint_ignore import VASPylintIgnore;
+    default_ignore_paths = "/home/video-analytics-serving/samples/lva_ai_extension/common/grpc_autogen/," \
+                           "/home/video-analytics-serving/tests,"\
+                           "/home/video-analytics-serving/samples/lva_ai_extension/tests"
+    ignore_paths = os.getenv('PYLINT_IGNORE_PATHS', default_ignore_paths)
+    VASPylintIgnore(tuple(ignore_paths.split(',')))
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
@@ -211,7 +221,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000

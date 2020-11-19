@@ -26,21 +26,22 @@ import linecache
 import sys
 import logging
 
-def log_exception(logger = None):
-    exType, exValue, exTraceback = sys.exc_info()
+def log_exception(logger=None):
+    ex_type, ex_value, ex_traceback = sys.exc_info()
 
-    tbFrame = exTraceback.tb_frame
-    lineNo = exTraceback.tb_lineno
-    fileName = tbFrame.f_code.co_filename
+    tb_frame = ex_traceback.tb_frame
+    line_no = ex_traceback.tb_lineno
+    file_name = tb_frame.f_code.co_filename
 
-    linecache.checkcache(fileName)
-    line = linecache.getline(fileName, lineNo, tbFrame.f_globals)
+    linecache.checkcache(file_name)
+    line = linecache.getline(file_name, line_no, tb_frame.f_globals)
 
-    exMessage = 'Exception:\n\tFile name: {0}\n\tLine number: {1}\n\tLine: {2}\n\tValue: {3}'.format(fileName, lineNo, line.strip(), exValue)
+    ex_message = 'Exception:\n\tFile name: {0}\n\tLine number: {1}\n\tLine: {2}\n\tValue: {3}'\
+        .format(file_name, line_no, line.strip(), ex_value)
 
     if (logger):
-        logger.info(exMessage)
+        logger.info(ex_message)
     else:
-        logging.info(exMessage)
+        logging.info(ex_message)
 
-    return exType, exValue, exTraceback
+    return ex_type, ex_value, ex_traceback

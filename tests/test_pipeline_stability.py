@@ -40,66 +40,56 @@ def start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
 def test_pipeline_stability(VAServing, test_case, test_filename, generate, numerical_tolerance):
     duration_met = False
     stability_duration = 0
-
     _test_case = copy.deepcopy(test_case)
-
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
-
     test_model_dir = os.path.join(os.path.dirname(test_filename),
-                                   "{0}_models".format(test_prefix))
-
+                                  "{0}_models".format(test_prefix))
     test_pipeline_dir = os.path.join(os.path.dirname(test_filename),
-                                   "{0}_pipelines".format(test_prefix))
-
+                                  "{0}_pipelines".format(test_prefix))
     if "model_dir" not in _test_case["options"]:
         if os.path.isdir(test_model_dir):
             _test_case["options"]["model_dir"] = test_model_dir
-
     if ("pipeline_dir" not in _test_case["options"]):
         if (os.path.isdir(test_pipeline_dir)):
             _test_case["options"]["pipeline_dir"] = test_pipeline_dir
-
     if "numerical_tolerance" in _test_case:
         numerical_tolerance = _test_case["numerical_tolerance"]
-
     if "stability_duration" in _test_case:
         stability_duration = _test_case["stability_duration"]
-
     if "relaunch_on_complete" in _test_case:
         relaunch_on_complete = _test_case["relaunch_on_complete"]
-
     VAServing.start(_test_case["options"])
     start_time = time.time()
     if relaunch_on_complete:
         num_loops = 1
-        with tempfile.TemporaryDirectory() as tempDir:
+        with tempfile.TemporaryDirectory() as temp_dir:
             while not duration_met:
-                _test_case["request"]["destination"]["path"] = tempDir + "/stability" + str(num_loops) + ".json"
+                _test_case["request"]["destination"]["path"] = temp_dir + "/stability" + \
+                    str(num_loops) + ".json"
                 pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
-                                            _test_case["pipeline"]["version"])
-
+                                              _test_case["pipeline"]["version"])
                 results_processing.clear_results(_test_case)
                 results = []
                 thread = results_processing.get_results_fifo(_test_case, results)
-                duration_met = start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
-
+                duration_met = start_and_run_pipeline(_test_case, pipeline,
+                                                      stability_duration, start_time)
                 if (thread):
                     thread.join()
                 elif not duration_met:
                     results_processing.get_results_file(_test_case, results)
-
                 if generate:
                     test_case["result"] = results
                     with open(test_filename+'.generated', "w") as test_output:
                         json.dump(test_case, test_output, indent=4)
                 elif not duration_met:
-                    assert results_processing.cmp_results(results, _test_case["result"], numerical_tolerance), "Inference Result Mismatch"
+                    assert results_processing.cmp_results(results,
+                                                          _test_case["result"],
+                                                          numerical_tolerance), \
+                                                          "Inference Result Mismatch"
                     num_loops = num_loops + 1
-
     else:
         pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
                                       _test_case["pipeline"]["version"])
         duration_met = start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
-
     VAServing.stop()
     assert duration_met

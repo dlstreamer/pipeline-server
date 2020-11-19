@@ -12,15 +12,11 @@ import pytest
 import urllib
 
 def test_initialization(VAServing, test_case, test_filename, generate):
-
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
-
     test_model_dir = os.path.join(os.path.dirname(test_filename),
-                                   "{0}_models".format(test_prefix))
-
+                                  "{0}_models".format(test_prefix))
     test_pipeline_dir = os.path.join(os.path.dirname(test_filename),
-                                   "{0}_pipelines".format(test_prefix))
-
+                                     "{0}_pipelines".format(test_prefix))
     if "model_dir" not in test_case["options"]:
         if os.path.isdir(test_model_dir):
             test_case["options"]["model_dir"] = test_model_dir
@@ -45,4 +41,3 @@ def test_initialization(VAServing, test_case, test_filename, generate):
         VAServing.start(test_case["options"])
 
     VAServing.stop()
-

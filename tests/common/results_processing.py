@@ -1,3 +1,9 @@
+'''
+* Copyright (C) 2019-2020 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+'''
+
 import os
 import json
 from threading import Thread
@@ -88,11 +94,13 @@ def cmp_results(measured, expected, tolerance):
 
     if isinstance(measured, int) or isinstance(measured, float):
         if expected != 0:
+            msg = "Measured Value {} not within tolerance ({}) of Expected Value {}"
             assert  (abs(measured-expected) / abs(expected)) < tolerance, \
-            "Measured Value {} not within tolerance ({}) of Expected Value {}".format(measured, tolerance, expected)
+            msg.format(measured, tolerance, expected)
         else:
-            assert 1 < tolerance, \
-            "Measured Value {} not within tolerance ({}) of Expected Value {}".format(measured, tolerance, expected)
+            msg = "Measured Value {} not within tolerance ({}) of Expected Value {}"
+            assert tolerance > 1, \
+            msg.format(measured, tolerance, expected)
 
         return True
 

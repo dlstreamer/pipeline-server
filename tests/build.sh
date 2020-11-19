@@ -26,7 +26,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host --no-cache"
-BUILD_ARGS+=" --build-arg BASE=$VA_SERVING_TAG "
+BUILD_ARGS+=" --build-arg BASE=$VA_SERVING_TAG --build-arg FRAMEWORK=$FRAMEWORK"
 TAG="$VA_SERVING_TAG-tests:latest"
 
 launch "docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR"

@@ -23,26 +23,19 @@ class VAServingService:
     VASERVING_ARGS = ["python3", "-m", "vaserving"]
 
     def kill(self, timeout=10):
-
         graceful_exit = True
-        
         if (self._process):
             self._process.send_signal(signal.SIGINT)
             start = time.time()
-            
-            while ((self._process.poll()==None) and ((time.time()-start)<timeout)):
+            while ((self._process.poll() == None) and ((time.time()-start) < timeout)):
                 time.sleep(1)
-
-            if ((self._process.returncode==None) or (self._process.returncode!=0)):
+            if ((self._process.returncode == None) or (self._process.returncode != 0)):
                 graceful_exit = False
             else:
                 self._process.kill()
-
             self._process = None
-
         return graceful_exit
 
-            
     def __del__(self):
         self.kill()
 
@@ -61,16 +54,13 @@ class VAServingService:
         return None
 
     def __init__(self):
-
         self.kill_all()
         self.host = "http://localhost:8080"
-
         self._process = subprocess.Popen(VAServingService.VASERVING_ARGS,
                                          stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE,
                                          bufsize=1,
                                          universal_newlines=True)
-
         self._process.poll()
         while self._process.returncode is None:
             next_line = self._process.stderr.readline()
@@ -80,7 +70,6 @@ class VAServingService:
                     ignore_init_errors = os.getenv('IGNORE_INIT_ERRORS', False)
                     if message["levelname"] == "ERROR" and not ignore_init_errors:
                         raise Exception(next_line)
-
                     if message["message"] == "Starting Tornado Server on port: 8080":
                         attempts = MAX_CONNECTION_ATTEMPTS
                         while (attempts):
@@ -97,22 +86,23 @@ class VAServingService:
                 self._process = None
                 assert False, "VA Serving Not Launched"
                 raise
-
             self._process.poll()
-
         if self._process.returncode != 0:
             assert False
-
 
     def get_models(self):
         pass
 
 
 def pytest_addoption(parser):
-    parser.addoption("--generate", action="store_true", help="generate expected results", default=False)
-    parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg', 'gstreamer'], default=os.environ["FRAMEWORK"])
-    parser.addoption("--numerical_tolerance", help="percentage numerical difference to tolerate", type=float, default=0.0001)
-    parser.addoption("--stability", action="store_true", help="run stability tests", default=False)
+    parser.addoption("--generate", action="store_true", help="generate expected results",
+                     default=False)
+    parser.addoption("--framework", help="ffmpeg or gstreamer", choices=['ffmpeg', 'gstreamer'],
+                     default=os.environ["FRAMEWORK"])
+    parser.addoption("--numerical_tolerance", help="percentage numerical difference to tolerate",
+                     type=float, default=0.0001)
+    parser.addoption("--stability", action="store_true", help="run stability tests",
+                     default=False)
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "stability: run stability tests")
@@ -130,20 +120,16 @@ def numerical_tolerance(request):
     return request.config.getoption("--numerical_tolerance")
 
 def load_test_cases(metafunc, directory):
-
     known_frameworks = ['ffmpeg', 'gstreamer']
-
     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test_cases", directory)
-
-    filenames = [(os.path.abspath(os.path.join(dir_path, fn)), os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
-                 if os.path.isfile(os.path.join(dir_path, fn)) and os.path.splitext(fn)[1] == '.json']
-
+    filenames = [(os.path.abspath(os.path.join(dir_path, fn)),
+                  os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
+                 if os.path.isfile(os.path.join(dir_path, fn)) and
+                 os.path.splitext(fn)[1] == '.json']
     framework = metafunc.config.getoption("framework")
-
     filenames = [filename for filename in filenames
-                  if filename[1].split('_')[-1] == framework or
-                  filename[1].split('_')[-1] not in known_frameworks]
-
+                 if filename[1].split('_')[-1] == framework or
+                 filename[1].split('_')[-1] not in known_frameworks]
     test_cases = []
     test_names = []
     generate = metafunc.config.getoption("generate")
