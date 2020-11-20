@@ -6,8 +6,8 @@ LVA_DIR=$(dirname $CURRENT_DIR)
 IMAGE=video-analytics-serving-lva-ai-extension:latest
 NAME=${IMAGE//[\:]/_}
 PORT=5001
-MAX_RUNNING_PIPELINES=
 DEV_MODE=
+ENTRYPOINT_ARGS=
 
 #Get options passed into script
 function get_options {
@@ -24,6 +24,18 @@ function get_options {
         else
           error "-p expects a value"
         fi
+        ;;
+      --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters)
+        if [ "$2" ]; then
+          ENTRYPOINT_ARGS+="--entrypoint-args $1 "
+          ENTRYPOINT_ARGS+="--entrypoint-args $2 "
+          shift
+        else
+          error "$1 expects a value"
+        fi
+        ;;
+      --debug)
+        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
         ;;
       --dev)
         DEV_MODE="--dev --pipelines $LVA_DIR/pipelines"
@@ -67,4 +79,9 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm -p $PORT:$PORT $DEV_MODE "$@"
+if [ ! -z "$PARAMETERS" ]; then
+  ENV+="-e PARAMETERS=$PARAMETERS "
+fi
+
+echo $ENTRYPOINT_ARGS
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $DEV_MODE $ENV

@@ -279,6 +279,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
         self._logger.info('Pipeline Name : {}'.format(self._pipeline))
         self._logger.info('Pipeline Version : {}'.format(self._version))
+        self._logger.info('Pipeline Parameters : {}'.format(parameters))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
         # Start object detection pipeline
