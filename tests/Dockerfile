@@ -7,6 +7,8 @@ USER root
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     python3-dev \
+    clamav \
+    clamav-daemon \
     gcc && \
     rm -rf /var/lib/apt/lists/*
 
@@ -22,7 +24,6 @@ RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 # Copy tests and sample files
 COPY tests/ /home/video-analytics-serving/tests/
 COPY samples/ /home/video-analytics-serving/samples/
-COPY .pylintrc /home/video-analytics-serving/
 COPY models_list/models.list.yml /home/video-analytics-serving/models/models.list.yml
 
 # Copy and rename for stringified version
@@ -35,4 +36,4 @@ ARG USER=vaserving
 
 USER ${USER}
 
-ENTRYPOINT [ "./tests/pytest.sh" ]
+ENTRYPOINT [ "./tests/entrypoint/pytest.sh" ]

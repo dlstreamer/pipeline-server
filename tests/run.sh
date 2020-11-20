@@ -1,12 +1,25 @@
 #!/bin/bash
 
-WORK_DIR=$(dirname $(readlink -f "$0"))
-FRAMEWORK=gstreamer
+TESTS_DIR=$(dirname "$(readlink -f "$0")")
+SOURCE_DIR=$(dirname $TESTS_DIR)
 INTERACTIVE=--non-interactive
-CI=
-ENVIRONMENT=
-ENTRYPOINT_ARGS=
-ENTRYPOINT=
+FRAMEWORK=gstreamer
+DOCKER_TESTS_DIR="/home/video-analytics-serving/tests"
+RESULTS_DIR="results"
+PYTEST_GSTREAMER_RESULTS_DIR="$RESULTS_DIR/pytest/gstreamer"
+PYTEST_FFMPEG_RESULTS_DIR="$RESULTS_DIR/pytest/ffmpeg"
+PYLINT_RESULTS_DIR="$RESULTS_DIR/pylint"
+CLAMAV_RESULTS_DIR="$RESULTS_DIR/clamav"
+
+# Default selected as gstreamer pytests
+OUTPUT_DIR="$PYTEST_GSTREAMER_RESULTS_DIR"
+IMAGE=video-analytics-serving-gstreamer-tests:latest
+SELECTED="--pytest-gstreamer"
+ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
+
+# For default gstreamer image, it requires extra permisions to generate coverage report. needs to investigate more.
+# TODO: fix user permsion issue for generating reports
+USER="--user root"
 
 #Get options passed into script
 function get_options {
@@ -16,47 +29,26 @@ function get_options {
         show_help
         exit
         ;;
-      --framework)
-        if [ "$2" ]; then
-          FRAMEWORK=$2
-          shift
-        else
-          error "Framework expects a value"
-        fi
+      --pytest-gstreamer)
+        shift
         ;;
-      --image)
-        if [ "$2" ]; then
-          IMAGE=$2
-          shift
-        else
-          error "Image expects a value"
-        fi
-        ;;
-      --pytest-args|--pytest-arg|--pylint-arg)
-        if [ "$2" ]; then
-          ENTRYPOINT_ARGS+="--entrypoint-args $2 "
-          shift
-        else
-          error "Pytest-args expects a value"
-        fi
+      --pytest-ffmpeg)
+        OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"
+        IMAGE=video-analytics-serving-ffmpeg-tests:latest
+        SELECTED="$1"
+        shift
         ;;
       --pylint)
-        ENTRYPOINT="--entrypoint ./tests/pylint.sh"
+        OUTPUT_DIR="$PYLINT_RESULTS_DIR"
+        ENTRYPOINT="--entrypoint ./tests/entrypoint/pylint.sh"
+        SELECTED="$1"
+        shift
         ;;
-      --dev)
-        DEV=--dev
-        unset INTERACTIVE
-        ;;
-      --ci)
-        CI="-e TEAMCITY_VERSION=2019.1.3"
-        ;;
-      -e)
-        if [ "$2" ]; then
-          ENVIRONMENT+="-e $2 "
-          shift
-        else
-          error "Environment expects a value"
-        fi
+      --clamav)
+        OUTPUT_DIR="$CLAMAV_RESULTS_DIR"
+        ENTRYPOINT="--entrypoint ./tests/entrypoint/clamav.sh"
+        SELECTED="$1"
+        shift
         ;;
       *)
         break
@@ -69,12 +61,10 @@ function get_options {
 
 function show_help {
   echo "usage: run.sh"
-  echo "  [ --image : Specify the image to run the tests on ]"
-  echo "  [ --framework : Set the framework for the image, default is gstreamer ] "
-  echo "  [ --pylint : Run the pylint test ] "
-  echo "  [ --dev : Bash into the test container ] "
-  echo "  [ --ci : Output results for Team City integration ] "
-  echo "  [ -e : Add environment variable to container ] "
+  echo "  [ --pytest-gstreamer : To run gstreamer tests ]"
+  echo "  [ --pytest-ffmpeg: To run ffmpeg tests ] "
+  echo "  [ --pylint : To run pylint ] "
+  echo "  [ --clamav : To run gstreamer antivirus scan ] "
 }
 
 function error {
@@ -84,10 +74,14 @@ function error {
 
 get_options "$@"
 
-#If tag is not used, set VA_SERVING_TAG to default
-if [ -z "$IMAGE" ]; then
-  IMAGE=video-analytics-serving-$FRAMEWORK-tests:latest
-fi
+DOCKER_RESULTS_DIR="$DOCKER_TESTS_DIR/$OUTPUT_DIR"
+LOCAL_RESULTS_DIR="$TESTS_DIR/$OUTPUT_DIR"
 
-$WORK_DIR/../docker/run.sh --image $IMAGE  \
-  $DEV $CI $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS
+echo "running $SELECTED"
+ENVIRONMENT="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
+
+mkdir -p "$LOCAL_RESULTS_DIR"
+
+VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
+
+$SOURCE_DIR/docker/run.sh --image $IMAGE $USER $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $@
