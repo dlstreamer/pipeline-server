@@ -123,9 +123,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 elif (name == 'object_id'): #Tracking
                     obj_id = region.object_id()
                     attributes.append([name, str(obj_id), 0])
-                else: #Classification
+                elif tensor["label"]: #Classification
                     attr_name = name
-                    attr_label = region.label()
+                    attr_label = tensor["label"]
                     attr_confidence = region.confidence()
                     attributes.append([attr_name, attr_label, attr_confidence])
 
