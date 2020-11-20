@@ -2,8 +2,8 @@
 WORK_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$WORK_DIR/../../..")
 LVA_DIR=$(dirname $WORK_DIR)
-CACHE_PREFIX="amr-cache-registry.caas.intel.com/cache"
-VAS_BASE_IMAGE="$CACHE_PREFIX/openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
+CACHE_PREFIX="${1}"
+VAS_BASE_IMAGE="${CACHE_PREFIX}openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
 
 echo $WORK_DIR
 echo $ROOT_DIR

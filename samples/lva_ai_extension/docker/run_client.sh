@@ -35,7 +35,6 @@ function get_options {
         ;;
       --shared-memory)
         SHARED_MEMORY="-m"
-	shift
         ;;
       --sample-file-path)
         if [ "$2" ]; then
@@ -47,7 +46,6 @@ function get_options {
         ;;
       -it)
         INTERACTIVE="-it"
-        shift
         ;;
       --output-file-path)
         if [ "$2" ]; then

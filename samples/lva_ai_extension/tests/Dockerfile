@@ -7,7 +7,8 @@ USER root
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     python3-dev \
-    gcc && \
+    gcc \
+    wget && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -18,6 +19,8 @@ RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 
 ENV PIPELINE_NAME 'object_detection'
 ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
+
+RUN wget -O classroom.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true
 
 ARG USER=vaserving
 

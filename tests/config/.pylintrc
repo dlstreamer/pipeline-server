@@ -3,7 +3,7 @@
 # A comma-separated list of package or module names from where C extensions may
 # be loaded. Extensions are loading into the active Python interpreter and may
 # run arbitrary code.
-extension-pkg-whitelist=
+extension-pkg-whitelist=cv2
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
@@ -275,7 +275,7 @@ ignore-on-opaque-inference=yes
 # qualified names.
 ignored-classes=optparse.Values,thread._local,_thread._local,
                 extension__pb2.MediaStreamMessage,
-                MediaStreamMessage	
+                MediaStreamMessage
 
 # List of module names for which member attributes should not be checked
 # (useful for modules/projects where namespaces are manipulated during runtime

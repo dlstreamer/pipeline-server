@@ -12,10 +12,6 @@ def test_lva_client_server():
     port = 5001
     loops = 10
     sleep_period = 0.25
-    print()
-    if not os.getenv('PIPELINE_NAME') and not os.getenv('PIPELINE_VERSION'):
-        print("LVA environment not detected, skipping test")
-        return
     server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server",
                    "-p", str(port)]
     client_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/client",

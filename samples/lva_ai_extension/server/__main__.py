@@ -94,6 +94,6 @@ if __name__ == "__main__":
         server.wait_for_termination()
         VAServing.stop()
 
-    except:
+    except Exception:
         VAServing.stop()
         sys.exit(-1)
