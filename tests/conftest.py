@@ -103,6 +103,8 @@ def pytest_addoption(parser):
                      type=float, default=0.0001)
     parser.addoption("--stability", action="store_true", help="run stability tests",
                      default=False)
+    parser.addoption("--stability_duration", type=int, help="duration to run stability tests",
+                     action="store", default=None)
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "stability: run stability tests")
@@ -114,6 +116,10 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if "stability" in item.keywords:
             item.add_marker(skip_stability)
+
+@pytest.fixture
+def stability_duration(request):
+    return request.config.getoption("--stability_duration")
 
 @pytest.fixture
 def numerical_tolerance(request):

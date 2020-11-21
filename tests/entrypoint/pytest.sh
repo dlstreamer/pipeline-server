@@ -6,6 +6,7 @@ SOURCE_DIR=$(dirname $TESTS_DIR)
 FRAMEWORK=${FRAMEWORK:-gstreamer}
 
 RESULTS_DIR=${RESULTS_DIR:-"$TESTS_DIR/results/pytest/$FRAMEWORK"}
+PYTEST_ARGS=${PYTEST_ARGS:-"$@"}
 
 mkdir -p "$RESULTS_DIR"
 
@@ -16,4 +17,4 @@ rm -rf "$COV_DIR"
 
 cd ${SOURCE_DIR};
 python3 -m pytest -s --html="$RESULTS_DIR/report.html" --ignore=$SOURCE_DIR/samples --self-contained-html \
-  --cov-report=html:"$COV_DIR" --cov-config=$COV_CONFIG --cov=vaserving ${PYTEST_ARGS}
+  --cov-report=html:"$COV_DIR" --cov-config=$COV_CONFIG --cov=vaserving $PYTEST_ARGS

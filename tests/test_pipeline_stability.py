@@ -37,9 +37,8 @@ def start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
     return False
 
 @pytest.mark.stability
-def test_pipeline_stability(VAServing, test_case, test_filename, generate, numerical_tolerance):
+def test_pipeline_stability(VAServing, test_case, test_filename, generate, numerical_tolerance, stability_duration):
     duration_met = False
-    stability_duration = 0
     _test_case = copy.deepcopy(test_case)
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
     test_model_dir = os.path.join(os.path.dirname(test_filename),
@@ -54,8 +53,10 @@ def test_pipeline_stability(VAServing, test_case, test_filename, generate, numer
             _test_case["options"]["pipeline_dir"] = test_pipeline_dir
     if "numerical_tolerance" in _test_case:
         numerical_tolerance = _test_case["numerical_tolerance"]
-    if "stability_duration" in _test_case:
+    if stability_duration is None and "stability_duration" in _test_case:
         stability_duration = _test_case["stability_duration"]
+    elif stability_duration is None:
+        stability_duration = 600
     if "relaunch_on_complete" in _test_case:
         relaunch_on_complete = _test_case["relaunch_on_complete"]
     VAServing.start(_test_case["options"])
