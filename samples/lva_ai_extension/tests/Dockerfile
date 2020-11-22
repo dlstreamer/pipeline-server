@@ -17,6 +17,8 @@ COPY ./requirements.tests.txt /home/video-analytics-serving
 RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.tests.txt
 RUN rm -f /home/video-analytics-serving/requirements.tests.txt
 
+COPY . /home/video-analytics-serving/samples/lva_ai_extension/tests
+
 ENV PIPELINE_NAME 'object_detection'
 ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
 
