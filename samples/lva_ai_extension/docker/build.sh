@@ -3,10 +3,10 @@
 WORK_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $WORK_DIR)
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-
 REMOVE_GSTLIBAV=
 BASE_IMAGE="openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
 OMZ_VERSION="2021.1"
+TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
 
 #Get options passed into script
 function get_options {
@@ -59,4 +59,4 @@ launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service
 
 # Build AI Extention
 echo $SAMPLE_DIR/..
-launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t video-analytics-serving-lva-ai-extension $SAMPLE_DIR"
+launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS $REMOVE_GSTLIBAV -t $TAG $SAMPLE_DIR"

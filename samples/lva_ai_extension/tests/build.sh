@@ -4,6 +4,8 @@ ROOT_DIR=$(readlink -f "$WORK_DIR/../../..")
 LVA_DIR=$(dirname $WORK_DIR)
 CACHE_PREFIX="${1}"
 VAS_BASE_IMAGE="${CACHE_PREFIX}openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
+EXTENSION_IMAGE_TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
+TEST_IMAGE_TAG="video-analytics-serving-lva-tests"
 
 echo $WORK_DIR
 echo $ROOT_DIR
@@ -25,4 +27,4 @@ function launch { $@
 launch "$LVA_DIR/docker/build.sh --remove-gstlibav --base $VAS_BASE_IMAGE"
 
 # Add tests layer
-launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t video-analytics-serving-lva-tests $WORK_DIR"
+launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t $TEST_IMAGE_TAG $WORK_DIR"

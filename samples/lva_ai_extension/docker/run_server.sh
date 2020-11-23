@@ -3,7 +3,7 @@
 CURRENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
 LVA_DIR=$(dirname $CURRENT_DIR)
-IMAGE=video-analytics-serving-lva-ai-extension:latest
+IMAGE=video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
 NAME=${IMAGE//[\:]/_}
 PORT=5001
 DEV_MODE=

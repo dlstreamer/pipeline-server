@@ -7,7 +7,7 @@ SAMPLE_FILE_PATH=$LVA_ROOT/sampleframes/sample01.png
 OUTPUT_FILE_PATH=
 SHARED_MEMORY=
 INTERACTIVE=
-IMAGE=video-analytics-serving-lva-ai-extension:latest
+IMAGE=video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
 
 #Get options passed into script
 function get_options {
