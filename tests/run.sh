@@ -9,6 +9,7 @@ RESULTS_DIR="results"
 PYTEST_GSTREAMER_RESULTS_DIR="$RESULTS_DIR/pytest/gstreamer"
 PYTEST_FFMPEG_RESULTS_DIR="$RESULTS_DIR/pytest/ffmpeg"
 PYLINT_RESULTS_DIR="$RESULTS_DIR/pylint"
+PYBANDIT_RESULTS_DIR="$RESULTS_DIR/pybandit"
 CLAMAV_RESULTS_DIR="$RESULTS_DIR/clamav"
 
 # Default selected as gstreamer pytests
@@ -44,6 +45,12 @@ function get_options {
         SELECTED="$1"
         shift
         ;;
+      --pybandit)
+        OUTPUT_DIR="$PYBANDIT_RESULTS_DIR"
+        ENTRYPOINT="--entrypoint ./tests/entrypoint/pybandit.sh"
+        SELECTED="$1"
+        shift
+        ;;
       --clamav)
         OUTPUT_DIR="$CLAMAV_RESULTS_DIR"
         ENTRYPOINT="--entrypoint ./tests/entrypoint/clamav.sh"
@@ -61,10 +68,11 @@ function get_options {
 
 function show_help {
   echo "usage: run.sh"
-  echo "  [ --pytest-gstreamer : To run gstreamer tests ]"
-  echo "  [ --pytest-ffmpeg: To run ffmpeg tests ] "
-  echo "  [ --pylint : To run pylint ] "
-  echo "  [ --clamav : To run gstreamer antivirus scan ] "
+  echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
+  echo "  [ --pytest-ffmpeg: Run ffmpeg tests ] "
+  echo "  [ --pylint : Run pylint scan ] "
+  echo "  [ --pybandit: Run pybandit scan ] "
+  echo "  [ --clamav : Run antivirus scan ] "
 }
 
 function error {
