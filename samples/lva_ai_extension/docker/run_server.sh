@@ -83,5 +83,4 @@ if [ ! -z "$PARAMETERS" ]; then
   ENV+="-e PARAMETERS=$PARAMETERS "
 fi
 
-echo $ENTRYPOINT_ARGS
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $DEV_MODE $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $DEV_MODE $ENV
