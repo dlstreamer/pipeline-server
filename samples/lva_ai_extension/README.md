@@ -144,7 +144,7 @@ Integrated Graphics.
 Run default pipeline with iGPU inference (be careful with escaping the JSON string)
 
 ```bash
-$ ./docker/run_server.sh ./docker/run_server.sh --parameters "{\"device\":\"GPU\"}"
+$ ./docker/run_server.sh --parameters "{\"device\":\"GPU\"}"
 ```
 
 ### Logging
