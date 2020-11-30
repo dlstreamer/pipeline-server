@@ -120,9 +120,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
 
                     inference.type = inferencing_pb2.Inference.InferenceType.ENTITY  # pylint: disable=no-member
-                elif (name == 'object_id'): #Tracking
-                    obj_id = region.object_id()
-                    attributes.append([name, str(obj_id), 0])
+                    if region.object_id(): #Tracking
+                        obj_id = region.object_id()
+                        attributes.append(["object_id", str(obj_id), 0])
                 elif tensor["label"]: #Classification
                     attr_name = name
                     attr_label = tensor["label"]

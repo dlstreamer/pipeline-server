@@ -90,8 +90,12 @@ def print_result(response, output):
     for inference in response.media_sample.inferences:
         tag = inference.entity.tag
         box = inference.entity.box
-        logging.info("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}]"\
-                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h))
+        atrributes = []
+        for attribute in inference.entity.attributes:
+            attribute_string = "{}: {}".format(attribute.name, attribute.value)
+            atrributes.append(attribute_string)
+        logging.info("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}"\
+                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h, atrributes))
     response_dict = MessageToDict(response.media_sample)
     if response_dict.get("inferences"):
         for inference in response_dict["inferences"]:
