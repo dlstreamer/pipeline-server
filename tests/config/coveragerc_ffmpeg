@@ -1,5 +1,0 @@
-[run]
-omit = *gstreamer*,*app_destination*,*app_source*
-
-[report]
-omit = *gstreamer*,*app_destination*,*app_source*
