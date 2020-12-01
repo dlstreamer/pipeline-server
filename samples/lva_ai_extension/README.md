@@ -18,16 +18,18 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 The OpenVINO™ DL Streamer - Edge AI Extension module is available as a pre-built docker image. The image can run as a standalone microservice or as a module within an Live Video Analytics graph. For more information on deploying the module as part of a Live Video Analytics graph please see [Configuring the AI Extension Module for Live Video Analytics](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Live Video Analytics documentation](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). The following instructions demonstrate running the microservice and test client outside of Live Video Analytics.
 
-## Building the Edge AI Extension Docker Image
+## Pulling the Image from Docker Hub
 
-Run the docker image build script.
+Pull the pre-built image using the following command.
+You will need to tag the image in order to use it with the docker run scripts described in subsequent sections.
+
 ```
-$ ./docker/build.sh
+$ docker pull intel/video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+$ docker tag intel/video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension \
+     video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
 ```
-Resulting image name is `video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension`
 
-For more details and prerequisites, see [Building an Edge AI Extension Module Image](#building-an-edge-ai-extension-module-image).
-
+For instructions on building your own image please see [Building an Edge AI Extension Module Image](#building-an-edge-ai-extension-module-image).
 
 ## Running the Edge AI Extension Module
 
