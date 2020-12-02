@@ -5,12 +5,6 @@ LVA_DIR=$(dirname $WORK_DIR)
 VAS_BASE_IMAGE="openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
 EXTENSION_IMAGE_TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
 TEST_IMAGE_TAG="video-analytics-serving-lva-tests"
-
-echo $WORK_DIR
-echo $ROOT_DIR
-echo $LVA_DIR
-echo $VAS_BASE_IMAGE
-
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 
 function launch { $@
@@ -33,7 +27,7 @@ function get_options {
       --lva-image)
         if [ "$2" ]; then
           LVA_IMAGE=$2
-          SAMPLE_BUILD_ARGS+=" --build-arg BASE $LVA_IMAGE"
+          SAMPLE_BUILD_ARGS+=" --build-arg BASE=$LVA_IMAGE"
           shift
         else
           error 'ERROR: "--base" requires an argument.'
@@ -46,7 +40,6 @@ function get_options {
         else
           error 'ERROR: "--docker-cache" requires an argument.'
         fi
-        shift
         ;;
       # For backwards compatbility with scripts that took cache prefix as $1
       *cache*)
@@ -56,7 +49,7 @@ function get_options {
         break
         ;;
     esac
-
+    shift
   done
 }
 
@@ -66,11 +59,14 @@ function show_help {
   echo "  [ --docker-cache : Docker cache prefix ] "
 }
 
+get_options "$@"
+
 # Build LVA image if not specified
-if [ ! -z "$LVA_IMAGE" ]; then
+if [ -z "$LVA_IMAGE" ]; then
     echo Building $EXTENSION_IMAGE_TAG
     launch "$LVA_DIR/docker/build.sh --remove-gstlibav --base ${CACHE_PREFIX}$VAS_BASE_IMAGE"
 fi
 
 # Add tests layer
+echo "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t $TEST_IMAGE_TAG $WORK_DIR"
 launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t $TEST_IMAGE_TAG $WORK_DIR"
