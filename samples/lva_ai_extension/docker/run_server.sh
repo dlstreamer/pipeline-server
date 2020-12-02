@@ -6,7 +6,7 @@ LVA_DIR=$(dirname $CURRENT_DIR)
 IMAGE=video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
 NAME=${IMAGE//[\:]/_}
 PORT=5001
-DEV_MODE=
+PIPELINES=
 ENTRYPOINT_ARGS=
 
 #Get options passed into script
@@ -38,7 +38,7 @@ function get_options {
         ENTRYPOINT_ARGS+="--entrypoint-args $1 "
         ;;
       --dev)
-        DEV_MODE="--dev --pipelines $LVA_DIR/pipelines"
+        PIPELINES="--pipelines $LVA_DIR/pipelines "
         ;;
       *)
         break
@@ -83,4 +83,4 @@ if [ ! -z "$PARAMETERS" ]; then
   ENV+="-e PARAMETERS=$PARAMETERS "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $DEV_MODE $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV $@
