@@ -84,7 +84,6 @@ def _log_options(args):
         logging.info("{} == {}".format(arg, getattr(args, arg)))
         logging.info(banner)
 
-
 def print_result(response, output):
     logging.info("Inference result {}".format(response.ack_sequence_number))
     for inference in response.media_sample.inferences:

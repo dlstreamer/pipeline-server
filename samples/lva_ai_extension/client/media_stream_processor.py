@@ -81,7 +81,6 @@ class MediaStreamProcessor:
                     ack_sequence_number=0,
                     media_sample=media_sample
                 )
-
             self._request_seq_num += 1
             return request
 

@@ -56,7 +56,6 @@ def parse_args(args=None, program_name="AI Extension Sample Client"):
                         dest="output_file",
                         help='Output file path',
                         default="/tmp/results.jsonl")  # nosec
-
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
