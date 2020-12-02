@@ -25,7 +25,6 @@ def main(options):
         logger.error("Error Starting Tornado Server: %s", error)
 
 if __name__ == '__main__':
-    
     try:
         VAServing.start()
     except Exception as error:

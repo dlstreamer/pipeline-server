@@ -101,8 +101,20 @@
                     "5001/tcp" : {}
                 },
                 "Env":[
+                  "PIPELINE_NAME=object_detection",
+                  "PIPELINE_VERSION=person_vehicle_bike_detection",
+                  "PARAMETERS= \"{\"device\":\"GPU\"}\""
                 ],
                 "HostConfig": {
+                    "Binds": [
+                      "/tmp/:/tmp/"
+                    ],
+                    "Devices": [
+                    {
+                      "PathOnHost":"/dev/dri",
+                      "PathInContainer":"/dev/dri",
+                      "CgroupPermissions":"rwm"
+                    },
                     "PortBindings": {
                         "80/tcp": [
                             {

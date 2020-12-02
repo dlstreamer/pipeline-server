@@ -19,13 +19,14 @@ VIDEO_ANALYTICS_SERVING = "http://localhost:8080/pipelines/"
 TIMEOUT = 30
 SLEEP_FOR_STATUS = 0.5
 
+#nosec skips pybandit hits
 REQUEST_TEMPLATE = {
     "source": {
         "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
         "type": "uri"
     },
     "destination": {
-        "path": "/tmp/results.txt",
+        "path": "/tmp/results.txt",  # nosec
         "type": "file",
         "format": "json-lines"
     }

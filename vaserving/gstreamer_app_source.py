@@ -3,20 +3,23 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-from collections import namedtuple
+
 import json
+from collections import namedtuple
 from enum import Enum, auto
-from threading import Thread, Event
-from vaserving.app_source import AppSource
-from vaserving.gstreamer_pipeline import GStreamerPipeline
-from vaserving.gstreamer_app_destination import GvaSample
-from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
+from threading import Event, Thread
+
 import gi
-# pylint: disable=wrong-import-order, wrong-import-position
+
 gi.require_version('Gst', '1.0')
 gi.require_version('GstApp', '1.0')
-from gi.repository import Gst, GstApp
-# pylint: enable=wrong-import-order, wrong-import-position
+# pylint: disable=wrong-import-position
+from gi.repository import Gst
+from gstgva.util import GVAJSONMeta
+from vaserving.app_source import AppSource
+from vaserving.gstreamer_app_destination import GvaSample
+from vaserving.gstreamer_pipeline import GStreamerPipeline
+# pylint: enable=wrong-import-position
 
 fields = ['data',
           'caps',
@@ -26,7 +29,7 @@ fields = ['data',
           'segment',
           'duration']
 
-GvaFrameData = namedtuple('GvaFrameData', fields )
+GvaFrameData = namedtuple('GvaFrameData', fields)
 GvaFrameData.__new__.__defaults__ = (None,) * len(fields)
 
 class GStreamerAppSource(AppSource, Thread):
@@ -47,8 +50,10 @@ class GStreamerAppSource(AppSource, Thread):
 
         request_config = request.get("source", {})
         self._input_queue = request_config.get("input", None)
-        if (not self._src) or (not self._input_queue) or (not isinstance(pipeline, GStreamerPipeline)):
-            raise Exception("GStreamerAppSource requires GStreamerPipeline appsrc element and input queue")
+        if (not self._src) or (not self._input_queue) or (not isinstance(pipeline,
+                                                                         GStreamerPipeline)):
+            raise Exception("GStreamerAppSource requires GStreamerPipeline "\
+                            "appsrc element and input queue")
         self._mode = GStreamerAppSource.Mode(request_config.get("mode", "pull"))
 
         if (self._mode == GStreamerAppSource.Mode.PUSH):
@@ -61,7 +66,7 @@ class GStreamerAppSource(AppSource, Thread):
         if (isinstance(item, GvaFrameData)):
             gst_buffer = None
             if (item.data):
-                if (not isinstance(item.data,bytes)):
+                if (not isinstance(item.data, bytes)):
                     raise Exception("GvaFrameData must contain bytes")
                 gst_buffer = Gst.Buffer.new_allocate(None, len(item.data))
                 gst_buffer.fill(0, item.data)

@@ -7,8 +7,10 @@
 
 
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
-SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
+SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
+BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu18_runtime:2021.1"
 BASE_IMAGE=
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
@@ -17,7 +19,7 @@ USER_BASE_BUILD_ARGS=
 MODELS=$SOURCE_DIR/models_list/models.list.yml
 MODELS_PATH=models
 PIPELINES=
-FRAMEWORK=
+FRAMEWORK="gstreamer"
 TAG=
 RUN_PREFIX=
 CREATE_SERVICE=TRUE
@@ -25,24 +27,30 @@ ENVIRONMENT_FILES=()
 DOCKER_RUN_ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n' ' ')
 TARGET="deploy"
 
-
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
+SUPPORTED_IMAGES=(openvino/ubuntu18_runtime:2021.1 openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10)
 OPEN_MODEL_ZOO_VERSION=
 FORCE_MODEL_DOWNLOAD=
 
-DEFAULT_GSTREAMER_BASE_BUILD_CONTEXT="https://github.com/opencv/gst-video-analytics.git#0d95b489f03d30bd94ffa25a2472eaab7b774821"
-DEFAULT_GSTREAMER_BASE_BUILD_DOCKERFILE="docker/Dockerfile"
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
 DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --build-arg ENABLE_RDKAFKA_INSTALLATION=true"
 
-DEFAULT_FFMPEG_BASE_BUILD_CONTEXT="https://github.com/nnshah1/FFmpeg-patch.git#669e8e6d3f88416ab367e442f0b42b1314b8ffe2:docker"
-DEFAULT_FFMPEG_BASE_BUILD_DOCKERFILE="Dockerfile.source"
 DEFAULT_FFMPEG_BASE_BUILD_TAG="video-analytics-serving-ffmpeg-base"
 DEFAULT_FFMPEG_BASE_BUILD_ARGS=""
+
+function launch { echo $@
+    $@
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo "ERROR: error with $1" >&2
+        exit $exit_code
+    fi
+    return $exit_code
+}
 
 get_options() {
     while :; do
@@ -69,7 +77,7 @@ get_options() {
             ;;
         --base-build-context)
             if [ "$2" ]; then
-                BASE_BUILD_CONTEXT=$2
+                BASE_BUILD_CONTEXT="$2"
                 shift
             else
                 error 'ERROR: "--base-build-context" requires an argument.'
@@ -212,31 +220,34 @@ get_options() {
         MODELS=
     fi
 
-    if [ -z "$FRAMEWORK" ]; then
-        FRAMEWORK="gstreamer"
-    elif [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
+    if [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
         echo "Invalid framework"
         show_help
     fi
 
-    if [ -f "$MODELS" ]; then
-        if [ -z "$OPEN_MODEL_ZOO_VERSION" ] && [ $FRAMEWORK = 'ffmpeg' ]; then
-            OPEN_MODEL_ZOO_VERSION=2020.3
-        elif [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
-            OPEN_MODEL_ZOO_VERSION=2020.4
+    if [ -z "$BASE_IMAGE" ]; then
+        if [ $FRAMEWORK = 'ffmpeg' ]; then
+            BASE_IMAGE=$BASE_IMAGE_FFMPEG
+        else
+            BASE_IMAGE=$BASE_IMAGE_GSTREAMER
         fi
+    fi
+
+    if [ -f "$MODELS" ]; then
         YML_DIR=$(dirname "${MODELS}")
         YML_FILE_NAME=$(basename "${MODELS}")
         VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
-        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
 
-        #TODO: remove below if condition once aclnet model downloads with model downloader
-        if [ $MODELS = $(realpath $SOURCE_DIR/models_list/models.list.yml) ] && [ -d $SOURCE_DIR/models_list/audio_detection ] ; then
-            if [ ! -d "$SOURCE_DIR/models/audio_detection" ]; then
-                mkdir $SOURCE_DIR/models/audio_detection
-            fi
-            cp -R $SOURCE_DIR/models_list/audio_detection/. $SOURCE_DIR/models/audio_detection
-        fi    
+        if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
+           if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
+            error 'ERROR: Unknown version of Intel(R) distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
+           fi
+        else
+           OPEN_MODEL_ZOO_VERSION=2021.1
+        fi
+        
+        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --user "$UID" --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
+   
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
             mkdir $SOURCE_DIR/models
@@ -258,16 +269,13 @@ get_options() {
         error 'ERROR: setting "--base-build-dockerfile" requires setting "--base-build-context"'
     fi
 
-    if [ -z "$BASE_IMAGE" ]; then
+    if [ ! -z "$BASE_BUILD_CONTEXT" ]; then
+        if [ -d "$BASE_BUILD_CONTEXT" ]; then
+            BASE_BUILD_CONTEXT="$(realpath $BASE_BUILD_CONTEXT)"
+            BASE_BUILD_DOCKERFILE="$BASE_BUILD_CONTEXT/$BASE_BUILD_DOCKERFILE"
+        fi
+
         BASE="BUILD"
-        if [ -z "$BASE_BUILD_CONTEXT" ]; then
-            BASE_BUILD_CONTEXT=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_CONTEXT
-            BASE_BUILD_CONTEXT=${!BASE_BUILD_CONTEXT}
-        fi
-        if [ -z "$BASE_BUILD_DOCKERFILE" ]; then
-            BASE_BUILD_DOCKERFILE=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_DOCKERFILE
-            BASE_BUILD_DOCKERFILE=${!BASE_BUILD_DOCKERFILE}
-        fi
         if [ -z "$BASE_BUILD_TAG" ]; then
             BASE_BUILD_TAG=DEFAULT_${FRAMEWORK^^}_BASE_BUILD_TAG
             BASE_BUILD_TAG=${!BASE_BUILD_TAG}
@@ -288,7 +296,7 @@ get_options() {
 
 show_base_options() {
     echo ""
-    echo "Building Base Image: '${BASE_BUILD_TAG}'"
+    echo " Building Base Image: '${BASE_BUILD_TAG}'"
     echo ""
     echo "   Build Context: '${BASE_BUILD_CONTEXT}'"
     echo "   Dockerfile: '${BASE_BUILD_DOCKERFILE}'"
@@ -307,7 +315,7 @@ show_image_options() {
     echo "   Build Options: '${BUILD_OPTIONS}'"
     echo "   Build Arguments: '${BUILD_ARGS}'"
     echo "   Models: '${MODELS}'"
-    echo "   Openvino Image: 'openvino/ubuntu18_data_dev:${OPEN_MODEL_ZOO_VERSION}'"
+    echo "   Docker Image for downloading models: 'openvino/ubuntu18_data_dev:${OPEN_MODEL_ZOO_VERSION}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"
     echo "   Target: '${TARGET}'"
@@ -324,10 +332,13 @@ show_help() {
     echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
     echo "  [--force-model-download force the download of models from Open Model Zoo]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
+    echo "  [--base-build-context docker context for building base image]"
+    echo "  [--base-build-dockerfile docker file path used to build base image from build context]"
     echo "  [--build-option additional docker build option that run in the context of docker build. ex. --no-cache]"
     echo "  [--base-build-option additional docker build option for docker build of base image]"
     echo "  [--build-arg additional build args to pass to docker build]"
     echo "  [--base-build-arg additional build args to pass to docker build for base image]"
+    echo "  [--tag docker image tag]"
     echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
     echo "  [--target build a specific target]"
     echo "  [--dockerfile-dir specify a different dockerfile directory]"
@@ -341,24 +352,22 @@ error() {
     exit 1
 }
 
+if [[ "$SOURCE_DIR" =~ " " ]]; then
+        error 'ERROR: Found space in path: '"$SOURCE_DIR"'. Remove space and retry.'
+fi
+
 get_options "$@"
 
 # BUILD BASE IF BASE IS NOT SUPPLIED
-
 if [ "$BASE" == "BUILD" ]; then
     show_base_options
 
-    if [ -z "$RUN_PREFIX" ]; then
-        set -x
-    fi
+    launch "$RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG"
 
-    $RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG
-
-    { set +x; } 2>/dev/null
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     #Ensure image is latest from Docker Hub
-    $RUN_PREFIX docker pull $BASE_IMAGE
+    launch "$RUN_PREFIX docker pull $BASE_IMAGE"
 fi
 
 # BUILD IMAGE
@@ -388,7 +397,7 @@ fi
 cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
-if [[ "$BASE_IMAGE" == "openvino/"* ]]; then
+if [[ "$BASE_IMAGE" == *"openvino/"* ]]; then
     $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi
@@ -406,10 +415,4 @@ fi
 
 show_image_options
 
-if [ -z "$RUN_PREFIX" ]; then
-    set -x
-fi
-
-$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR
-
-{ set +x; } 2>/dev/null
+launch "$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR"

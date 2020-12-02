@@ -6,16 +6,19 @@
 '''
 
 import argparse
-import time
-import os
 import json
-import sys
-import gi
+import os
 import re
-from vaserving.vaserving import VAServing
-gi.require_version('Gst', '1.0')
-from gi.repository import Gst, GObject
+import sys
+import time
+
 from pathlib import Path
+import gi
+gi.require_version('Gst', '1.0')
+# pylint: disable=wrong-import-position
+from gi.repository import GObject, Gst
+from vaserving.vaserving import VAServing
+# pylint: enable=wrong-import-position
 
 Gst.init(sys.argv)
 
@@ -27,22 +30,30 @@ current_dir = os.getcwd()
 default_video_folder = os.path.join(current_dir, "video_output")
 default_metadata_record_path = os.path.join(current_dir, "metadata.txt")
 
-
 # Options for record playback app
 def get_options():
     """Process command line options"""
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--record', action='store_true', help='Set the sample to record mode, record a video source into segments and collect inference results')
-    parser.add_argument('--playback', action='store_true', help='Set the sample to playback mode, playback a recorded video and optionally display inference results')
-    parser.add_argument('--input-video-path',
-                        required=True, help='(Required) Specify the input source for record or playback. Record does not support a directory as an input source')
-    parser.add_argument('--metadata-file-path', help='Optional) Specify the metadata file path to record to or read for playback. In record mode, default is metadata.txt')
-    parser.add_argument('--output-video-folder',
-                        default=default_video_folder, help='(Optional) (Record mode only) Specify the output directory for recorded video segments. Default is the current directory')
-    parser.add_argument('--max-time',
-                        type=int,
-                        default=2000000000, help='(Optional) (Record mode only) Specify the segment size based on time. Default is 2000000000 ns')
+    parser.add_argument('--record',
+                        action='store_true',
+                        help='Set the sample to record mode, record a video source into segments '\
+                        'and collect inference results')
+    parser.add_argument('--playback', action='store_true',
+                        help='Set the sample to playback mode, playback a recorded video and '\
+                        'optionally display inference results')
+    parser.add_argument('--input-video-path', required=True,
+                        help='(Required) Specify the input source for record or playback. Record '\
+                        'does not support a directory as an input source')
+    parser.add_argument('--metadata-file-path',
+                        help='Optional) Specify the metadata file path to record to or read for '\
+                        'playback. In record mode, default is metadata.txt')
+    parser.add_argument('--output-video-folder', default=default_video_folder,
+                        help='(Optional) (Record mode only) Specify the output directory for '\
+                        'recorded video segments. Default is the current directory')
+    parser.add_argument('--max-time', type=int, default=2000000000,
+                        help='(Optional) (Record mode only) Specify the segment size based on '\
+                        'time. Default is 2000000000 ns')
 
     return parser.parse_args()
 
@@ -59,24 +70,24 @@ def gst_record(options):
 
     # Populate the request to provide to VAServing library
     string_request = ('{{'
-                        '"source": {{'
-                          '"type": "uri",'
-                          '"uri": "{source}"'
-                        '}},'
-                        '"destination": {{'
-                          '"type": "file",'
-                          '"path": "{fp}",'
-                          '"format": "json-lines"'
-                        '}},'
-                        '"parameters": {{'
-                          '"recording_prefix": "{output_video_folder}",'
-                          '"max-size-time": {max_size_chunks}'
-                        '}}'
+                      '"source": {{'
+                      '"type": "uri",'
+                      '"uri": "{source}"'
+                      '}},'
+                      '"destination": {{'
+                      '"type": "file",'
+                      '"path": "{fp}",'
+                      '"format": "json-lines"'
+                      '}},'
+                      '"parameters": {{'
+                      '"recording_prefix": "{output_video_folder}",'
+                      '"max-size-time": {max_size_chunks}'
+                      '}}'
                       '}}')
-    string_request = string_request.format(source = options_source,
-            fp = options_metadata_file,
-            output_video_folder = options.output_video_folder,
-            max_size_chunks = options.max_time)
+    string_request = string_request.format(source=options_source,
+                                           fp=options_metadata_file,
+                                           output_video_folder=options.output_video_folder,
+                                           max_size_chunks=options.max_time)
     request = json.loads(string_request)
 
     # Start the recording, once complete, stop VAServing
@@ -91,7 +102,7 @@ def gst_record(options):
 
 # Used by playback
 # Gst msgbus callback to determine if error or end-of-stream occured
-def on_message(bus: Gst.Bus, message: Gst.Message, loop: GObject.MainLoop):
+def on_message(_: Gst.Bus, message: Gst.Message, loop: GObject.MainLoop):
     message_type = message.type
     if message_type == Gst.MessageType.EOS:
         print("End of stream")
@@ -115,7 +126,8 @@ def get_timestamp_from_filename(file_path):
         match = re.search(r"\d*_(\d*)", file_name)
         start_pts = match.group(1)
         return int(start_pts)
-    print("Warning, playing back video that does not conform to <unixtimestamp>_<pts> filename. Assuming metadata file and video file timestamps match")
+    print("Warning, playing back video that does not conform to <unixtimestamp>_<pts> filename. "\
+          "Assuming metadata file and video file timestamps match")
     return 0
 
 # Used by playback
@@ -125,7 +137,7 @@ def create_missing_output_directory(options):
 
 # Used by playback
 # Dynamically link decodebin to the videoconvert element
-def decodebin_pad_added(element, pad):
+def decodebin_pad_added(_, pad):
     string = pad.query_caps(None).to_string()
     if string.startswith('video/x-raw'):
         pad.link(videoconvert1.get_static_pad('sink'))
@@ -160,15 +172,18 @@ def create_gst_playback_pipeline(options):
     gvapython.set_property("module", insert_metadata_script)
     gvapython.set_property("class", "FrameInfo")
 
-    insert_preproc_metadata_arguments = '{{ "metadata_file_path" : "{input_file}" , "offset_timestamp" : {timestamp} }}'
-    insert_preproc_metadata_arguments = insert_preproc_metadata_arguments.format(input_file = options.metadata_file_path, timestamp = start_pts)
+    insert_preproc_metadata_arguments = '{{ "metadata_file_path" : "{input_file}" , '\
+                                        '"offset_timestamp" : {timestamp} }}'
+    insert_preproc_metadata_arguments = insert_preproc_metadata_arguments.format(
+        input_file=options.metadata_file_path, timestamp=start_pts)
     gvapython.set_property("kwarg", insert_preproc_metadata_arguments)
 
     gvawatermark = Gst.ElementFactory.make("gvawatermark")
     videoconvert2 = Gst.ElementFactory.make("videoconvert")
     ximagesink = Gst.ElementFactory.make("ximagesink")
 
-    pipeline.add(src, decodebin, videoconvert1, capsfilter, gvapython, gvawatermark, videoconvert2, ximagesink)
+    pipeline.add(src, decodebin, videoconvert1, capsfilter, gvapython, gvawatermark,
+                 videoconvert2, ximagesink)
 
     src.link(decodebin)
 
@@ -230,4 +245,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

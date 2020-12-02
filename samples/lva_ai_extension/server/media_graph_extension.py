@@ -2,9 +2,9 @@
 * Copyright (C) 2019-2020 Intel Corporation.
 *
 * SPDX-License-Identifier: MIT License
-'''
-
-'''
+*
+*****
+*
 * MIT License
 *
 * Copyright (c) Microsoft Corporation.
@@ -27,30 +27,26 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE
 '''
-import logging
+
 import os
 import json
-import time
-import numpy as np
 from queue import Queue
+import tempfile
+import datetime
+from enum import Enum
 
 import samples.lva_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
 import samples.lva_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
 import samples.lva_ai_extension.common.grpc_autogen.extension_pb2 as extension_pb2
 import samples.lva_ai_extension.common.grpc_autogen.extension_pb2_grpc as extension_pb2_grpc
 
-from enum import Enum
 from samples.lva_ai_extension.common.shared_memory import SharedMemoryManager
 from samples.lva_ai_extension.common.exception_handler import log_exception
 
 from vaserving.vaserving import VAServing
-from vaserving.app_source import AppSource
-from vaserving.app_destination import AppDestination
-from vaserving.gstreamer_app_source import GStreamerAppSource
 from vaserving.gstreamer_app_source import GvaFrameData
-from vaserving.gstreamer_app_destination import GStreamerAppDestination
-from vaserving.pipeline import Pipeline
 from vaserving.common.utils.logging import get_logger
+
 
 class TransferType(Enum):
     BYTES = 1           # Embedded Content
@@ -88,12 +84,14 @@ class State:
             raise
 
 class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
-    def __init__(self, pipeline, version, input_queue_size=1):
+    def __init__(self, pipeline, version, debug=False, parameters=None, input_queue_size=1):
         self._pipeline = pipeline
         self._version = version
         self._input_queue_size = input_queue_size
         self._logger = get_logger("MediaGraphExtension")
-      
+        self._debug = debug
+        self._parameters = parameters
+
     def _generate_media_stream_message(self, gva_sample):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
 
@@ -104,18 +102,34 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         for region in gva_sample.video_frame.regions():
             inference = msg.media_sample.inferences.add()
 
-            obj_label = region.label()
-            obj_confidence = region.confidence()
-            obj_left = region.meta().x
-            obj_top = region.meta().y
-            obj_width = region.meta().w
-            obj_height = region.meta().h
-            attr_name = "object"
-            attr_label = region.label()
-            attr_confidence = region.confidence()
-            attributes = [[attr_name, attr_label, attr_confidence]]
+            attributes = []
+            obj_label = None
+            obj_confidence = 0
+            obj_left = 0
+            obj_width = 0
+            obj_top = 0
+            obj_height = 0
 
-            if obj_label:
+            for tensor in region.tensors():
+                name = tensor.name()
+
+                if (name == 'detection'):
+                    obj_confidence = region.confidence()
+                    obj_label = region.label()
+
+                    obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
+
+                    inference.type = inferencing_pb2.Inference.InferenceType.ENTITY  # pylint: disable=no-member
+                    if region.object_id(): #Tracking
+                        obj_id = region.object_id()
+                        attributes.append(["object_id", str(obj_id), 0])
+                elif tensor["label"]: #Classification
+                    attr_name = name
+                    attr_label = tensor["label"]
+                    attr_confidence = region.confidence()
+                    attributes.append([attr_name, attr_label, attr_confidence])
+
+            if obj_label is not None:
                 try:
                     entity = inferencing_pb2.Entity(
                         tag=inferencing_pb2.Tag(
@@ -138,22 +152,10 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                         )
                         entity.attributes.append(attribute)
 
-                    classification = inferencing_pb2.Classification()
-                    for tensor in region.tensors():
-                        if not tensor.is_detection() and tensor["label"]:
-                            attribute = inferencing_pb2.Attribute(
-                                name=obj_label,
-                                confidence=obj_confidence,
-                                value=tensor["label"]
-                            )
-                            classification.attributes.append(attribute)
-                    if classification.attributes:
-                        classification_inference = msg.media_sample.inferences.add()
-                        classification_inference.classification.CopyFrom(classification)
                 except:
                     log_exception(self._logger)
                     raise
-               
+
                 inference.entity.CopyFrom(entity)
 
         return msg
@@ -171,16 +173,18 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 # Data sent over shared memory buffer
                 address_offset = request.media_sample.content_reference.address_offset
                 length_bytes = request.media_sample.content_reference.length_bytes
-                
+
                 # Get memory reference to (in readonly mode) data sent over shared memory
-                raw_bytes = client_state.shared_memory_manager.read_bytes(address_offset, length_bytes)
+                raw_bytes = client_state.shared_memory_manager.read_bytes(address_offset,
+                                                                          length_bytes)
 
             # Get encoding details of the media sent by client
             encoding = client_state.media_stream_descriptor.media_descriptor.video_frame_sample_format.encoding
 
             # Handle RAW content (Just place holder for the user to handle each variation...)
             if encoding == client_state.media_stream_descriptor.media_descriptor.video_frame_sample_format.Encoding.RAW:
-                pixel_format = client_state.media_stream_descriptor.media_descriptor.video_frame_sample_format.pixel_format
+                pixel_format = client_state.media_stream_descriptor.media_descriptor\
+                    .video_frame_sample_format.pixel_format
                 caps_format = None
 
                 if pixel_format == media_pb2.VideoFrameSampleFormat.PixelFormat.RGBA:
@@ -193,21 +197,20 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     caps = ''.join(("video/x-raw,format=",
                                     caps_format,
                                     ",width=",
-                                    str(client_state.media_stream_descriptor.media_descriptor.video_frame_sample_format.dimensions.width),
+                                    str(client_state.media_stream_descriptor.media_descriptor\
+                                        .video_frame_sample_format.dimensions.width),
                                     ",height=",
-                                    str(client_state.media_stream_descriptor.media_descriptor.video_frame_sample_format.dimensions.height)))
+                                    str(client_state.media_stream_descriptor.media_descriptor\
+                                        .video_frame_sample_format.dimensions.height)))
                     new_sample = GvaFrameData(bytes(raw_bytes),
                                               caps,
                                               message={'sequence_number':request.sequence_number,
                                                        'timestamp':request.media_sample.timestamp})
-
             else:
                 self._logger.info('Sample format is not RAW')
-               
         except:
             log_exception(self._logger)
             raise
-       
         return new_sample
 
     def _get_queued_samples(self, queue, block=False):
@@ -221,39 +224,62 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
     # gRPC stubbed function
     # client/gRPC will call this function to send frames/descriptions
     def ProcessMediaStream(self, requestIterator, context):
-
         requests_received = 0
         responses_sent = 0
-        
         # First message from the client is (must be) MediaStreamDescriptor
         request = next(requestIterator)
         requests_received += 1
-        
         # Extract message IDs
         request_seq_num = request.sequence_number
         request_ack_seq_num = request.ack_sequence_number
-
-        # State object per client       
+        # State object per client
         client_state = State(request.media_stream_descriptor)
-        
-        self._logger.info('[Received] SeqNum: {0:07d} | AckNum: {1}\nMediaStreamDescriptor:\n{2}'.format(
-            request_seq_num,
-            request_ack_seq_num,
-            client_state.media_stream_descriptor))
-
+        self._logger.info('[Received] SeqNum: {0:07d} | '\
+            'AckNum: {1}\nMediaStreamDescriptor:\n{2}'.format(
+                request_seq_num,
+                request_ack_seq_num,
+                client_state.media_stream_descriptor))
         # First message response ...
-        media_stream_message =    extension_pb2.MediaStreamMessage(
-            sequence_number = 1,
-            ack_sequence_number = request_seq_num,
-            media_stream_descriptor = extension_pb2.MediaStreamDescriptor(
-                media_descriptor = media_pb2.MediaDescriptor(
-                    timescale = client_state.media_stream_descriptor.media_descriptor.timescale
-                )
-            )
+        media_stream_message = extension_pb2.MediaStreamMessage(
+            sequence_number=1,
+            ack_sequence_number=request_seq_num,
+            media_stream_descriptor=extension_pb2.MediaStreamDescriptor(
+                media_descriptor=media_pb2.MediaDescriptor(
+                    timescale=client_state.media_stream_descriptor.media_descriptor.timescale))
         )
         responses_sent += 1
         yield media_stream_message
 
+        if self._debug and (not self._version.startswith("debug")):
+            self._version = "debug_" + self._version
+
+        parameters = {}
+        if self._parameters:
+            if os.path.isfile(self._parameters):
+                with open(self._parameters) as json_file:
+                    try:
+                        parameters = json.load(json_file)
+                    except ValueError:
+                        self._logger.error('Issue loading json parameters from file')
+                        parameters = {}
+            else:
+                try:
+                    parameters = json.loads(self._parameters)
+                except ValueError:
+                    self._logger.error('Issue loading json parameters from string')
+                    parameters = {}
+
+        if self._version.startswith("debug"):
+            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            location = os.path.join(tempfile.gettempdir(), "vaserving", self._version, timestamp)
+            os.makedirs(os.path.abspath(location))
+            debug_parameters = {"location": os.path.join(location, "frame_%07d.jpeg"),
+                                "max-files":10}
+            parameters.update(debug_parameters)
+
+        self._logger.info('Pipeline Name : {}'.format(self._pipeline))
+        self._logger.info('Pipeline Version : {}'.format(self._version))
+        self._logger.info('Pipeline Parameters : {}'.format(parameters))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
         # Start object detection pipeline
@@ -266,22 +292,20 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                               destination={"type": "application",
                                            "class": "GStreamerAppDestination",
                                            "output": detect_output,
-                                           "mode": "frames"})
+                                           "mode": "frames"},
+                              parameters=parameters)
 
         # Process rest of the MediaStream message sequence
         for request in requestIterator:
             try:
-                               
                 if (requests_received - responses_sent >= self._input_queue_size):
                     queued_samples = self._get_queued_samples(detect_output, block=True)
                 else:
                     queued_samples = []
-
                 # Read request id, sent by client
                 request_seq_num = request.sequence_number
                 self._logger.info('[Received] SeqNum: {0:07d}'.format(request_seq_num))
                 requests_received += 1
-                
                 gva_sample = self._generate_gva_sample(client_state, request)
                 detect_input.put(gva_sample)
                 queued_samples.extend(self._get_queued_samples(detect_output))
@@ -290,7 +314,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                         if (gva_sample):
                             media_stream_message = self._generate_media_stream_message(gva_sample)
                             responses_sent += 1
-                            self._logger.info('[Sent] AckSeqNum: {0:07d}'.format(media_stream_message.ack_sequence_number))
+                            self._logger.info('[Sent] AckSeqNum: {0:07d}'.format(
+                                media_stream_message.ack_sequence_number))
                             yield media_stream_message
                 else:
                     break
@@ -298,17 +323,21 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 log_exception()
                 raise
 
-        #After the server has finished processing all the request iterator objects
-        #Push a None object into the input queue.
-        #When the None object comes out of the output queue, we know we've finished processing all requests
+        # After the server has finished processing all the request iterator objects
+        # Push a None object into the input queue.
+        # When the None object comes out of the output queue, we know we've finished
+        # processing all requests
         detect_input.put(None)
         gva_sample = detect_output.get()
         while (gva_sample):
             media_stream_message = self._generate_media_stream_message(gva_sample)
             responses_sent += 1
-            self._logger.info('[Sent] AckSeqNum: {0:07d}'.format(media_stream_message.ack_sequence_number))
+            self._logger.info('[Sent] AckSeqNum: {0:07d}'.format(
+                media_stream_message.ack_sequence_number))
             yield media_stream_message
             gva_sample = detect_output.get()
 
-        self._logger.info('Done processing messages: Received: {}, Sent: {}'.format(requests_received, responses_sent))
-        self._logger.info('MediaStreamDescriptor:\n{0}'.format(client_state.media_stream_descriptor))        
+        self._logger.info('Done processing messages: Received: {}, Sent: {}'.format(
+            requests_received, responses_sent))
+        self._logger.info('MediaStreamDescriptor:\n{0}'.format(
+            client_state.media_stream_descriptor))

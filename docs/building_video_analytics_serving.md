@@ -17,7 +17,7 @@ can be customized to meet an application's requirements.
 
 | Stage | Description |
 | ----------- | ----------- |
-| **Media Analytics Base Image** |The **Media Analytics Base Image** contains a media framework plus all of its dependencies([GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* or [FFmpeg](https://ffmpeg.org/)* ). <br/><br/>The default `GStreamer`* base image is built using the **DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile).<br/><br/>The default `FFmpeg`* base image is built using the **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source).<br/><br/> Pre-built base images can also be found in docker hub through the [openvisualcloud](https://hub.docker.com/u/openvisualcloud) and [openvino](https://hub.docker.com/u/openvino) organizations. |
+| **Media Analytics Base Image** |The **Media Analytics Base Image** contains a media framework plus all of its dependencies([GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* or [FFmpeg](https://ffmpeg.org/)* ). |
 | **Video Analytics Serving Library** | Python modules enabling the construction and control of media analytics pipelines. |
 | **Models and Pipelines** | Deep learning models in OpenVINO<sup>&#8482;</sup> IR format.  Media analytics pipeline definitions in JSON. |
 | **Application / Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Application or microservice using Video Analytics Serving python modules to execute media analytics pipelines. By default a Tornado based RESTful microservice is included. |
@@ -26,12 +26,12 @@ can be customized to meet an application's requirements.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/build.sh`|**DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
-| `./docker/build.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |         
+| `./docker/build.sh`| **ubuntu18_runtime:2021.1** docker [image](https://hub.docker.com/r/openvino/ubuntu18_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh --framework ffmpeg`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |         
 
 # Using Pre-Built Media Analytics Base Images
 
-By default Video Analytics Serving builds a base image from the dockerfile for a target media analytics framework. To save time and fulfill specific application requirements, Video Analytics Serving can also be configured to use a pre-built image instead. 
+By default Video Analytics Serving builds using openvino/ubuntu18_runtime:2021.1 base image. Video Analytics Serving can also be configured to use other pre-built image instead. 
 
 > **Note:** Using an image tag is recommended for all base images to ensure that dependencies are locked to a specific version.
 
@@ -50,14 +50,7 @@ and `GStreamer`* media analytics.
 **Example:**
 
 ```bash
-./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.7
-```
-
-### Building with XeonE3, Ubuntu 18.0.4 and FFmpeg* Support
-**Example:**
-
-```bash
-./docker/build.sh --framework ffmpeg --base openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.7 
+./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10
 ```
 
 ## Building with OpenVINO<sup>&#8482;</sup> Base Images
@@ -73,10 +66,7 @@ Streamer** component.
 ### Building with OpenVINO, Ubuntu 18.0.4 and DL Streamer Support
 **Example:**
 ```
-./docker/build.sh --framework gstreamer --base openvino/ubuntu18_data_dev:2020.4
-```
-```
-./docker/build.sh --framework gstreamer --base openvino/ubuntu18_runtime:2020.4
+./docker/build.sh --framework gstreamer --base openvino/ubuntu18_data_dev:2021.1
 ```
 # Selecting Pipelines and Models at Build Time
 
@@ -89,7 +79,7 @@ By default the Video Analytics Serving build scripts include a set of sample pip
 ### Specifying Pipelines and Models on top of the Open Visual Cloud Base
 **Example:**
 ```bash
-./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.7 --pipelines /path/to/my-pipelines --models /path/to/my-models 
+./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines /path/to/my-pipelines --models /path/to/my-models 
 ```
 
 VA Serving includes by default the models listed in `models.list.yml` in the models folder. These models are downloaded and converted to IR format during the build using the [model download tool](../tools/model_downloader/README.md).  
@@ -97,7 +87,7 @@ The above example shows a directory being passed as argument to `--models` optio
 
 **Example:**
 ```bash
-./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.7 --pipelines /path/to/my-pipelines --models /path/to/my-models.list.yml
+./docker/build.sh --framework gstreamer --base openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 --pipelines /path/to/my-pipelines --models /path/to/my-models.list.yml
 ```
 
 # Supported Base Images
@@ -105,12 +95,9 @@ All validation is done in docker environment. Host built configurations are not 
 
 | **Base Image** | **Framework** | **Openvino Version** | **Link** | **Default** |
 |---------------------|---------------|---------------|------------------------|-------------|
-| DL Streamer Audio Preview 2020.4 | GStreamer | 2020.4 | [GitHub](https://github.com/opencv/gst-video-analytics/tree/preview/audio-detect) | Y |
-| FFmpeg Video Analytics v4.2  | FFmpeg | 2020.2 | [GitHub](https://github.com/nnshah1/FFmpeg-patch) | Y |
-| OpenVINO 2020.4 ubuntu18_data_dev | GStreamer | 2020.4 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_data_dev) | N |
-| OpenVINO 2020.4 ubuntu18_runtime | GStreamer | 2020.4 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_runtime) | N |
-| Open Visual Cloud 20.7 xeone3-ubuntu1804-analytics-gst | GStreamer | 2020.4 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-gst) | N |
-| Open Visual Cloud 20.7 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2020.4 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | N |
+| OpenVINO 2021.1 ubuntu18_runtime | GStreamer | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu18_runtime) | Y |
+| Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-gst | GStreamer | 2021.1| [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-gst) | N |
+| Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | Y |
 
 ---
 \* Other names and brands may be claimed as the property of others.

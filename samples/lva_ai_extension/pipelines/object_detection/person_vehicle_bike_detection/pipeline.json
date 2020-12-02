@@ -1,7 +1,7 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! gvadetect model-instance-id=person_vehicle_bike_detection model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
 				" ! appsink name=destination"],
 	"description": "Object Detection using gstreamer gvadetect element, check more about gvadetect at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect",
 	"parameters": {

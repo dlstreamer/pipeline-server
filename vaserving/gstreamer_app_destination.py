@@ -6,7 +6,6 @@
 
 from collections import namedtuple
 from enum import Enum, auto
-from threading import Thread
 from vaserving.app_destination import AppDestination
 from vaserving.gstreamer_pipeline import GStreamerPipeline
 from gstgva.video_frame import VideoFrame
@@ -15,7 +14,6 @@ GvaSample = namedtuple('GvaSample', ['sample', 'video_frame'])
 GvaSample.__new__.__defaults__ = (None, None)
 
 class GStreamerAppDestination(AppDestination):
-
 
     class Mode(Enum):
         FRAMES = auto()

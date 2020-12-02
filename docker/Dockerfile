@@ -23,8 +23,13 @@ RUN echo "IMPORTANT: This script will build third party components licensed unde
 USER root
 
 # Dependencies for OpenVINO
-RUN if [ -f /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ]; then \
-       /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ;\
+ARG BASE=video-analytics-serving-gstreamer-base
+ENV VA_SERVING_BASE=${BASE}
+SHELL ["/bin/bash", "-c"]
+RUN if [[ ${VA_SERVING_BASE} = *"openvino"* ]]; then \
+        if [ -f /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ]; then \
+            /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ;\
+        fi\
     fi    
 
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU

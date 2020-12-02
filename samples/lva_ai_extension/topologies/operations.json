@@ -1,0 +1,69 @@
+{
+    "apiVersion": "1.0",
+    "operations": [
+        {
+            "opName": "GraphTopologySet",
+            "opParams": {
+                "topologyUrl": "https://raw.githubusercontent.com/Azure/live-video-analytics/master/MediaGraph/topologies/grpcExtension/topology.json"
+            }
+        },
+        {
+            "opName": "GraphInstanceSet",
+            "opParams": {
+                "name": "SampleGraph1",
+                "properties": {
+                    "topologyName": "InferencingWithGrpcExtension",
+                    "description": "Sample graph description",
+                    "parameters": [
+                        {
+                            "name": "rtspUrl",
+                            "value": "rtsp://rtspsim:554/media/camera-300s.mkv"
+                        },
+                        {
+                            "name": "rtspUserName",
+                            "value": "testuser"
+                        },
+                        {
+                            "name": "rtspPassword",
+                            "value": "testpassword"
+                        },
+                        {
+                            "name" : "grpcExtensionAddress",
+                            "value" : "tcp://lvaExtension:5001"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "opName": "GraphInstanceActivate",
+            "opParams": {
+                "name": "SampleGraph1"
+            }
+        },
+        {
+            "opName": "WaitForInput",
+            "opParams": {
+                "message": "The topology will now be deactivated. Press Enter to continue"
+            }
+        },
+        {
+            "opName": "GraphInstanceDeactivate",
+            "opParams": {
+                "name": "SampleGraph1"
+            }
+        },
+        {
+            "opName": "GraphInstanceDelete",
+            "opParams": {
+                "name": "SampleGraph1"
+            }
+        },
+        {
+            "opName": "GraphTopologyDelete",
+            "opParams": {
+                "name": "InferencingWithGrpcExtension"
+            }
+        }
+    ]
+}

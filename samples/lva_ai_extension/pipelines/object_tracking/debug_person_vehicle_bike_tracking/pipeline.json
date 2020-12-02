@@ -1,0 +1,178 @@
+{
+	"type": "GStreamer",
+	"template": ["appsrc name=source",
+				" ! gvadetect model-instance-id=person_vehicle_bike_detection model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! queue ! gvatrack name=tracking",
+				" ! gvaclassify model-instance-id=vehicle_attributes_recognition model={models[vehicle_attributes_recognition][1][network]} model-proc={models[vehicle_attributes_recognition][1][proc]} name=classification",
+				" ! tee name = t ! queue ! gvawatermark ! videoconvert ! jpegenc",
+				" ! multifilesink name=filesink t. ! queue",
+				" ! appsink name=destination"],
+	"description": "Object Tracking using gstreamer gvadetect, gvaclassify & gvatrack elements, check more about gvadetect at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect, gvaclassify at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvaclassify and gvatrack at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvatrack",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"device": {
+				"element": 
+					[ {"name":"detection",
+						"property":"device"},
+					  {"name":"classification",
+					   "property":"device"}
+					],
+					"type": "string"
+				},
+			"batch-size": {
+				"element": 
+					[ {"name":"detection",
+						"property":"batch-size"},
+					  {"name":"classification",
+					   "property":"batch-size"}
+					],
+				"type": "integer"
+			},			
+			"inference-interval": {
+				"element": 
+					[ {"name":"detection",
+						"property":"inference-interval"},
+					  {"name":"classification",
+					   "property":"inference-interval"}
+					],
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 4294967295
+			},
+			"device-extensions": {
+				"element": 
+					[ {"name":"detection",
+						"property":"device-extensions"},
+					  {"name":"classification",
+					   "property":"device-extensions"}
+					],
+				"type": "string"
+			},
+			"cpu-throughput-streams": {
+				"element": 
+					[ {"name":"detection",
+						"property":"cpu-throughput-streams"},
+					  {"name":"classification",
+					   "property":"cpu-throughput-streams"}
+					],
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 4294967295
+			},
+			"gpu-throughput-streams": {
+				"element": 
+					[ {"name":"detection",
+						"property":"gpu-throughput-streams"},
+					  {"name":"classification",
+					   "property":"gpu-throughput-streams"}
+					],
+				"type": "integer",
+				"minimum": 0,
+				"maximum": 4294967295
+			},
+			"ie-config": {
+				"element": 
+					[ {"name":"detection",
+						"property":"ie-config"},
+					  {"name":"classification",
+					   "property":"ie-config"}
+					],
+				"type": "string"
+			},
+			"model-instance-id": {
+				"element": 
+					[ {"name":"detection",
+						"property":"model-instance-id"},
+					  {"name":"classification",
+					   "property":"model-instance-id"}
+					],
+				"type": "string"
+			},
+			"pre-process-backend": {
+				"element": 
+					[ {"name":"detection",
+						"property":"pre-process-backend"},
+					  {"name":"classification",
+					   "property":"pre-process-backend"}
+					],
+				"type": "string"
+			},			
+			"nireq": {
+				"element": 
+					[ {"name":"detection",
+						"property":"nireq"},
+					  {"name":"classification",
+					   "property":"nireq"}
+					],
+				"type": "integer",
+				"minimum": 1,
+				"maximum": 64
+			},
+			"reshape": {
+				"element": 
+					[ {"name":"detection",
+						"property":"reshape"},
+					  {"name":"classification",
+					   "property":"reshape"}
+					],
+				"type": "boolean"
+			},
+			"reshape-height": {
+				"element": 
+					[ {"name":"detection",
+						"property":"reshape-height"},
+					  {"name":"classification",
+					   "property":"reshape-height"}
+					],
+				"type": "integer"
+			},
+			"reshape-width": {
+				"element": 
+					[ {"name":"detection",
+						"property":"reshape-width"},
+					  {"name":"classification",
+					   "property":"reshape-width"}
+					],
+				"type": "integer"
+			},
+			"object-class": {
+				"element": "classification",
+				"type": "string",
+				"default": "vehicle"
+			},
+			"reclassify-interval": {
+				"element": "classification",
+				"type": "integer"
+			},
+			"gvatrack_device": {
+				"element": 
+					[ {"name":"tracking",
+						"property":"device"}
+					],
+				"type": "string",
+				"enum": [
+					"CPU",
+					"VPU"
+				]
+			},
+			"tracking-type": {
+				"element": "tracking",
+				"type": "string",
+				"default": "short-term",
+				"enum": [
+					"short-term",
+					"zero-term"
+				]
+			},
+			"location": {
+				"element": "filesink",
+				"type":"string"
+			},
+			"max-files": {
+				"element": "filesink",
+				"type":"integer"
+			}
+		}
+	}
+}

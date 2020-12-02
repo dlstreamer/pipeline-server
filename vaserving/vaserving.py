@@ -192,8 +192,8 @@ class __VAServing:
         pipeline = self.pipeline_manager.get_pipeline_parameters(name, version)
         if (pipeline):
             pipeline = self.PipelineProxy(self,
-                                      pipeline,
-                                      self._logger)
+                                          pipeline,
+                                          self._logger)
         return pipeline
 
     def models(self):

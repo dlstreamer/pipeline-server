@@ -29,12 +29,13 @@ import logging
 from .exception_handler import log_exception
 
 # ***********************************************************************************
-# Shared memory management 
+# Shared memory management
 #
 class SharedMemoryManager:
     def __init__(self, shm_flags=None, name=None, size=None):
         try:
-            self.shm_file_path = '/dev/shm'
+            #nosec skips pybandit hits
+            self.shm_file_path = '/dev/shm'     # nosec
             self.shm_file_name = name
             if self.shm_file_name is None:
                 self.shm_file_name = next(tempfile._get_candidate_names())
@@ -47,12 +48,13 @@ class SharedMemoryManager:
                                                     self.shm_file_name)
             self._shm_flags = shm_flags
 
-            # See the NOTE section here: https://docs.python.org/2/library/os.html#os.open for details on shmFlags
+            # See the NOTE section here: https://docs.python.org/2/library/os.html#os.open
+            # for details on shmFlags
             if self._shm_flags is None:
-                self._shm_file = open(self._shm_file_full_path, 'r+b')           
+                self._shm_file = open(self._shm_file_full_path, 'r+b')
                 self._shm = mmap.mmap(self._shm_file.fileno(), self.shm_file_size)
             else:
-                self._shm_file = os.open(self._shm_file_full_path, self._shm_flags)          
+                self._shm_file = os.open(self._shm_file_full_path, self._shm_flags)
                 os.ftruncate(self._shm_file, self.shm_file_size)
                 self._shm = mmap.mmap(self._shm_file,
                                       self.shm_file_size,
@@ -114,13 +116,12 @@ class SharedMemoryManager:
 
             # find an available memory gap = sizeNeeded
             prev_slot_end = 0
-            for _, v in self._mem_slots.items():
-                if (v[0] - prev_slot_end - 1) >= size_needed:
+            for _, memory_slot in self._mem_slots.items():
+                if (memory_slot[0] - prev_slot_end - 1) >= size_needed:
                     address = (prev_slot_end + 1, prev_slot_end + size_needed)
                     self._mem_slots[seq_no] = (address[0], address[1])
                     break
-                else:
-                    prev_slot_end = v[1]
+                prev_slot_end = memory_slot[1]
 
             # no gap in between, check last possible gap
             if address is None:

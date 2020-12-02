@@ -14,3 +14,7 @@
   alias: face_detection_retail
   version: 1
   precision: [FP16,FP32]
+- model: aclnet
+  alias: audio_detection
+  version: 1
+  precision: [FP16,FP32]
