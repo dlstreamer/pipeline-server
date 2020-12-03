@@ -52,6 +52,7 @@ class ModelManager:
                                    'HDDL': ["FP16"],
                                    'GPU': ["FP16"],
                                    'VPU': ["FP16"],
+                                   'MYRIAD': ["FP16"],
                                    'KMB': ["U8"]}
 
         success = self.load_models(self.model_dir, network_preference)

@@ -22,6 +22,7 @@ PRIVILEGED=
 NETWORK=
 USER=
 INTERACTIVE=-it
+DEVICE_CGROUP_RULE=
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -64,6 +65,17 @@ get_options() {
                 shift
             else
                 error 'ERROR: "--device" requires a non-empty option argument.'
+            fi
+            ;;
+        --privileged)
+            PRIVILEGED="--privileged "
+            ;;
+        --device-cgroup-rule)
+            if [ "$2" ]; then
+                DEVICE_CGROUP_RULE="--device-cgroup-rule=$2 "
+                shift
+            else
+                error 'ERROR: "--device-cgroup-rule" requires a non-empty option argument.'
             fi
             ;;
         --pipelines)
@@ -265,5 +277,5 @@ fi
 show_options
 
 set -x
-docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
+docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
 { set +x; } 2>/dev/null
