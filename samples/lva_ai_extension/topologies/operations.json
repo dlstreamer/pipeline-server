@@ -4,7 +4,7 @@
         {
             "opName": "GraphTopologySet",
             "opParams": {
-                "topologyUrl": "https://raw.githubusercontent.com/Azure/live-video-analytics/master/MediaGraph/topologies/grpcExtension/topology.json"
+                "topologyFile": "<update this to absolute path of topology.json file>"
             }
         },
         {

@@ -83,6 +83,9 @@
               "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
               "createOptions": {
                 "HostConfig": {
+                  "Binds": [
+                    "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
+                  ]
 
                 }
               }
@@ -94,7 +97,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "lva_vas_server_instance",
+              "image": "< update the image url >",
               "createOptions": {
                   "ExposedPorts": {
                     "80/tcp": {},
@@ -114,7 +117,7 @@
                       "PathOnHost":"/dev/dri",
                       "PathInContainer":"/dev/dri",
                       "CgroupPermissions":"rwm"
-                    },
+                    }],
                     "PortBindings": {
                         "80/tcp": [
                             {
