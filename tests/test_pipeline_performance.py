@@ -59,8 +59,8 @@ def test_pipeline_performance(VAServing, test_case, test_filename, generate):
         pytest.fail("Required parameter gst_launch_string missing")
     if "iterations" in _test_case:
         iterations = _test_case["iterations"]
-    if "avg_diff_pct_limit" in _test_case:
-        avg_diff_pct_limit = _test_case["avg_diff_pct_limit"]
+    if "avg_percentage_diff_limit" in _test_case:
+        avg_diff_pct_limit = _test_case["avg_percentage_diff_limit"]
 
     run_gst_pipeline(iterations, start_times_gst_launch, gst_launch_string, stop_times_gst_launch)
 
