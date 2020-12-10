@@ -10,7 +10,11 @@
             "minDockerVersion": "v1.25",
             "loggingOptions": "",
             "registryCredentials": {
-
+              "$CONTAINER_REGISTRY_USERNAME_myacr":{
+                "username":"$CONTAINER_REGISTRY_USERNAME_myacr",
+                "password":"$CONTAINER_REGISTRY_PASSWORD_myacr",
+                "address": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io"
+              }
             }
           }
         },
@@ -97,7 +101,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "< update the image url >",
+              "image": "<LVA VA SERVING IMAGE AZURE URL>",
               "createOptions": {
                   "ExposedPorts": {
                     "80/tcp": {},

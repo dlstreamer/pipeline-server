@@ -87,14 +87,12 @@
               "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
               "createOptions": {
                 "HostConfig": {
-                  "Binds": [
-                    "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
-                  ]
+
                 }
               }
             }
           },
-          "lvaExtension" : {
+          "lvaextension" : {
             "version": "1.0",
             "type": "docker",
             "status": "running",
@@ -105,10 +103,21 @@
                   "ExposedPorts": {
                     "80/tcp": {},
                     "5001/tcp" : {}
-                },
+                }, 
+                "Env":[
+                  "PIPELINE_NAME=object_detection",
+                  "PIPELINE_VERSION=person_vehicle_bike_detection",
+                  "PARAMETERS= {\"device\":\"MYRIAD\"}"
+                ],
                 "HostConfig": {
-                    "Binds": [
-                      "/tmp/:/tmp/"
+                  "Binds": [
+                      "/var/tmp:/var/tmp",
+                      "/tmp:/tmp",
+                      "/dev/shm:/dev/shm",
+                      "/dev/bus/usb:/dev/bus/usb"
+                    ],
+                    "DeviceCgroupRules":[
+                      "c 189:* rmw"
                     ],
                     "PortBindings": {
                         "80/tcp": [

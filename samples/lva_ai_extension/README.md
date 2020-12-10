@@ -99,16 +99,6 @@ The following pipelines are included in the AI Extension:
 Based on HW target, choose and update the appropriate deployment manifest located in the [deployment directory](/samples/lva_ai_extension/deployment/).
 * Make sure that the 'lvaExtension'->'image' property shows the Azure URI of VAS LVA Edge AI Extension docker image.
 * Update the 'lvaExtension' -> 'ENV' property to configure container behavior. Our manifest file is configured for object detection by default.
-* Update registryCredentials from .env 
-```json
-            "registryCredentials": {
-              "<CONTAINER_REGISTRY_USERNAME_myacr>":{
-                "username":"<CONTAINER_REGISTRY_USERNAME_myacr>",
-                "password":"<CONTAINER_REGISTRY_PASSWORD_myacr>",
-                "address": "<CONTAINER_REGISTRY_USERNAME_myacr>.azurecr.io"
-              }
-            }
-```
 
 You will also need to create a graph topology with gRPC extension and then create a graph instance based on that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
 
