@@ -1,19 +1,13 @@
- 
-'''
-* Copyright (C) 2019-2020 Intel Corporation.
-*
-* SPDX-License-Identifier: MIT License
-'''
-
 import subprocess
 import time
 import os
 import json
 import tempfile
+import pytest
 
 from jsonschema import validate
 
-class TestLvaVideo:
+class TestLvaObjectPipelines:
     def teardown_method(self, test_method):
         if self.server_process is not None:
             self.server_process.kill()
@@ -37,7 +31,7 @@ class TestLvaVideo:
             client_process.poll()
         assert client_process.returncode is not None
         assert client_process.returncode == 0
-
+    
     def validate_output(self, output_location):
         json_schema = None
         json_schema_file = os.path.join(os.path.dirname(__file__), 'common/Extension_Data_Schema.json')
@@ -50,46 +44,22 @@ class TestLvaVideo:
                 if line and line != '':
                     validate(instance=json.loads(line),schema=json_schema)
 
-    def test_lva_video_consistent_results(self, sleep_period=0.25, port=5001):
-        server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port)]
+    @pytest.mark.parametrize("pipeline_name,pipeline_version", [("object_detection", "person_vehicle_bike_detection"), ("object_classification", "vehicle_attributes_recognition"), ("object_tracking", "person_vehicle_bike_tracking")])
+    def test_lva_object_pipeline(self, pipeline_name, pipeline_version, sleep_period=0.25, port=5001):
+        server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port),
+                    "--pipeline-name", "object_detection", "--pipeline-version", "person_vehicle_bike_detection"]
         print(' '.join(server_args))
         self.server_process = subprocess.Popen(server_args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(sleep_period)
 
-        #Create temporary parameter file
+        #Create temporary directory for saving output
         workdir_path = tempfile.TemporaryDirectory()
         output_file = "output.jsonl"
-        output_location1 = os.path.join(workdir_path.name, output_file)
-        output_file2 = "output2.jsonl"
-        output_location2 = os.path.join(workdir_path.name, output_file2)
+        output_location = os.path.join(workdir_path.name, output_file)
 
         self.run_client(source="/home/video-analytics-serving/person-bicycle-car-detection.mp4",
                         sleep_period=sleep_period,
                         port=port,
-                        output_location=output_location1)
-        self.run_client(source="/home/video-analytics-serving/person-bicycle-car-detection.mp4",
-                        sleep_period=sleep_period,
-                        port=port,
-                        output_location=output_location2)
-        self.validate_output(output_location1)
-        self.validate_output(output_location2)
+                        output_location=output_location)
+        self.validate_output(output_location)
 
-        #Compare the two outputs to see if they match
-        json_data1 = None
-        json_data2 = None
-        with open(output_location1, "r") as file1:
-            with open(output_location2, "r") as file2:
-                file1_s = file1.readline()
-                file2_s = file2.readline()
-                while file1_s != '' and file2_s != '':
-                    json_data1 = json.loads(file1_s)
-                    json_data2 = json.loads(file2_s)
-
-                    assert json_data1 == json_data2
-
-                    file1_s = file1.readline()
-                    file2_s = file2.readline()
-                if file1_s != '' and file2_s == '':
-                    assert False
-                if file1_s == '' and file2_s != '':
-                    assert False

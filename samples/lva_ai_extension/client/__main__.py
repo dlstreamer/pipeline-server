@@ -38,41 +38,34 @@ from samples.lva_ai_extension.common.exception_handler import log_exception
 from arguments import parse_args
 from media_stream_processor import MediaStreamProcessor
 
-
-class ImageSource:
-    def __init__(self, filename, count):
-        self._image = cv2.imread(filename, cv2.IMREAD_COLOR)
-        self._count = count
-
-    def dimensions(self):
-        height, width, _ = self._image.shape
-        return width, height
-
-    def get_frame(self):
-        frame = self._image.tobytes() if self._count > 0 else None
-        self._count -= 1
-        return frame
-
-    def close(self):
-        pass
-
-
 class VideoSource:
-    def __init__(self, filename):
+    def __init__(self, filename, loop_count):
+        self._loop_count = loop_count
         self._vid_cap = cv2.VideoCapture(filename)
+        if self._vid_cap is None or not self._vid_cap.isOpened():
+            print("{}: Error opening video source".format(filename))
+            sys.exit(1)
 
     def dimensions(self):
-        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         return width, height
 
     def get_frame(self):
         ret, frame = self._vid_cap.read()
-        return frame.tobytes() if ret else None
+        if ret:
+            return frame.tobytes()
+        else:
+            if self._loop_count > 0:
+                self._vid_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                self._loop_count -= 1
+                ret, frame = self._vid_cap.read()
+                if ret:
+                    return frame.tobytes()
+        return None
 
     def close(self):
         self._vid_cap.release()
-
 
 def _log_options(args):
     heading = "Options for {}".format(os.path.basename(__file__))
@@ -84,6 +77,12 @@ def _log_options(args):
         logging.info("{} == {}".format(arg, getattr(args, arg)))
         logging.info(banner)
 
+def remove_empty_lists(d):
+    if not isinstance(d, (dict, list)):
+        return d
+    if isinstance(d, list):
+        return [v for v in (remove_empty_lists(v) for v in d) if v or v == 0]
+    return {k: v for k, v in ((k, remove_empty_lists(v)) for k, v in d.items()) if v or v == 0}
 
 def print_result(response, output):
     logging.info("Inference result {}".format(response.ack_sequence_number))
@@ -96,7 +95,10 @@ def print_result(response, output):
             atrributes.append(attribute_string)
         logging.info("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}"\
                      .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h, atrributes))
-    response_dict = MessageToDict(response.media_sample)
+    # default value field is used to avoid not including values set to 0, but it also causes empty lists to be included
+    # empty and none values are filtered out in response_dict
+    returned_dict = MessageToDict(response.media_sample, including_default_value_fields=True)
+    response_dict = remove_empty_lists(returned_dict)
     if response_dict.get("inferences"):
         for inference in response_dict["inferences"]:
             inference["type"] = inference["type"].lower()
@@ -112,14 +114,7 @@ def main():
         msp = MediaStreamProcessor(args.grpc_server_address,
                                    args.use_shared_memory)
 
-        _, extension = os.path.splitext(args.sample_file)
-        if extension in ['.png', '.jpg']:
-            frame_source = ImageSource(args.sample_file, args.loop_count)
-        elif extension in ['.mp4']:
-            frame_source = VideoSource(args.sample_file)
-        else:
-            print("{}: unsupported file type".format(args.sample_file))
-            sys.exit(1)
+        frame_source = VideoSource(args.sample_file, args.loop_count)
 
         width, height = frame_source.dimensions()
         print("{} {}".format(width, height))

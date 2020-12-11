@@ -43,9 +43,9 @@ def parse_args(args=None, program_name="AI Extension Sample Client"):
                         default="/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png")
     parser.add_argument('-l', metavar=('loop_count'),
                         dest="loop_count",
-                        help='How many times to send sample video frame.',
+                        help='How many times to loop the source after it finishes.',
                         type=int,
-                        default=1)
+                        default=0)
     parser.add_argument('-m', action='store_const',
                         dest='use_shared_memory',
                         const=True,

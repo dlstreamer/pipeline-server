@@ -23,6 +23,7 @@ ENV PIPELINE_NAME 'object_detection'
 ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
 
 RUN wget -O classroom.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true
+RUN wget -O person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 
 ARG USER=vaserving
 
