@@ -410,6 +410,7 @@ done
 
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
     cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
+    echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
 fi
 
