@@ -48,6 +48,7 @@ class ModelManager:
         self.model_dir = model_dir
         self.network_preference = network_preference
         self.models = defaultdict(dict)
+        self.model_procs = {}
         self.network_preference = {'CPU': ["FP32"],
                                    'HDDL': ["FP16"],
                                    'GPU': ["FP16"],
@@ -160,14 +161,18 @@ class ModelManager:
                     if (os.path.isdir(version_path)):
                         version = self.convert_version(version)
                         proc = self._get_model_proc(version_path)
+                        if proc is None:
+                            self.logger.info("Model {model}/{ver} is missing Model-Proc".format(
+                                model=model_name, ver=version))
                         networks = self._get_model_networks(
                             version_path)
-                        if (proc) and (networks):
+                        if (networks):
                             for key in networks:
                                 networks[key].update({"proc": proc,
                                                       "version": version,
                                                       "type": "IntelDLDT",
                                                       "description": model_name})
+                                self.model_procs[networks.get(key).get("network")] = proc
 
                             models[model_name][version] = ModelsDict(model_name,
                                                                      version,
@@ -184,7 +189,7 @@ class ModelManager:
                                              "type: {} from {}".format(
                                                  model_name, version, "IntelDLDT", network_paths))
                         else:
-                            raise Exception("{model}/{ver} is missing Model-Proc or Network"
+                            raise Exception("{model}/{ver} is missing Network"
                                             .format(model=model_name, ver=version))
 
             except Exception as error:

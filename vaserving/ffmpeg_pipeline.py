@@ -265,6 +265,19 @@ class FFmpegPipeline(Pipeline):
                     self._logger.debug("Setting model to {} for filter {}".format(
                         _filter.properties["model"], _filter_key))
 
+    def _set_model_proc(self):
+        for video_filters in self._video_filters:
+            for _filter_key, _filter in video_filters.filters.items():
+                if ((_filter_key[0] in FFmpegPipeline.GVA_INFERENCE_FILTER_TYPES)):
+                    if "model_proc" not in _filter.properties:
+                        model_proc = None
+                        if _filter.properties["model"] in self.model_manager.model_procs:
+                            model_proc = self.model_manager.model_procs[_filter.properties["model"]]
+                        if model_proc is not None:
+                            _filter.properties["model_proc"] = model_proc
+                            self._logger.debug("Setting model proc to {} for filter {}".format(
+                                model_proc, _filter_key))
+
     def _unescape_args(self, args):
         for i, arg in enumerate(args):
             args[i] = arg.replace(
@@ -652,6 +665,7 @@ class FFmpegPipeline(Pipeline):
             self._parse_ffmpeg_launch_string(self._ffmpeg_launch_string)
             self._set_properties()
             self._set_default_models()
+            self._set_model_proc()
             self._initialize_segment_recording()
             self._generate_ffmpeg_launch_args()
             self._unescape_source()

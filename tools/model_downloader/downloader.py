@@ -40,10 +40,6 @@ def download_model_proc(target_model, model):
             print("Downloaded {0} model-proc file from gst-video-analytics repo".format(model))
         else:
             print("Warning, model-proc not found in gst-video-analytics repo.")
-            print("Creating empty json file for {0} to allow model to load in "\
-                  "VA-Serving".format(model))
-            print("Do not specify model-proc in pipeline that utilizes this model")
-            Path('{0}/{1}.json'.format(temp_dir.name, model)).touch()
         model_proc = os.path.abspath('{0}/{1}.json'.format(temp_dir.name, model))
     shutil.move(model_proc, os.path.join(target_model, '{}.json'.format(model)))
 

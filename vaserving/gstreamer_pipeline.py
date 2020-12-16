@@ -255,6 +255,18 @@ class GStreamerPipeline(Pipeline):
         return [element for element in pipeline.iterate_elements()
                 if element.__gtype__.name in type_strings]
 
+    def _set_model_proc(self):
+        gva_elements = [element for element in self.pipeline.iterate_elements() if (
+            element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)]
+        for element in gva_elements:
+            if element.get_property("model-proc") is None:
+                proc = None
+                if element.get_property("model") in self.model_manager.model_procs:
+                    proc = self.model_manager.model_procs[element.get_property("model")]
+                if proc is not None:
+                    logger.debug("Setting model proc to {} for element {}".format(
+                        proc, element.get_name()))
+                    element.set_property("model-proc", proc)
 
     @staticmethod
     def validate_config(config):
@@ -369,6 +381,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_properties()
                 self._set_bus_messages_flag()
                 self._set_default_models()
+                self._set_model_proc()
                 self._cache_inference_elements()
 
                 src = self._get_any_source()
