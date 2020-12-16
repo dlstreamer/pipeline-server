@@ -11,7 +11,7 @@ ENTRYPOINT_ARGS=
 
 #Get options passed into script
 function get_options {
-  while :; do
+  while (($#)); do
     case $1 in
       -h | -\? | --help)
         show_help
@@ -25,7 +25,7 @@ function get_options {
           error "-p expects a value"
         fi
         ;;
-      --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters)
+      --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters|--pipeline-parameters)
         if [ "$2" ]; then
           ENTRYPOINT_ARGS+="--entrypoint-args $1 "
           ENTRYPOINT_ARGS+="--entrypoint-args $2 "
@@ -41,7 +41,7 @@ function get_options {
         PIPELINES="--pipelines $LVA_DIR/pipelines "
         ;;
       *)
-        break
+        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
         ;;
     esac
 
@@ -56,6 +56,8 @@ function show_help {
   echo "  [ --pipeline-version : Specify the pipeline version to use ] "
   echo "  [ --debug : Use debug pipeline ] "
   echo "  [ --max-running-pipelines : Specify the maximum number of concurrent pipelines, default is 10 ] "
+  echo "  [ --parameters : Specify a json string or file for pipeline parameters *Deprecated* ] "
+  echo "  [ --pipeline-parameters : Specify a json string or file for pipeline parameters ] "
 }
 
 function error {
@@ -83,4 +85,8 @@ if [ ! -z "$PARAMETERS" ]; then
   ENV+="-e PARAMETERS=$PARAMETERS "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV $@
+if [ ! -z "$PIPELINE_PARAMETERS" ]; then
+  ENV+="-e PIPELINE_PARAMETERS=$PIPELINE_PARAMETERS "
+fi
+
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV

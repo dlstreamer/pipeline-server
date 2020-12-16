@@ -15,7 +15,8 @@ class TestLvaParameters:
             self.server_process.kill()
 
     def parameter_run_client_server(self, sleep_period, port, parameters):
-        server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port)]
+        server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port),
+                "--pipeline-parameters", parameters]
         print(' '.join(server_args))
         self.server_process = subprocess.Popen(server_args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(sleep_period)

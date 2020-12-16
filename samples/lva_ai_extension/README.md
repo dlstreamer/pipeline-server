@@ -76,13 +76,13 @@ $ ./docker/run_client.sh
 
 The module can be configured using command line options or environment variables (command line options take precedence). 
 
-| Setting             | Command line option | Environment variable | Default value    |
-|---------------------|---------------------|----------------------|------------------|
-| gRPC port           | -p                  | PORT                 | 5001             |
-| Pipeline name       | --pipeline-name     | PIPELINE_NAME        | object_detection |
-| Pipeline version    | --pipeline-version  | PIPELINE_VERSION     | person_vehicle_bike_detection |
-| Pipeline parameters | --parameters        | PARAMETERS           | {}                |
-| Use debug pipeline  | --debug             | DEBUG_PIPELINE       |                   |
+| Setting             | Command line option   | Environment variable | Default value    |
+|---------------------|-----------------------|----------------------|------------------|
+| gRPC port           | -p                    | PORT                 | 5001             |
+| Pipeline name       | --pipeline-name       | PIPELINE_NAME        | object_detection |
+| Pipeline version    | --pipeline-version    | PIPELINE_VERSION     | person_vehicle_bike_detection |
+| Pipeline parameters | --pipeline-parameters | PIPELINE_PARAMETERS  | {}                |
+| Use debug pipeline  | --debug               | DEBUG_PIPELINE       |                   |
 
 ## Video Analytics Pipelines
 
@@ -104,6 +104,18 @@ You will also need to create a graph topology with gRPC extension and then creat
 
 # Additional Standalone Edge AI Extension Examples
 
+### Specifying VAServing parameters for LVA Server
+
+The LVA Server application will filter command line arguments between the LVA layer and VAServing layer.
+Command line arguments are first handled by run_server.sh; if not specifically handled by run_server.sh the argument
+is passed into the LVA Server application.
+Command line arguments that are not recognized by LVA Server are then passed to VAServing, if VAServing does not recognize
+the arguments an error will be reported
+
+```bash
+./docker/run_server.sh --log_level DEBUG
+```
+
 ### Selecting and Configuring Pipelines
 
 Run with object classification pipeline specified on command line
@@ -116,7 +128,7 @@ Run with classification pipeline with iGPU inference specified via environment v
 ```
 $ export PIPELINE_NAME=object_classification
 $ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ export PARAMETERS={\"device\":\"GPU\"}
+$ export PIPELINE_PARAMETERS={\"device\":\"GPU\"}
 $ ./docker/run_server.sh
 ```
 
@@ -144,7 +156,7 @@ Integrated Graphics.
 Run default pipeline with iGPU inference (be careful with escaping the JSON string)
 
 ```bash
-$ ./docker/run_server.sh --parameters "{\"device\":\"GPU\"}"
+$ ./docker/run_server.sh --pipeline-parameters "{\"device\":\"GPU\"}"
 ```
 
 ### Logging

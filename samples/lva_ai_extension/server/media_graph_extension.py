@@ -84,13 +84,13 @@ class State:
             raise
 
 class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
-    def __init__(self, pipeline, version, debug=False, parameters=None, input_queue_size=1):
+    def __init__(self, pipeline, version, debug=False, pipeline_parameter_arg=None, input_queue_size=1):
         self._pipeline = pipeline
         self._version = version
         self._input_queue_size = input_queue_size
         self._logger = get_logger("MediaGraphExtension")
         self._debug = debug
-        self._parameters = parameters
+        self._pipeline_parameter_arg = pipeline_parameter_arg
 
     def _generate_media_stream_message(self, gva_sample):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
@@ -253,33 +253,28 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         if self._debug and (not self._version.startswith("debug")):
             self._version = "debug_" + self._version
 
-        parameters = {}
-        if self._parameters:
-            if os.path.isfile(self._parameters):
-                with open(self._parameters) as json_file:
-                    try:
-                        parameters = json.load(json_file)
-                    except ValueError:
-                        self._logger.error('Issue loading json parameters from file')
-                        parameters = {}
-            else:
-                try:
-                    parameters = json.loads(self._parameters)
-                except ValueError:
-                    self._logger.error('Issue loading json parameters from string')
-                    parameters = {}
-
+        final_pipeline_parameters = {}
         if self._version.startswith("debug"):
             timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
             location = os.path.join(tempfile.gettempdir(), "vaserving", self._version, timestamp)
             os.makedirs(os.path.abspath(location))
-            debug_parameters = {"location": os.path.join(location, "frame_%07d.jpeg"),
-                                "max-files":10}
-            parameters.update(debug_parameters)
+            final_pipeline_parameters = {"location": os.path.join(location, "frame_%07d.jpeg")}
+
+        try:
+            if self._pipeline_parameter_arg:
+                pipeline_parameters = {}
+                if os.path.isfile(self._pipeline_parameter_arg):
+                    with open(self._pipeline_parameter_arg) as json_file:
+                        pipeline_parameters = json.load(json_file)
+                else:
+                    pipeline_parameters = json.loads(self._pipeline_parameter_arg)
+                final_pipeline_parameters.update(pipeline_parameters)
+        except ValueError:
+            self._logger.error('Issue loading json parameters')
 
         self._logger.info('Pipeline Name : {}'.format(self._pipeline))
         self._logger.info('Pipeline Version : {}'.format(self._version))
-        self._logger.info('Pipeline Parameters : {}'.format(parameters))
+        self._logger.info('Pipeline Parameters : {}'.format(final_pipeline_parameters))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
         # Start object detection pipeline
@@ -293,7 +288,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                                            "class": "GStreamerAppDestination",
                                            "output": detect_output,
                                            "mode": "frames"},
-                              parameters=parameters)
+                              parameters=final_pipeline_parameters)
 
         # Process rest of the MediaStream message sequence
         for request in requestIterator:

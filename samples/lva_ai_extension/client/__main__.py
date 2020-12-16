@@ -77,12 +77,12 @@ def _log_options(args):
         logging.info("{} == {}".format(arg, getattr(args, arg)))
         logging.info(banner)
 
-def remove_empty_lists(d):
-    if not isinstance(d, (dict, list)):
-        return d
-    if isinstance(d, list):
-        return [v for v in (remove_empty_lists(v) for v in d) if v or v == 0]
-    return {k: v for k, v in ((k, remove_empty_lists(v)) for k, v in d.items()) if v or v == 0}
+def remove_empty_lists(dictionary):
+    if not isinstance(dictionary, (dict, list)):
+        return dictionary
+    if isinstance(dictionary, list):
+        return [v for v in (remove_empty_lists(v) for v in dictionary) if v or v == 0]
+    return {k: v for k, v in ((k, remove_empty_lists(v)) for k, v in dictionary.items()) if v or v == 0}
 
 def print_result(response, output):
     logging.info("Inference result {}".format(response.ack_sequence_number))

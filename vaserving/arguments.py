@@ -46,8 +46,13 @@ def parse_options(args=None):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
 
-    result = parser.parse_args(args)
-    parse_network_preference(result)
+    try:
+        result = parser.parse_args(args)
+        parse_network_preference(result)
+    except Exception:
+        print("Unrecognized argument passed to VAServing")
+        parser.print_help()
+        raise
     return result
 
 

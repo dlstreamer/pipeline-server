@@ -107,7 +107,7 @@
                 "Env":[
                   "PIPELINE_NAME=object_detection",
                   "PIPELINE_VERSION=person_vehicle_bike_detection",
-                  "PARAMETERS= {\"device\":\"MYRIAD\"}"
+                  "PIPELINE_PARAMETERS= {\"device\":\"MYRIAD\"}"
                 ],
                 "HostConfig": {
                   "Binds": [

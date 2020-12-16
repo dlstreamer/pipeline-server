@@ -146,11 +146,13 @@
 			},
 			"location": {
 				"element": "filesink",
-				"type":"string"
+				"type":"string",
+                                "default":"/tmp/frame_%07d.jpeg"
 			},
 			"max-files": {
 				"element": "filesink",
-				"type":"integer"
+				"type":"integer",
+                                "default": 10
 			}
 		}
 	}

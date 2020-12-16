@@ -31,10 +31,12 @@
 import argparse
 import os
 import sys
+import json
 from concurrent import futures
 import grpc
 import extension_pb2_grpc  # pylint: disable=import-error
 from vaserving.vaserving import VAServing
+from vaserving.common.utils.logging import get_logger
 from media_graph_extension import MediaGraphExtension
 
 
@@ -68,26 +70,48 @@ def parse_args(args=None, program_name="VA Serving AI Extension"):
                         type=int, default=int(os.getenv('MAX_RUNNING_PIPELINES', '10')))
 
     parser.add_argument("--parameters", action="store",
-                        dest="parameters",
+                        dest="parameters_arg",
                         type=str, default=os.getenv('PARAMETERS', '{}'))
+
+    parser.add_argument("--pipeline-parameters", action="store",
+                        dest="pipeline_parameters_arg",
+                        type=str, default=os.getenv('PIPELINE_PARAMETERS', '{}'))
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
 
-    return parser.parse_args(args)
+    return parser.parse_known_args(args)
+
+def append_default_server_args(va_serving_args, max_running_pipelines):
+    va_serving_args.append('--max_running_pipelines')
+    va_serving_args.append(str(max_running_pipelines))
+    return va_serving_args
 
 if __name__ == "__main__":
 
-    args = parse_args()
+    args, va_serving_args = parse_args()
+    logger = get_logger("Main")
     try:
-        VAServing.start({'log_level': 'INFO', "ignore_init_errors":True,
-                         'max_running_pipelines': args.max_running_pipelines})
+        server_args = append_default_server_args(va_serving_args, args.max_running_pipelines)
+
+        try:
+            VAServing.start(server_args)
+        except Exception:
+            print("Exception encountered during VAServing start")
+            raise
+
+        # For 0.4.1, if both parameters and pipeline_parameters are specified, pipeline_parameters takes precedence
+        if args.parameters_arg != '{}':
+            logger.warning("Warning, parameters argument is deprecated and will be removed in 0.5.")
+            logger.warning("If parameters and pipeline_parameters are defined pipeline_parameters takes precedence")
+        if args.pipeline_parameters_arg != '{}':
+            args.parameters_arg = args.pipeline_parameters_arg
 
         # create gRPC server and start running
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.max_running_pipelines))
         extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(
-            MediaGraphExtension(args.pipeline, args.version, args.debug, args.parameters), server)
+            MediaGraphExtension(args.pipeline, args.version, args.debug, args.parameters_arg), server)
         server.add_insecure_port(f'[::]:{args.port}')
         print("Starting Protocol Server Application on port", args.port)
         server.start()
