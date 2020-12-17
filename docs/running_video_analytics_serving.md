@@ -1,5 +1,5 @@
 # Running Video Analytics Serving
-| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | 
+| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) |
 
 Video Analytics Serving docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
@@ -18,7 +18,7 @@ that exposes a RESTful interface on port
 8080.  The microservice has endpoints to list, start, stop, and get
 the status of media analytics pipelines.
 
-## Microservice Endpoints 
+## Microservice Endpoints
 
 | Path | Description |
 |----|------|
@@ -35,7 +35,7 @@ the status of media analytics pipelines.
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
 | `./docker/run.sh`|**DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
-| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |         
+| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
 
 
 # Interacting with the Microservice
@@ -80,7 +80,7 @@ From a new shell use curl to issue requests to the running
 microservice.
 
 ### Getting Loaded Pipelines
-**Example:** 
+**Example:**
 
 ```bash
 $ curl localhost:8080/pipelines
@@ -108,7 +108,7 @@ $ curl localhost:8080/pipelines
 ```bash
 curl localhost:8080/pipelines/object_detection/1 -X POST -H \
 'Content-Type: application/json' -d \
-'{ 
+'{
   "source": {
     "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
     "type": "uri"
@@ -164,12 +164,37 @@ appropriate directories when starting the container.
 $ ./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
 ```
 
+# Enabling Hardware Accelerators
+The run script automatically gives docker access (i.e. device, volume mount and device cgroup rule) to the following accelerators
+* iGPU
+* Myriad NCS2
+* HDDL-R
+
+You also need to specify the inference device in the parameters section
+of the VA Serving request. Example for GPU below
+```json
+"parameters": {
+   "device": "GPU"
+}
+```
+See [Customizing Pipeline Requests](customizing_pipeline_requests.md) for more information of forming requests.
+
+The following the table shows docker configuration and inference device name for all accelerators.
+> **Note:** Open Visual Cloud base images only support the GPU accelerator.
+> OpenVINO base images support all accelerators.
+
+|Accelerator|Docker Device|Volume Mount  |CGroup Rule|Inference Device|
+|-----------|-------------|--------------|-----------|----------------|
+| GPU       | /dev/dri    |              |           | GPU            |
+| NCS2      |             | /dev/bus/usb |c 189:* rmw| MYRIAD         |
+| HDDL-R    | /dev/ion    | /var/tmp     |           | HDDL           |
+
 # Developer Mode
 
 The run script includes a `--dev` flag which starts the
 container in "developer" mode. "Developer mode," sets `docker run`
 options to make development and modification of media analytics
-pipelines easier. 
+pipelines easier.
 
 > **Note:** Pipeline and Model directories are only scanned once at
 > service start-up. When making modifications to the models,
@@ -190,7 +215,7 @@ Developer mode:
 
 ```bash
 $ docker/run.sh --dev
-vaserving@my-host:~$ python3 -m vaserving 
+vaserving@my-host:~$ python3 -m vaserving
 ```
 
 ---

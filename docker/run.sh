@@ -44,7 +44,7 @@ show_options() {
     echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}'"
     echo "   User: '${USER}'"
     echo "   Devices: '${DEVICES}'"
-    echo "   Device Group Rule: '${DEVICE_CGROUP_RULE}'"
+    echo "   Device CGroup Rule: '${DEVICE_CGROUP_RULE}'"
     echo ""
 }
 
@@ -69,6 +69,28 @@ show_help() {
 error() {
     printf '%s\n' "$1" >&2
     exit
+}
+
+enable_hardware_access() {
+    # GPU
+    if [ -d /dev/dri ]; then
+        echo "Found /dev/dri - enabling for GPU"
+        DEVICES+='--device /dev/dri '
+    fi
+
+    # NCS2
+    if [ -d /dev/bus/usb ]; then
+        echo "Found /dev/bus/usb - enabling for NCS2"
+        DEVICE_CGROUP_RULE=--device-cgroup-rule=\'c\ 189:*\ rmw\'
+        VOLUME_MOUNT+="-v /dev/bus/usb:/dev/bus/usb "
+    fi
+
+    # HDDL
+    if [ -e /dev/ion ]; then
+        echo "Found /dev/ion - enabling for HDDL-R"
+        DEVICES+="--device /dev/ion "
+        VOLUME_MOUNT+="-v /var/tmp:/var/tmp "
+    fi
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -253,8 +275,10 @@ if [ "${MODE}" == "DEV" ]; then
 	    USER="--user $UID"
     fi
 elif [ "${MODE}" == "SERVICE" ]; then
-    PORTS+="-p 8080:8080 "
-    DEVICES+='--device /dev/dri '
+    if [ -z "$PORTS" ]; then
+        PORTS+="-p 8080:8080 "
+    fi
+    enable_hardware_access
 else
     echo "Invalid Mode"
     show_help
@@ -274,5 +298,6 @@ if [ ! -z "$PIPELINES" ]; then
 fi
 
 show_options
-$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}
 
+# eval must be used to ensure the --device-cgroup-rule string is correctly parsed
+eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}"
