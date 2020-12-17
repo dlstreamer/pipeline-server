@@ -9,46 +9,6 @@ PORT=5001
 PIPELINES=
 ENTRYPOINT_ARGS=
 
-#Get options passed into script
-function get_options {
-  while (($#)); do
-    case $1 in
-      -h | -\? | --help)
-        show_help
-        exit
-        ;;
-      -p)
-        if [ "$2" ]; then
-          PORT=$2
-          shift
-        else
-          error "-p expects a value"
-        fi
-        ;;
-      --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters|--pipeline-parameters)
-        if [ "$2" ]; then
-          ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-          ENTRYPOINT_ARGS+="--entrypoint-args $2 "
-          shift
-        else
-          error "$1 expects a value"
-        fi
-        ;;
-      --debug)
-        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-        ;;
-      --dev)
-        PIPELINES="--pipelines $LVA_DIR/pipelines "
-        ;;
-      *)
-        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-        ;;
-    esac
-
-    shift
-  done
-}
-
 function show_help {
   echo "usage: ./run_server.sh"
   echo "  [ -p : Specify the port to use ] "
@@ -65,7 +25,42 @@ function error {
     exit
 }
 
-get_options "$@"
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -h | -\? | --help)
+      show_help
+      exit
+      ;;
+    -p)
+      if [ "$2" ]; then
+        PORT=$2
+        shift
+      else
+        error "-p expects a value"
+      fi
+      ;;
+    --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters|--pipeline-parameters)
+      if [ "$2" ]; then
+        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
+        ENTRYPOINT_ARGS+="--entrypoint-args $2 "
+        shift
+      else
+        error "$1 expects a value"
+      fi
+      ;;
+    --debug)
+      ENTRYPOINT_ARGS+="--entrypoint-args $1 "
+      ;;
+    --dev)
+      PIPELINES="--pipelines $LVA_DIR/pipelines "
+      ;;
+    *)
+      ENTRYPOINT_ARGS+="--entrypoint-args $1 "
+      ;;
+  esac
+
+  shift
+done
 
 ENV=
 

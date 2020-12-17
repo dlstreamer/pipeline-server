@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ENTRYPOINT_ARGS=
+DOCKER_RUN_OPTIONS=
 TESTS_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $TESTS_DIR)
 INTERACTIVE=--non-interactive
@@ -13,8 +15,8 @@ PYBANDIT_RESULTS_DIR="$RESULTS_DIR/pybandit"
 CLAMAV_RESULTS_DIR="$RESULTS_DIR/clamav"
 
 # Default selected as gstreamer pytests
+FRAMEWORK=gstreamer
 OUTPUT_DIR="$PYTEST_GSTREAMER_RESULTS_DIR"
-IMAGE=video-analytics-serving-gstreamer-tests:latest
 SELECTED="--pytest-gstreamer"
 ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 
@@ -22,52 +24,8 @@ ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 # TODO: fix user permsion issue for generating reports
 USER="--user root"
 
-#Get options passed into script
-function get_options {
-  while :; do
-    case $1 in
-      -h | -\? | --help)
-        show_help
-        exit
-        ;;
-      --pytest-gstreamer)
-        shift
-        ;;
-      --pytest-ffmpeg)
-        OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"
-        IMAGE=video-analytics-serving-ffmpeg-tests:latest
-        SELECTED="$1"
-        shift
-        ;;
-      --pylint)
-        OUTPUT_DIR="$PYLINT_RESULTS_DIR"
-        ENTRYPOINT="--entrypoint ./tests/entrypoint/pylint.sh"
-        SELECTED="$1"
-        shift
-        ;;
-      --pybandit)
-        OUTPUT_DIR="$PYBANDIT_RESULTS_DIR"
-        ENTRYPOINT="--entrypoint ./tests/entrypoint/pybandit.sh"
-        SELECTED="$1"
-        shift
-        ;;
-      --clamav)
-        OUTPUT_DIR="$CLAMAV_RESULTS_DIR"
-        ENTRYPOINT="--entrypoint ./tests/entrypoint/clamav.sh"
-        SELECTED="$1"
-        shift
-        ;;
-      *)
-        break
-        ;;
-    esac
-
-    shift
-  done
-}
-
 function show_help {
-  echo "usage: run.sh"
+  echo "usage: run.sh (options are exclusive)"
   echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
   echo "  [ --pytest-ffmpeg: Run ffmpeg tests ] "
   echo "  [ --pylint : Run pylint scan ] "
@@ -80,7 +38,43 @@ function error {
     exit
 }
 
-get_options "$@"
+ARGS=$@
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -h | -\? | --help)
+      show_help
+      exit
+      ;;
+    --pytest-gstreamer)
+      ;;
+    --pytest-ffmpeg)
+      OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"
+      FRAMEWORK=ffmpeg
+      SELECTED="$1"
+      ;;
+    --pylint)
+      OUTPUT_DIR="$PYLINT_RESULTS_DIR"
+      ENTRYPOINT="--entrypoint ./tests/entrypoint/pylint.sh"
+      SELECTED="$1"
+      ;;
+    --pybandit)
+      OUTPUT_DIR="$PYBANDIT_RESULTS_DIR"
+      ENTRYPOINT="--entrypoint ./tests/entrypoint/pybandit.sh"
+      SELECTED="$1"
+      ;;
+    --clamav)
+      OUTPUT_DIR="$CLAMAV_RESULTS_DIR"
+      ENTRYPOINT="--entrypoint ./tests/entrypoint/clamav.sh"
+      SELECTED="$1"
+      ;;
+    *)
+      break
+      ;;
+  esac
+  shift
+done
+
+IMAGE=video-analytics-serving-${FRAMEWORK}-tests:latest
 
 DOCKER_RESULTS_DIR="$DOCKER_TESTS_DIR/$OUTPUT_DIR"
 LOCAL_RESULTS_DIR="$TESTS_DIR/$OUTPUT_DIR"
@@ -92,4 +86,4 @@ mkdir -p "$LOCAL_RESULTS_DIR"
 
 VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
 
-$SOURCE_DIR/docker/run.sh --image $IMAGE $USER $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $@
+$SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $USER $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT "$@"

@@ -1,0 +1,4 @@
+#!/bin/bash
+NUM_REST_TESTS=9
+NUM_TESTS=$($TEST_DIR/run.sh --pytest-gstreamer --entrypoint-args "-k rest --collect-only" 2> /dev/null | grep -c Function)
+[[ $NUM_TESTS == $NUM_REST_TESTS ]]
