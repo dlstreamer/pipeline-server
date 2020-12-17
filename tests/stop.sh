@@ -23,7 +23,7 @@ function get_options {
         ;;
       --remove)
         echo "Removing all docker images with name starts with video-analytics-serving"
-        docker rmi $(docker images | grep 'video-analytics-serving') || true
+        docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'video-analytics-serving') || true
         shift
         ;;
       *)
