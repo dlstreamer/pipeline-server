@@ -29,5 +29,6 @@ ARG USER=vaserving
 
 USER ${USER}
 
-ENTRYPOINT [ "pytest",  "/home/video-analytics-serving/samples/lva_ai_extension" ]
-#ENTRYPOINT [ "/bin/bash" ]
+WORKDIR /home/video-analytics-serving/samples/lva_ai_extension
+
+ENTRYPOINT [ "pytest", "-s", "--html=tests/results/report.html", "--self-contained-html"]

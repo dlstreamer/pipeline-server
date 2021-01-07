@@ -7,3 +7,4 @@ docker/Dockerfile.env
 docker/final.env
 models
 tests/results/**/*
+samples/lva_ai_extension/tests/results/**/*
