@@ -49,14 +49,15 @@ class ModelManager:
         self.network_preference = network_preference
         self.models = defaultdict(dict)
         self.model_procs = {}
-        self.network_preference = {'CPU': ["FP32"],
-                                   'HDDL': ["FP16"],
-                                   'GPU': ["FP16"],
-                                   'VPU': ["FP16"],
-                                   'MYRIAD': ["FP16"],
-                                   'KMB': ["U8"]}
+        if not self.network_preference:
+            self.network_preference = {'CPU': ["FP32"],
+                                       'HDDL': ["FP16"],
+                                       'GPU': ["FP16"],
+                                       'VPU': ["FP16"],
+                                       'MYRIAD': ["FP16"],
+                                       'KMB': ["U8"]}
 
-        success = self.load_models(self.model_dir, network_preference)
+        success = self.load_models(self.model_dir, self.network_preference)
         if (not ignore_init_errors) and (not success):
             raise Exception("Error Initializing Models")
 
