@@ -3,23 +3,33 @@
     "path": "pipelines",
     "result": [
         {
-            "description": "Emotion Recognition Pipeline",
-            "name": "emotion_recognition",
+            "description": "Decode Pipeline",
+            "name": "video_decode",
+            "type": "GStreamer",
+            "version": "app_dst"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
             "parameters": {
                 "properties": {
                     "cpu-throughput-streams": {
                         "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 0,
                         "type": "integer"
                     },
                     "device": {
                         "element": "detection",
-                        "enum": [
-                            "CPU",
-                            "HDDL",
-                            "GPU",
-                            "VPU"
-                        ],
                         "type": "string"
+                    },
+                    "edgexbridge": {
+                        "element": {
+                            "format": "json",
+                            "name": "edgexbridge",
+                            "property": "kwarg"
+                        },
+                        "type": "object"
                     },
                     "inference-interval": {
                         "default": 1,
@@ -27,6 +37,11 @@
                         "maximum": 4294967295,
                         "minimum": 1,
                         "type": "integer"
+                    },
+                    "model-instance-id": {
+                        "default": "inf0",
+                        "element": "detection",
+                        "type": "string"
                     },
                     "n-threads": {
                         "default": 1,
@@ -36,7 +51,140 @@
                     "nireq": {
                         "default": 2,
                         "element": "detection",
-                        "maximum": 1024,
+                        "maximum": 64,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "properties": {
+                        "mqtt_devicename": {
+                            "default": "objectDetect-mqtt",
+                            "element": "edgexbridge",
+                            "type": "string"
+                        },
+                        "topic": {
+                            "default": "edgex",
+                            "element": "edgexbridge",
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "edgex"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "model-instance-id": {
+                        "default": "",
+                        "element": "detection",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "app_src_dst"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "cpu-throughput-streams": {
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "inference-interval": {
+                        "default": 1,
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "max-size-time": {
+                        "default": 2000000000,
+                        "element": "splitmuxsink",
+                        "maximum": 200000000000,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "model-instance-id": {
+                        "default": "inf0",
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "n-threads": {
+                        "default": 1,
+                        "element": "videoconvert",
+                        "type": "integer"
+                    },
+                    "nireq": {
+                        "default": 2,
+                        "element": "detection",
+                        "maximum": 64,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "recording_prefix": {
+                        "default": "/tmp/vaserving",
+                        "element": {
+                            "name": "splitmuxsink",
+                            "property": "location"
+                        },
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "2"
+        },
+        {
+            "description": "Object Detection Pipeline",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "cpu-throughput-streams": {
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "device": {
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "inference-interval": {
+                        "default": 1,
+                        "element": "detection",
+                        "maximum": 4294967295,
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "model-instance-id": {
+                        "default": "inf0",
+                        "element": "detection",
+                        "type": "string"
+                    },
+                    "n-threads": {
+                        "default": 1,
+                        "element": "videoconvert",
+                        "type": "integer"
+                    },
+                    "nireq": {
+                        "default": 2,
+                        "element": "detection",
+                        "maximum": 64,
                         "minimum": 1,
                         "type": "integer"
                     }
@@ -85,18 +233,22 @@
             "version": "1"
         },
         {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
+            "description": "Emotion Recognition Pipeline",
+            "name": "emotion_recognition",
             "parameters": {
                 "properties": {
                     "cpu-throughput-streams": {
                         "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
                         "type": "integer"
                     },
                     "device": {
                         "element": "detection",
+                        "enum": [
+                            "CPU",
+                            "HDDL",
+                            "GPU",
+                            "VPU"
+                        ],
                         "type": "string"
                     },
                     "inference-interval": {
@@ -106,6 +258,22 @@
                         "minimum": 1,
                         "type": "integer"
                     },
+                    "model-instance-id-classification": {
+                        "default": "",
+                        "element": {
+                            "name": "classification",
+                            "property": "model-instance-id"
+                        },
+                        "type": "string"
+                    },
+                    "model-instance-id-detection": {
+                        "default": "face_detection_retail0",
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
+                        "type": "string"
+                    },
                     "n-threads": {
                         "default": 1,
                         "element": "videoconvert",
@@ -114,7 +282,7 @@
                     "nireq": {
                         "default": 2,
                         "element": "detection",
-                        "maximum": 64,
+                        "maximum": 1024,
                         "minimum": 1,
                         "type": "integer"
                     }
@@ -123,133 +291,6 @@
             },
             "type": "GStreamer",
             "version": "1"
-        },
-        {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
-                        "type": "integer"
-                    },
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "inference-interval": {
-                        "default": 1,
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "max-size-time": {
-                        "default": 2000000000,
-                        "element": "splitmuxsink",
-                        "maximum": 200000000000,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "n-threads": {
-                        "default": 1,
-                        "element": "videoconvert",
-                        "type": "integer"
-                    },
-                    "nireq": {
-                        "default": 2,
-                        "element": "detection",
-                        "maximum": 64,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "recording_prefix": {
-                        "default": "/tmp/vaserving",
-                        "element": {
-                            "name": "splitmuxsink",
-                            "property": "location"
-                        },
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "2"
-        },
-        {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
-                        "type": "integer"
-                    },
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "edgexbridge": {
-                        "element": {
-                            "format": "json",
-                            "name": "edgexbridge",
-                            "property": "kwarg"
-                        },
-                        "type": "object"
-                    },
-                    "inference-interval": {
-                        "default": 1,
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "n-threads": {
-                        "default": 1,
-                        "element": "videoconvert",
-                        "type": "integer"
-                    },
-                    "nireq": {
-                        "default": 2,
-                        "element": "detection",
-                        "maximum": 64,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "properties": {
-                        "mqtt_devicename": {
-                            "default": "objectDetect-mqtt",
-                            "element": "edgexbridge",
-                            "type": "string"
-                        },
-                        "topic": {
-                            "default": "edgex",
-                            "element": "edgexbridge",
-                            "type": "string"
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "edgex"
-        },
-        {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "type": "GStreamer",
-            "version": "app_src_dst"
-        },
-        {
-            "description": "Decode Pipeline",
-            "name": "video_decode",
-            "type": "GStreamer",
-            "version": "app_dst"
         }
     ],
     "status_code": 200,

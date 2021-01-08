@@ -1,7 +1,7 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model-instance-id=person_vehicle_bike_detection model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
 				" ! tee name = t ! queue ! gvawatermark ! videoconvert ! jpegenc",
 				" ! multifilesink name=filesink t. ! queue",
 				" ! appsink name=destination"],
@@ -13,6 +13,11 @@
 				"element": "detection",
 				"type": "string"
 			},
+			"model-instance-id": {
+                                "element": "detection",
+                                "type": "string",
+                                "default": "person_vehicle_bike_detection"
+                        },
 			"batch-size": {
 				"element": "detection",
 				"type": "integer"

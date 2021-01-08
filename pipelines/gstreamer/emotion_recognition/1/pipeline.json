@@ -21,6 +21,22 @@
 					"VPU"
 				]
 			},
+                        "model-instance-id-detection": {
+                                "element": {
+                                        "name": "detection",
+                                        "property": "model-instance-id"
+                                },
+                                "type": "string",
+                                "default": "face_detection_retail0"
+                        },
+                        "model-instance-id-classification": {
+                                "element": {
+                                        "name": "classification",
+                                        "property": "model-instance-id"
+                                },
+                                "type": "string",
+                                "default": ""
+                        },
 			"inference-interval": {
 				"element": "detection",
 				"type": "integer",
