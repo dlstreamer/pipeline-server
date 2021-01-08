@@ -64,7 +64,7 @@ get_options "$@"
 # Build LVA image if not specified
 if [ -z "$LVA_IMAGE" ]; then
     echo Building $EXTENSION_IMAGE_TAG
-    launch "$LVA_DIR/docker/build.sh --remove-gstlibav --base ${CACHE_PREFIX}$VAS_BASE_IMAGE"
+    launch "$LVA_DIR/docker/build.sh --base ${CACHE_PREFIX}$VAS_BASE_IMAGE"
 fi
 
 # Add tests layer
