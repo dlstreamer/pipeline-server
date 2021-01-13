@@ -247,7 +247,8 @@
                             "CPU",
                             "HDDL",
                             "GPU",
-                            "VPU"
+                            "VPU",
+                            "MYRIAD"
                         ],
                         "type": "string"
                     },

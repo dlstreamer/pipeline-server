@@ -18,7 +18,8 @@
 					"CPU",
 					"HDDL",
 					"GPU",
-					"VPU"
+					"VPU",
+					"MYRIAD"
 				]
 			},
                         "model-instance-id-detection": {

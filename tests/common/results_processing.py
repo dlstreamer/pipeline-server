@@ -5,6 +5,7 @@
 '''
 
 import os
+import math
 import json
 from threading import Thread
 from vaserving.common.utils import logging
@@ -92,7 +93,18 @@ def cmp_results(measured, expected, tolerance):
 
     assert type(measured) == type(expected), "Type Comparison Mismatch"
 
-    if isinstance(measured, int) or isinstance(measured, float):
+    if isinstance(measured, int):
+        if expected != 0:
+            msg = "Measured Value {} not within tolerance ({}) of Expected Value {}"
+            assert (abs(measured-expected) / abs(expected) <= math.ceil(tolerance)), \
+            msg.format(measured, math.ceil(tolerance), expected)
+        else:
+            msg = "Measured Value {} not within tolerance ({}) of Expected Value {}"
+            assert tolerance > 1, \
+            msg.format(measured, tolerance, expected)
+        return True
+
+    if isinstance(measured, float):
         if expected != 0:
             msg = "Measured Value {} not within tolerance ({}) of Expected Value {}"
             assert  (abs(measured-expected) / abs(expected)) < tolerance, \

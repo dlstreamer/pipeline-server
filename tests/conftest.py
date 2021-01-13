@@ -105,6 +105,13 @@ def pytest_addoption(parser):
                      default=False)
     parser.addoption("--stability_duration", type=int, help="duration to run stability tests",
                      action="store", default=None)
+    parser.addoption("--cpu", action="store_true", help="Run CPU tests",
+                     default=True)
+    parser.addoption("--no-cpu", action="store_false", dest='cpu', help="Disable CPU tests")
+    parser.addoption("--gpu", action="store_true", help="Run GPU tests",
+                     default=False)
+    parser.addoption("--myriad", action="store_true", help="Run MYRIAD tests",
+                     default=False)
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "stability: run stability tests")
@@ -128,10 +135,29 @@ def numerical_tolerance(request):
 def load_test_cases(metafunc, directory):
     known_frameworks = ['ffmpeg', 'gstreamer']
     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test_cases", directory)
-    filenames = [(os.path.abspath(os.path.join(dir_path, fn)),
-                  os.path.splitext(fn)[0]) for fn in os.listdir(dir_path)
-                 if os.path.isfile(os.path.join(dir_path, fn)) and
-                 os.path.splitext(fn)[1] == '.json']
+    list_of_dir_paths = [dir_path]
+
+    filenames = []
+    if metafunc.config.getoption("cpu"):
+        cpu_path = os.path.join(dir_path, "cpu")
+        if os.path.isdir(cpu_path):
+            list_of_dir_paths.append(cpu_path)
+    if metafunc.config.getoption("gpu"):
+        gpu_path = os.path.join(dir_path, "gpu")
+        if os.path.isdir(gpu_path):
+            list_of_dir_paths.append(gpu_path)
+
+    if metafunc.config.getoption("myriad"):
+        gpu_path = os.path.join(dir_path, "myriad")
+        if os.path.isdir(gpu_path):
+            list_of_dir_paths.append(gpu_path)
+
+    for path in list_of_dir_paths:
+        dir_filenames = [(os.path.abspath(os.path.join(path, fn)),
+                           os.path.splitext(fn)[0]) for fn in os.listdir(path)
+                           if os.path.isfile(os.path.join(path, fn)) and
+                           os.path.splitext(fn)[1] == '.json']
+        filenames.extend(dir_filenames)
     framework = metafunc.config.getoption("framework")
     filenames = [filename for filename in filenames
                  if filename[1].split('_')[-1] == framework or

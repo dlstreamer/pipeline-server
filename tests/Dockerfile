@@ -28,9 +28,9 @@ COPY models_list/models.list.yml /home/video-analytics-serving/models/models.lis
 
 # Copy and rename for stringified version
 
-RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version; cp -rf /home/video-analytics-serving/models/emotion_recognition/1/* /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version
+RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version; cp -rf /home/video-analytics-serving/models/emotion_recognition/1/* /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version
 
-RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1; cp -rf /home/video-analytics-serving/models/face_detection_retail/1/*   /home/video-analytics-serving/tests/test_cases/pipeline_execution/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1
+RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1; cp -rf /home/video-analytics-serving/models/face_detection_retail/1/*   /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1
 
 ARG USER=vaserving
 

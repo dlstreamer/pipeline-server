@@ -1,9 +1,9 @@
 {
 	"type": "GStreamer",
-	"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ",
+	"template": ["multifilesrc location=/home/video-analytics-serving/samples/bottle_detection.mp4 loop=True ! queue ! concat name=c ! decodebin ! video/x-raw ",
 				" ! videoconvert name=videoconvert",
 				" ! gvadetect model={models[face_detection_retail][1][network]} model-proc={models[face_detection_retail][1][proc]} name=detection",
-				" ! queue ! gvaclassify model={models[emotion_recognition][stringified_version][network]} model-proc={models[emotion_recognition][stringified_version][proc]} name=classification",
+				" ! queue ! gvaclassify model={models[emotion_recognition][1][network]} model-proc={models[emotion_recognition][1][proc]} name=classification",
 				" ! queue ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
 				" ! appsink name=appsink"
 				],
@@ -18,7 +18,8 @@
 					"CPU",
 					"HDDL",
 					"GPU",
-					"VPU"
+					"VPU",
+					"MYRIAD"
 				]
 			},
 			"inference-interval": {
