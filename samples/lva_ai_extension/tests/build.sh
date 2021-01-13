@@ -2,7 +2,6 @@
 WORK_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$WORK_DIR/../../..")
 LVA_DIR=$(dirname $WORK_DIR)
-VAS_BASE_IMAGE="openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
 EXTENSION_IMAGE_TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
 TEST_IMAGE_TAG="video-analytics-serving-lva-tests"
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
@@ -30,7 +29,7 @@ function get_options {
           SAMPLE_BUILD_ARGS+=" --build-arg BASE=$LVA_IMAGE"
           shift
         else
-          error 'ERROR: "--base" requires an argument.'
+          error 'ERROR: "--lva-image" requires an argument.'
         fi
         ;;
       --docker-cache)
@@ -64,7 +63,9 @@ get_options "$@"
 # Build LVA image if not specified
 if [ -z "$LVA_IMAGE" ]; then
     echo Building $EXTENSION_IMAGE_TAG
-    launch "$LVA_DIR/docker/build.sh --base ${CACHE_PREFIX}$VAS_BASE_IMAGE"
+    # Export to allow nested scripts to digest CACHE_PREFIX
+    export CACHE_PREFIX=${CACHE_PREFIX}
+    launch "$LVA_DIR/docker/build.sh"
 fi
 
 # Add tests layer

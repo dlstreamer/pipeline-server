@@ -367,7 +367,7 @@ if [ "$BASE" == "BUILD" ]; then
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     #Ensure image is latest from Docker Hub
-    launch "$RUN_PREFIX docker pull $BASE_IMAGE"
+    launch "$RUN_PREFIX docker pull ${CACHE_PREFIX}$BASE_IMAGE"
 fi
 
 # BUILD IMAGE

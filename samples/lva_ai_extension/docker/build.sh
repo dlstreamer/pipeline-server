@@ -3,8 +3,8 @@
 WORK_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $WORK_DIR)
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-BASE_IMAGE="openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10"
-OMZ_VERSION="2021.1"
+BASE_IMAGE=
+OMZ_VERSION=
 TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
 
 #Get options passed into script
@@ -17,10 +17,18 @@ function get_options {
         ;;
       --base)
         if [ "$2" ]; then
-          BASE_IMAGE=$2
+          BASE_IMAGE="--base $2"
           shift
         else
           error 'ERROR: "--base" requires an argument.'
+        fi
+        ;;
+      --open-model-zoo-version)
+        if [ "$2" ]; then
+          OMZ_VERSION="--open-model-zoo-version $2"
+          shift
+        else
+          error 'ERROR: "--open-model-zoo-version" requires an argument.'
         fi
         ;;
       *)
@@ -33,7 +41,8 @@ function get_options {
 
 function show_help {
   echo "usage: ./run_server.sh"
-  echo "  [ --base : Base image for VA Serving build ] "
+  echo "  [ --base : Base image override for VA Serving build ] "
+  echo "  [ --open-model-zoo-version : Open Model Zoo version override for VA Serving build ] "
 }
 
 function launch { echo $@
@@ -49,7 +58,7 @@ function launch { echo $@
 get_options "$@"
 
 # Build VA Serving
-launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --base $BASE_IMAGE --open-model-zoo-version $OMZ_VERSION --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml"
+launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false $BASE_IMAGE $OMZ_VERSION --pipelines samples/lva_ai_extension/pipelines --models $SAMPLE_DIR/models/models.list.yml"
 
 # Build AI Extention
 echo $SAMPLE_DIR/..

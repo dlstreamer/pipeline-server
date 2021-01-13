@@ -3,8 +3,6 @@ FROM $BASE
 
 USER root
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y python3-opencv
-
 # Dependencies installed via pip
 COPY ./requirements.txt /
 RUN pip3 install  --no-cache-dir -r /requirements.txt
