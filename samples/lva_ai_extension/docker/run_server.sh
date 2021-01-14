@@ -84,4 +84,4 @@ if [ ! -z "$PIPELINE_PARAMETERS" ]; then
   ENV+="-e PIPELINE_PARAMETERS=$PIPELINE_PARAMETERS "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp --user "$UID"  -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV
