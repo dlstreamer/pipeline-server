@@ -110,7 +110,7 @@ get_options() {
             ;;
         --models)
             if [ "$2" ]; then
-                MODELS=$(realpath $2)
+                MODELS=$2
                 shift
             else
                 error 'ERROR: "--models" requires an argument.'
@@ -220,6 +220,8 @@ get_options() {
 
     if [ "${MODELS^^}" == "NONE" ]; then
         MODELS=
+    else
+	MODELS=$(realpath $MODELS)
     fi
 
     if [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
@@ -249,11 +251,13 @@ get_options() {
            
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
-            mkdir $SOURCE_DIR/models
+            $RUN_PREFIX mkdir $SOURCE_DIR/models
         fi
-        cp -R $MODELS/. $SOURCE_DIR/models
+        $RUN_PREFIX cp -R $MODELS/. $SOURCE_DIR/models
     else
-        error 'ERROR: "'$MODELS'" does not exist.'
+	if [ -n "$MODELS" ]; then
+            error 'ERROR: "'$MODELS'" does not exist.'
+	fi
     fi
 
     if [ -z "$PIPELINES" ]; then

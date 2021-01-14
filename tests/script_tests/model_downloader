@@ -1,7 +1,4 @@
 #!/bin/bash
-OUTPUT=
-RETURN_CODE=
-
 MODEL_NAMES=(mobilenet-ssd)
 MODEL_NAMES+=(emotions-recognition-retail-0003)
 MODEL_NAMES+=(landmarks-regression-retail-0009)
@@ -13,21 +10,6 @@ ALIAS_NAMES+=(landmarks_regression)
 ALIAS_NAMES+=(face_detection_retail)
 
 tmp_dir=$(mktemp -d -t model-downloader-XXXXXXXX)
-
-error() {
-    echo "======================="
-    echo "Test Failed"
-    echo "Return Code: $RETURN_CODE"
-    echo "Detail: $1"
-    echo "======================="
-    echo "Output Begin"
-    echo "======================="
-    echo "$OUTPUT"
-    echo "======================="
-    echo "Output End"
-    echo "======================="
-    exit 1
-}
 
 check_directory() {
     model_path=$tmp_dir/models/$2/1
