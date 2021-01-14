@@ -10,13 +10,15 @@ import time
 import os
 import json
 import tempfile
+import pytest
 
 from jsonschema import validate
 
 class TestLvaVideo:
     def teardown_method(self, test_method):
-        if self.server_process is not None:
-            self.server_process.kill()
+        server_process = getattr(self, "server_process", None)
+        if server_process is not None:
+            server_process.kill()
 
     def run_client(self, source, sleep_period = 0.25, port = 5001, output_location = None, shared_memory = True, timeout = 300):
         client_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/client",
@@ -50,6 +52,37 @@ class TestLvaVideo:
                 if line and line != '':
                     validate(instance=json.loads(line),schema=json_schema)
 
+
+    def _download_video(self, uri, target, no_proxy=""):
+        if not os.path.isfile(target):
+            arguments = ["wget",no_proxy,"-O",target,uri]
+            subprocess.run(arguments)
+        return os.path.isfile(target)
+
+    @pytest.mark.parametrize("filename", ["classroom.mp4","person-bicycle-car-detection.mp4","person-bicycle-car-detection_1920_1080_2min.mp4"])
+    @pytest.mark.parametrize("backend",["CAP_GSTREAMER"])
+    def test_opencv(self, filename, backend):
+        os.environ["OPENCV_VIDEOIO_DEBUG"] = "1"
+        os.environ["OPENCV_VIDEOCAPTURE_DEBUG"] = "1"
+        import cv2
+        
+        print("OpenCV Version: {}".format(cv2.__version__), flush=True)
+
+        if ("2min" in filename):
+            assert(self._download_video("https://gitlab.devtools.intel.com/media-analytics-pipeline-zoo/media/-/raw/main/video/person-bicycle-car-detection/{}?inline=false".format(filename),
+                                        "/home/video-analytics-serving/{}".format(filename),
+                                        "--no-proxy"))
+        else:
+            assert(self._download_video("https://github.com/intel-iot-devkit/sample-videos/blob/master/{}?raw=true".format(filename),
+                                        "/home/video-analytics-serving/{}".format(filename)))
+
+        print("Opening: {}\n".format(filename),flush=True)
+        capture = cv2.VideoCapture("/home/video-analytics-serving/{}".format(filename), getattr(cv2,backend))
+        assert(capture)
+        ret, frame = capture.read()
+        assert(ret and frame is not None)
+
+
     def test_lva_video_consistent_results(self, sleep_period=0.25, port=5001):
         server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(port)]
         print(' '.join(server_args))
@@ -77,14 +110,16 @@ class TestLvaVideo:
         #Compare the two outputs to see if they match
         json_data1 = None
         json_data2 = None
+        count = 0
         with open(output_location1, "r") as file1:
             with open(output_location2, "r") as file2:
                 file1_s = file1.readline()
                 file2_s = file2.readline()
                 while file1_s != '' and file2_s != '':
+                    count += 1
                     json_data1 = json.loads(file1_s)
                     json_data2 = json.loads(file2_s)
-
+          
                     assert json_data1 == json_data2
 
                     file1_s = file1.readline()
@@ -93,3 +128,5 @@ class TestLvaVideo:
                     assert False
                 if file1_s == '' and file2_s != '':
                     assert False
+        print("Got {} results".format(count), flush=True)
+        assert (count == 647)

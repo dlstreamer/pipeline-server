@@ -41,7 +41,7 @@ from media_stream_processor import MediaStreamProcessor
 class VideoSource:
     def __init__(self, filename, loop_count):
         self._loop_count = loop_count
-        self._vid_cap = cv2.VideoCapture(filename)
+        self._vid_cap = cv2.VideoCapture(filename, cv2.CAP_GSTREAMER)
         if self._vid_cap is None or not self._vid_cap.isOpened():
             print("{}: Error opening video source".format(filename))
             sys.exit(1)

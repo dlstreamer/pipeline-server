@@ -24,6 +24,7 @@ ENV PIPELINE_VERSION 'person_vehicle_bike_detection'
 
 RUN wget -O classroom.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true
 RUN wget -O person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+RUN wget --no-proxy -O person-bicycle-car-detection_1920_1080_2min.mp4 https://gitlab.devtools.intel.com/media-analytics-pipeline-zoo/media/-/raw/main/video/person-bicycle-car-detection/person-bicycle-car-detection_1920_1080_2min.mp4?inline=false
 
 ARG USER=vaserving
 
