@@ -106,7 +106,7 @@ $ cp -r pipelines/gstreamer/object_detection/1 pipelines/gstreamer/object_detect
 The pipeline template is shown below:
 ```
 "template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-            " ! gvadetect model-instance-id=inf0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
+            " ! gvadetect model={models[object_detection][1][network]} name=detection",
             " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
             " ! appsink name=appsink"
             ]

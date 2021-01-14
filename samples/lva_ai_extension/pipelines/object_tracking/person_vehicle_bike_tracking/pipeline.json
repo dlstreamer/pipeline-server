@@ -1,9 +1,9 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
 				" ! queue ! gvatrack name=tracking",
-				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} model-proc={models[vehicle_attributes_recognition][1][proc]} name=classification",
+				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} name=classification",
 				" ! appsink name=destination"],
 	"description": "Object Tracking using gstreamer gvadetect, gvaclassify & gvatrack elements, check more about gvadetect at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect, gvaclassify at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvaclassify and gvatrack at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvatrack",
 	"parameters": {

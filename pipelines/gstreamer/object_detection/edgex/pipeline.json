@@ -1,7 +1,7 @@
 {
 	"type": "GStreamer",
 	"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-	" ! gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
+	" ! gvadetect model={models[object_detection][1][network]} name=detection",
 	" ! gvametaconvert name=metaconvert ",
 	" ! gvapython name=edgexbridge module=/home/video-analytics-serving/extensions/edgex/edgex_transform.py class=Bridge",
 	" ! queue ! gvametapublish name=destination",

@@ -86,7 +86,7 @@ the calling application.
 **Example:**
 ```
 "template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-				" ! gvadetect model-instance-id=inf0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
+				" ! gvadetect model={models[object_detection][1][network]} name=detection",
 				" ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
 				" ! appsink name=appsink"
 				]
@@ -117,7 +117,7 @@ The `object_detection` template demonstrates how to set the
 used to detect objects in a video frame.
 
 ```
-gvadetect model-instance-id=detect0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection 
+gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection
 ```
 
 The `model` and `model-proc` properties reference file paths to the
@@ -125,7 +125,7 @@ deep learning model as discovered and populated by the Video Analytics
 Serving `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
-name. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
+name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
 #### Special Handling of Model-Instance-ID in OpenVINO Gstreamer elements
 
@@ -615,6 +615,9 @@ filters make use of an additional JSON file specifying the input and
 output processing instructions for a model. Processing instructions
 include details such as the expected color format and resolution of
 the input as well labels to associate with a models outputs.
+Video Analytics Serving automatically looks for this file in the path
+`models/model-alias/model-version/*.json`. Note that the model manager will
+fail to load if there are multiple ".json" model-proc files in this directory.
 
 ### DL Streamer
 For more information on DL Streamer `model-proc` files and samples for

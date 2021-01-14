@@ -1,8 +1,8 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
-				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} model-proc={models[vehicle_attributes_recognition][1][proc]} name=classification",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
+				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} name=classification",
 				" ! tee name = t ! queue ! gvawatermark ! videoconvert ! jpegenc",
 				" ! multifilesink name=filesink t. ! queue",
 				" ! appsink name=destination"],
