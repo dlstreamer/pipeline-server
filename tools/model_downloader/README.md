@@ -1,50 +1,97 @@
-# Overview - Model Download Tool
+# Model Downloader 
+| [Specifying Models](#specifying-models) | [Downloading Models](#downloading-models) | [Reference](#command-line-reference) |
 
-VA Serving pipelines exclusively use models in the OpenVINO Intermediate Representation (IR) format.
-Intel maintains a set of ready to use models in the OpenVINO Open Model Zoo (OMZ).
-The Model Download Tool improves developer experience by automatically downloading and converting specified models from OMZ. The tool also downloads model-proc files available from DL Streamer repo and lays out files in correct directory structure compatible with VA Serving.
+The model downloader downloads and prepares models from the
+OpenVINO<sup>&#8482;</sup> Toolkit [Open Model
+Zoo](https://github.com/openvinotoolkit/open_model_zoo) for use with
+Video Analytics Serving. It can be run as a standalone tool or as
+part of the Video Analytics Serving build process. For more
+information on model file formats and the directory structure used by
+Video Analytics Serving see [defining_pipelines](/docs/defining_pipelines.md#deep-learning-models).
+	
+# Specifying Models
 
-## How to use
-The tool assumes that OpenVINO is installed and environment is set up. If your host is set up, you can run the tool from the host. Otherwise you can run
-the tool while in developer mode in Docker (`./docker/run.sh --dev`).
+Models are specified using a yaml file containing a list of model
+entries. Model entries can either be strings (model names) or objects
+(model names plus additional properties) and a single yaml file can
+contain both forms of entries. An [example file](/models_list/models.list.yml) is used as part of the
+default build process.
 
-The tool will download models from Open Model Zoo(OMZ), so it will need network access.
+## String Entries
+String entries specify the model to download from the [Open Model
+Zoo](https://github.com/openvinotoolkit/open_model_zoo). The model and
+model-proc files will be downloaded and stored locally using [default
+values](#default-values).
 
-The tool accepts as input argument a yaml file that will have the model info in it. The yaml file can provide model name and the downloader will get all the model precisions from OMZ.
-If no input file given, by default the tool looks for the `models.list.yml` file inside the models folder. This file will list a model name, alias, version and precision. Alias, version and precision are optional. If none provided, the default values for these would be:
-* alias = model name
-* version = 1
-* precision = all available precisions
+Example: 
 
-A simple yaml input file will look like:
 ```yaml
 - mobilenet-ssd
 - emotions-recognition-retail-0003
 ```
-An example of a detailed yaml entry would be:
+
+## Object Entries
+Object entries specfiy the model to download from the [Open Model
+Zoo](https://github.com/openvinotoolkit/open_model_zoo) and one or
+more optional properties (alias, version, precision, local
+model-proc). If an optional property is not specified the downloader
+will use [default values](#default-values).
+
+Example: 
+
 ```yaml
 - model: yolo-v3-tf
   alias: object_detection
   version: 2
   precision: [FP32,INT8]
+  model-proc: object_detection.json
 ```
-The yaml input file can contain a combination of simple as well as detailed entries.  
 
-The tool also downloads the model-proc file from DL streamer repo. The model-proc file must have the same name as the model being downloaded.
+## Default Values
 
-## How to run
-Run the tool without any arguments:  
-This will get the model names by default from the input yaml file `models.list.yml` in the model_downloader folder, create a `models` folder and download the models into it. 
+* alias = model_name
+* version = 1
+* precision = all available precisions
+* model-proc = model_name.json
+
+If a local model-proc is not specified, the tool will download the
+corresponding model-proc file from the DL streamer repository (if one
+exists).
+
+
+# Downloading Models
+
+The model downloader can be run either as a standalone tool or as part
+of the Video Analytics Serving build process.
+
+## Downloading Models as part of Video Analytics Serving Build
+
+The Video Analytics Serving build script downloads models listed in a
+yaml file that can be specified via the `--models` argument.
+
+Example:
 ```bash
-$ python3 model_downloader
+./docker/build.sh --models models_list/models.list.yml
 ```
-This `models` directory can then be moved over to the root folder to use with VA Serving.
 
-### Options
-Some of the options you can provide while running the tool include:
+## Downloading Models with the standalone tool
 
-[ --model-list : Specify a different models.list.yml file than the default ]
+When run as a standalone tool, the model downloader will run within an
+openvino/ubuntu18_data_dev docker image and download models listed in
+a yaml file that can be specified via the  `--model-list` argument.
 
-[ --output-dir : Specify directory to create model folder ]
+Example:
+```bash
+./tools/model_downloader/model_downloader.sh --model-list models_list/models.list.yml --output standalone_models
+```
 
-[ --force : Specify if download needs to be forced ]
+### Command Line Reference
+
+```bash
+usage: model_downloader.sh
+  [--output path where to save models]
+  [--model-list input file with model names and properties]
+  [--force force download and conversion of existing models]
+  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]
+  [--dry-run print commands without executing]
+```

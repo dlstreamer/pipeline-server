@@ -251,7 +251,7 @@ fi
 
 if [ -z "$NAME" ]; then
     # Convert tag separator if exists
-    NAME=${IMAGE//[\:]/_}
+    NAME=${IMAGE//[\:\/]/_}
 fi
 
 if [ "${MODE}" == "DEV" ]; then

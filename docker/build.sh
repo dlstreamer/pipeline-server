@@ -22,6 +22,7 @@ PIPELINES=
 FRAMEWORK="gstreamer"
 TAG=
 RUN_PREFIX=
+DRY_RUN=
 CREATE_SERVICE=TRUE
 ENVIRONMENT_FILES=()
 DOCKER_RUN_ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n' ' ')
@@ -192,6 +193,7 @@ get_options() {
             ;;
         --dry-run)
             RUN_PREFIX="echo"
+	    DRY_RUN="--dry-run"
             echo ""
             echo "=============================="
             echo "DRY RUN: COMMANDS PRINTED ONLY"
@@ -234,9 +236,6 @@ get_options() {
     fi
 
     if [ -f "$MODELS" ]; then
-        YML_DIR=$(dirname "${MODELS}")
-        YML_FILE_NAME=$(basename "${MODELS}")
-        VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
 
         if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
            if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
@@ -245,9 +244,9 @@ get_options() {
         else
            OPEN_MODEL_ZOO_VERSION=2021.1
         fi
-        
-        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --user "$UID" --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
-   
+
+	$SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
+           
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
             mkdir $SOURCE_DIR/models

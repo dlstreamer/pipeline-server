@@ -8,12 +8,16 @@ import argparse
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser(description="Download & Convert models from Open Model Zoo.")
-    parser.add_argument('--output-dir', required=False, default=".",
+    parser.add_argument('--output', '--output-dir', required=False, default=".",
+                        dest="output_dir",
                         help='path where to save models')
-    parser.add_argument('--model-list', default="models/models.list.yml",
-                        help='input file with model names')
+    parser.add_argument('--model-list', default="models_list/models.list.yml",
+                        help='input file with model names and properties')
+    parser.add_argument('--model-proc-version', default="v1.2.1",
+                        dest="dl_streamer_version",
+                        help='DL Streamer version for model proc files')
     parser.add_argument("--force", required=False, dest="force", action="store_true",
-                        default=False, help='force the download')
+                        default=False, help='force download and conversion of existing models')
 
     args = parser.parse_args(args)
     return args
