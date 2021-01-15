@@ -1,4 +1,15 @@
 #!/bin/bash
-NUM_REST_TESTS=9
-NUM_TESTS=$($TEST_DIR/run.sh --pytest-gstreamer --entrypoint-args "-k rest --collect-only" 2> /dev/null | grep -c Function)
-[[ $NUM_TESTS == $NUM_REST_TESTS ]]
+
+ENTRYPOINT_ARGS="-c echo arg1 arg2"
+EXPECTED="EntrypointArgs: '$ENTRYPOINT_ARGS '"
+
+OUTPUT=$($SOURCE_DIR/docker/run.sh --entrypoint /bin/bash --entrypoint-args "$ENTRYPOINT_ARGS" --dry-run)
+RETURN_CODE=$?
+
+if [[ $RETURN_CODE != 0 ]]; then
+    error "docker/run.sh has failed"
+fi
+
+if [[ ! "$OUTPUT" == *"$EXPECTED"* ]]; then
+    error "Invalid Entrypoint Args"
+fi
