@@ -1,0 +1,24 @@
+{
+    "server_params": {
+        "pipeline_name":"object_tracking",
+        "pipeline_version":"person_vehicle_bike_tracking",
+        "pipeline_parameters": {
+            "device":"CPU",
+            "model-instance-id":""
+            },
+        "sleep_period":0.25,
+        "port":5001
+    },
+    "client_params": {
+        "source":"/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png",
+        "output_location":"",
+        "shared_memory":true,
+        "loop_count":1,
+        "sleep_period":0.25,
+        "port":5001,
+        "timeout":300,
+        "expected_return_code":0
+    },
+    "num_of_concurrent_clients":1,
+    "golden_results":false
+}

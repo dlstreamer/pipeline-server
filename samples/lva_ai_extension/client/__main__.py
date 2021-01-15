@@ -86,18 +86,6 @@ def _log_options(args):
         logging.info(banner)
 
 
-def _remove_empty_lists(dictionary):
-    if not isinstance(dictionary, (dict, list)):
-        return dictionary
-    if isinstance(dictionary, list):
-        return [v for v in (_remove_empty_lists(v) for v in dictionary) if v or v == 0]
-    return {
-        k: v
-        for k, v in ((k, _remove_empty_lists(v)) for k, v in dictionary.items())
-        if v or v == 0
-    }
-
-
 def _log_result(response, output, log_result=True):
     if not log_result:
         return
@@ -125,15 +113,10 @@ def _log_result(response, output, log_result=True):
         )
     # default value field is used to avoid not including values set to 0,
     # but it also causes empty lists to be included
-    # empty and none values are filtered out in response_dict
     returned_dict = MessageToDict(
         response.media_sample, including_default_value_fields=True
     )
-    response_dict = _remove_empty_lists(returned_dict)
-    if response_dict.get("inferences"):
-        for inference in response_dict["inferences"]:
-            inference["type"] = inference["type"].lower()
-    output.write("{}\n".format(json.dumps(response_dict)))
+    output.write("{}\n".format(json.dumps(returned_dict)))
 
 
 def _log_fps(start_time, frames_received, prev_fps_delta, fps_interval):
