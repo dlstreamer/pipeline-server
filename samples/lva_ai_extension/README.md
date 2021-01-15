@@ -230,20 +230,93 @@ Before updating the models used by a pipeline please see the format of
 [pipeline definition files](/docs/defining_pipelines.md) and read the
 tutorial on [changing object detection models](/docs/changing_object_detection_models.md).
 
-Most of the steps to changes models are the same, but the existing
-tutorial assumes you are working with the REST service and not the AI
-Extension module. Use the developer mode to download new models and
-add them to an existing pipeline as described. Note that the AI
-Extension has different pipeline and model versions from the tutorial.
-This table should help you adapt the steps in the tutorial to work for
-the AI Extension.
+Most of the steps to changes models used by LVA extension are the same as for the above tutorial, but it assumes you are working with the REST service and not the AI
+Extension module. The LVA specific steps are called out in the following sections.
 
-|            | Pipeline Name    | Pipeline Version | Model Name  | Model Version |
-|------------| -------------    | ------------- | ------------- | ------------- |
-|Tutorial    | object_detection | 1             | object_detection | 1 |
-|AI Extension| object_detection | person_vehicle_bike_detection  | person_vehicle_bike_detection | 1 |
+## Run Existing Object Detection Pipeline
+Get baseline results for existing object_detection model `person-vehicle-bike-detection-crossroad-0078`
+```
+$ ./docker/run_client.sh
+<snip>
+[AIXC] [2020-11-20 23:29:11,417] [MainThread  ] [INFO]: - person (1.00) [0.30, 0.47, 0.09, 0.39]
+[AIXC] [2020-11-20 23:29:11,417] [MainThread  ] [INFO]: - person (0.97) [0.36, 0.40, 0.05, 0.24]
+[AIXC] [2020-11-20 23:29:11,417] [MainThread  ] [INFO]: - person (0.94) [0.44, 0.42, 0.08, 0.43]
+[AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.92) [0.57, 0.38, 0.05, 0.25]
+[AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.91) [0.69, 0.56, 0.12, 0.43]
+[AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.90) [0.68, 0.42, 0.04, 0.24]
+[AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.82) [0.64, 0.36, 0.05, 0.27]
+[AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.60) [0.84, 0.44, 0.05, 0.29]
+<snip>
+```
+## Add New Model
+### Add Model to Models List
+As per tutorial, we will add the model `yolo-v2-tiny-tf`. Copy existing model list models/models.list.yml to models/yolo.yml
+then add the following entry
+```yml
+- model: yolo-v2-tiny-tf
+  alias: yolo
+  version: 1
+  precision: [FP16,FP32]
+```
 
-Once you've made your changes, use the [test client](#test-client) to
-start the pipeline and view results. Note: the original tutorial uses
-a curl command that is not compatible with the AI Extension module.
+### Update Pipeline Definition File to Use New Model
+Follow [instructions in tutorial](/docs/changing_object_detection_models.md#3-add-new-model), but base new pipeline on `pipelines/object_detection/person_vehicle_bike_detection`. The tutorial has all the details, but the changes can be made with the following commands
+```bash
+$ cp -r pipelines/object_detection/person_vehicle_bike_detection pipelines/object_detection/yolo
+$ sed -i -e s/person_vehicle_bike_detection/yolo/g pipelines/object_detection/yolo/pipeline.json
+```
 
+Then re-build the image with `yolo.yml` as the input model list file.
+```
+$ ./docker/build.sh --models models/yolo.yml
+```
+The model will now be in `models` folder in the root of the project:
+```
+models
+└── yolo
+    └── 1
+        ├── FP16
+        │   ├── yolo-v2-tiny-tf.bin
+        │   ├── yolo-v2-tiny-tf.mapping
+        │   └── yolo-v2-tiny-tf.xml
+        ├── FP32
+        │   ├── yolo-v2-tiny-tf.bin
+        │   ├── yolo-v2-tiny-tf.mapping
+        │   └── yolo-v2-tiny-tf.xml
+        └── yolo-v2-tiny-tf.json
+```
+
+## 5. Run Pipeline with New Model
+### Check that images contains the new model and pipeline
+As the LVA API does not support model or pipeline queries, start the container with an interactive shell and check that expected model and pipeline are present.
+```bash
+$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+vaserving@82dd59743ca3:~$ ls models
+person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
+vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
+debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
+```
+
+### Re-start service
+Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
+```
+$ docker stop video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+$ docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
+```
+### Run the client
+Note different results due to different model
+```
+$ docker/run_client.sh
+<snip>
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.82) [0.63, 0.36, 0.06, 0.24] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.78) [0.56, 0.37, 0.06, 0.23] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.63) [0.44, 0.43, 0.11, 0.43] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.63) [0.31, 0.45, 0.09, 0.23] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.62) [0.69, 0.38, 0.06, 0.23] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.60) [0.40, 0.44, 0.07, 0.27] []
+[AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.59) [0.45, 0.43, 0.08, 0.29] []
+[AIXC] [2021-01-07 06:51:13,082] [MainThread  ] [INFO]: - person (0.57) [0.33, 0.40, 0.07, 0.20] []
+[AIXC] [2021-01-07 06:51:13,082] [MainThread  ] [INFO]: - person (0.57) [0.76, 0.46, 0.13, 0.23] []
+[AIXC] [2021-01-07 06:51:13,082] [MainThread  ] [INFO]: - person (0.55) [0.41, 0.44, 0.03, 0.10] []
+<snip>
+```
