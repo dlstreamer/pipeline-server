@@ -89,12 +89,17 @@ def print_result(response, output):
     for inference in response.media_sample.inferences:
         tag = inference.entity.tag
         box = inference.entity.box
+        log_message = "- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}]"\
+                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h)
+        if inference.entity.id:
+            log_message += " id:{} ".format(inference.entity.id)
         atrributes = []
         for attribute in inference.entity.attributes:
             attribute_string = "{}: {}".format(attribute.name, attribute.value)
             atrributes.append(attribute_string)
-        logging.info("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}"\
-                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h, atrributes))
+        if len(atrributes) > 0:
+            log_message += " {}".format(atrributes)
+        logging.info(log_message)
     # default value field is used to avoid not including values set to 0, but it also causes empty lists to be included
     # empty and none values are filtered out in response_dict
     returned_dict = MessageToDict(response.media_sample, including_default_value_fields=True)

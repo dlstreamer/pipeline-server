@@ -103,6 +103,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             inference = msg.media_sample.inferences.add()
 
             attributes = []
+            object_id = None
             obj_label = None
             obj_confidence = 0
             obj_left = 0
@@ -121,14 +122,12 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
                     inference.type = inferencing_pb2.Inference.InferenceType.ENTITY  # pylint: disable=no-member
                     if region.object_id(): #Tracking
-                        obj_id = region.object_id()
-                        attributes.append(["object_id", str(obj_id), 0])
+                        object_id = str(region.object_id())
                 elif tensor["label"]: #Classification
                     attr_name = name
                     attr_label = tensor["label"]
                     attr_confidence = region.confidence()
                     attributes.append([attr_name, attr_label, attr_confidence])
-
             if obj_label is not None:
                 try:
                     entity = inferencing_pb2.Entity(
@@ -143,7 +142,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                             h=obj_height
                         )
                     )
-
                     for attr in attributes:
                         attribute = inferencing_pb2.Attribute(
                             name=attr[0],
@@ -151,7 +149,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                             confidence=attr[2]
                         )
                         entity.attributes.append(attribute)
-
+                    if object_id:
+                        entity.id = object_id
                 except:
                     log_exception(self._logger)
                     raise

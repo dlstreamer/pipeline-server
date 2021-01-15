@@ -152,6 +152,11 @@
       "title": "Entity",
       "description": "Entity detected or identified on the sample.",
       "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id",
+          "description": "Optional entity identification (persistent or transient)."
+        },
         "tag": {
           "description": "Entity identifier",
           "$ref": "#/definitions/tag"
