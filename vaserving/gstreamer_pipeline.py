@@ -9,6 +9,7 @@ import os
 import string
 import time
 from threading import Lock, Thread
+from collections import namedtuple
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -34,6 +35,7 @@ class GStreamerPipeline(Pipeline):
     _inference_element_cache = {}
     _mainloop = None
     _mainloop_thread = None
+    CachedElement = namedtuple("CachedElement",["element","pipelines"])
 
     @staticmethod
     def gobject_mainloop():
@@ -78,6 +80,7 @@ class GStreamerPipeline(Pipeline):
         self._app_source = None
         self.appsink_element = None
         self._app_destination = None
+        self._cached_element_keys = []
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
@@ -107,10 +110,20 @@ class GStreamerPipeline(Pipeline):
             self.pipeline.set_state(Gst.State.NULL)
             del self.pipeline
             self.pipeline = None
+
         if self._app_source:
             self._app_source.finish()
+
         if self._app_destination:
             self._app_destination.finish()
+
+        if (new_state == Pipeline.State.ERROR):
+            for key in self._cached_element_keys:
+                for pipeline in GStreamerPipeline._inference_element_cache[key].pipelines:
+                    if (self != pipeline):
+                        pipeline.stop()
+                del GStreamerPipeline._inference_element_cache[key]
+
         self._finished_callback()
 
     def _delete_pipeline_with_lock(self, new_state):
@@ -237,7 +250,10 @@ class GStreamerPipeline(Pipeline):
                             and element.get_property(model_instance_id))]
         for element, key in gva_elements:
             if key not in GStreamerPipeline._inference_element_cache:
-                GStreamerPipeline._inference_element_cache[key] = element
+                GStreamerPipeline._inference_element_cache[key] = GStreamerPipeline.CachedElement(
+                    element, [])
+            self._cached_element_keys.append(key)
+            GStreamerPipeline._inference_element_cache[key].pipelines.append(self)
 
     def _set_default_models(self):
         gva_elements = [element for element in self.pipeline.iterate_elements() if (

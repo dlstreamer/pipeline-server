@@ -126,7 +126,7 @@ class SharedMemoryManager:
             # no gap in between, check last possible gap
             if address is None:
                 if (self.shm_file_size - prev_slot_end + 1) >= size_needed:
-                    address = (prev_slot_end + 1, prev_slot_end + size_needed)
+                    address = (prev_slot_end, prev_slot_end + size_needed)
                     self._mem_slots[seq_no] = (address[0], address[1])
 
         # interval [Begin, End]
@@ -145,6 +145,7 @@ class SharedMemoryManager:
                 self._shm_file.close()
             else:
                 os.close(self._shm_file)
+                os.remove(self._shm_file_full_path)
         except:
             log_exception()
             raise

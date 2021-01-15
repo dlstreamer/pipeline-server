@@ -3,21 +3,33 @@
 CURRENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
 LVA_DIR=$(dirname $CURRENT_DIR)
+LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
 IMAGE=video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+VASERVING_ROOT=/home/video-analytics-serving
 NAME=${IMAGE//[\:]/_}
 PORT=5001
 PIPELINES=
 ENTRYPOINT_ARGS=
+MODE=
+VOLUME_MOUNT=
 
 function show_help {
+  echo ""
+  echo "**Run Script**"
+  echo ""
   echo "usage: ./run_server.sh"
   echo "  [ -p : Specify the port to use ] "
-  echo "  [ --pipeline-name : Specify the pipeline name to use ] "
-  echo "  [ --pipeline-version : Specify the pipeline version to use ] "
-  echo "  [ --debug : Use debug pipeline ] "
-  echo "  [ --max-running-pipelines : Specify the maximum number of concurrent pipelines, default is 10 ] "
-  echo "  [ --parameters : Specify a json string or file for pipeline parameters *Deprecated* ] "
-  echo "  [ --pipeline-parameters : Specify a json string or file for pipeline parameters ] "
+  echo "  [ --dev : Mount local source code] "
+  echo ""
+  echo "**Application**"
+  echo ""
+  if [ "${MODE}" == "DEV" ]; then
+      VOLUME_MOUNT+="-v $LVA_DIR:$LVA_ROOT "
+      VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
+      PIPELINES="--pipelines $LVA_DIR/pipelines "
+  fi
+  ENTRYPOINT_ARGS+="--entrypoint-args --help "  
+  "$ROOT_DIR/docker/run.sh" --user "$UID" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
 }
 
 function error {
@@ -39,20 +51,9 @@ while [[ "$#" -gt 0 ]]; do
         error "-p expects a value"
       fi
       ;;
-    --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters|--pipeline-parameters)
-      if [ "$2" ]; then
-        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-        ENTRYPOINT_ARGS+="--entrypoint-args $2 "
-        shift
-      else
-        error "$1 expects a value"
-      fi
-      ;;
-    --debug)
-      ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-      ;;
     --dev)
-      PIPELINES="--pipelines $LVA_DIR/pipelines "
+	PIPELINES="--pipelines $LVA_DIR/pipelines "
+	MODE="DEV"
       ;;
     *)
       ENTRYPOINT_ARGS+="--entrypoint-args $1 "
@@ -84,4 +85,16 @@ if [ ! -z "$PIPELINE_PARAMETERS" ]; then
   ENV+="-e PIPELINE_PARAMETERS=$PIPELINE_PARAMETERS "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp --user "$UID"  -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV
+if [ ! -z "$GST_DEBUG" ]; then
+  ENV+="-e GST_DEBUG=$GST_DEBUG "
+fi
+
+VOLUME_MOUNT+="-v /tmp:/tmp "
+VOLUME_MOUNT+="-v /dev/shm:/dev/shm "
+
+if [ "${MODE}" == "DEV" ]; then
+    VOLUME_MOUNT+="-v $LVA_DIR:$LVA_ROOT "
+    VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
+fi
+
+"$ROOT_DIR/docker/run.sh" --user "$UID" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV

@@ -48,10 +48,6 @@
 				"element": "detection",
 				"type": "string"
 			},
-			"model-instance-id": {
-				"element": "detection",
-				"type": "string"
-			},
 			"pre-process-backend": {
 				"element": "detection",
 				"type": "string"
