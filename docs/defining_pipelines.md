@@ -117,7 +117,7 @@ The `object_detection` template demonstrates how to set the
 used to detect objects in a video frame.
 
 ```
-gvadetect model-instance-id=inf0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection 
+gvadetect model-instance-id=detect0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection 
 ```
 
 The `model` and `model-proc` properties reference file paths to the
@@ -126,6 +126,38 @@ Serving `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
+
+#### Special Handling of Model-Instance-ID in OpenVINO Gstreamer elements
+
+In the section above, the example code for gvadetect has the element property 
+
+```
+model-instance-id=<id>
+```
+
+This is a special optional property that will hold the model in memory instead 
+of releasing it when the pipeline completes. This will save time and memory 
+usage when launching the same pipeline multiple times. The model is associated
+with the given ID to allow subsequent runs to use the same model instance.
+
+Its important to be careful when using this property when dealing with 
+multiple hardware targets as models are loaded for a specific device. For 
+example, if a model is loaded on the CPU and is given an instance ID of 'inf0', 
+then that ID must not be used to run the model on the GPU.
+
+When using the same pipeline with different accelerators, the model-instance-id
+must be parameterized so that a unique id can be provided by the request for each
+accelerator
+
+In the same vein as the hardware targets mentioned above, when working with 
+various models ensure that pipelines have unique IDs for each model to prevent
+overloading models to the same instance-id. For example, if you have a 
+detection model and a classification model, they can not have the same
+model-instance-id value, in any VA-Serving pipeline.
+
+Different pipelines can have the same model-instance-id value, as long as 
+the model is the same one for all instances of that id, and for the same
+hardware target
 
 #### More Information
 
