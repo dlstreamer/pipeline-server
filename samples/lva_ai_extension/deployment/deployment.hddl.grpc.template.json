@@ -111,7 +111,7 @@
                 "Env":[
                   "PIPELINE_NAME=object_detection",
                   "PIPELINE_VERSION=person_vehicle_bike_detection",
-                  "PIPELINE_PARAMETERS= {\"device\":\"HDDL\"}"
+                  "PIPELINE_PARAMETERS= {\"detection-device\":\"HDDL\"}"
                 ],  
                 "HostConfig": {
                   "Binds": [

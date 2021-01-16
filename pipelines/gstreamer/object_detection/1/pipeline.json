@@ -13,7 +13,7 @@
 				"element": "detection",
 				"type": "string"
 			},
-			"model-instance-id": {
+			"detection-model-instance-id": {
 				"element": "detection",
 				"type": "string",
 				"default": "inf0"

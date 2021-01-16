@@ -38,10 +38,10 @@
                         "minimum": 1,
                         "type": "integer"
                     },
-                    "model-instance-id": {
-                        "default": "inf0",
+                    "detection-model-instance-id": {
                         "element": "detection",
-                        "type": "string"
+                        "type": "string",
+                        "default": "inf0"
                     },
                     "n-threads": {
                         "default": 1,
@@ -78,7 +78,7 @@
             "name": "object_detection",
             "parameters": {
                 "properties": {
-                    "model-instance-id": {
+                    "detection-model-instance-id": {
                         "default": "",
                         "element": "detection",
                         "type": "string"
@@ -118,10 +118,10 @@
                         "minimum": 1,
                         "type": "integer"
                     },
-                    "model-instance-id": {
-                        "default": "inf0",
+                    "detection-model-instance-id": {
                         "element": "detection",
-                        "type": "string"
+                        "type": "string",
+                        "default": "inf0"
                     },
                     "n-threads": {
                         "default": 1,
@@ -171,10 +171,10 @@
                         "minimum": 1,
                         "type": "integer"
                     },
-                    "model-instance-id": {
-                        "default": "inf0",
+                    "detection-model-instance-id": {
                         "element": "detection",
-                        "type": "string"
+                        "type": "string",
+                        "default": "inf0"
                     },
                     "n-threads": {
                         "default": 1,
@@ -259,21 +259,21 @@
                         "minimum": 1,
                         "type": "integer"
                     },
-                    "model-instance-id-classification": {
-                        "default": "",
-                        "element": {
-                            "name": "classification",
-                            "property": "model-instance-id"
-                        },
-                        "type": "string"
-                    },
-                    "model-instance-id-detection": {
-                        "default": "face_detection_retail0",
+                    "detection-model-instance-id": {
                         "element": {
                             "name": "detection",
                             "property": "model-instance-id"
                         },
-                        "type": "string"
+                        "type": "string",
+                        "default": "face_detection_retail0"
+                    },
+                    "classification-model-instance-id": {
+                        "element": {
+                            "name": "classification",
+                            "property": "model-instance-id"
+                        },
+                        "type": "string",
+                        "default": ""
                     },
                     "n-threads": {
                         "default": 1,

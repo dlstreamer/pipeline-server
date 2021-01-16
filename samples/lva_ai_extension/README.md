@@ -128,16 +128,18 @@ Run with classification pipeline with iGPU inference specified via environment v
 ```
 $ export PIPELINE_NAME=object_classification
 $ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ export PIPELINE_PARAMETERS={\"device\":\"GPU\"}
+$ export PIPELINE_PARAMETERS='{"detection-device":"GPU","classification-device":"GPU"}'
 $ ./docker/run_server.sh
 ```
 
 Notes:
+* Parameter `device` has changed to `detection-device` for detection model and `classification-device` for classification model, refer to example above on how to set.
 * Only one pipeline can be enabled per container instance.
 * If selecting a pipeline both name and version must be specified
 * The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
 * The `--parameters` option specifies pipeline parameters for the selected pipeline. It can be either a JSON string or the name of a file containing the JSON. See the parameters section of the [pipeline definition](/docs/defining_pipelines.md#pipeline-parameters) document for more details. The individual definition files for [object_detection](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json), [object_classification](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json), and [object_tracking](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json) contain the supported parameters for the pre-loaded pipelines.
-* To enable GPU inference use `--parameters "{\"device\":\"GPU\"}"
+* To enable GPU inference for detection `--parameters '{"detection-device":"GPU"}'`
+* To enable MYRIAD(NCS2) inference for detection `--parameters '{"detection-device":"MYRIAD"}'`
 
 ### Debug Mode
 
@@ -162,7 +164,7 @@ This will allow you to customize the deployment manifest for a given accelerator
 The run server script will automatically detect installed accelerators and provide access to their resources.
 Here we run the default pipeline with inference running on Intel® Integrated Graphics (be careful with escaping the JSON string)
 ```bash
-$ ./docker/run_server.sh --pipeline-parameters '{\"device\":\"GPU\"}'
+$ ./docker/run_server.sh --pipeline-parameters '{"detection-device":"GPU"}'
 ```
 
 ### Logging

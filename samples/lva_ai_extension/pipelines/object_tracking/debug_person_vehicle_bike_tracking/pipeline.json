@@ -11,15 +11,31 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
-			"device": {
-				"element": 
-					[ {"name":"detection",
-						"property":"device"},
-					  {"name":"classification",
-					   "property":"device"}
-					],
-					"type": "string"
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
 				},
+				"type": "string"
+			},
+			"classification-device": {
+				"element": {
+					"name": "classification",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"tracking-device": {
+				"element": 
+					[ {"name":"tracking",
+						"property":"device"}
+					],
+				"type": "string",
+				"enum": [
+					"CPU",
+					"VPU"
+				]
+			},
 			"batch-size": {
 				"element": 
 					[ {"name":"detection",
@@ -80,22 +96,22 @@
 					],
 				"type": "string"
 			},
-			"model-instance-id-detection": {
-                                "element": {
-                                        "name": "detection",
-                                        "property": "model-instance-id"
-                                },
-                                "type": "string",
-                                "default": "person_vehicle_bike_detection"
-                        },
-                        "model-instance-id-classification": {
-                                "element": {
-                                        "name": "classification",
-                                        "property": "model-instance-id"
-                                },
-                                "type": "string",
-                                "default": "vehicle_attributes_recognition"
-                        },
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "person_vehicle_bike_detection"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "vehicle_attributes_recognition"
+			},
 			"pre-process-backend": {
 				"element": 
 					[ {"name":"detection",
@@ -151,17 +167,6 @@
 			"reclassify-interval": {
 				"element": "classification",
 				"type": "integer"
-			},
-			"gvatrack_device": {
-				"element": 
-					[ {"name":"tracking",
-						"property":"device"}
-					],
-				"type": "string",
-				"enum": [
-					"CPU",
-					"VPU"
-				]
 			},
 			"tracking-type": {
 				"element": "tracking",

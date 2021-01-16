@@ -304,7 +304,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     pipeline_parameters = json.loads(self._pipeline_parameter_arg)
                 final_pipeline_parameters.update(pipeline_parameters)
         except ValueError:
-            self._logger.error("Issue loading json parameters")
+            self._logger.error("Issue loading json parameters: {}".format(self._pipeline_parameter_arg))
+            raise
 
         self._logger.info("Pipeline Name : {}".format(self._pipeline))
         self._logger.info("Pipeline Version : {}".format(self._version))

@@ -7,15 +7,21 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
-			"device": {
-				"element": "detection",
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
 				"type": "string"
 			},
-			"model-instance-id": {
-                                "element": "detection",
-                                "type": "string",
-                                "default": "person_vehicle_bike_detection"
-                        },
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "person_vehicle_bike_detection"
+			},
 			"batch-size": {
 				"element": "detection",
 				"type": "integer"
@@ -43,10 +49,6 @@
 				"maximum": 4294967295
 			},
 			"ie-config": {
-				"element": "detection",
-				"type": "string"
-			},
-			"model-instance-id": {
 				"element": "detection",
 				"type": "string"
 			},

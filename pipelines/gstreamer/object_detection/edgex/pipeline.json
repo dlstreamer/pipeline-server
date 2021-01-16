@@ -33,11 +33,11 @@
 				"element": "detection",
 				"type": "string"
 			},
-			"model-instance-id": {
-                                "element": "detection",
-                                "type": "string",
-                                "default": "inf0"
-                        },
+			"detection-model-instance-id": {
+				"element": "detection",
+				"type": "string",
+				"default": "inf0"
+			},
 			"inference-interval": {
 				"element": "detection",
 				"type": "integer",

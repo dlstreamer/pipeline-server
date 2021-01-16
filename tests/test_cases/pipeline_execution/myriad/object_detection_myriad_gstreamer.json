@@ -16,7 +16,7 @@
         },
         "parameters": {
             "device": "MYRIAD",
-            "model-instance-id":""
+            "detection-model-instance-id":""
         }
     },
     "numerical_tolerance": 0.3,

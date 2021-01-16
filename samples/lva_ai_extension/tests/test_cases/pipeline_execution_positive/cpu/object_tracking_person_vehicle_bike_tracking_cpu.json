@@ -3,8 +3,8 @@
         "pipeline_name":"object_tracking",
         "pipeline_version":"person_vehicle_bike_tracking",
         "pipeline_parameters": {
-            "device":"CPU",
-            "model-instance-id":""
+            "detection-device": "CPU",
+            "classification-device":"CPU"
             },
         "sleep_period":0.25,
         "port":5001

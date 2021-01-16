@@ -7,7 +7,7 @@
     "parameters": {
                 "type": "object",
                 "properties": {
-                        "model-instance-id": {
+                        "detection-model-instance-id": {
                                 "element": "detection",
                                 "type": "string",
                                 "default": ""

@@ -3,8 +3,8 @@
         "pipeline_name": "object_classification",
         "pipeline_version": "vehicle_attributes_recognition",
         "pipeline_parameters": {
-            "device": "CPU",
-            "model-instance-id": ""
+            "detection-device": "CPU",
+            "classification-device":"CPU"
         },
         "sleep_period": 0.25,
         "port": 5001

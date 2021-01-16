@@ -56,7 +56,7 @@ while [[ "$#" -gt 0 ]]; do
 	MODE="DEV"
       ;;
     *)
-      ENTRYPOINT_ARGS+="--entrypoint-args $1 "
+      ENTRYPOINT_ARGS+="--entrypoint-args '$1' "
       ;;
   esac
 
@@ -78,11 +78,11 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
 fi
 
 if [ ! -z "$PARAMETERS" ]; then
-  ENV+="-e PARAMETERS=$PARAMETERS "
+  ENV+="-e PARAMETERS='$PARAMETERS' "
 fi
 
 if [ ! -z "$PIPELINE_PARAMETERS" ]; then
-  ENV+="-e PIPELINE_PARAMETERS=$PIPELINE_PARAMETERS "
+  ENV+="-e PIPELINE_PARAMETERS='$PIPELINE_PARAMETERS' "
 fi
 
 if [ ! -z "$GST_DEBUG" ]; then
