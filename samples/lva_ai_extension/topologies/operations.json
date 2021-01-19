@@ -4,7 +4,7 @@
         {
             "opName": "GraphTopologySet",
             "opParams": {
-                "topologyFile": "<update this to absolute path of topology.json file>"
+                "topologyUrl": "https://raw.githubusercontent.com/intel/video-analytics-serving/master/samples/lva_ai_extension/topologies/topology.json"
             }
         },
         {
