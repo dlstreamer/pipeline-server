@@ -25,7 +25,7 @@ usage: build.sh
   [--environment-file read and set environment variables from a file. Can be supplied multiple times.]
   [--dry-run print docker commands without running]
 ```
-All command line options are optional. Details of key options and their default values are shown below: 
+All command line options are optional. Details of key options and their default values are shown below:
 ## Framework (--framework)
 VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Select framework with `--framework` option. Default is `gstreamer`.
 
@@ -33,13 +33,13 @@ VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Sel
 This is the image that docker builds on. It must contain the full set of framework dependencies needed for either [DL Streamer](https://github.com/opencv/gst-video-analytics) or [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch) and must match the framework selected with the `--framework` option. If a base image is not defined you must provide the location of the Dockerfile to build the base image (see `--base-build-context` and `--base-build-dockerfile`).
 
 ## Base Build Context (--base-build-context)
-This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder. 
+This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder.
 
 ## Base Build Dockerfile (--base-build-dockerfile)
 This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
 
 ## Pipeline Directory (--pipelines)
-Relative path to VA Serving pipelines directory from root of video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by volume mounting.
+Path to VA Serving pipelines. Path must be within docker build context which defaults to the root of the video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
 
 ## Model Directory/File List (--models)
 This option can be used to specify path to models directory or a model list file. When its a directory, models used by pipelines are expected to be in this directory. When its a file, the models listed in the file are downloaded and converted to IR format if needed by the [model download tool](../tools/model_downloader/README.md) during build time. If nothing is specified, default models listed in the file `models_list/models.list.yml` are downloaded, converted to IR format if needed and included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
