@@ -18,14 +18,6 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 The OpenVINO™ DL Streamer - Edge AI Extension module is available as a pre-built docker image. The image can run as a standalone microservice or as a module within an Live Video Analytics graph. For more information on deploying the module as part of a Live Video Analytics graph please see [Configuring the AI Extension Module for Live Video Analytics](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Live Video Analytics documentation](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). The following instructions demonstrate running the microservice and test client outside of Live Video Analytics.
 
-## Pulling the Image from Docker Hub
-
-Pull the pre-built image using the following command. For instructions on building your own image please see [Building an Edge AI Extension Module Image](#building-an-edge-ai-extension-module-image).
-
-```
-docker pull intel/video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
-```
-
 ## Running the Edge AI Extension Module
 
 To run the module as a standalone microservice with an `object_detection` pipeline use the `run_server.sh` script with default options. For examples of additional options see [Additional Standalone Edge AI Extension Examples](#additional-standalone-edge-ai-extension-examples).
@@ -171,7 +163,7 @@ $ ./docker/run_server.sh --pipeline-parameters '{"detection-device":"GPU"}'
 ### Logging
 Run the following command to monitor the logs from the docker container
 ```bash
-$ docker logs video-analytics-serving_0.4.0-dlstreamer-edge-ai-extension -f
+$ docker logs video-analytics-serving_0.4.1-dlstreamer-edge-ai-extension -f
 ```
 
 ### Developer Mode
@@ -226,7 +218,7 @@ Run the docker image build script.
 ```
 $ ./docker/build.sh
 ```
-Resulting image name is `video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension`
+Resulting image name is `video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension`
 
 # Updating or Changing Detection and Classification Models
 Before updating the models used by a pipeline please see the format of
@@ -293,7 +285,7 @@ models
 ### Check that images contains the new model and pipeline
 As the LVA API does not support model or pipeline queries, start the container with an interactive shell and check that expected model and pipeline are present.
 ```bash
-$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
 vaserving@82dd59743ca3:~$ ls models
 person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
 vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
@@ -303,7 +295,7 @@ debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ### Re-start service
 Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
 ```
-$ docker stop video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+$ docker stop video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
 $ docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
 ```
 ### Run the client

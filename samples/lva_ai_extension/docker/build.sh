@@ -6,7 +6,7 @@ SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/
 MODELS="models/models.list.yml"
 BASE_IMAGE=
 OMZ_VERSION=
-TAG="video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension"
+TAG="video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension"
 
 #Get options passed into script
 function get_options {
