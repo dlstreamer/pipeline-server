@@ -167,8 +167,8 @@ $ ./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --mode
 # Enabling Hardware Accelerators
 The run script automatically gives docker access (i.e. device, volume mount and device cgroup rule) to the following accelerators
 * iGPU
-* Myriad NCS2
-* HDDL-R
+* Intel&reg; Neural Compute Stick 2 (NCS2)
+* HDDL-R cards
 
 You also need to specify the inference device in the parameters section
 of the VA Serving request. Example for GPU below
@@ -188,6 +188,10 @@ The following the table shows docker configuration and inference device name for
 | GPU       | /dev/dri    |              |           | GPU            |
 | NCS2      |             | /dev/bus/usb |c 189:* rmw| MYRIAD         |
 | HDDL-R    | /dev/ion    | /var/tmp     |           | HDDL           |
+
+## NCS2 Limitation
+DL Streamer pipelines can only target a single neural network model to each NCS2 accelerator in a system. For pipelines that contain multiple models
+(for example, [emotion_recognition](/pipelines/gstreamer/emotion_recognition/1/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
 
 # Developer Mode
 

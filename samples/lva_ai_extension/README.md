@@ -139,7 +139,8 @@ Notes:
 * The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
 * The `--parameters` option specifies pipeline parameters for the selected pipeline. It can be either a JSON string or the name of a file containing the JSON. See the parameters section of the [pipeline definition](/docs/defining_pipelines.md#pipeline-parameters) document for more details. The individual definition files for [object_detection](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json), [object_classification](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json), and [object_tracking](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json) contain the supported parameters for the pre-loaded pipelines.
 * To enable GPU inference for detection `--parameters '{"detection-device":"GPU"}'`
-* To enable MYRIAD(NCS2) inference for detection `--parameters '{"detection-device":"MYRIAD"}'`
+* To enable MYRIAD(NCS2) inference for detection `--parameters '{"detection-device":"MYRIAD"}'`.
+Note that each NCS2 accelerator can only support [one model per pipeline](/docs/running_video_analytics_serving.md#ncs2-limitation)
 
 ### Debug Mode
 
