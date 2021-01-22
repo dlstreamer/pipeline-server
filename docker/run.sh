@@ -286,12 +286,13 @@ fi
 
 if [ ! -z "$MODELS" ]; then
     VOLUME_MOUNT+="-v $MODELS:/home/video-analytics-serving/models "
-    if [ -z "$USER" ]; then
-	    USER="--user $UID"
-    fi
 fi
+
 if [ ! -z "$PIPELINES" ]; then
     VOLUME_MOUNT+="-v $PIPELINES:/home/video-analytics-serving/pipelines "
+fi
+
+if [ ! -z "$VOLUME_MOUNT" ]; then
     if [ -z "$USER" ]; then
 	    USER="--user $UID"
     fi
