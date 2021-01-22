@@ -108,4 +108,8 @@ if [ ! -z "$TEAMCITY_VERSION" ]; then
     NON_INTERACTIVE=--non-interactive
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" $NON_INTERACTIVE --image openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+if [ ! -d "$OUTPUT_DIR/models" ]; then
+    mkdir $OUTPUT_DIR/models
+fi
+
+$SOURCE_DIR/docker/run.sh --user "$UID" $NON_INTERACTIVE --dev --image openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""

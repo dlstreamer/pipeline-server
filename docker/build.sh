@@ -247,6 +247,10 @@ get_options() {
            OPEN_MODEL_ZOO_VERSION=2021.1
         fi
 
+	if [ ! -d "$SOURCE_DIR/models" ]; then
+            $RUN_PREFIX mkdir $SOURCE_DIR/models
+        fi
+       
 	$SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
            
     elif [ -d "$MODELS" ]; then
