@@ -230,6 +230,19 @@ Extension module. The LVA specific steps are called out in the following section
 
 ## Run Existing Object Detection Pipeline
 Get baseline results for existing object_detection model `person-vehicle-bike-detection-crossroad-0078`
+
+```
+$./docker/run_server.sh
+<snip>
+/object_classification/vehicle_attributes_recognition/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 12:10:10,288", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 12:10:10,288", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 12:10:10,289", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 12:10:10,292", "message": "Starting DL Streamer Edge AI Extension on port: 5001", "module": "__main__"}
+```
+
+In a seperate terminal:
+
 ```
 $ ./docker/run_client.sh
 <snip>
@@ -243,10 +256,10 @@ $ ./docker/run_client.sh
 [AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.60) [0.84, 0.44, 0.05, 0.29]
 <snip>
 ```
-## Add New Model
-### Add Model to Models List
-As per tutorial, we will add the model `yolo-v2-tiny-tf`. Copy existing model list models/models.list.yml to models/yolo.yml
-then add the following entry
+## Add New Model to Models List
+
+Copy the existing model list `models/models.list.yml` to `models/yolo-models.list.yml` then add the following entry:
+
 ```yml
 - model: yolo-v2-tiny-tf
   alias: yolo
@@ -254,18 +267,23 @@ then add the following entry
   precision: [FP16,FP32]
 ```
 
-### Update Pipeline Definition File to Use New Model
-Follow [instructions in tutorial](/docs/changing_object_detection_models.md#3-add-new-model), but base new pipeline on `pipelines/object_detection/person_vehicle_bike_detection`. The tutorial has all the details, but the changes can be made with the following commands
+## Update Pipeline Definition File to Use New Model
+
+Copy, rename and update the exising object detection pipeline to reference `yolo-v2-tiny-tf` model:
+
 ```bash
 $ cp -r pipelines/object_detection/person_vehicle_bike_detection pipelines/object_detection/yolo
 $ sed -i -e s/person_vehicle_bike_detection/yolo/g pipelines/object_detection/yolo/pipeline.json
 ```
 
-Then re-build the image with `yolo.yml` as the input model list file.
+## Rebuild Edge AI Extension with new Model and Pipeline
+
 ```
-$ ./docker/build.sh --models models/yolo.yml
+$ ./docker/build.sh --models models/yolo-models.list.yml
 ```
+
 The model will now be in `models` folder in the root of the project:
+
 ```
 models
 └── yolo
@@ -281,9 +299,8 @@ models
         └── yolo-v2-tiny-tf.json
 ```
 
-## 5. Run Pipeline with New Model
-### Check that images contains the new model and pipeline
-As the LVA API does not support model or pipeline queries, start the container with an interactive shell and check that expected model and pipeline are present.
+Check that expected model and pipeline are present in the built image:
+
 ```bash
 $ docker run -it --entrypoint /bin/bash video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
 vaserving@82dd59743ca3:~$ ls models
@@ -291,6 +308,9 @@ person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
 vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
 debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ```
+
+## Run Edge AI Extension with new Model and Pipeline
+
 
 ### Re-start service
 Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
