@@ -10,9 +10,11 @@
             "minDockerVersion": "v1.25",
             "loggingOptions": "",
             "registryCredentials": {
-              "Binds": [
-                "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
-              ]
+              "$CONTAINER_REGISTRY_USERNAME_myacr":{
+                "username":"$CONTAINER_REGISTRY_USERNAME_myacr",
+                "password":"$CONTAINER_REGISTRY_PASSWORD_myacr",
+                "address": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io"
+              }
             }
           }
         },
@@ -85,7 +87,9 @@
               "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
               "createOptions": {
                 "HostConfig": {
-
+                  "Binds": [
+                    "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
+                  ]
                 }
               }
             }
@@ -109,9 +113,7 @@
                 ],
                 "HostConfig": {
                   "Binds": [
-                      "/var/tmp:/var/tmp",
                       "/tmp:/tmp",
-                      "/dev/shm:/dev/shm",
                       "/dev/bus/usb:/dev/bus/usb"
                     ],
                     "DeviceCgroupRules":[
