@@ -10,11 +10,9 @@
             "minDockerVersion": "v1.25",
             "loggingOptions": "",
             "registryCredentials": {
-              "$CONTAINER_REGISTRY_USERNAME_myacr":{
-                "username":"$CONTAINER_REGISTRY_USERNAME_myacr",
-                "password":"$CONTAINER_REGISTRY_PASSWORD_myacr",
-                "address": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io"
-              }
+              "Binds": [
+                "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
+              ]
             }
           }
         },
@@ -92,7 +90,7 @@
               }
             }
           },
-          "lvaextension" : {
+          "lvaExtension" : {
             "version": "1.0",
             "type": "docker",
             "status": "running",
@@ -107,7 +105,7 @@
                 "Env":[
                   "PIPELINE_NAME=object_detection",
                   "PIPELINE_VERSION=person_vehicle_bike_detection",
-                  "PIPELINE_PARAMETERS= {\"detection-device\":\"MYRIAD\"}"
+                  "PIPELINE_PARAMETERS={\"detection-device\":\"MYRIAD\"}"
                 ],
                 "HostConfig": {
                   "Binds": [
