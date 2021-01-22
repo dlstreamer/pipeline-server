@@ -80,11 +80,12 @@ The module can be configured using command line options or environment variables
 
 The following pipelines are included in the AI Extension:
 
-| Pipeline Name  | Pipeline Version | Pipeline Definition
-| ------------- | ------------- | --------------- |
-| object_detection | person_vehicle_bike_detection  | [definition](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json)
-| object_classification  | vehicle_attributes_recognition  | [definition](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json)
-| object_tracking  | person_vehicle_bike_tracking  | [definition](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)
+| Name          | Version       | Definition      | Diagram |
+| ------------- | ------------- | --------------- | ------- |
+| object_detection | person_vehicle_bike_detection  | [definition](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json)|![diagram](pipeline_diagrams/object-detection.png)|
+| object_classification  | vehicle_attributes_recognition  | [definition](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json)|![diagram](pipeline_diagrams/object-classification.png)|
+| object_tracking  | person_vehicle_bike_tracking  | [definition](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)|![diagram](pipeline_diagrams/object-tracking.png)|
+
 
 ## Configuring the AI Extension Module for Live Video Analytics
 
