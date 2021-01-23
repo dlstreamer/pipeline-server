@@ -1,0 +1,179 @@
+{
+  "$schema-template": "2.0.0",
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "$CONTAINER_REGISTRY_USERNAME_myacr":{
+                "username":"$CONTAINER_REGISTRY_USERNAME_myacr",
+                "password":"$CONTAINER_REGISTRY_PASSWORD_myacr",
+                "address": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+              "createOptions": {}
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "5671/tcp": [
+                      {
+                        "HostPort": "5671"
+                      }
+                    ],
+                    "8883/tcp": [
+                      {
+                        "HostPort": "8883"
+                      }
+                    ],
+                    "443/tcp": [
+                      {
+                        "HostPort": "443"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "modules": {
+          "lvaEdge": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/media/live-video-analytics:1",
+              "createOptions": {
+                "HostConfig": {
+                  "LogConfig": {
+                    "Type": "",
+                    "Config": {
+                      "max-size": "10m",
+                      "max-file": "10"
+                    }
+                  },
+                  "IpcMode" : "shareable"
+                }
+              }
+            }
+          },
+          "rtspsim": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
+              "createOptions": {
+                "HostConfig": {
+                  "Binds": [
+                    "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
+                  ]
+                }
+              }
+            }
+          },
+          "lvaExtension" : {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "<LVA VA SERVING IMAGE AZURE URL>",
+              "createOptions": {
+                  "ExposedPorts": {
+                    "80/tcp": {},
+                    "5001/tcp" : {}
+                }, 
+                "Env":[
+                  "PIPELINE_NAME=object_detection",
+                  "PIPELINE_VERSION=person_vehicle_bike_detection",
+                  "PIPELINE_PARAMETERS={\"detection-device\":\"MYRIAD\"}"
+                ],
+                "HostConfig": {
+                  "Binds": [
+                      "/tmp:/tmp",
+                      "/dev/bus/usb:/dev/bus/usb"
+                    ],
+                    "DeviceCgroupRules":[
+                      "c 189:* rmw"
+                    ],
+                    "PortBindings": {
+                        "80/tcp": [
+                            {
+                                "HostPort": "8080"
+                            }
+                        ],
+                        "5001/tcp" : [
+                            {
+                                "HostPort" : "5001"
+                            }
+                        ]
+                    },
+                    "LogConfig": {
+                        "Type": "",
+                        "Config": {
+                          "max-size": "10m",
+                          "max-file": "10"
+                        }
+                    },
+                    "IpcMode": "container:lvaEdge"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "LVAToHub": "FROM /messages/modules/lvaEdge/outputs/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "lvaEdge": {
+      "properties.desired": {
+        "applicationDataDirectory": "/var/lib/azuremediaservices",
+        "azureMediaServicesArmId": "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/microsoft.media/mediaservices/$AMS_ACCOUNT",
+        "aadTenantId": "$AAD_TENANT_ID",
+        "aadServicePrincipalAppId": "$AAD_SERVICE_PRINCIPAL_ID",
+        "aadServicePrincipalSecret": "$AAD_SERVICE_PRINCIPAL_SECRET",
+        "aadEndpoint": "https://login.microsoftonline.com",
+        "aadResourceId": "https://management.core.windows.net/",
+        "armEndpoint": "https://management.azure.com/",
+        "diagnosticsEventsOutputName": "AmsDiagnostics",
+        "operationalEventsOutputName": "AmsOperational",
+        "logLevel": "Information",
+        "logCategories": "Application,Events",
+        "allowUnsecuredEndpoints": true,
+        "telemetryOptOut": false
+      }
+    }
+  }
+}

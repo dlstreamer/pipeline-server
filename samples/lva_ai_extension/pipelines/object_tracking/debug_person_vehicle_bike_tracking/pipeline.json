@@ -1,9 +1,9 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model-instance-id=person_vehicle_bike_detection model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
 				" ! queue ! gvatrack name=tracking",
-				" ! gvaclassify model-instance-id=vehicle_attributes_recognition model={models[vehicle_attributes_recognition][1][network]} model-proc={models[vehicle_attributes_recognition][1][proc]} name=classification",
+				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} name=classification",
 				" ! tee name = t ! queue ! gvawatermark ! videoconvert ! jpegenc",
 				" ! multifilesink name=filesink t. ! queue",
 				" ! appsink name=destination"],
@@ -11,15 +11,31 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
-			"device": {
-				"element": 
-					[ {"name":"detection",
-						"property":"device"},
-					  {"name":"classification",
-					   "property":"device"}
-					],
-					"type": "string"
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
 				},
+				"type": "string"
+			},
+			"classification-device": {
+				"element": {
+					"name": "classification",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"tracking-device": {
+				"element": 
+					[ {"name":"tracking",
+						"property":"device"}
+					],
+				"type": "string",
+				"enum": [
+					"CPU",
+					"VPU"
+				]
+			},
 			"batch-size": {
 				"element": 
 					[ {"name":"detection",
@@ -80,14 +96,21 @@
 					],
 				"type": "string"
 			},
-			"model-instance-id": {
-				"element": 
-					[ {"name":"detection",
-						"property":"model-instance-id"},
-					  {"name":"classification",
-					   "property":"model-instance-id"}
-					],
-				"type": "string"
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "person_vehicle_bike_detection"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "vehicle_attributes_recognition"
 			},
 			"pre-process-backend": {
 				"element": 
@@ -145,17 +168,6 @@
 				"element": "classification",
 				"type": "integer"
 			},
-			"gvatrack_device": {
-				"element": 
-					[ {"name":"tracking",
-						"property":"device"}
-					],
-				"type": "string",
-				"enum": [
-					"CPU",
-					"VPU"
-				]
-			},
 			"tracking-type": {
 				"element": "tracking",
 				"type": "string",
@@ -167,11 +179,13 @@
 			},
 			"location": {
 				"element": "filesink",
-				"type":"string"
+				"type":"string",
+                                "default":"/tmp/frame_%07d.jpeg"
 			},
 			"max-files": {
 				"element": "filesink",
-				"type":"integer"
+				"type":"integer",
+				"default": 10
 			}
 		}
 	}

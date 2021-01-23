@@ -1,0 +1,36 @@
+## LVA Pipeline Diagrams
+### Object Detection
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Object Detection"
+    appsrc-->gavdetect
+    gavdetect-->appsink
+    end
+    appsink-->meta_data
+```
+
+### Object Classification
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Object Classification"
+    appsrc-->gavdetect
+    gavdetect-->gvaclassify
+    gvaclassify-->appsink
+    end
+    appsink-->meta_data
+```
+
+### Object Tracking
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Object Tracking"
+    appsrc-->gavdetect
+    gavdetect-->gvatrack
+    gvatrack-->gvaclassify
+    gvaclassify-->appsink
+    end
+    appsink-->meta_data
+```

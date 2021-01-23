@@ -1,7 +1,7 @@
 {
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
-				" ! gvadetect model-instance-id=person_vehicle_bike_detection model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
 				" ! tee name = t ! queue ! gvawatermark ! videoconvert ! jpegenc",
 				" ! multifilesink name=filesink t. ! queue",
 				" ! appsink name=destination"],
@@ -9,9 +9,20 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
-			"device": {
-				"element": "detection",
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
 				"type": "string"
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "person_vehicle_bike_detection"
 			},
 			"batch-size": {
 				"element": "detection",
@@ -43,10 +54,6 @@
 				"element": "detection",
 				"type": "string"
 			},
-			"model-instance-id": {
-				"element": "detection",
-				"type": "string"
-			},
 			"pre-process-backend": {
 				"element": "detection",
 				"type": "string"
@@ -75,11 +82,13 @@
 			},
 			"location": {
 				"element": "filesink",
-				"type":"string"
+				"type":"string",
+				"default":"/tmp/frame_%07d.jpeg"
 			},
 			"max-files": {
 				"element": "filesink",
-				"type":"integer"
+				"type":"integer",
+				"default": 10
 			}
 		}
 	}

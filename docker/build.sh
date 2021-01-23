@@ -22,6 +22,7 @@ PIPELINES=
 FRAMEWORK="gstreamer"
 TAG=
 RUN_PREFIX=
+DRY_RUN=
 CREATE_SERVICE=TRUE
 ENVIRONMENT_FILES=()
 DOCKER_RUN_ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n' ' ')
@@ -109,7 +110,7 @@ get_options() {
             ;;
         --models)
             if [ "$2" ]; then
-                MODELS=$(realpath $2)
+                MODELS=$2
                 shift
             else
                 error 'ERROR: "--models" requires an argument.'
@@ -192,6 +193,7 @@ get_options() {
             ;;
         --dry-run)
             RUN_PREFIX="echo"
+	    DRY_RUN="--dry-run"
             echo ""
             echo "=============================="
             echo "DRY RUN: COMMANDS PRINTED ONLY"
@@ -218,6 +220,8 @@ get_options() {
 
     if [ "${MODELS^^}" == "NONE" ]; then
         MODELS=
+    else
+	MODELS=$(realpath $MODELS)
     fi
 
     if [ $FRAMEWORK != 'gstreamer' ] && [ $FRAMEWORK != 'ffmpeg' ]; then
@@ -234,9 +238,6 @@ get_options() {
     fi
 
     if [ -f "$MODELS" ]; then
-        YML_DIR=$(dirname "${MODELS}")
-        YML_FILE_NAME=$(basename "${MODELS}")
-        VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving -v $YML_DIR:/models_yml"
 
         if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
            if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
@@ -245,16 +246,22 @@ get_options() {
         else
            OPEN_MODEL_ZOO_VERSION=2021.1
         fi
-        
-        $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --user "$UID" --entrypoint /bin/bash $VOLUME_MOUNT openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION "-i" "-c" "pip3 install jsonschema==3.2.0; python3 /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output-dir /home/video-analytics-serving/ $FORCE_MODEL_DOWNLOAD"
-   
+
+	if [ ! -d "$SOURCE_DIR/models" ]; then
+            $RUN_PREFIX mkdir $SOURCE_DIR/models
+        fi
+       
+	$SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
+           
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
-            mkdir $SOURCE_DIR/models
+            $RUN_PREFIX mkdir $SOURCE_DIR/models
         fi
-        cp -R $MODELS/. $SOURCE_DIR/models
+        $RUN_PREFIX cp -R $MODELS/. $SOURCE_DIR/models
     else
-        error 'ERROR: "'$MODELS'" does not exist.'
+	if [ -n "$MODELS" ]; then
+            error 'ERROR: "'$MODELS'" does not exist.'
+	fi
     fi
 
     if [ -z "$PIPELINES" ]; then
@@ -367,7 +374,7 @@ if [ "$BASE" == "BUILD" ]; then
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     #Ensure image is latest from Docker Hub
-    launch "$RUN_PREFIX docker pull $BASE_IMAGE"
+    launch "$RUN_PREFIX docker pull ${CACHE_PREFIX}$BASE_IMAGE"
 fi
 
 # BUILD IMAGE
@@ -410,6 +417,7 @@ done
 
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
     cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
+    echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
 fi
 

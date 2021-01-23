@@ -1,37 +1,86 @@
-# Changing Object Detection Models
-| [Tutorial Overview](#tutorial-overview) | [Analyze Existing VAS Object Detection Pipeline](#1-run-existing-vas-object-detection-pipeline) | [Download New Model](#2-download-new-model) | [Update Pipeline Definition File to Use New Model](#3-update-pipeline-definition-file-to-use-new-model) | [Run Pipeline with New Model](#4-run-pipeline-with-new-model) |
+# Changing Object Detection Models in a Pipeline
+| [Background](#background) | [Run Existing Pipeline](#step-1-run-existing-object-detection-pipeline) | [Download New Model](#step-2-download-new-model) | [Create New Pipeline](#step-3-create-new-object-detection-pipeline)
+| [Run New Pipeline](#step-4-run-microservice-with-added-model-and-pipeline) | [Rebuild Microservice](#step-6-rebuild-microservice-with-new-model-and-pipeline) | [Further Reading](#further-reading)
 
-VA Serving Object Detection pipelines are customizable. A simple pipeline customization is to use a different model. 
+Video Analytics Serving pipeline definitions are designed to make
+pipeline customization and model selection easy. This tutorial
+provides step by step instructions for changing the object detection
+reference pipeline to use a different object detection model.
 
-The following `object_detection` models and pipelines are included in the Video Analytics Serving library.  
+## Models Used:
 
-| Pipeline Endpoint | Model Name                  | Implementation                     | OMZ Model Name | 
-| ------------- | --------------------------- | -----------------------------------| -------------- |  
-| `pipelines/object_detection/1` | SSD with MobileNet                   | Caffe | [mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/public/mobilenet-ssd) | 
+Original: [mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/mobilenet-ssd/mobilenet-ssd.md)
 
-## Tutorial Overview
+After Change: [yolo-v2-tiny-tf](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/yolo-v2-tiny-tf/yolo-v2-tiny-tf.md)
 
-This tutorial consists of the following sections:
-1.  Analyze the existing VAS Object Detection Model
-2.  Download new model
-3.  Create/Update the pipeline definition to use the new model
-4.  Run the pipeline with the new model
+## Sample Videos Used:
 
-Once you complete this tutorial you should be able to quickly obtain, convert and add a new model to the VAS Object Detection Pipeline.
+The tutorial uses [bottle-detection.mp4](https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4)
 
-## 1. Run Existing VAS Object Detection Pipeline
-With the service running, you can use curl command line program to start the `object_detection` version `1` pipeline included in the VA Serving library as follows:
+
+![bottle-detection.gif](https://github.com/intel-iot-devkit/sample-videos/raw/master/preview/bottle-detection.gif)
+
+# Background 
+
+Object detection is a combination of object localization and object
+classification. Object detection models take images as input and
+produce bounding boxes identifying objects in the image along with
+their class or label. Different model architectures and training
+datasets have different performance and accuracy characteristics and
+it is important to choose the best model for your application.
+
+## Step 1. Run Existing Object Detection Pipeline
+
+Before modifying the pipeline, we'll start by detecting objects in a
+sample video using the existing `mobilenet-ssd` model.
+
+#### Build the Microservice
+
+Build the sample microservice with the following command:
+
 ```bash
-$ curl localhost:8080/pipelines/object_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
+./docker/build.sh
 ```
 
-As the video is being analyzed and as objects appear and disappear you will see detection results in the output file that can be viewed using:
+#### Run the Microservice
+
+Start the sample microservice with the following command:
 
 ```bash
-$ tail -f /tmp/results.txt
+./docker/run.sh -v /tmp:/tmp --name vaserving
 ```
-Pretty printed output below:
-```json
+
+#### Run Interactive Session
+
+In a second terminal window launch an interactive session:
+
+```bash
+./docker/run.sh --dev --name vaclient
+```
+
+#### Detect Objects on Sample Video
+
+In the interactive session run the sample client to detect objects on
+the sample video using version `1` of the reference pipeline
+`object-detection`.
+
+```bash
+./samples/sample.py --pipeline object_detection --version 1
+```
+
+Expected output (abbreviated):
+```
+<snip>
+Pipeline Status:
+
+{
+    "avg_fps": 51.38943397312732,
+    "elapsed_time": 13.621442317962646,
+    "id": 1,
+    "start_time": 1609889043.9670591,
+    "state": "RUNNING"
+}
+<snip>
 {
 	"objects": [{
 		"detection": {
@@ -59,57 +108,69 @@ Pretty printed output below:
 	"timestamp": 39553072625
 }
 ```
+#### Stop the Microservice
 
-> **Note:** Currently customization tasks assume use of a GStreamer base image.
-
-## 2. Download New Model
-This tutorial is aimed at pipeline customization, not model selection or evaluation. We assume the model is already trained and is known to meet your needs.
-This section will show how to obtain a model and update a pipeline description file to use it. 
-It is assumed that you are familiar with VA Serving [docker operation](building_video_analytics_serving.md) and [pipeline definition files](defining_pipelines.md).
-
-This example will show how to update the object detection pipeline to use the [yolo-v2-tiny-tf](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/yolo-v2-tiny-tf/yolo-v2-tiny-tf.md) model.
-
-### Start Developer Mode
-As this is a development workflow, start the VA Serving container in [developer mode](run_script_reference.md#developer-mode---dev). All subsequent commands will be run in this container.
-```
-$ docker/run.sh --dev
-vaserving@host:~$
-```
-
-### Download yolo-v2-tiny-tf
-
-OpenVINO* provides a set of ready to use models from the [Open Model Zoo](https://github.com/opencv/open_model_zoo) (OMZ).
-OMZ hosts optimized deep learning models to expedite development of inference applications by using free pre-trained models instead of training your own models. 
-This tutorial assumes you are using a model from OMZ.
-
-VA Serving has a built in tool `model_downloader` that obtains a model from OMZ and converts it to the [Intermediate Representation](https://docs.openvinotoolkit.org/latest/_docs_MO_DG_IR_and_opsets.html) (IR) format required by the OpenVINO* inference engine. The tool also looks for an associated `model-proc` file that describes the input and output formats supported by the model along with inference output labels. Model-proc files are optional but they ensure better inference by checking the input video format
-and advertising labels that can be used by downstream elements. For more information see [DL Streamer Model Preparation](https://github.com/opencv/gst-video-analytics/wiki/Model-preparation).
-
-Follow these steps to get the IR and model-proc files:
-1. Select the model, for this example we are using `yolo-v2-tiny-tf`. We'll use the VA Serving model `alias` feature to make this `object_detection` version `yolo-v2-tiny-tf`.
-2. Create a model list file, say `yolo.yml` that contains the `model` which is the model name `yolo-v2-tiny-tf` in this case, `alias` as `object_detection` and `version` as `yolo-v2-tiny-tf` in yaml file format.
+In the original terminal window, stop the service using `CTRL-C`, or in a new terminal window issue a docker kill command:
 
 ```bash
-vaserving@host:~$ cat yolo.yml
+docker kill vaserving
+```
+```bash
+docker kill vaclient
+```
+
+## Step 2. Download New Model
+
+On start-up Video Analytics Serving discovers models that have been
+downloaded and makes them available for reference within pipelines.
+
+Models can be downloaded either as part of the normal Video Analytics
+Serving build process or using a stand-alone tool.
+
+#### Add `yolo-v2-tiny-tf` to the Model Downloader List file
+
+The model downloader tool uses a yml file to specify models to
+download along with details on how they will be referenced in
+pipelines. The following edits to the file will download
+`yolo-v2-tiny-tf` and alias it for reference in pipelines as
+`object_detection` version `yolo-v2-tiny-tf`.
+
+Create a copy of the existing model list file `models_list/models.list.yml` and name it `models_list/yolo-models.list.yml`.
+
+```bash
+cp ./models_list/models.list.yml ./models_list/yolo-models.list.yml
+```
+
+Add an entry for the new object detection model `yolo-v2-tiny-tf` at
+the end of the file.
+
+```yml
 - model: yolo-v2-tiny-tf
   alias: object_detection
   version: yolo-v2-tiny-tf
-```
-You can also specify the `precision` you want to download in the yaml file but if none provided it will download all available precisions.
-
-3. Run the model download tool with `yolo.yml` as the input model list file.
-```
-vaserving@host:~$ python3 tools/model_downloader --model-list yolo.yml
+  precision: [FP16,FP32]
 ```
 
-If the tool outputs the below message, it means it has created an empty model-proc file which cannot be referenced by a pipeline element.
+
+#### Run Model Downloader
+
 ```
-Warning, model-proc not found in gst-video-analytics repo.
-Creating empty json file for <model-name> to allow model to load in VA-Serving
-Do not specify model-proc in pipeline that utilizes this model
-``` 
-We'll need to know if an empty model-proc file was created when we get to the [Update/Create Pipeline Definition](#3-update-pipeline-definition-file-to-use-new-model) section. For this example a model-proc file is available from OMZ and will be downloaded.  
-The model will now be in `models` folder:
+./tools/model_downloader/model_downloader.sh --model-list models_list/yolo-models.list.yml
+```
+Expected output (abbreviated):
+
+```
+[ SUCCESS ] Generated IR version 10 model.
+[ SUCCESS ] XML file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
+[ SUCCESS ] BIN file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
+[ SUCCESS ] Total execution time: 5.75 seconds. 
+[ SUCCESS ] Memory consumed: 533 MB. 
+It's been a while, check for a new version of Intel(R) Distribution of OpenVINO(TM) toolkit here https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html?cid=other&source=Prod&campid=ww_2020_bu_IOTG_OpenVINO-2021-1&content=upg_pro&medium=organic_uid_agjj or on the GitHub*
+
+Downloaded yolo-v2-tiny-tf model-proc file from gst-video-analytics repo
+```
+
+The model will now be in `models` folder in the root of the project:
 ```
 models
 └── object_detection
@@ -125,141 +186,242 @@ models
         └── yolo-v2-tiny-tf.json
 ```
 
-## 3. Update Pipeline Definition File to Use New Model
-Make a copy of the `object_detection` version `1` pipeline definition file and change the version to `yolo-v2-tiny-tf`.
-> **Note:** You can also update the existing version `1` to point to the new model instead of creating a new version.
-```
-vaserving@host:~$ cp -r pipelines/object_detection/1 pipelines/object_detection/yolo-v2-tiny-tf
-```
-The pipeline template is shown below:
-```
-"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-            " ! gvadetect model-instance-id=inf0 model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
-            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
-            " ! appsink name=appsink"
-            ]
-```
-We need to change the model references used by the `gvadetect` element to use version `yolo-v2-tiny-tf`. 
-You can use your favorite editor to do this. The below command makes this change using the `sed` utility program.
-```
-vaserving@host:~$ sed -i -e s/\\[1\\]/\\[yolo-v2-tiny-tf\\]/g pipelines/object_detection/yolo-v2-tiny-tf/pipeline.json
-``` 
-Now the template will look like this:
-```
-"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-            " ! gvadetect model-instance-id=inf0 model={models[object_detection][yolo-v2-tiny-tf][network]} model-proc={models[object_detection][yolo-v2-tiny-tf][proc]} name=detection",
-            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
-            " ! appsink name=appsink"
-            ]
-```
-> **Note:** If the download tool reported that it could not find a `model-proc` and created an empty file, we would have to remove the `model-proc` property from the `gvadetect` element. 
+## Step 3. Create New Object Detection Pipeline
 
-## 4. Run Pipeline with New Model
-1. Now test the pipeline using the curl commands. We'll run in developer mode so we don't need to re-build the container. 
-This means the container will have access to the new model we created but we will have to manually start the service.
+#### Copy and Rename Existing Object Detection Pipeline
+
+Make a copy of the `object_detection` version `1` pipeline definition file and change the version to `yolo-v2-tiny-tf`.
+
 ```
-vaserving@host:~$ python3 -m vaserving
+$ cp -r pipelines/gstreamer/object_detection/1 pipelines/gstreamer/object_detection/yolo-v2-tiny-tf
 ```
-2. Check whether the new model is loaded -  
-Execute below command to get all model info and search for `yolo`
+
+> **Note:** You can also update the existing version `1` to point to the new model instead of creating a new version.
+
+#### Edit the Pipeline Template
+
+Video Analytics Serving pipeline definition files contain a template
+that specifies which model to use. The template needs to be updated to
+select a different model.
+
+Original pipeline template:
+
 ```
-$ curl localhost:8080/models | grep yolo
-    "description": "object_detection",
-    "name": "object_detection",
+"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
+            " ! gvadetect model={models[object_detection][1][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
+            " ! appsink name=appsink"
+            ]
+```
+
+We need to change the model references used by the `gvadetect` element to use version `yolo-v2-tiny-tf`.
+You can use your favorite editor to do this. The below command makes this change using the `sed` utility program.
+
+```bash
+sed -i -e s/\\[1\\]/\\[yolo-v2-tiny-tf\\]/g pipelines/gstreamer/object_detection/yolo-v2-tiny-tf/pipeline.json
+```
+
+Edited pipeline template:
+
+```
+"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
+            " ! gvadetect model-instance-id=inf0 model={models[object_detection][yolo-v2-tiny-tf][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
+            " ! appsink name=appsink"
+            ]
+```
+
+## Step 4. Run Microservice with Added Model and Pipeline
+
+The sample microservice supports volume mounting of models and
+pipelines to make testing local changes easier.
+
+```bash
+./docker/run.sh -v /tmp:/tmp --name vaserving --models models --pipelines pipelines/gstreamer
+```
+
+Expected output (abbreviated):
+
+```
+<snip>
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models from Path /home/video-analytics-serving/models", "module": "model_manager"}
+{"levelname": "WARNING", "asctime": "2021-01-21 06:58:11,099", "message": "Models directory is mount point", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/1/aclnet.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: person_vehicle_bike_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP32/person-vehicle-bike-detection-crossroad-0078.xml', 'FP16': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP16/person-vehicle-bike-detection-crossroad-0078.xml', 'model-proc': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/person-vehicle-bike-detection-crossroad-0078.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: face_detection_retail version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml', 'FP16': '/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml', 'model-proc': '/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: yolo-v2-tiny-tf type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP16/yolo-v2-tiny-tf.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json'}", "module": "model_manager"}
+<snip>
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,549", "message": "Loading Pipeline: object_detection version: yolo-v2-tiny-tf type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/yolo-v2-tiny-tf/pipeline.json", "module": "pipeline_manager"}
+```
+
+Once started you can verify that the new model and pipeline have been loaded via `curl`:
+
+```bash
+curl localhost:8080/models | grep yolo
+```
+Expected Output:
+```
       "model-proc": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json",
         "FP16": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP16/yolo-v2-tiny-tf.xml",
         "FP32": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml"
+    "version": "yolo-v2-tiny-tf"
 ```
-3. Start pipeline -  
-Start the `object_detection` version `yolo-v2-tiny-tf` pipeline using the below curl command.
 ```bash
-curl localhost:8080/pipelines/object_detection/yolo-v2-tiny-tf -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results2.txt", "format":"json-lines"}}'
+curl localhost:8080/pipelines | grep yolo
 ```
-4. View results in /tmp/results2.txt.
+Expected Output:
+```
+    "version": "yolo-v2-tiny-tf"
+```
+
+## Step 5. Detect Objects on Sample Video with New Pipeline
+
+#### Run interactive session
+
+In a second terminal window launch an interactive session:
+
 ```bash
-$ tail -f /tmp/results2.txt
+./docker/run.sh --dev --name vaclient
 ```
-Pretty printed output below:
-```json
+
+#### Detect Objects on Sample Video
+
+In the interactive session run the sample client to detect objects on
+the sample video using version `1` of the reference pipeline
+`object-detection`.
+
+```bash
+./samples/sample.py --pipeline object_detection --version yolo-v2-tiny-tf
+```
+
+Expected output (abbreviated):
+
+```
+<snip>
+Pipeline Status:
+
 {
-	"objects": [{
-		"detection": {
-			"bounding_box": {
-				"x_max": 0.5506289452314377,
-				"x_min": 0.4401100277900696,
-				"y_max": 0.8389964699745178,
-				"y_min": 0.3123674988746643
-			},
-			"confidence": 0.7932981252670288,
-			"label": "bottle",
-			"label_id": 39
-		},
-		"h": 190,
-		"roi_type": "bottle",
-		"w": 71,
-		"x": 282,
-		"y": 112
-	}, {
-		"detection": {
-			"bounding_box": {
-				"x_max": 0.9281446486711502,
-				"x_min": 0.8032000064849854,
-				"y_max": 0.8659530878067017,
-				"y_min": 0.28817808628082275
-			},
-			"confidence": 0.6495864987373352,
-			"label": "bottle",
-			"label_id": 39
-		},
-		"h": 208,
-		"roi_type": "bottle",
-		"w": 80,
-		"x": 514,
-		"y": 104
-	}, {
-		"detection": {
-			"bounding_box": {
-				"x_max": 0.18862692266702652,
-				"x_min": 0.05343208461999893,
-				"y_max": 0.8482187986373901,
-				"y_min": 0.2969546318054199
-			},
-			"confidence": 0.6058924198150635,
-			"label": "bottle",
-			"label_id": 39
-		},
-		"h": 198,
-		"roi_type": "bottle",
-		"w": 87,
-		"x": 34,
-		"y": 107
-	}, {
-		"detection": {
-			"bounding_box": {
-				"x_max": 0.176092691719532,
-				"x_min": 0.06645423918962479,
-				"y_max": 0.6428740918636322,
-				"y_min": 0.3436809778213501
-			},
-			"confidence": 0.5761112570762634,
-			"label": "bottle",
-			"label_id": 39
-		},
-		"h": 108,
-		"roi_type": "bottle",
-		"w": 70,
-		"x": 43,
-		"y": 124
-	}],
-	"resolution": {
-		"height": 360,
-		"width": 640
-	},
-	"source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-	"timestamp": 39821229050
+    "avg_fps": 31.230446318262235,
+    "elapsed_time": 11.111731052398682,
+    "id": 1,
+    "start_time": 1609896673.4552672,
+    "state": "RUNNING"
+}
+
+<snip>
+{
+  "objects": [
+    {
+      "detection": {
+        "bounding_box": {
+          "x_max": 0.19180697202682495,
+          "x_min": 0.09733753651380539,
+          "y_max": 0.8905727863311768,
+          "y_min": 0.3062259256839752
+        },
+        "confidence": 0.6085537075996399,
+        "label": "bottle",
+        "label_id": 5
+      },
+      "h": 210,
+      "roi_type": "bottle",
+      "w": 60,
+      "x": 62,
+      "y": 110
+    },
+    {
+      "detection": {
+        "bounding_box": {
+          "x_max": 0.8830730319023132,
+          "x_min": 0.7777565121650696,
+          "y_max": 0.890160083770752,
+          "y_min": 0.3054335117340088
+        },
+        "confidence": 0.5028868913650513,
+        "label": "bottle",
+        "label_id": 5
+      },
+      "h": 211,
+      "roi_type": "bottle",
+      "w": 67,
+      "x": 498,
+      "y": 110
+    }
+  ],
+  "resolution": {
+    "height": 360,
+    "width": 640
+  },
+  "source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottl
+e-detection.mp4?raw=true",
+  "timestamp": 0
 }
 ```
 
-## Related Links 
-1. For more information on the [Model Download Tool](../tools/model_downloader/README.md)
-2. [Converting models to IR format](https://docs.openvinotoolkit.org/latest/_docs_MO_DG_prepare_model_convert_model_Converting_Model.html)
+## Step 6. Rebuild Microservice with New Model and Pipeline
+
+Once the new pipeline is ready for deployment you can rebuild the
+microservice with the new model and pipeline so it no longer needs to
+be volume mounted locally. This step is optional.
+
+```bash
+./docker/build.sh --models ./models_list/yolo-models.list.yml --pipelines pipelines/gstreamer
+```
+
+Verify the models and pipelines are included:
+
+```bash
+./docker/run.sh -v /tmp:/tmp --name vaserving
+```
+
+Expected output (abbreviated):
+
+```
+<snip>
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models from Path /home/video-analytics-serving/models", "module": "model_manager"}
+{"levelname": "WARNING", "asctime": "2021-01-21 06:58:11,099", "message": "Models directory is mount point", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/1/aclnet.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: person_vehicle_bike_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP32/person-vehicle-bike-detection-crossroad-0078.xml', 'FP16': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP16/person-vehicle-bike-detection-crossroad-0078.xml', 'model-proc': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/person-vehicle-bike-detection-crossroad-0078.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: face_detection_retail version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml', 'FP16': '/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml', 'model-proc': '/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: yolo-v2-tiny-tf type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP16/yolo-v2-tiny-tf.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json'}", "module": "model_manager"}
+<snip>
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,549", "message": "Loading Pipeline: object_detection version: yolo-v2-tiny-tf type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/yolo-v2-tiny-tf/pipeline.json", "module": "pipeline_manager"}
+```
+
+Once started you can verify that the new model and pipeline have been loaded via `curl`:
+
+```bash
+curl localhost:8080/models | grep yolo
+```
+Expected Output:
+```
+"model-proc": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json",
+        "FP16": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP16/yolo-v2-tiny-tf.xml",
+        "FP32": "/home/video-analytics-serving/models/object_detection/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml"
+    "version": "yolo-v2-tiny-tf"
+```
+```bash
+curl localhost:8080/pipelines | grep yolo
+```
+Expected Output:
+```
+    "version": "yolo-v2-tiny-tf"
+```
+
+# Further Reading
+
+For more information on the build, run, pipeline definition and model download please see:
+
+* [Getting Started](/README.md#getting-started)
+* [Building Video Analytics Serving](/docs/building_video_analytics_serving.md)
+* [Running Video Analytics Serving](/docs/running_video_analytics_serving.md)
+* [Defining Pipelines](/docs/defining_pipelines.md)
+* [Model Downloader Tool](/tools/model_downloader/README.md)

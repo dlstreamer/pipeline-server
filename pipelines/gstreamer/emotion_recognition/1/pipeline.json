@@ -2,8 +2,8 @@
 	"type": "GStreamer",
 	"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ",
 				" ! videoconvert name=videoconvert",
-				" ! gvadetect model={models[face_detection_retail][1][network]} model-proc={models[face_detection_retail][1][proc]} name=detection",
-				" ! queue ! gvaclassify model={models[emotion_recognition][1][network]} model-proc={models[emotion_recognition][1][proc]} name=classification",
+				" ! gvadetect model={models[face_detection_retail][1][network]} name=detection",
+				" ! queue ! gvaclassify model={models[emotion_recognition][1][network]} name=classification",
 				" ! queue ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
 				" ! appsink name=appsink"
 				],
@@ -18,8 +18,25 @@
 					"CPU",
 					"HDDL",
 					"GPU",
-					"VPU"
+					"VPU",
+					"MYRIAD"
 				]
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "face_detection_retail0"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": ""
 			},
 			"inference-interval": {
 				"element": "detection",

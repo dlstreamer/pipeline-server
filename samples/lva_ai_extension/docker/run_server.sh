@@ -3,59 +3,33 @@
 CURRENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
 LVA_DIR=$(dirname $CURRENT_DIR)
-IMAGE=video-analytics-serving:0.4.0-dlstreamer-edge-ai-extension
+LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
+IMAGE=video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
+VASERVING_ROOT=/home/video-analytics-serving
 NAME=${IMAGE//[\:]/_}
 PORT=5001
-DEV_MODE=
+PIPELINES=
 ENTRYPOINT_ARGS=
-
-#Get options passed into script
-function get_options {
-  while :; do
-    case $1 in
-      -h | -\? | --help)
-        show_help
-        exit
-        ;;
-      -p)
-        if [ "$2" ]; then
-          PORT=$2
-          shift
-        else
-          error "-p expects a value"
-        fi
-        ;;
-      --pipeline-name|--pipeline-version|--max-running-pipelines|--parameters)
-        if [ "$2" ]; then
-          ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-          ENTRYPOINT_ARGS+="--entrypoint-args $2 "
-          shift
-        else
-          error "$1 expects a value"
-        fi
-        ;;
-      --debug)
-        ENTRYPOINT_ARGS+="--entrypoint-args $1 "
-        ;;
-      --dev)
-        DEV_MODE="--dev --pipelines $LVA_DIR/pipelines"
-        ;;
-      *)
-        break
-        ;;
-    esac
-
-    shift
-  done
-}
+MODE=
+VOLUME_MOUNT=
 
 function show_help {
+  echo ""
+  echo "**Run Script**"
+  echo ""
   echo "usage: ./run_server.sh"
   echo "  [ -p : Specify the port to use ] "
-  echo "  [ --pipeline-name : Specify the pipeline name to use ] "
-  echo "  [ --pipeline-version : Specify the pipeline version to use ] "
-  echo "  [ --debug : Use debug pipeline ] "
-  echo "  [ --max-running-pipelines : Specify the maximum number of concurrent pipelines, default is 10 ] "
+  echo "  [ --dev : Mount local source code] "
+  echo ""
+  echo "**Application**"
+  echo ""
+  if [ "${MODE}" == "DEV" ]; then
+      VOLUME_MOUNT+="-v $LVA_DIR:$LVA_ROOT "
+      VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
+      PIPELINES="--pipelines $LVA_DIR/pipelines "
+  fi
+  ENTRYPOINT_ARGS+="--entrypoint-args --help "  
+  "$ROOT_DIR/docker/run.sh" --user "$UID" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
 }
 
 function error {
@@ -63,7 +37,31 @@ function error {
     exit
 }
 
-get_options "$@"
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -h | -\? | --help)
+      show_help
+      exit
+      ;;
+    -p)
+      if [ "$2" ]; then
+        PORT=$2
+        shift
+      else
+        error "-p expects a value"
+      fi
+      ;;
+    --dev)
+	PIPELINES="--pipelines $LVA_DIR/pipelines "
+	MODE="DEV"
+      ;;
+    *)
+      ENTRYPOINT_ARGS+="--entrypoint-args '$1' "
+      ;;
+  esac
+
+  shift
+done
 
 ENV=
 
@@ -80,7 +78,23 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
 fi
 
 if [ ! -z "$PARAMETERS" ]; then
-  ENV+="-e PARAMETERS=$PARAMETERS "
+  ENV+="-e PARAMETERS='$PARAMETERS' "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /tmp:/tmp -v /dev/shm:/dev/shm -p $PORT:$PORT $ENTRYPOINT_ARGS $DEV_MODE $ENV
+if [ ! -z "$PIPELINE_PARAMETERS" ]; then
+  ENV+="-e PIPELINE_PARAMETERS='$PIPELINE_PARAMETERS' "
+fi
+
+if [ ! -z "$GST_DEBUG" ]; then
+  ENV+="-e GST_DEBUG=$GST_DEBUG "
+fi
+
+VOLUME_MOUNT+="-v /tmp:/tmp "
+VOLUME_MOUNT+="-v /dev/shm:/dev/shm "
+
+if [ "${MODE}" == "DEV" ]; then
+    VOLUME_MOUNT+="-v $LVA_DIR:$LVA_ROOT "
+    VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
+fi
+
+"$ROOT_DIR/docker/run.sh" --user "$UID" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV

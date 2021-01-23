@@ -9,6 +9,7 @@ import os
 import string
 import time
 from threading import Lock, Thread
+from collections import namedtuple
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -22,8 +23,6 @@ from vaserving.common.utils import logging
 from vaserving.pipeline import Pipeline
 # pylint: enable=wrong-import-position
 
-logger = logging.get_logger('GSTPipeline', is_static=True)
-
 class GStreamerPipeline(Pipeline):
     Gst.init(None)
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
@@ -34,6 +33,7 @@ class GStreamerPipeline(Pipeline):
     _inference_element_cache = {}
     _mainloop = None
     _mainloop_thread = None
+    CachedElement = namedtuple("CachedElement", ["element", "pipelines"])
 
     @staticmethod
     def gobject_mainloop():
@@ -78,6 +78,9 @@ class GStreamerPipeline(Pipeline):
         self._app_source = None
         self.appsink_element = None
         self._app_destination = None
+        self._cached_element_keys = []
+        self._logger = logging.get_logger('GSTPipeline', is_static=True)
+
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
                 target=GStreamerPipeline.gobject_mainloop)
@@ -95,9 +98,9 @@ class GStreamerPipeline(Pipeline):
     def _delete_pipeline(self, new_state):
         self.state = new_state
         self.stop_time = time.time()
-        logger.debug("Setting Pipeline {id}"
-                     " State to {next_state}".format(id=self.identifier,
-                                                     next_state=new_state.name))
+        self._logger.debug("Setting Pipeline {id}"
+                           " State to {next_state}".format(id=self.identifier,
+                                                           next_state=new_state.name))
         if self.pipeline:
             bus = self.pipeline.get_bus()
             if self._bus_connection_id:
@@ -107,10 +110,20 @@ class GStreamerPipeline(Pipeline):
             self.pipeline.set_state(Gst.State.NULL)
             del self.pipeline
             self.pipeline = None
+
         if self._app_source:
             self._app_source.finish()
+
         if self._app_destination:
             self._app_destination.finish()
+
+        if (new_state == Pipeline.State.ERROR):
+            for key in self._cached_element_keys:
+                for pipeline in GStreamerPipeline._inference_element_cache[key].pipelines:
+                    if (self != pipeline):
+                        pipeline.stop()
+                del GStreamerPipeline._inference_element_cache[key]
+
         self._finished_callback()
 
     def _delete_pipeline_with_lock(self, new_state):
@@ -147,7 +160,7 @@ class GStreamerPipeline(Pipeline):
         return params_obj
 
     def status(self):
-        logger.debug("Called Status")
+        self._logger.debug("Called Status")
         if self.start_time is not None:
             if self.stop_time is not None:
                 elapsed_time = max(0, self.stop_time - self.start_time)
@@ -214,16 +227,16 @@ class GStreamerPipeline(Pipeline):
                                 else:
                                     element.set_property(
                                         property_name, request[key])
-                                logger.debug("Setting element: {}, property: {}, value: {}".format(
+                                self._logger.debug("Setting element: {}, property: {}, value: {}".format(
                                     element_name,
                                     property_name,
                                     element.get_property(property_name)))
                             else:
-                                logger.debug("Parameter {} given for element {}"
-                                             " but no property found".format(
-                                                 property_name, element_name))
+                                self._logger.debug("Parameter {} given for element {}"
+                                                   " but no property found".format(
+                                                       property_name, element_name))
                         else:
-                            logger.debug(
+                            self._logger.debug(
                                 "Parameter {} given for element {}"
                                 " but no element found".format(property_name, element_name))
 
@@ -237,7 +250,10 @@ class GStreamerPipeline(Pipeline):
                             and element.get_property(model_instance_id))]
         for element, key in gva_elements:
             if key not in GStreamerPipeline._inference_element_cache:
-                GStreamerPipeline._inference_element_cache[key] = element
+                GStreamerPipeline._inference_element_cache[key] = GStreamerPipeline.CachedElement(
+                    element, [])
+            self._cached_element_keys.append(key)
+            GStreamerPipeline._inference_element_cache[key].pipelines.append(self)
 
     def _set_default_models(self):
         gva_elements = [element for element in self.pipeline.iterate_elements() if (
@@ -246,7 +262,7 @@ class GStreamerPipeline(Pipeline):
         for element in gva_elements:
             network = self.model_manager.get_default_network_for_device(
                 element.get_property("device"), element.get_property("model"))
-            logger.debug("Setting model to {} for element {}".format(
+            self._logger.debug("Setting model to {} for element {}".format(
                 network, element.get_name()))
             element.set_property("model", network)
 
@@ -255,6 +271,18 @@ class GStreamerPipeline(Pipeline):
         return [element for element in pipeline.iterate_elements()
                 if element.__gtype__.name in type_strings]
 
+    def _set_model_proc(self):
+        gva_elements = [element for element in self.pipeline.iterate_elements() if (
+            element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)]
+        for element in gva_elements:
+            if element.get_property("model-proc") is None:
+                proc = None
+                if element.get_property("model") in self.model_manager.model_procs:
+                    proc = self.model_manager.model_procs[element.get_property("model")]
+                if proc is not None:
+                    self._logger.debug("Setting model proc to {} for element {}".format(
+                        proc, element.get_name()))
+                    element.set_property("model-proc", proc)
 
     @staticmethod
     def validate_config(config):
@@ -264,6 +292,7 @@ class GStreamerPipeline(Pipeline):
         metaconvert = pipeline.get_by_name("metaconvert")
         metapublish = pipeline.get_by_name("destination")
         appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSrc"])
+        logger = logging.get_logger('GSTPipeline', is_static=True)
         if (len(appsrc_elements) > 1):
             logger.warning("Multiple appsrc elements found")
         if len(appsink_elements) != 1:
@@ -319,7 +348,7 @@ class GStreamerPipeline(Pipeline):
         try:
             os.makedirs(self._dir_name)
         except FileExistsError:
-            logger.debug("Directory already exists")
+            self._logger.debug("Directory already exists")
 
         template = "{dirname}/{adjustedtime}_{time}.mp4"
         return template.format(dirname=self._dir_name,
@@ -361,14 +390,15 @@ class GStreamerPipeline(Pipeline):
             if (self.start_time is not None):
                 return
 
-            logger.debug("Starting Pipeline {id}".format(id=self.identifier))
-            logger.debug(self._gst_launch_string)
+            self._logger.debug("Starting Pipeline {id}".format(id=self.identifier))
+            self._logger.debug(self._gst_launch_string)
 
             try:
                 self.pipeline = Gst.parse_launch(self._gst_launch_string)
                 self._set_properties()
                 self._set_bus_messages_flag()
                 self._set_default_models()
+                self._set_model_proc()
                 self._cache_inference_elements()
 
                 src = self._get_any_source()
@@ -404,7 +434,7 @@ class GStreamerPipeline(Pipeline):
                 self.pipeline.set_state(Gst.State.PLAYING)
                 self.start_time = time.time()
             except Exception as error:
-                logger.error("Error on Pipeline {id}: {err}".format(
+                self._logger.error("Error on Pipeline {id}: {err}".format(
                     id=self.identifier, err=error))
                 # Context is already within _create_delete_lock
                 self._delete_pipeline(Pipeline.State.ERROR)
@@ -441,7 +471,7 @@ class GStreamerPipeline(Pipeline):
         try:
             self._app_source.start_frames()
         except Exception as error:
-            logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
+            self._logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
                 id=self.identifier, err=error))
             src.post_message(Gst.Message.new_error(src, GLib.GError(),
                                                    "AppSource: {}".format(str(error))))
@@ -450,7 +480,7 @@ class GStreamerPipeline(Pipeline):
         try:
             self._app_source.pause_frames()
         except Exception as error:
-            logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
+            self._logger.error("Error on Pipeline {id}: Error in App Source: {err}".format(
                 id=self.identifier, err=error))
             src.post_message(Gst.Message.new_error(src, GLib.GError(),
                                                    "AppSource: {}".format(str(error))))
@@ -504,14 +534,14 @@ class GStreamerPipeline(Pipeline):
         return Gst.PadProbeReturn.OK
 
     def on_sample_app_destination(self, sink):
-        logger.debug("Received Sample from Pipeline {id}".format(
+        self._logger.debug("Received Sample from Pipeline {id}".format(
             id=self.identifier))
         sample = sink.emit("pull-sample")
         result = Gst.FlowReturn.OK
         try:
             self._app_destination.process_frame(sample)
         except Exception as error:
-            logger.error("Error on Pipeline {id}: Error in App Destination: {err}".format(
+            self._logger.error("Error on Pipeline {id}: Error in App Destination: {err}".format(
                 id=self.identifier, err=error))
             result = Gst.FlowReturn.ERROR
         self.frame_count += 1
@@ -520,7 +550,7 @@ class GStreamerPipeline(Pipeline):
 
     def on_sample(self, sink):
 
-        logger.debug("Received Sample from Pipeline {id}".format(
+        self._logger.debug("Received Sample from Pipeline {id}".format(
             id=self.identifier))
         sample = sink.emit("pull-sample")
         try:
@@ -529,10 +559,10 @@ class GStreamerPipeline(Pipeline):
 
             for meta in GVAJSONMeta.iterate(buf):
                 json_object = json.loads(meta.get_message())
-                logger.debug(json.dumps(json_object))
+                self._logger.debug(json.dumps(json_object))
 
         except Exception as error:
-            logger.error("Error on Pipeline {id}: {err}".format(
+            self._logger.error("Error on Pipeline {id}: {err}".format(
                 id=self.identifier, err=error))
 
         self.frame_count += 1
@@ -542,14 +572,14 @@ class GStreamerPipeline(Pipeline):
     def bus_call(self, unused_bus, message, unused_data=None):
         message_type = message.type
         if message_type == Gst.MessageType.APPLICATION:
-            logger.info("Pipeline {id} Aborted".format(id=self.identifier))
+            self._logger.info("Pipeline {id} Aborted".format(id=self.identifier))
             self._delete_pipeline_with_lock(Pipeline.State.ABORTED)
         if message_type == Gst.MessageType.EOS:
-            logger.info("Pipeline {id} Ended".format(id=self.identifier))
+            self._logger.info("Pipeline {id} Ended".format(id=self.identifier))
             self._delete_pipeline_with_lock(Pipeline.State.COMPLETED)
         elif message_type == Gst.MessageType.ERROR:
             err, debug = message.parse_error()
-            logger.error(
+            self._logger.error(
                 "Error on Pipeline {id}: {err}: {debug}".format(id=self.identifier,
                                                                 err=err,
                                                                 debug=debug))
@@ -561,14 +591,14 @@ class GStreamerPipeline(Pipeline):
                     if self.state is Pipeline.State.ABORTED:
                         self._delete_pipeline_with_lock(Pipeline.State.ABORTED)
                     if self.state is Pipeline.State.QUEUED:
-                        logger.info(
+                        self._logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = Pipeline.State.RUNNING
         else:
             if self._bus_messages:
                 structure = Gst.Message.get_structure(message)
                 if structure:
-                    logger.info("Message header: {name} , Message: {message}".format(
+                    self._logger.info("Message header: {name} , Message: {message}".format(
                         name=Gst.Structure.get_name(structure),
                         message=Gst.Structure.to_string(structure)))
         return True

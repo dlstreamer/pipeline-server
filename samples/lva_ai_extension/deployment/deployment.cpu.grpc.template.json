@@ -10,7 +10,11 @@
             "minDockerVersion": "v1.25",
             "loggingOptions": "",
             "registryCredentials": {
-
+              "$CONTAINER_REGISTRY_USERNAME_myacr":{
+                "username":"$CONTAINER_REGISTRY_USERNAME_myacr",
+                "password":"$CONTAINER_REGISTRY_PASSWORD_myacr",
+                "address": "$CONTAINER_REGISTRY_USERNAME_myacr.azurecr.io"
+              }
             }
           }
         },
@@ -83,7 +87,9 @@
               "image": "mcr.microsoft.com/lva-utilities/rtspsim-live555:1.2",
               "createOptions": {
                 "HostConfig": {
-
+                  "Binds": [
+                    "$INPUT_VIDEO_FOLDER_ON_DEVICE:/live/mediaServer/media"
+                  ]
                 }
               }
             }
@@ -94,27 +100,16 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "lva_vas_server_instance",
+              "image": "<LVA VA SERVING IMAGE AZURE URL>",
               "createOptions": {
                   "ExposedPorts": {
                     "80/tcp": {},
                     "5001/tcp" : {}
                 },
-                "Env":[
-                  "PIPELINE_NAME=object_detection",
-                  "PIPELINE_VERSION=person_vehicle_bike_detection",
-                  "PARAMETERS= \"{\"device\":\"GPU\"}\""
-                ],
                 "HostConfig": {
                     "Binds": [
                       "/tmp/:/tmp/"
                     ],
-                    "Devices": [
-                    {
-                      "PathOnHost":"/dev/dri",
-                      "PathInContainer":"/dev/dri",
-                      "CgroupPermissions":"rwm"
-                    },
                     "PortBindings": {
                         "80/tcp": [
                             {

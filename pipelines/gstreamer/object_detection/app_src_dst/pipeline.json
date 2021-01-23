@@ -1,7 +1,17 @@
 {
     "type": "GStreamer",
     "template": ["appsrc name=source",
-		 " ! gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]}",
+		 " ! gvadetect model={models[object_detection][1][network]} name=detection",
 		 " ! appsink name=destination"],
-    "description": "Object Detection Pipeline"
+    "description": "Object Detection Pipeline",
+    "parameters": {
+                "type": "object",
+                "properties": {
+                        "detection-model-instance-id": {
+                                "element": "detection",
+                                "type": "string",
+                                "default": ""
+                        }
+                }
+    }
 }

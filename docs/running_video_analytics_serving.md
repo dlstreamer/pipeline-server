@@ -1,5 +1,5 @@
 # Running Video Analytics Serving
-| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | 
+| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
 
 Video Analytics Serving docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
@@ -18,7 +18,7 @@ that exposes a RESTful interface on port
 8080.  The microservice has endpoints to list, start, stop, and get
 the status of media analytics pipelines.
 
-## Microservice Endpoints 
+## Microservice Endpoints
 
 | Path | Description |
 |----|------|
@@ -35,7 +35,7 @@ the status of media analytics pipelines.
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
 | `./docker/run.sh`|**DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
-| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |         
+| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
 
 
 # Interacting with the Microservice
@@ -80,7 +80,7 @@ From a new shell use curl to issue requests to the running
 microservice.
 
 ### Getting Loaded Pipelines
-**Example:** 
+**Example:**
 
 ```bash
 $ curl localhost:8080/pipelines
@@ -108,7 +108,7 @@ $ curl localhost:8080/pipelines
 ```bash
 curl localhost:8080/pipelines/object_detection/1 -X POST -H \
 'Content-Type: application/json' -d \
-'{ 
+'{
   "source": {
     "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
     "type": "uri"
@@ -164,12 +164,54 @@ appropriate directories when starting the container.
 $ ./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
 ```
 
+# Enabling Hardware Accelerators
+The run script automatically gives docker access (i.e. device, volume mount and device cgroup rule) to the following accelerators
+* iGPU
+* Intel&reg; Neural Compute Stick 2 (NCS2)
+* HDDL-R cards
+
+You also need to specify the inference device in the parameters section
+of the VA Serving request. Example for GPU below
+```json
+"parameters": {
+   "device": "GPU"
+}
+```
+See [Customizing Pipeline Requests](customizing_pipeline_requests.md) for more information.
+
+The following the table shows docker configuration and inference device name for all accelerators.
+> **Note:** Open Visual Cloud base images only support the GPU accelerator.
+> OpenVINO base images support all accelerators.
+
+|Accelerator|Docker Device|Volume Mount  |CGroup Rule|Inference Device|
+|-----------|-------------|--------------|-----------|----------------|
+| GPU       | /dev/dri    |              |           | GPU            |
+| NCS2      |             | /dev/bus/usb |c 189:* rmw| MYRIAD         |
+| HDDL-R    | /dev/ion    | /var/tmp     |           | HDDL           |
+
+## Specific Instructions for NCS2
+
+### User Permissions
+NCS2 accelerators require users to have special permissions for hardware access. To configure your system please follow the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
+
+> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
+>
+> ```bash 
+> ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
+> ```
+>
+> Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO documentation to copy it to the correct location.
+
+### Limitations
+DL Streamer pipelines can only target a single neural network model to each NCS2 accelerator in a system. For pipelines that contain multiple models
+(for example, [emotion_recognition](/pipelines/gstreamer/emotion_recognition/1/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
+
 # Developer Mode
 
 The run script includes a `--dev` flag which starts the
 container in "developer" mode. "Developer mode," sets `docker run`
 options to make development and modification of media analytics
-pipelines easier. 
+pipelines easier.
 
 > **Note:** Pipeline and Model directories are only scanned once at
 > service start-up. When making modifications to the models,
@@ -190,7 +232,7 @@ Developer mode:
 
 ```bash
 $ docker/run.sh --dev
-vaserving@my-host:~$ python3 -m vaserving 
+vaserving@my-host:~$ python3 -m vaserving
 ```
 
 ---

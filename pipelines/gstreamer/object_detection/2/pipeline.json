@@ -2,7 +2,7 @@
 	"type": "GStreamer",
 	"template": ["urisourcebin name=source ! tee name=t ! queue ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
                                 " ! queue",
-                                " ! gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
+                                " ! gvadetect model={models[object_detection][1][network]} name=detection",
                                 " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
                                 " ! appsink name=appsink",
                                 " t. ! queue ! qtdemux ! splitmuxsink name=splitmuxsink"
@@ -14,6 +14,11 @@
 			"device": {
 				"element": "detection",
 				"type": "string"
+			},
+			"detection-model-instance-id": {
+				"element": "detection",
+				"type": "string",
+				"default": "inf0"
 			},
 			"inference-interval": {
 				"element": "detection",

@@ -64,6 +64,7 @@ message Entity {
   Tag tag = 1;                        // Entity tag. Examples: person, bicycle, car, ...
   repeated Attribute attributes = 2;  // Additional entity attributes. Examples: color=red, body=sedan, etc.
   Rectangle box = 3;                  // Entity bounding box
+  string id = 4;                      // Optional entity id for identification and/or tracking
 }
 
 //

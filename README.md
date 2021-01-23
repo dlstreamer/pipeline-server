@@ -31,7 +31,7 @@ The sample microservice includes three media analytics pipelines.
 
 | |                  |
 |---------------------------------------------|---------|
-| **object_detection** | Detect and label objects such as bottles and bicycles. 
+| **object_detection** | Detect and label objects such as bottles and bicycles.
 | **emotion_recognition** | Detect the emotions of a person within a video stream.
 | **audio_detection** | Analyze audio streams for events such as breaking glass or barking dogs.
 
@@ -54,11 +54,6 @@ Build the sample microservice with the following command:
 
 The script will automatically include the sample models, pipelines and
 required dependencies.
-> **Note:** When running this command for the first time, the default
-> base image for Video Analytics Serving will take a long time to
-> build (likely over an hour).  For instructions on how to re-use
-> pre-built base images to speed up the build time please see the
-> following [documentation](docs/building_video_analytics_serving.md#using-pre-built-media-analytics-base-images).
 
 To verify the build succeeded execute the following command:
 
@@ -70,7 +65,7 @@ Expected output:
 
 ```bash
 REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-video-analytics-serving-gstreamer   latest              f51f2695639f        2 minutes ago          1.39GB
+video-analytics-serving-gstreamer   latest              f51f2695639f        2 minutes ago          3.03GB
 ```
 
 ## Running the Microservice
@@ -104,7 +99,7 @@ Expected output:
 {"levelname": "INFO", "asctime": "2020-08-06 12:37:13,333", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
 ```
 
-## Detecting Objects in a Video <br/> <br/> 
+## Detecting Objects in a Video <br/> <br/>
 
 ### Example Request:
 
@@ -161,7 +156,7 @@ Start a new shell and execute the following command to issue an HTTP POST reques
 ```bash
 curl localhost:8080/pipelines/object_detection/1 -X POST -H \
 'Content-Type: application/json' -d \
-'{ 
+'{
   "source": {
     "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
     "type": "uri"
@@ -285,7 +280,7 @@ Start a new shell and execute the following command to issue an HTTP POST reques
 ```bash
 curl localhost:8080/pipelines/emotion_recognition/1 -X POST -H \
 'Content-Type: application/json' -d \
-'{ 
+'{
   "source": {
     "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true",
     "type": "uri"
@@ -355,7 +350,7 @@ After pretty-printing:
 <details>
 <summary>Audio Event Detection</summary>
 
-## Detecting Audio Events in an Audio Recording 
+## Detecting Audio Events in an Audio Recording
 
 ### Example Request:
 
@@ -411,7 +406,7 @@ Start a new shell and execute the following command to issue an HTTP POST reques
 ```bash
 curl localhost:8080/pipelines/audio_detection/1 -X POST -H \
 'Content-Type: application/json' -d \
-'{ 
+'{
   "source": {
     "uri": "https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/samples/gst_launch/audio_detect/how_are_you_doing.wav?raw=true",
     "type": "uri"
@@ -477,24 +472,9 @@ After pretty-printing:
 | ------------    | ------------------ | -----------------|
 | **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [OpenVINO<sup>&#8482;</sup> Toolkit DL Streamer](https://github.com/opencv/gst-video-analytics) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad-Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
 
----
-\* Other names and brands may be claimed as the property of others.
 
 # Known Issues
-## Default GStreamer Build Fails
-If the build fails with the error `ModuleNotFoundError: No module named 'skbuild'`
-follow instructions in this [github issue](https://github.com/intel/video-analytics-serving/issues/25) for a workaround.
+Known issues are tracked on [GitHub](https://github.com/intel/video-analytics-serving/issues)*
 
-## Service Will Not Start Due to Missing Audio Plugin
-`GStreamer` framework base images are expected to include the
-[audio detection inference](https://github.com/opencv/gst-video-analytics/wiki/gvaaudiodetect) plugin `libgstaudioanalytics.so`. If this plugin is missing the audio detection pipeline will not load, see error message below, and the Video Analytics Serving service will not start.
-```
-{"levelname": "ERROR", "asctime": "2020-08-26 01:49:40,114", "message": "Failed to Load Pipeline from: /home/video-analytics-serving/pipelines/audio_detection/1/pipeline.json", "module": "pipeline_manager"}
-```
-Currently this plugin is only present in the DL Streamer audio preview so will be not be in any base images obtained from dockerhub. 
-Thus GStreamer images based on Open Visual Cloud or OpenVINO<sup>&#8482;</sup> will exhibit this problem. 
-
-As a workaround you can configure the service to ignore initialization errors when you start it.
-```bash
-docker/run.sh -v /tmp:/tmp -e IGNORE_INIT_ERRORS=True
-```
+---
+\* Other names and brands may be claimed as the property of others.

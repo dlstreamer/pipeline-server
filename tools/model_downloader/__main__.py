@@ -7,15 +7,14 @@
 
 import sys
 import os
-import config as cfg
 from arguments import parse_args
-from downloader import download
+import downloader
 
-package_name = os.path.basename(os.path.dirname(__file__))
 
-def print_args(args):
+def _print_args(args):
+    package_name = os.path.basename(os.path.dirname(__file__))
     heading = "Arguments for {}".format(package_name)
-    banner = "="*len(heading)
+    banner = "=" * len(heading)
     print(banner)
     print(heading)
     print(banner)
@@ -24,16 +23,25 @@ def print_args(args):
     print()
 
 
-if __name__ == '__main__':
-
+def main():
     args = parse_args()
-    print_args(args)
+    _print_args(args)
 
-    if (os.path.isfile(cfg.model_downloader) and
-            os.path.isfile(cfg.model_converter) and
-            os.path.isfile(cfg.model_optimizer)):
-        download(args.model_list, args.output_dir, args.force)
+    if (
+            os.path.isfile(downloader.MODEL_DOWNLOADER_PATH)
+            and os.path.isfile(downloader.MODEL_CONVERTER_PATH)
+            and os.path.isfile(downloader.MODEL_OPTIMIZER_PATH)
+    ):
+        downloader.download_and_convert_models(
+            args.model_list, args.output_dir, args.force, args.dl_streamer_version
+        )
     else:
-        print("Necessary tools needed from Intel(R) distribution of OpenVINO(TM) Toolkit not "\
-              "found. Please check if all dependant tools are installed and try again.")
+        print(
+            "Intel(R) distribution of OpenVINO(TM) Toolkit tools not "
+            "found. Please check if all dependent tools are installed and try again."
+        )
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
