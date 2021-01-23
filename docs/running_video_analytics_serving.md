@@ -1,5 +1,5 @@
 # Running Video Analytics Serving
-| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) |
+| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
 
 Video Analytics Serving docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
@@ -177,7 +177,7 @@ of the VA Serving request. Example for GPU below
    "device": "GPU"
 }
 ```
-See [Customizing Pipeline Requests](customizing_pipeline_requests.md) for more information of forming requests.
+See [Customizing Pipeline Requests](customizing_pipeline_requests.md) for more information.
 
 The following the table shows docker configuration and inference device name for all accelerators.
 > **Note:** Open Visual Cloud base images only support the GPU accelerator.
@@ -189,7 +189,20 @@ The following the table shows docker configuration and inference device name for
 | NCS2      |             | /dev/bus/usb |c 189:* rmw| MYRIAD         |
 | HDDL-R    | /dev/ion    | /var/tmp     |           | HDDL           |
 
-## NCS2 Limitation
+## Specific Instructions for NCS2
+
+### User Permissions
+NCS2 accelerators require users to have special permissions for hardware access. To configure your system please follow the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
+
+> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
+>
+> ```bash 
+> ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
+> ```
+>
+> Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO documentation to copy it to the correct location.
+
+### Limitations
 DL Streamer pipelines can only target a single neural network model to each NCS2 accelerator in a system. For pipelines that contain multiple models
 (for example, [emotion_recognition](/pipelines/gstreamer/emotion_recognition/1/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
 
