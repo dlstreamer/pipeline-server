@@ -1,0 +1,19 @@
+{
+    "summary": "Intentionally provides a bad uri parameter as source to ensure jsonschema validation rejects it.",
+    "body": {
+        "source": {
+            "uri": "https://github/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true spaces in uri",
+            "type": "uri"
+        }
+    },
+    "path": "pipelines/object_detection/1",
+    "sort_key": "name",
+    "result": {
+        "detail": "{'uri': 'https://github/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true spaces in uri', 'type': 'uri'} is not valid under any of the given schemas - 'source'",
+        "status": 400,
+        "title": "Bad Request",
+        "type": "about:blank"
+    },
+    "status_code": 400,
+    "verb": "post"
+}
