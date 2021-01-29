@@ -39,7 +39,10 @@
                         "type": "integer"
                     },
                     "detection-model-instance-id": {
-                        "element": "detection",
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
                         "type": "string",
                         "default": "inf0"
                     },
@@ -80,7 +83,10 @@
                 "properties": {
                     "detection-model-instance-id": {
                         "default": "",
-                        "element": "detection",
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
                         "type": "string"
                     }
                 },
@@ -119,7 +125,10 @@
                         "type": "integer"
                     },
                     "detection-model-instance-id": {
-                        "element": "detection",
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
                         "type": "string",
                         "default": "inf0"
                     },
@@ -172,7 +181,10 @@
                         "type": "integer"
                     },
                     "detection-model-instance-id": {
-                        "element": "detection",
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
                         "type": "string",
                         "default": "inf0"
                     },

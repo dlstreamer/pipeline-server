@@ -8,7 +8,10 @@
                 "type": "object",
                 "properties": {
                         "detection-model-instance-id": {
-                                "element": "detection",
+                                "element": {
+                                        "name": "detection",
+                                        "property": "model-instance-id"
+                                },
                                 "type": "string",
                                 "default": ""
                         }
