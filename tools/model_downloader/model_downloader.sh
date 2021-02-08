@@ -29,8 +29,8 @@ show_help() {
 }
 
 error() {
-    printf '%s %s\n' "$1" "$2" >&2
-    exit 1
+  printf '%s %s\n' "$1" "$2" >&2
+  exit 1
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -40,7 +40,7 @@ while [[ "$#" -gt 0 ]]; do
         exit
         ;;
     --dry-run)
-       DRY_RUN="--dry-run"
+        DRY_RUN="--dry-run"
         ;;
     --force)
         FORCE="--force"
@@ -74,10 +74,10 @@ while [[ "$#" -gt 0 ]]; do
         break
         ;;
     -?*)
-	error 'ERROR: Unknown option: ' $1
+        error 'ERROR: Unknown option: ' $1
         ;;
     ?*)
-	error 'ERROR: Unknown option: ' $1
+        error 'ERROR: Unknown option: ' $1
         ;;
     *)
         break
@@ -91,15 +91,18 @@ YML_FILE_NAME=$(basename "${MODEL_LIST}")
 VOLUME_MOUNT+="-v $TOOLS_DIR:/home/video-analytics-serving/tools -v $YML_DIR:/models_yml -v $OUTPUT_DIR:/output"
 
 case $OPEN_MODEL_ZOO_VERSION in
-    2021.1)
-	DL_STREAMER_VERSION="v1.2.1"
-	;;
-    2021.2)
-	DL_STREAMER_VERSION="v1.3"
-	;;
     2020.4)
-	DL_STREAMER_VERSION="v1.1.0"
-	;;
+        DL_STREAMER_VERSION="v1.1.0"
+        ;;
+    2021.1)
+        DL_STREAMER_VERSION="v1.2.1"
+        ;;
+    2021.2)
+        DL_STREAMER_VERSION="v1.3"
+        ;;
+    2021.3)
+        DL_STREAMER_VERSION="v1.4"
+        ;;
     *)
         error 'ERROR: Unknown Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION
 esac
