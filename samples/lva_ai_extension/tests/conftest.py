@@ -23,12 +23,16 @@ class Helpers:
             server_args.extend(["--pipeline-name", params["pipeline_name"]])
         if params.get("pipeline_version"):
             server_args.extend(["--pipeline-version", params["pipeline_version"]])
+        if params.get("max_running_pipelines"):
+            server_args.extend(["--max-running-pipelines", str(params["max_running_pipelines"])])
         print(' '.join(server_args))
-        self.server_process = subprocess.Popen(server_args)
+        self.server_process = subprocess.Popen(server_args,
+                                               stdout=params.get("stdout",None),
+                                               stderr=params.get("stderr",None))
         time.sleep(params.get("sleep_period",0.25))
         return self.server_process
 
-    def run_client(self, params):
+    def run_client(self, params, asynchronous=False):
         client_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/client",
                     "-s", "127.0.0.1:" + str(params["port"]),
                     "-l", str(params.get("loop_count", 1)),
@@ -38,10 +42,13 @@ class Helpers:
         if params.get("output_location"):
             client_args.extend(["-o", params["output_location"]])
         print(' '.join(client_args))
-        self.client_process = subprocess.run(client_args)
-        assert self.client_process.returncode is not None
-        assert self.client_process.returncode == params.get("expected_return_code", 0)
-        return self.client_process.returncode
+        self.client_process = subprocess.Popen(client_args,
+                                               stdout=params.get("stdout",None),
+                                               stderr=params.get("stderr",None))
+        if not asynchronous:
+            self.client_process.wait()
+            assert self.client_process.returncode == params.get("expected_return_code", 0)
+        return self.client_process
 
     def remove_empty_lists(self, dictionary):
         if not isinstance(dictionary, (dict, list)):

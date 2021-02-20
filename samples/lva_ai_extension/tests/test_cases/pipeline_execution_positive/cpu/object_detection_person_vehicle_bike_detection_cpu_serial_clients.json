@@ -6,7 +6,7 @@
             "detection-device":"CPU"
             },
         "sleep_period":0.25,
-        "max_running_pipelines":10,
+        "max_running_pipelines":1,
         "port":5001
     },
     "client_params": {
