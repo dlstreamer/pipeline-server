@@ -18,13 +18,14 @@ def get_serial_test_time(helpers, test_case):
     client_timing_test_case = copy.deepcopy(test_case["client_params"])
     # In case this is the first test, prime the server to remove possible init delay in response
     get_client_execution_time(helpers, client_timing_test_case, 1)
+    num_frames = test_case["client_params"]["loop_count"]
     one_frame_time = get_client_execution_time(helpers, client_timing_test_case, 1)
-    two_frame_time = get_client_execution_time(helpers, client_timing_test_case, 2)
-    client_frame_time = two_frame_time - one_frame_time
+    multi_frame_time = get_client_execution_time(helpers, client_timing_test_case, num_frames)
+    client_frame_time = (multi_frame_time - one_frame_time) / (num_frames - 1)
     client_init_time = one_frame_time - client_frame_time
-    print("Client execution times: 1 frame = {}, 2 frames = {}".format(one_frame_time, two_frame_time))
+    print("Client execution times: 1 frame = {}, {} frames = {}".format(one_frame_time, num_frames, multi_frame_time))
     print("Client execution times: init = {}, frame = {}".format(client_init_time, client_frame_time))
-    serial_test_time = client_init_time + test_case["num_of_concurrent_clients"] * test_case["client_params"]["loop_count"] * client_frame_time
+    serial_test_time = client_init_time + test_case["num_of_concurrent_clients"] * num_frames * client_frame_time
     return serial_test_time
 
 def test_pipeline_execution_positive(helpers, test_case, test_filename, generate):
@@ -72,16 +73,17 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     concurrent_client_running_time =  time.time() - start_time
 
     # Test concurrency - do all clients run concurrently or serially?
-    # If max_running_pipelines == 1 we expect serial operation thus test failure
+    # If max_running_pipelines == 1 we expect serial operation
     if num_of_concurrent_clients > 1:
-        print("Max test time {}s. All clients running for {}s".format(overall_test_time, concurrent_client_running_time))
+        print("Client execution test time {}s. All clients running for {}s".format(overall_test_time, concurrent_client_running_time))
         for p in proc:
             if p.poll() is None:
                 p.kill()
+        run_to_run_variance = 1.0
         if test_case["server_params"]["max_running_pipelines"] > 1:
             assert concurrent_client_running_time < overall_test_time, "Clients not running concurrently"
         else:
-            assert concurrent_client_running_time > overall_test_time, "Clients not running serially"
+            assert (overall_test_time - concurrent_client_running_time) < run_to_run_variance, "Clients not running serially"
 
     for output_file in output_locations:
         helpers.validate_output_against_schema(output_file)
