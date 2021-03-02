@@ -42,9 +42,9 @@
 			"nireq": {
 				"element": "detection",
 				"type": "integer",
-				"minimum": 1,
+				"minimum": 0,
 				"maximum": 64,
-				"default": 2
+				"default": 0
 			}
 		}
 	}

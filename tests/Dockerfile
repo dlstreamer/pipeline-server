@@ -9,7 +9,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     python3-dev \
     clamav \
     clamav-daemon \
-    gcc && \
+    gcc  \
+    wget && \
     rm -rf /var/lib/apt/lists/*
 
 
@@ -31,6 +32,8 @@ COPY models_list/models.list.yml /home/video-analytics-serving/models/models.lis
 RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version; cp -rf /home/video-analytics-serving/models/emotion_recognition/1/* /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/emotion_recognition/stringified_version
 
 RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1; cp -rf /home/video-analytics-serving/models/face_detection_retail/1/*   /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/emotion_recognition_stringver_cpu_gstreamer_models/face_detection_retail/1
+
+RUN wget -O tests/media/store-aisle-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/store-aisle-detection.mp4?raw=true
 
 ARG USER=vaserving
 

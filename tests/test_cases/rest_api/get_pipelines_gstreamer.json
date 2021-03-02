@@ -194,10 +194,10 @@
                         "type": "integer"
                     },
                     "nireq": {
-                        "default": 2,
+                        "default": 0,
                         "element": "detection",
                         "maximum": 64,
-                        "minimum": 1,
+                        "minimum": 0,
                         "type": "integer"
                     }
                 },

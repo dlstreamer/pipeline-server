@@ -1,0 +1,19 @@
+{
+    "path": "pipelines/object_detection/1",
+    "start" : {
+        "body": {
+            "source": {
+                "uri": "file:///home/video-analytics-serving/tests/media/store-aisle-detection.mp4",
+                "type": "uri"
+            },
+            "destination": {
+                "type": "file",
+                "path": "/tmp/rest_object_detection",
+                "format": "json-lines"
+            }
+        }
+    },
+    "iterations": 1,
+    "fps_percentage_diff_limit": 5,
+    "gst_launch_string": "gst-launch-1.0 urisourcebin uri=file:///home/video-analytics-serving/tests/media/store-aisle-detection.mp4 ! concat name=c ! decodebin ! video/x-raw ! videoconvert ! gvadetect model=/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml model-proc=/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json ! gvametaconvert ! queue ! gvametapublish file-path=report.json ! gvafpscounter ! fakesink"
+}

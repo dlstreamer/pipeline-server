@@ -112,17 +112,24 @@ def pytest_addoption(parser):
                      default=False)
     parser.addoption("--myriad", action="store_true", help="Run MYRIAD tests",
                      default=False)
+    parser.addoption("--performance", action="store_true", help="run performance tests",
+                     default=False)
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "stability: run stability tests")
+    config.addinivalue_line("markers", "performance: run performance tests")
 
 def pytest_collection_modifyitems(config, items):
-    if config.getoption("--stability"):
-        return
-    skip_stability = pytest.mark.skip(reason="add --stability option to run stability tests")
-    for item in items:
-        if "stability" in item.keywords:
-            item.add_marker(skip_stability)
+    if not config.getoption("--stability"):
+        skip_stability = pytest.mark.skip(reason="add --stability option to run stability tests")
+        for item in items:
+            if "stability" in item.keywords:
+                item.add_marker(skip_stability)
+    if not config.getoption("--performance"):
+        skip_performance = pytest.mark.skip(reason="add --performance option to run performance tests")
+        for item in items:
+            if "performance" in item.keywords:
+                item.add_marker(skip_performance)
 
 @pytest.fixture
 def stability_duration(request):
