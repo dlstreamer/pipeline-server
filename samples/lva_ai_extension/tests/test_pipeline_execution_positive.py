@@ -60,7 +60,7 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     sleep_duration = 0.25
     num_clients_running = num_of_concurrent_clients
     all_clients_running_count = 0
-    while num_clients_running > 0 and time.clock() < end_time:
+    while num_clients_running > 0 and time.time() < end_time:
         num_clients_running = 0
         for p in proc:
             if p.poll() is None:

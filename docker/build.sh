@@ -10,7 +10,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu18_runtime:2021.1"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.2"
 BASE_IMAGE=
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
@@ -33,7 +33,7 @@ BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
-SUPPORTED_IMAGES=(openvino/ubuntu18_runtime:2021.1 openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10)
+SUPPORTED_IMAGES=(openvino/ubuntu20_data_runtime:2021.2 openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10)
 OPEN_MODEL_ZOO_VERSION=
 FORCE_MODEL_DOWNLOAD=
 
@@ -244,7 +244,7 @@ get_options() {
             error 'ERROR: Unknown version of Intel(R) distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
            fi
         else
-           OPEN_MODEL_ZOO_VERSION=2021.1
+           OPEN_MODEL_ZOO_VERSION=2021.2
         fi
 
 	if [ ! -d "$SOURCE_DIR/models" ]; then
@@ -373,13 +373,13 @@ if [ "$BASE" == "BUILD" ]; then
 
     BASE_IMAGE=$BASE_BUILD_TAG
 else
-    #Ensure image is latest from Docker Hub
+    # Ensure image is latest from Docker Hub
     launch "$RUN_PREFIX docker pull ${CACHE_PREFIX}$BASE_IMAGE"
 fi
 
 # BUILD IMAGE
 
-BUILD_ARGS+=" --build-arg BASE=$BASE_IMAGE "
+BUILD_ARGS+=" --build-arg BASE=${CACHE_PREFIX}$BASE_IMAGE "
 BUILD_ARGS+=" --build-arg FRAMEWORK=$FRAMEWORK "
 if [ -n "$MODELS" ]; then
     BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS_PATH "

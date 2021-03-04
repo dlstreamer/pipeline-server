@@ -26,26 +26,31 @@ USER root
 ARG BASE=video-analytics-serving-gstreamer-base
 ENV VA_SERVING_BASE=${BASE}
 SHELL ["/bin/bash", "-c"]
-RUN if [[ ${VA_SERVING_BASE} = *"openvino"* ]]; then \
-        if [ -f /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ]; then \
-            /opt/intel/openvino/install_dependencies/install_openvino_dependencies.sh ;\
-        fi\
-    fi    
 
 # Creating user vaserving and adding it to groups "video" and "users" to use GPU and VPU
 ARG USER=vaserving
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
     chown ${USER} -R /home/video-analytics-serving /root
 
-# Dependencies installed via apt-get
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    intel-media-va-driver-non-free \
+    gstreamer1.0-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;\
+    fi
+
+RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     python3 \
     python3-setuptools \
     python3-pip && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;\
+    fi
 
-# Dependencies installed via pip
 COPY ./requirements.txt /
 RUN pip3 install  --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
