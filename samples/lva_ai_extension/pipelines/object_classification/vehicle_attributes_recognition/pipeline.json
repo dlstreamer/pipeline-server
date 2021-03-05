@@ -13,14 +13,16 @@
 					"name": "detection",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "CPU"
 			},
 			"classification-device": {
 				"element": {
 					"name": "classification",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "CPU"
 			},
 			"batch-size": {
 				"element": 

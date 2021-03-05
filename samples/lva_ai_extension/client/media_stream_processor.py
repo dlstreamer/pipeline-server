@@ -147,7 +147,7 @@ class MediaStreamProcessor:
             log_exception()
             raise
 
-    def get_media_stream_descriptor(self, width, height):
+    def get_media_stream_descriptor(self, width, height, extension_config):
         try:
             smbtp = None
             if self._shared_memory_manager:
@@ -161,6 +161,7 @@ class MediaStreamProcessor:
                     graph_instance_name="SampleGraph1",
                     graph_node_name="SampleGraph1",
                 ),
+                extension_configuration=extension_config,
                 media_descriptor=media_pb2.MediaDescriptor(
                     timescale=90000,
                     # pylint: disable=no-member
@@ -185,8 +186,8 @@ class MediaStreamProcessor:
 
         return media_stream_descriptor
 
-    def start(self, width, height, frame_queue, result_queue):
-        descriptor = self.get_media_stream_descriptor(width, height)
+    def start(self, width, height, frame_queue, result_queue, extension_config):
+        descriptor = self.get_media_stream_descriptor(width, height, extension_config)
         request_generator = self.RequestGenerator(
             descriptor, self._shared_memory_manager, frame_queue
         )

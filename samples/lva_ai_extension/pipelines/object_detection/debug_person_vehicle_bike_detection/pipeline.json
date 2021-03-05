@@ -14,7 +14,8 @@
 					"name": "detection",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "CPU"
 			},
 			"detection-model-instance-id": {
 				"element": {

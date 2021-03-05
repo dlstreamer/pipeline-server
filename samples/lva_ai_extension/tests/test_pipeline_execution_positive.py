@@ -6,26 +6,32 @@ import json
 import time
 
 
-def get_client_execution_time(helpers, client_timing_test_case, num_frames):
-    client_timing_test_case["loop_count"] = num_frames
+def get_client_execution_time(helpers, client_timing_test_case, loop_count):
+    client_test_case = copy.deepcopy(client_timing_test_case)
+    client_test_case["params"]["loop_count"] = loop_count
     start_time = time.time()
-    helpers.run_client(client_timing_test_case)
+    helpers.run_client(client_test_case["params"])
     return time.time() - start_time
 
-def get_serial_test_time(helpers, test_case):
-    if test_case["num_of_concurrent_clients"] == 1:
+def get_serial_test_time_1_client(helpers, test_case_client):
+    num_of_concurrent_clients = test_case_client.get("num_of_concurrent_clients", 1)
+    #If num_of_concurrent_clients is 1, the serial test time is not used
+    if num_of_concurrent_clients == 1:
         return 1
-    client_timing_test_case = copy.deepcopy(test_case["client_params"])
-    # In case this is the first test, prime the server to remove possible init delay in response
+
+    client_timing_test_case = copy.deepcopy(test_case_client)
+    #Prime the server to remove possible init delay in response
     get_client_execution_time(helpers, client_timing_test_case, 1)
-    num_frames = test_case["client_params"]["loop_count"]
+    #Get time each frame will take on average ignoring init delay
+    #Serial time is init time + frame time * num_frames * num_of_concurrent_clients
+    num_frames = test_case_client["params"]["loop_count"]
     one_frame_time = get_client_execution_time(helpers, client_timing_test_case, 1)
     multi_frame_time = get_client_execution_time(helpers, client_timing_test_case, num_frames)
     client_frame_time = (multi_frame_time - one_frame_time) / (num_frames - 1)
     client_init_time = one_frame_time - client_frame_time
     print("Client execution times: 1 frame = {}, {} frames = {}".format(one_frame_time, num_frames, multi_frame_time))
     print("Client execution times: init = {}, frame = {}".format(client_init_time, client_frame_time))
-    serial_test_time = client_init_time + test_case["num_of_concurrent_clients"] * num_frames * client_frame_time
+    serial_test_time = client_init_time + num_of_concurrent_clients * num_frames * client_frame_time
     return serial_test_time
 
 def test_pipeline_execution_positive(helpers, test_case, test_filename, generate):
@@ -37,21 +43,37 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     #Create temporary directory for saving output
     workdir_path = tempfile.TemporaryDirectory()
     output_locations = []
-    proc = []
+    proc_list = []
     counter = 0
 
-    num_of_concurrent_clients = test_case["num_of_concurrent_clients"]
-    overall_test_time = get_serial_test_time(helpers, test_case)
+    # num_of_concurrent_clients is used for checking pipelines run concurrently
+    # because of behavior of test checking serial runtime, this is difficult to
+    num_of_concurrent_clients = 0
+    for client in test_case["client"]:
+        num_of_concurrent_clients += client.get("num_of_concurrent_clients", 1)
+
+    overall_test_time = 0
+    # If multiple pipelines defined in test case, calculate serial test time individually
+    if len(test_case["client"]) > 1:
+        for client in test_case["client"]:
+            loop_count = 1
+            if (".jpg" in client["params"]["source"]) or (".png" in client["params"]["source"]):
+                loop_count = 10
+            overall_test_time += get_client_execution_time(helpers, client, loop_count)
+    else:
+        overall_test_time = get_serial_test_time_1_client(helpers, test_case["client"][0])
 
     # Start clients
-    for _ in range(num_of_concurrent_clients):
-        output_file = "output" + str(counter) + ".jsonl"
-        counter += 1
-        output_location = os.path.join(workdir_path.name, output_file)
-        output_locations.append(output_location)
-        test_case["client_params"]["output_location"] = output_location
-        p = helpers.run_client(test_case["client_params"], test_case["num_of_concurrent_clients"] > 1)
-        proc.append(p)
+    for client in test_case["client"]:
+        for _ in range(client.get("num_of_concurrent_clients", 1)):
+            output_file = "output" + str(counter) + ".jsonl"
+            counter += 1
+            output_location = os.path.join(workdir_path.name, output_file)
+            output_locations.append(output_location)
+            client["params"]["output_location"] = output_location
+            p = helpers.run_client(client["params"], num_of_concurrent_clients > 1)
+            proc_dict = { "process": p, "expected_return_code": client["params"].get("expected_return_code", 0)}
+            proc_list.append(proc_dict)
 
     # Monitor number of running clients, wait for them all finish
     # TODO: Add timeout
@@ -62,11 +84,12 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     all_clients_running_count = 0
     while num_clients_running > 0 and time.time() < end_time:
         num_clients_running = 0
-        for p in proc:
-            if p.poll() is None:
+        for proc_dict in proc_list:
+            proc_dict["process"]
+            if proc_dict["process"].poll() is None:
                 num_clients_running+=1
             else:
-                assert p.returncode == test_case["client_params"]["expected_return_code"]
+                assert proc_dict["process"].returncode == proc_dict["expected_return_code"]
         if num_clients_running == num_of_concurrent_clients:
             all_clients_running_count+=1
         time.sleep(sleep_duration)
@@ -76,9 +99,9 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     # If max_running_pipelines == 1 we expect serial operation
     if num_of_concurrent_clients > 1:
         print("Client execution test time {}s. All clients running for {}s".format(overall_test_time, concurrent_client_running_time))
-        for p in proc:
-            if p.poll() is None:
-                p.kill()
+        for proc_dict in proc_list:
+            if proc_dict["process"].poll() is None:
+                proc_dict["process"].kill()
         run_to_run_variance = 1.0
         if test_case["server_params"]["max_running_pipelines"] > 1:
             assert concurrent_client_running_time < overall_test_time, "Clients not running concurrently"

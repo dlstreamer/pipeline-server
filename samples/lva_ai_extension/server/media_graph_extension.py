@@ -34,6 +34,7 @@ from queue import Queue
 import tempfile
 import datetime
 from enum import Enum
+import jsonschema
 
 import samples.lva_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
 import samples.lva_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
@@ -42,6 +43,7 @@ import samples.lva_ai_extension.common.grpc_autogen.extension_pb2_grpc as extens
 
 from samples.lva_ai_extension.common.shared_memory import SharedMemoryManager
 from samples.lva_ai_extension.common.exception_handler import log_exception
+import samples.lva_ai_extension.common.extension_schema as extension_schema
 
 from vaserving.vaserving import VAServing
 from vaserving.gstreamer_app_source import GvaFrameData
@@ -96,7 +98,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             pipeline,
             version,
             debug=False,
-            pipeline_parameter_arg=None,
             input_queue_size=1,
     ):
         self._pipeline = pipeline
@@ -104,7 +105,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         self._input_queue_size = input_queue_size
         self._logger = get_logger("MediaGraphExtension")
         self._debug = debug
-        self._pipeline_parameter_arg = pipeline_parameter_arg
+        self._extension_config_schema = extension_schema.extension_config
+        self._extension_config_validator = jsonschema.Draft7Validator(schema=self._extension_config_schema,
+                                                                      format_checker=jsonschema.draft7_format_checker)
 
     def _generate_media_stream_message(self, gva_sample):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
@@ -249,6 +252,64 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             samples.append(queue.get())
         return samples
 
+    def _validate_ext_config_against_schema(self, extension_config):
+        try:
+            self._extension_config_validator.validate(extension_config)
+        except jsonschema.exceptions.ValidationError as err:
+            self._logger.error("Error occured during validation: {}".format(err.message))
+            raise
+
+    def _set_debug_properties(self, pipeline_version, pipeline_parameters):
+        if self._debug:
+            pipeline_version = "debug_" + pipeline_version
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            location = os.path.join(
+                tempfile.gettempdir(), "vaserving", self._version, timestamp
+            )
+            os.makedirs(os.path.abspath(location))
+            debug_parameters = {
+                "location": os.path.join(location, "frame_%07d.jpeg")
+            }
+
+            pipeline_parameters.update(debug_parameters)
+        return pipeline_version, pipeline_parameters
+
+    def _set_pipeline_properties(self, request):
+        # Set deployment pipeline name, version, and args if set
+        pipeline_name = self._pipeline
+        pipeline_version = self._version
+        pipeline_parameters = {}
+
+        # Set pipeline values if passed through request
+        extension_configuration = None
+        if request.media_stream_descriptor.extension_configuration:
+            # Load the extension_config
+            try:
+                extension_configuration = json.loads(request.media_stream_descriptor.extension_configuration)
+            except ValueError:
+                self._logger.error("Decoding extension_configuration field has failed: {}".format(
+                    request.media_stream_descriptor.extension_configuration))
+                raise
+            # Validate the extension_config against the schema
+            self._validate_ext_config_against_schema(extension_configuration)
+
+            # If extension_config has pipeline values, set the properties
+            if "pipeline" in extension_configuration:
+                pipeline_request = extension_configuration.get("pipeline")
+                pipeline_name = pipeline_request["name"]
+                pipeline_version = pipeline_request["version"]
+                if pipeline_request.get("parameters"):
+                    pipeline_parameters = pipeline_request["parameters"]
+
+            # Reject pipeline if it has debug in its version
+            if pipeline_version.startswith("debug"):
+                raise ValueError("Cannot specify debug pipelines in request")
+
+        # Set debug properties if debug flag is set
+        pipeline_version, pipeline_parameters = self._set_debug_properties(pipeline_version, pipeline_parameters)
+
+        return pipeline_name, pipeline_version, pipeline_parameters
+
     # gRPC stubbed function
     # client/gRPC will call this function to send frames/descriptions
     def ProcessMediaStream(self, requestIterator, context):
@@ -280,41 +341,20 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 )
             ),
         )
+
         responses_sent += 1
         yield media_stream_message
 
-        final_pipeline_parameters = {}
-        if self._version.startswith("debug"):
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            location = os.path.join(
-                tempfile.gettempdir(), "vaserving", self._version, timestamp
-            )
-            os.makedirs(os.path.abspath(location))
-            final_pipeline_parameters = {
-                "location": os.path.join(location, "frame_%07d.jpeg")
-            }
+        pipeline_name, pipeline_version, pipeline_parameters = self._set_pipeline_properties(request)
 
-        try:
-            if self._pipeline_parameter_arg:
-                pipeline_parameters = {}
-                if os.path.isfile(self._pipeline_parameter_arg):
-                    with open(self._pipeline_parameter_arg) as json_file:
-                        pipeline_parameters = json.load(json_file)
-                else:
-                    pipeline_parameters = json.loads(self._pipeline_parameter_arg)
-                final_pipeline_parameters.update(pipeline_parameters)
-        except ValueError:
-            self._logger.error("Issue loading json parameters: {}".format(self._pipeline_parameter_arg))
-            raise
-
-        self._logger.info("Pipeline Name : {}".format(self._pipeline))
-        self._logger.info("Pipeline Version : {}".format(self._version))
-        self._logger.info("Pipeline Parameters : {}".format(final_pipeline_parameters))
+        self._logger.info("Pipeline Name : {}".format(pipeline_name))
+        self._logger.info("Pipeline Version : {}".format(pipeline_version))
+        self._logger.info("Pipeline Parameters : {}".format(pipeline_parameters))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
         # Start object detection pipeline
         # It will wait until it receives frames via the detect_input queue
-        detect_pipeline = VAServing.pipeline(self._pipeline, self._version)
+        detect_pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
         detect_pipeline.start(
             source={
                 "type": "application",
@@ -328,7 +368,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 "output": detect_output,
                 "mode": "frames",
             },
-            parameters=final_pipeline_parameters,
+            parameters=pipeline_parameters,
         )
 
         # Process rest of the MediaStream message sequence

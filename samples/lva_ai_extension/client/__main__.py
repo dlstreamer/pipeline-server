@@ -34,9 +34,11 @@ import queue
 import json
 import time
 import cv2
+import jsonschema
 
 from google.protobuf.json_format import MessageToDict
 from samples.lva_ai_extension.common.exception_handler import log_exception
+import samples.lva_ai_extension.common.extension_schema as extension_schema
 from arguments import parse_args
 from media_stream_processor import MediaStreamProcessor
 
@@ -126,6 +128,30 @@ def _log_fps(start_time, frames_received, prev_fps_delta, fps_interval):
         return delta
     return prev_fps_delta
 
+def validate_extension_config(extension_config):
+    try:
+        validator = jsonschema.Draft4Validator(schema=extension_schema.extension_config,
+                                               format_checker=jsonschema.draft4_format_checker)
+        validator.validate(extension_config)
+    except jsonschema.exceptions.ValidationError as err:
+        logging.error("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
+        sys.exit(1)
+
+def create_extension_config(args):
+    extension_config = {}
+    if args.pipeline_name and args.pipeline_version:
+        pipeline_config = extension_config.setdefault("pipeline", {})
+        pipeline_config["name"] = args.pipeline_name
+        pipeline_config["version"] = args.pipeline_version
+        if args.pipeline_parameters:
+            try:
+                pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
+            except ValueError:
+                logging.error("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
+                sys.exit(1)
+
+    validate_extension_config(extension_config)
+    return extension_config
 
 def main():
     try:
@@ -156,7 +182,9 @@ def main():
             len(image),
         )
 
-        msp.start(width, height, frame_queue, result_queue)
+        extension_config = json.dumps(create_extension_config(args))
+
+        msp.start(width, height, frame_queue, result_queue, extension_config)
 
         with open(args.output_file, "w") as output:
             start_time = time.time()
@@ -165,6 +193,10 @@ def main():
                 frame_queue.put(image)
                 while not result_queue.empty():
                     result = result_queue.get()
+                    if isinstance(result, Exception):
+                        logging.error(result)
+                        frame_source.close()
+                        sys.exit(1)
                     frames_received += 1
                     prev_fps_delta = _log_fps(
                         start_time, frames_received, prev_fps_delta, args.fps_interval
@@ -181,7 +213,7 @@ def main():
                 if isinstance(result, Exception):
                     logging.error(result)
                     frame_source.close()
-                    return -1
+                    sys.exit(1)
                 frames_received += 1
                 prev_fps_delta = _log_fps(
                     start_time, frames_received, prev_fps_delta, args.fps_interval

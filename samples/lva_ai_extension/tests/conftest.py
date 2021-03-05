@@ -15,16 +15,14 @@ class Helpers:
 
     def run_server(self, params):
         server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(params["port"])]
-        if params.get("pipeline_parameters"):
-            if isinstance(params["pipeline_parameters"], Mapping):
-                params["pipeline_parameters"] = json.dumps(params["pipeline_parameters"])
-            server_args.extend(["--pipeline-parameters", params["pipeline_parameters"]])
-        if params.get("pipeline_name"):
-            server_args.extend(["--pipeline-name", params["pipeline_name"]])
-        if params.get("pipeline_version"):
-            server_args.extend(["--pipeline-version", params["pipeline_version"]])
-        if params.get("max_running_pipelines"):
-            server_args.extend(["--max-running-pipelines", str(params["max_running_pipelines"])])
+
+        if params.get("pipeline"):
+            pipeline = params["pipeline"]
+            if pipeline.get("name"):
+                server_args.extend(["--pipeline-name", pipeline["name"]])
+            if pipeline.get("version"):
+                server_args.extend(["--pipeline-version", pipeline["version"]])
+        server_args.extend(["--max-running-pipelines", str(params.get("max_running_pipelines", 10))])
         print(' '.join(server_args))
         self.server_process = subprocess.Popen(server_args,
                                                stdout=params.get("stdout",None),
@@ -37,6 +35,16 @@ class Helpers:
                     "-s", "127.0.0.1:" + str(params["port"]),
                     "-l", str(params.get("loop_count", 1)),
                     "-f", params["source"]]
+        if params.get("pipeline"):
+            pipeline = params["pipeline"]
+            if pipeline.get("name"):
+                client_args.extend(["--pipeline-name", pipeline["name"]])
+            if pipeline.get("version"):
+                client_args.extend(["--pipeline-version", pipeline["version"]])
+            if pipeline.get("parameters"):
+                if isinstance(pipeline["parameters"], Mapping):
+                    pipeline["parameters"] = json.dumps(pipeline["parameters"])
+                client_args.extend(["--pipeline-parameters", pipeline["parameters"]])
         if params.get("shared_memory", False):
             client_args.append("-m")
         if params.get("output_location"):

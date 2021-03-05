@@ -1,9 +1,5 @@
 {
     "server_params": {
-        "pipeline": {
-            "name":"object_tracking",
-            "version":"person_vehicle_bike_tracking"
-        },
         "max_running_pipelines":10,
         "sleep_period":0.25,
         "port":5001
@@ -11,7 +7,14 @@
     "client": [
         {
             "params": {
-                "source":"/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png",
+                "pipeline": {
+                    "name":"object_detection",
+                    "version":"person_vehicle_bike_detection",
+                    "parameters": {
+                        "detection-device":"CPU"
+                    }
+                },
+                "source":"/home/video-analytics-serving/person-bicycle-car-detection.mp4",
                 "output_location":"",
                 "shared_memory":true,
                 "loop_count":1,

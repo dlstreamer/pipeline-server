@@ -1,0 +1,70 @@
+{
+    "server_params": {
+        "max_running_pipelines":10,
+        "sleep_period":0.25,
+        "port":5001
+    },
+    "client": [
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_detection",
+                    "version":"person_vehicle_bike_detection",
+                    "parameters": {
+                        "detection-device":"CPU"
+                    }
+                },
+                "source":"/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "output_location":"",
+                "shared_memory":true,
+                "loop_count":1,
+                "sleep_period":0.25,
+                "port":5001,
+                "timeout":300,
+                "expected_return_code":0
+            },
+            "num_of_concurrent_clients":1
+        },
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_classification",
+                    "version":"vehicle_attributes_recognition",
+                    "parameters": {
+                        "detection-device":"CPU"
+                    }
+                },
+                "source":"/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "output_location":"",
+                "shared_memory":true,
+                "loop_count":1,
+                "sleep_period":0.25,
+                "port":5001,
+                "timeout":300,
+                "expected_return_code":0
+            },
+            "num_of_concurrent_clients":1
+        },
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_tracking",
+                    "version":"person_vehicle_bike_tracking",
+                    "parameters": {
+                        "detection-device":"CPU"
+                    }
+                },
+                "source":"/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "output_location":"",
+                "shared_memory":true,
+                "loop_count":1,
+                "sleep_period":0.25,
+                "port":5001,
+                "timeout":300,
+                "expected_return_code":0
+            },
+            "num_of_concurrent_clients":1
+        }
+    ],
+    "golden_results":false
+}

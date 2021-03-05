@@ -150,16 +150,12 @@ Run with classification pipeline with iGPU inference specified via environment v
 ```
 $ export PIPELINE_NAME=object_classification
 $ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ export PIPELINE_PARAMETERS='{"detection-device":"GPU","classification-device":"GPU"}'
 $ ./docker/run_server.sh
 ```
 
 Notes:
-* Parameter `device` has changed to `detection-device` for detection model and `classification-device` for classification model, refer to example above on how to set.
-* Only one pipeline can be enabled per container instance.
 * If selecting a pipeline both name and version must be specified
 * The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
-* The `--parameters` option specifies pipeline parameters for the selected pipeline. It can be either a JSON string or the name of a file containing the JSON. See the parameters section of the [pipeline definition](/docs/defining_pipelines.md#pipeline-parameters) document for more details. The individual definition files for [object_detection](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json), [object_classification](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json), and [object_tracking](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json) contain the supported parameters for the pre-loaded pipelines.
 
 ### Debug Mode
 
@@ -168,6 +164,19 @@ Debug pipelines can be selected using the `--debug` command line parameter or se
 Run default pipeline in debug mode
 ```bash
 $ ./docker/run_server.sh --debug
+```
+
+### Extension Configuration
+
+The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters are optional.
+```
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection",
+        "parameters": {}
+    }
+}
 ```
 
 ### Inference Accelerators
@@ -182,9 +191,18 @@ for details on docker resources and inference device name for supported accelera
 This will allow you to customize the deployment manifest for a given accelerator.
 
 The run server script will automatically detect installed accelerators and provide access to their resources.
-Here we run the default pipeline with inference running on Intel® Integrated Graphics (be careful with escaping the JSON string)
-```bash
-$ ./docker/run_server.sh --pipeline-parameters '{"detection-device":"GPU"}'
+
+Pipelines will define a default accelerator in their .json files. To run a pipeline on a different accelerator modify the pipeline json or send in a gRPC request with a extension_configuration. The LVA client generates this gRPC request with the extension configuration
+
+Example extension_configuration
+```
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection"
+        "parameters": { "detection-device": "GPU"}
+    }
+}
 ```
 
 ### Logging
@@ -217,6 +235,9 @@ All arguments are optional, usage is as follows
   [--fps-interval FPS_INTERVAL] (interval between frames in seconds, defaults to 0)
   [--frame-rate FRAME_RATE] (send frames at given fps, default is no limit)
   [ --dev : Mount local source code] (use for development)
+  [ --pipeline-name : Name of the pipeline to run]
+  [ --pipeline-version : Name of the pipeline version to run]
+  [ --pipeline-parameters : Pipeline parameters]
   ```
 Notes:
 * Media or log file must be inside container or in volume mounted path
@@ -260,6 +281,17 @@ $ ./docker/run_client.sh
 [AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.60) [0.84, 0.44, 0.05, 0.29]
 <snip>
 ```
+
+## Send a request to the server to run a different pipeline
+```
+$ ./docker/run_client.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+```
+
+## Send a request to the server to run a different pipeline on the GPU
+```
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{"detection-device":"GPU"}'
+```
+
 ## Add New Model to Models List
 
 Copy the existing model list `models/models.list.yml` to `models/yolo-models.list.yml` then add the following entry:

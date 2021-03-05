@@ -30,7 +30,6 @@
 
 import argparse
 
-
 def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
     parser = argparse.ArgumentParser(
         prog=program_name,
@@ -115,6 +114,32 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
         help="Output file path",
         default="/tmp/results.jsonl",
     )  # nosec
+
+    parser.add_argument(
+        "--pipeline-name",
+        action="store",
+        dest="pipeline_name",
+        help="name of the pipeline to run",
+        type=str,
+        default="",
+    )
+
+    parser.add_argument(
+        "--pipeline-version",
+        action="store",
+        dest="pipeline_version",
+        help="name of the pipeline to run",
+        type=str,
+        default="",
+    )
+
+    parser.add_argument(
+        "--pipeline-parameters",
+        action="store",
+        dest="pipeline_parameters",
+        type=str,
+        default="{}",
+    )
 
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     if isinstance(args, dict):
