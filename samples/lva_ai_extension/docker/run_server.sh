@@ -29,7 +29,7 @@ function show_help {
       PIPELINES="--pipelines $LVA_DIR/pipelines "
   fi
   ENTRYPOINT_ARGS+="--entrypoint-args --help "  
-  "$ROOT_DIR/docker/run.sh" --user "$UID" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
+  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
 }
 
 function error {
@@ -97,4 +97,4 @@ if [ "${MODE}" == "DEV" ]; then
     VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
 fi
 
-"$ROOT_DIR/docker/run.sh" --user "$UID" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV 

@@ -8,9 +8,11 @@ OUTPUT_FILE_PATH=/tmp/result
 SHARED_MEMORY=
 INTERACTIVE=
 IMAGE=video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
+NAME=${IMAGE//[\:]/_}"_client"
 NUMBER_OF_STREAMS=1
 SCRIPT_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $SCRIPT_DIR)
+ROOT_DIR=$(readlink -f "$SCRIPT_DIR/../../..")
 MODE=
 VOLUME_MOUNT=
 ENTRYPOINT_ARGS=
@@ -30,9 +32,9 @@ function show_help {
   if [ "${MODE}" == "DEV" ]; then
     VOLUME_MOUNT+="-v $SAMPLE_DIR:$LVA_ROOT "
   fi
-
-  docker run --rm $VOLUME_MOUNT --entrypoint /bin/bash $IMAGE -c "python3 ${LVA_ROOT}/client --help"
-}
+  RUN_COMMAND="'python3 ${LVA_ROOT}/client --help'"
+  "$ROOT_DIR/docker/run.sh" --name $NAME --image $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND"
+  }
 
 function error {
     printf '%s\n' "$1" >&2
@@ -94,16 +96,16 @@ if [ "$NUMBER_OF_STREAMS" -gt "1" ]; then
     trap clean_up SIGHUP SIGINT SIGTERM
     for i in $(seq "$NUMBER_OF_STREAMS")
     do
-	echo "Starting Client $i Results to ${OUTPUT_FILE_PATH}_client_$i.jsonl, Output to: client_${i}.stdout.txt"
-	RUN_COMMAND="python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl "
-	docker run $INTERACTIVE --name lva_ai_extension_client_$i --rm --network=host $VOLUME_MOUNT --user "$UID" --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND" >client_${i}.stdout.txt 2>&1 &
-	PIDS+=" $!"
-	CONTAINERS+=" lva_ai_extension_client_${i}"
-	sleep 1
+      echo "Starting Client $i Results to ${OUTPUT_FILE_PATH}_client_$i.jsonl, Output to: client_${i}.stdout.txt"
+      RUN_COMMAND="'python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl $@'"
+      "$ROOT_DIR/docker/run.sh" --non-interactive --name "${NAME}_${i}" --network host --image $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND" >client_${i}.stdout.txt 2>&1 &
+      PIDS+=" $!"
+      CONTAINERS+=" ${NAME}_${i}"
+      sleep 1
     done
     echo "waiting for clients to finish"
     wait
 else
-    RUN_COMMAND="python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl $@"
-    docker run $INTERACTIVE --rm --network=host $VOLUME_MOUNT --user "$UID" --entrypoint /bin/bash $IMAGE -c "$RUN_COMMAND"
+    RUN_COMMAND="'python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl $@'"
+    "$ROOT_DIR/docker/run.sh" --name $NAME --network host --image  $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND"
 fi
