@@ -28,8 +28,12 @@
                             "value": "testpassword"
                         },
                         {
-                            "name" : "grpcExtensionAddress",
-                            "value" : "tcp://lvaExtension:5001"
+                            "name": "grpcExtensionAddress",
+                            "value": "tcp://lvaExtension:5001"
+                        },
+                        {
+                            "name": "extensionConfiguration",
+                            "value": "{}"
                         }
                     ]
                 }

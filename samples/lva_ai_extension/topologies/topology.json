@@ -1,137 +1,143 @@
 {
-    "@apiVersion": "1.0",
+    "@apiVersion": "2.0",
     "name": "InferencingWithGrpcExtension",
     "properties": {
-      "description": "Record on motion to AMS Asset and record events from external models through gRPC Extension",
-      "parameters": [
-        {
-          "name": "rtspUrl",
-          "type": "String",
-          "description": "Rtsp source Url address"
-        },
-        {
-          "name": "rtspUserName",
-          "type": "String",
-          "description": "Rtsp source user name.",
-          "default": "dummyUsername"
-        },
-        {
-          "name": "rtspPassword",
-          "type": "String",
-          "description": "Rtsp source password.",
-          "default": "dummyPassword"
-        },
-        {
-          "name": "motionSensitivity",
-          "type": "String",
-          "description": "Motion detection sensitivity",
-          "default": "medium"
-        },
-        {
-          "name": "grpcExtensionAddress",
-          "type": "String",
-          "description": "grpc LVA Extension Address",
-          "default": "tcp://lvaextension:44000"
-        },
-        {
-          "name": "grpcExtensionUserName",
-          "type": "String",
-          "description": "inferencing endpoint user name.",
-          "default": "dummyUserName"
-        },
-        {
-          "name": "grpcExtensionPassword",
-          "type": "String",
-          "description": "inferencing endpoint password.",
-          "default": "dummyPassword"
-        },      
-        {
-          "name": "hubSinkOutputName",
-          "type": "String",
-          "description": "Hub sink output name",
-          "default": "iothubsinkoutput"
-        },
-        {
-          "name": "imageScaleMode",
-          "type": "String",
-          "description": "image scaling mode",
-          "default": "pad"
-        },
-        {
-          "name": "frameWidth",
-          "type": "String",
-          "description": "Width of the video frame to be received from LVA.",
-          "default": "416"
-        },
-        {
-          "name": "frameHeight",
-          "type": "String",
-          "description": "Height of the video frame to be received from LVA.",
-          "default": "416"
-        }
-      ],
-      "sources": [
-        {
-          "@type": "#Microsoft.Media.MediaGraphRtspSource",
-          "name": "rtspSource",
-          "endpoint": {
-            "@type": "#Microsoft.Media.MediaGraphUnsecuredEndpoint",
-            "url": "${rtspUrl}",
-            "credentials": {
-              "@type": "#Microsoft.Media.MediaGraphUsernamePasswordCredentials",
-              "username": "${rtspUserName}",
-              "password": "${rtspPassword}"
-            }
-          }
-        }
-      ],
-      "processors": [
-        {
-          "@type": "#Microsoft.Media.MediaGraphGrpcExtension",
-          "name": "grpcExtension",
-          "endpoint": {
-            "@type": "#Microsoft.Media.MediaGraphUnsecuredEndpoint",
-            "url": "${grpcExtensionAddress}",
-            "credentials": {
-              "@type": "#Microsoft.Media.MediaGraphUsernamePasswordCredentials",
-              "username": "${grpcExtensionUserName}",
-              "password": "${grpcExtensionPassword}"
-            }
-          },
-          "dataTransfer": {
-            "mode": "sharedMemory",
-            "SharedMemorySizeMiB": "5"
-          },
-          "image": {
-            "scale": {
-              "mode": "${imageScaleMode}",
-              "width": "${frameWidth}",
-              "height": "${frameHeight}"
+        "description": "Record on motion to AMS Asset and record events from external models through gRPC Extension",
+        "parameters": [
+            {
+                "name": "rtspUrl",
+                "type": "String",
+                "description": "Rtsp source Url address"
             },
-            "format": {
-              "@type": "#Microsoft.Media.MediaGraphImageFormatRaw",
-              "pixelFormat": "bgr24"
-            }
-          },
-          "inputs": [
             {
-              "nodeName": "rtspSource"
-            }
-          ]
-        }
-      ],
-      "sinks": [
-        {
-          "@type": "#Microsoft.Media.MediaGraphIoTHubMessageSink",
-          "name": "hubSink",
-          "hubOutputName": "${hubSinkOutputName}",
-          "inputs": [
+                "name": "rtspUserName",
+                "type": "String",
+                "description": "Rtsp source user name.",
+                "default": "dummyUsername"
+            },
             {
-              "nodeName": "grpcExtension"
+                "name": "rtspPassword",
+                "type": "String",
+                "description": "Rtsp source password.",
+                "default": "dummyPassword"
+            },
+            {
+                "name": "motionSensitivity",
+                "type": "String",
+                "description": "Motion detection sensitivity",
+                "default": "medium"
+            },
+            {
+                "name": "grpcExtensionAddress",
+                "type": "String",
+                "description": "grpc LVA Extension Address",
+                "default": "tcp://lvaextension:44000"
+            },
+            {
+                "name": "grpcExtensionUserName",
+                "type": "String",
+                "description": "inferencing endpoint user name.",
+                "default": "dummyUserName"
+            },
+            {
+                "name": "grpcExtensionPassword",
+                "type": "String",
+                "description": "inferencing endpoint password.",
+                "default": "dummyPassword"
+            },
+            {
+                "name": "hubSinkOutputName",
+                "type": "String",
+                "description": "Hub sink output name",
+                "default": "iothubsinkoutput"
+            },
+            {
+                "name": "imageScaleMode",
+                "type": "String",
+                "description": "image scaling mode",
+                "default": "pad"
+            },
+            {
+                "name": "frameWidth",
+                "type": "String",
+                "description": "Width of the video frame to be received from LVA.",
+                "default": "416"
+            },
+            {
+                "name": "frameHeight",
+                "type": "String",
+                "description": "Height of the video frame to be received from LVA.",
+                "default": "416"
+            },
+            {
+                "name": "extensionConfiguration",
+                "type": "String",
+                "description": "Optional extension configuration for the gRPC server",
+                "default": "{}"
             }
-          ]
-        }
-      ]
+        ],
+        "sources": [
+            {
+                "@type": "#Microsoft.Media.MediaGraphRtspSource",
+                "name": "rtspSource",
+                "endpoint": {
+                    "@type": "#Microsoft.Media.MediaGraphUnsecuredEndpoint",
+                    "url": "${rtspUrl}",
+                    "credentials": {
+                        "@type": "#Microsoft.Media.MediaGraphUsernamePasswordCredentials",
+                        "username": "${rtspUserName}",
+                        "password": "${rtspPassword}"
+                    }
+                }
+            }
+        ],
+        "processors": [
+            {
+                "@type": "#Microsoft.Media.MediaGraphGrpcExtension",
+                "name": "grpcExtension",
+                "endpoint": {
+                    "@type": "#Microsoft.Media.MediaGraphUnsecuredEndpoint",
+                    "url": "${grpcExtensionAddress}",
+                    "credentials": {
+                        "@type": "#Microsoft.Media.MediaGraphUsernamePasswordCredentials",
+                        "username": "${grpcExtensionUserName}",
+                        "password": "${grpcExtensionPassword}"
+                    }
+                },
+                "extensionConfiguration": "${extensionConfiguration}",
+                "dataTransfer": {
+                    "mode": "sharedMemory",
+                    "SharedMemorySizeMiB": "75"
+                },
+                "image": {
+                    "scale": {
+                        "mode": "${imageScaleMode}",
+                        "width": "${frameWidth}",
+                        "height": "${frameHeight}"
+                    },
+                    "format": {
+                        "@type": "#Microsoft.Media.MediaGraphImageFormatRaw",
+                        "pixelFormat": "bgr24"
+                    }
+                },
+                "inputs": [
+                    {
+                        "nodeName": "rtspSource"
+                    }
+                ]
+            }
+        ],
+        "sinks": [
+            {
+                "@type": "#Microsoft.Media.MediaGraphIoTHubMessageSink",
+                "name": "hubSink",
+                "hubOutputName": "${hubSinkOutputName}",
+                "inputs": [
+                    {
+                        "nodeName": "grpcExtension"
+                    }
+                ]
+            }
+        ]
     }
 }
-

@@ -124,6 +124,26 @@ Based on HW target, choose and update the appropriate deployment manifest locate
 
 You will also need to create a graph topology with gRPC extension and then create a graph instance based on that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
 
+### Topology files
+
+Operations.json is an instruction set used by LVA to perform actions on the IOT Edge.
+
+Topology.json is a config file used by operations.json to configure edge devices.
+
+Operations.json can refer to the topology through a URL or a file path.
+
+If changes are made locally to the topology file, the operations file will need change to point to the local topology.
+
+Replace
+```
+topologyURL: <url to topology file>
+```
+to
+
+```
+topologyFile: <absolute path to topology file>
+
+
 # Additional Standalone Edge AI Extension Examples
 
 ### Specifying VAServing parameters for LVA Server
