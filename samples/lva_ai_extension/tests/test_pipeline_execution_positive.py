@@ -78,7 +78,8 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     # Monitor number of running clients, wait for them all finish
     # TODO: Add timeout
     start_time = time.time()
-    end_time = start_time + overall_test_time
+    # Ensure the while loop doesn't hang if processes hang
+    end_time = start_time + (overall_test_time * 2)
     sleep_duration = 0.25
     num_clients_running = num_of_concurrent_clients
     all_clients_running_count = 0
@@ -95,13 +96,14 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
         time.sleep(sleep_duration)
     concurrent_client_running_time =  time.time() - start_time
 
+    for proc_dict in proc_list:
+        if proc_dict["process"].poll() is None:
+            proc_dict["process"].kill()
+
     # Test concurrency - do all clients run concurrently or serially?
     # If max_running_pipelines == 1 we expect serial operation
     if num_of_concurrent_clients > 1:
         print("Client execution test time {}s. All clients running for {}s".format(overall_test_time, concurrent_client_running_time))
-        for proc_dict in proc_list:
-            if proc_dict["process"].poll() is None:
-                proc_dict["process"].kill()
         run_to_run_variance = 1.0
         if test_case["server_params"]["max_running_pipelines"] > 1:
             assert concurrent_client_running_time < overall_test_time, "Clients not running concurrently"
