@@ -80,7 +80,7 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
     start_time = time.time()
     # Ensure the while loop doesn't hang if processes hang
     end_time = start_time + (overall_test_time * 2)
-    sleep_duration = 0.25
+    sleep_duration = 0.1
     num_clients_running = num_of_concurrent_clients
     all_clients_running_count = 0
     while num_clients_running > 0 and time.time() < end_time:

@@ -53,11 +53,17 @@ class __VAServing:
                                                                   self.version(),
                                                                   self._instance)
 
-        def wait(self):
+        def wait(self, timeout=None):
             status = self.status()
+            start_time = time.time()
+            end_time = None
+            if (timeout):
+                end_time = start_time + timeout
             while (status) and (not status.state.stopped()):
                 time.sleep(1)
                 status = self.status()
+                if (end_time) and (time.time() > end_time):
+                    break
             return status
 
         def status(self):

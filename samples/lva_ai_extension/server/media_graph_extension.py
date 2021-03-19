@@ -32,6 +32,7 @@ import os
 import json
 from queue import Queue
 import tempfile
+import time
 import datetime
 from enum import Enum
 import jsonschema
@@ -46,6 +47,7 @@ from samples.lva_ai_extension.common.exception_handler import log_exception
 import samples.lva_ai_extension.common.extension_schema as extension_schema
 
 from vaserving.vaserving import VAServing
+from vaserving.pipeline import Pipeline
 from vaserving.gstreamer_app_source import GvaFrameData
 from vaserving.common.utils.logging import get_logger
 
@@ -386,6 +388,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 detect_input.put(gva_sample)
                 queued_samples.extend(self._get_queued_samples(detect_output))
                 if context.is_active():
+                    # If any processed samples are queued, drain them and yield back to client
                     for gva_sample in queued_samples:
                         if gva_sample:
                             media_stream_message = self._generate_media_stream_message(
@@ -408,7 +411,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
         if detect_pipeline.status().state.stopped():
             try:
-                raise Exception(detect_pipeline.status().state)
+                raise Exception("Pipeline encountered an issue, pipeline state: {}".format(
+                    detect_pipeline.status().state))
             except:
                 log_exception(self._logger)
                 raise
@@ -432,6 +436,11 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             if context.is_active():
                 yield media_stream_message
             gva_sample = detect_output.get()
+
+        # One final check on the pipeline to ensure it worked properly
+        status = detect_pipeline.wait(10)
+        if (not status) or (status.state == Pipeline.State.ERROR):
+            raise Exception("Pipeline did not complete successfully")
 
         self._logger.info(
             "Done processing messages: Received: {}, Sent: {}".format(

@@ -70,7 +70,7 @@ while [[ "$#" -gt 0 ]]; do
         MODE=DEV
       ;;
     *)
-      ENTRYPOINT_ARGS+=" '$1' "
+      ENTRYPOINT_ARGS+=" $1 "
       ;;
   esac
 
