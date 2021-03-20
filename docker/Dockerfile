@@ -57,6 +57,7 @@ RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules
 COPY ./vaserving /home/video-analytics-serving/vaserving
+COPY ./vaclient /home/video-analytics-serving/vaclient
 COPY --chown=vaserving ./tools /home/video-analytics-serving/tools
 
 # Media Analytics Framework set via environment variable

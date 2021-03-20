@@ -1,0 +1,14 @@
+#!/bin/bash
+
+EXPECTED="Failed to establish a new connection: [Errno 111] Connection refused"
+
+OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh)
+RETURN_CODE=$?
+
+if [[ $RETURN_CODE != 1 ]]; then
+    error
+fi
+
+if [[ ! "$OUTPUT" == *"$EXPECTED"* ]]; then
+    error "Unexpected output"
+fi

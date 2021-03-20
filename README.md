@@ -99,106 +99,47 @@ Expected output:
 {"levelname": "INFO", "asctime": "2020-08-06 12:37:13,333", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
 ```
 
-## Detecting Objects in a Video <br/> <br/>
+## vaClient:
 
-### Example Request:
+To accompany the microservice is a sample REST client which can demonstate VA Serving usages. Running the vaclient run script will quickly start a pipeline and analyze a sample
+[video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/bottle-detection.gif). Start a new shell and execute the following command:
 
-<table>
-<tr>
-<th>
-Endpoint
-</th>
-<th>
-Verb
-</th>
-<th>
-Request
-</th>
-<th>
-Response
-</th>
-</tr>
-<tr>
-<td>
-pipelines/object_detection/1
-</td>
-<td>
-POST
-</td>
-<td>
-<pre lang="json">
-JSON
+```bash
+./vaclient/vaclient.sh
+```
+
+### Pipeline Status:
+As the pipeline runs, the status is queried and reported by vaclient. 
+> Note: When a pipeline is started, the service returns a pipeline ``instance id`` which must be used when requesting status or to stop the pipeline.
+```json
+Pipeline Status:
+
 {
-  "source": {
-    "uri": "https://example.mp4",
-    "type": "uri"
-  },
-  "destination": {
-    "type": "file",
-    "path": "/tmp/results_objects.txt",
-    "format": "json-lines"
-  }
+  "avg_fps": 98.11027534513353,
+  "elapsed_time": 2.0304791927337646,
+  "id": 3,
+  "start_time": 1614804737.667221,
+  "state": "RUNNING"
 }
-</pre>
-</td>
-<td>
-200 <br/> <br/>
-Pipeline Instance Id
-</td>
-</tr>
-</table>
-
-### Curl Command:
-
-Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample
-[video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/bottle-detection.gif).
-
-```bash
-curl localhost:8080/pipelines/object_detection/1 -X POST -H \
-'Content-Type: application/json' -d \
-'{
-  "source": {
-    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-    "type": "uri"
-  },
-  "destination": {
-    "type": "file",
-    "path": "/tmp/results_objects.txt",
-    "format": "json-lines"
-  }
-}'
 ```
+
 ### Detection Results:
-
-To view incremental results, execute the following command from the shell.
-
-```bash
-tail -f /tmp/results_objects.txt
-
-```
-
-As the video is being analyzed and as objects appear and disappear you will see detection results in the output.
-
-Expected Output:
+Once the pipeline run has completed, the detection results will be displayed by vaclient.
 
 ```json
-{"objects":[{"detection":{"bounding_box":{"x_max":0.9022353887557983,"x_min":0.7940621376037598,"y_max":0.8917602300643921,"y_min":0.30396613478660583},"confidence":0.7093080282211304,"label":"bottle","label_id":5},"h":212,"roi_type":"bottle","w":69,"x":508,"y":109}],"resolution":{"height":360,"width":640},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true","timestamp":39553072625}
-```
+Detection Result:
 
-After pretty-printing:
-
-```json
 {
   "objects": [
     {
       "detection": {
         "bounding_box": {
-          "x_max": 0.9022353887557983,
-          "x_min": 0.7940621376037598,
-          "y_max": 0.8917602300643921,
-          "y_min": 0.30396613478660583
+          "x_max": 0.9018613696098328,
+          "x_min": 0.7940059304237366,
+          "y_max": 0.8923144340515137,
+          "y_min": 0.3036338984966278
         },
-        "confidence": 0.7093080282211304,
+        "confidence": 0.6951696872711182,
         "label": "bottle",
         "label_id": 5
       },
@@ -214,7 +155,7 @@ After pretty-printing:
     "width": 640
   },
   "source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-  "timestamp": 39553072625
+  "timestamp": 39821229050
 }
 ```
 

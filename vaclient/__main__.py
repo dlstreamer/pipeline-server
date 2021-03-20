@@ -6,60 +6,28 @@
 '''
 
 from urllib.parse import urljoin
-import argparse
 import json
 import time
 import os
 import statistics
 import sys
 import requests
+import template
+from arguments import parse_args
 
-
-VIDEO_ANALYTICS_SERVING = "http://localhost:8080/pipelines/"
+VIDEO_ANALYTICS_SERVING = "http://localhost:8080/"
 TIMEOUT = 30
 SLEEP_FOR_STATUS = 0.5
 
-#nosec skips pybandit hits
-REQUEST_TEMPLATE = {
-    "source": {
-        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-        "type": "uri"
-    },
-    "destination": {
-        "path": "/tmp/results.txt",  # nosec
-        "type": "file",
-        "format": "json-lines"
-    }
-}
-
-
-def get_options():
-    """Process command line options"""
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--pipeline", action="store", dest="pipeline",
-                        default="object_detection",
-                        help="One of the supported pipelines you want to launch; "
-                             "e.g., 'object_detection' or 'emotion_recognition'.")
-    parser.add_argument("--version", action="store", dest="version",
-                        default="1",
-                        help="Version associated with the pipeline to launch; "
-                             "e.g., '1' or '2'.")
-    parser.add_argument("--source", action="store", dest="source",
-                        default=REQUEST_TEMPLATE['source']['uri'],
-                        help="Location of the content to play/analyze.")
-    parser.add_argument("--destination", action="store", dest="destination",
-                        default=REQUEST_TEMPLATE['destination']['path'],
-                        help="Output file for storing analysis results.")
-    parser.add_argument("--repeat", action="store", dest="repeat",
-                        type=int, default=1,
-                        help="Number of times to launch this pipeline.")
-    parser.add_argument("--quiet", action="store_false",
-                        dest="verbose", default=True,
-                        help="Pass this flag to reduce amount of logging.")
-
-    return parser.parse_args()
-
+def get(url):
+    try:
+        status_response = requests.get(url, timeout=TIMEOUT)
+        if status_response.status_code == 200:
+            return json.loads(status_response.text)
+        print("Got unsuccessful status code: {}".format(status_response.status_code))
+    except Exception as error:
+        print(error)
+    return None
 
 def print_json(obj):
     """Output as JSON formatted data"""
@@ -99,12 +67,19 @@ def wait_for_pipeline(instance_id,
                       pipeline="object_detection",
                       version="1",
                       verbose=True):
-    """Await pipeline completion"""
+    #Await pipeline completion
     status = {"state": "RUNNING"}
     while ((status["state"] is None) or
            (status["state"] == "QUEUED") or
            (status["state"] == "RUNNING")):
-        status = get_status(instance_id, pipeline, version)
+        #Fetch status of requested pipeline
+        status_url = urljoin(VIDEO_ANALYTICS_SERVING,
+                             "/".join(["pipelines",
+                                       pipeline,
+                                       version,
+                                       str(instance_id),
+                                       "status"]))
+        status = get(status_url)
         if status is None:
             return None
         if verbose:
@@ -112,24 +87,6 @@ def wait_for_pipeline(instance_id,
             print_json(status)
         time.sleep(SLEEP_FOR_STATUS)
     return status
-
-
-def get_status(instance_id,
-               pipeline="object_detection",
-               version="1"):
-    """Fetch status of requested pipeline"""
-    status_url = urljoin(VIDEO_ANALYTICS_SERVING,
-                         "/".join([pipeline,
-                                   version,
-                                   str(instance_id),
-                                   "status"]))
-    try:
-        status_response = requests.get(status_url, timeout=TIMEOUT)
-        if status_response.status_code == 200:
-            return json.loads(status_response.text)
-    except requests.exceptions.RequestException as request_error:
-        print(request_error)
-    return None
 
 # pylint: disable=too-many-arguments
 
@@ -142,7 +99,7 @@ def start_pipeline(stream_uri,
                    parameters=None,
                    verbose=True):
     """Launch requested pipeline"""
-    request = REQUEST_TEMPLATE
+    request = template.REQUEST_TEMPLATE
     request["source"]["uri"] = stream_uri
     try:
         os.remove(os.path.abspath(destination))
@@ -154,7 +111,7 @@ def start_pipeline(stream_uri,
     if parameters:
         request["parameters"] = parameters
     pipeline_url = urljoin(VIDEO_ANALYTICS_SERVING,
-                           pipeline + "/" + version)
+                           "pipelines/" + pipeline + "/" + version)
     if verbose:
         print("Starting Pipeline: %s" % (pipeline_url))
     try:
@@ -163,8 +120,9 @@ def start_pipeline(stream_uri,
         if launch_response.status_code == 200:
             instance_id = int(launch_response.text)
             return instance_id
-    except requests.exceptions.RequestException as request_error:
-        print(request_error)
+        print("Unsucessful status code {} - {}".format(launch_response.status_code, launch_response.text))
+    except Exception as error:
+        print(error)
     return None
 
 
@@ -184,7 +142,7 @@ def print_stats(status, key='avg_fps'):
         print("No results")
 
 
-def launch_pipelines(options):
+def launch_pipeline(options):
     """Launch the set of pipelines defined for startup"""
     print("Launching with options:")
     print(options)
@@ -195,6 +153,8 @@ def launch_pipelines(options):
                                              options.destination,
                                              options.version,
                                              verbose=options.verbose)
+        if started_instance_id is None:
+            sys.exit(1)
         pipeline_stats.append(wait_for_pipeline(started_instance_id,
                                                 options.pipeline,
                                                 options.version,
@@ -207,15 +167,39 @@ def launch_pipelines(options):
         print_stats(pipeline_stats)  # Output avg_fps
         print_stats(pipeline_stats, key="elapsed_time")
 
+def print_list(item_list):
+    for item in item_list:
+        print(" - {}/{}".format(item["name"], item["version"]))
+
+def _list(list_name):
+    url = urljoin(VIDEO_ANALYTICS_SERVING, list_name)
+    response = get(url)
+    if response is None:
+        print("Got empty response retrieving {}".format(list_name))
+        return
+    print("Loaded {}:".format(list_name))
+    print_list(response)
+
+def list_pipelines():
+    _list("pipelines")
+
+def list_models():
+    _list("models")
+
 
 def main():
     """Program entrypoint"""
     try:
-        options = get_options()
+        options = parse_args()
     except Exception as error:
         print(error)
         sys.exit(1)
-    launch_pipelines(options)
+    if options.list_pipelines:
+        list_pipelines()
+    elif options.list_models:
+        list_models()
+    else:
+        launch_pipeline(options)
 
 
 if __name__ == "__main__":

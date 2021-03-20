@@ -1,0 +1,24 @@
+#!/bin/bash
+
+NAME=vaserving
+EXPECTED="Invalid Pipeline or Version"
+
+# Run server and wait for init to complete
+$SOURCE_DIR/docker/run.sh --non-interactive --name $NAME -v /tmp:/tmp &
+sleep 5
+
+# Run client with bad option
+OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh --pipeline fake_pipeline)
+RETURN_CODE=$?
+
+# Kill server
+docker kill $NAME
+
+if [[ $RETURN_CODE != 1 ]]; then
+    error
+fi
+
+if [[ ! "$OUTPUT" == *"$EXPECTED"* ]]; then
+    error "Unexpected output"
+fi
+
