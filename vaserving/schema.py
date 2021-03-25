@@ -78,156 +78,199 @@ source = {
 }
 
 destination = {
-    "application": {
-        "type":"object",
-        "properties": {
-            "type": {
-                "type":"string",
-                "enum":["application"]
-            },
-            "class": {
-                "type":"string"
-            }
-        },
-        "required":["type", "class"]
-    },
-    "file": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["file"],
-                "element": {
-                    "name": "destination",
-                    "property": "method"
+    "metadata": {
+        "application": {
+            "type":"object",
+            "properties": {
+                "type": {
+                    "type":"string",
+                    "enum":["application"]
                 },
-                "filter": {
-                    "name": "metapublish",
-                    "type": "output",
-                    "property": "method",
-                    "values": [0]
+                "class": {
+                    "type":"string"
                 }
             },
-            "path": {
-                "type": "string",
-                "format": "path",
-                "filter": {
-                    "name": "metapublish",
-                    "type": "output",
-                    "property": "_METAPUBLISH_ARG_"
-                },
-                "element": {
-                    "name": "destination",
-                    "property": "file-path"
-                }
-            },
-            "format": {
-                "type": "string",
-                "enum": [
-                    "json-lines",
-                    "json"
-                ],
-                "filter": {
-                    "name": "metapublish",
-                    "type": "output",
-                    "property": "output_format",
-                    "values": ["stream", "batch"]
-                },
-                "element": {
-                    "name": "destination",
-                    "property": "file-format"
-                }
-            }
+            "required":["type", "class"]
         },
-        "required": ["type", "path"]
-    },
-    "mqtt": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["mqtt"],
-                "element": {"name": "destination", "property": "method"}
-            },
-            "host": {
-                "type": "string",
-                "element": {
-                    "name": "destination",
-                    "property": "address"
+        "file": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["file"],
+                    "element": {
+                        "name": "destination",
+                        "property": "method"
+                    },
+                    "filter": {
+                        "name": "metapublish",
+                        "type": "output",
+                        "property": "method",
+                        "values": [0]
+                    }
+                },
+                "path": {
+                    "type": "string",
+                    "format": "path",
+                    "filter": {
+                        "name": "metapublish",
+                        "type": "output",
+                        "property": "_METAPUBLISH_ARG_"
+                    },
+                    "element": {
+                        "name": "destination",
+                        "property": "file-path"
+                    }
+                },
+                "format": {
+                    "type": "string",
+                    "enum": [
+                        "json-lines",
+                        "json"
+                    ],
+                    "filter": {
+                        "name": "metapublish",
+                        "type": "output",
+                        "property": "output_format",
+                        "values": ["stream", "batch"]
+                    },
+                    "element": {
+                        "name": "destination",
+                        "property": "file-format"
+                    }
                 }
             },
-            "topic": {
-                "type": "string",
-                "element": "destination"
-            },
-            "clientId": {
-                "type": "string",
-                "element": "destination"
-            },
-            "timeout": {
-                "type": "integer",
-                "element": "destination"
-            }
+            "required": ["type", "path"]
         },
-        "required": [
-            "host",
-            "type",
-            "topic"
+        "mqtt": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["mqtt"],
+                    "element": {"name": "destination", "property": "method"}
+                },
+                "host": {
+                    "type": "string",
+                    "element": {
+                        "name": "destination",
+                        "property": "address"
+                    }
+                },
+                "topic": {
+                    "type": "string",
+                    "element": "destination"
+                },
+                "clientId": {
+                    "type": "string",
+                    "element": "destination"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "element": "destination"
+                }
+            },
+            "required": [
+                "host",
+                "type",
+                "topic"
+            ]
+        },
+        "kafka": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["kafka"],
+                    "element": {"name": "destination", "property": "method"},
+                    "filter": {
+                        "name": "metapublish",
+                        "property": "method",
+                        "values": [1],
+                        "type": "output"
+                    }
+                },
+                "host": {
+                    "type": "string",
+                    "description": "host:port to use as bootstrap server.",
+                    "filter": {
+                        "name": "metapublish",
+                        "type": "output",
+                        "property": "_METAPUBLISH_KAFKA_HOST_"
+                    },
+                    "element": {
+                        "name": "destination",
+                        "property": "address"
+                    }
+                },
+                "topic": {
+                    "type": "string",
+                    "element": "destination",
+                    "filter": {
+                        "name": "metapublish",
+                        "type": "output",
+                        "property": "_METAPUBLISH_KAFKA_TOPIC_"
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "host",
+                "topic"
+            ]
+        },
+        "oneOf": [
+            {
+                "$ref": "#/kafka"
+            },
+            {
+                "$ref": "#/mqtt"
+            },
+            {
+                "$ref": "#/file"
+            },
+            {
+                "$ref": "#/application"
+            }
         ]
     },
-    "kafka": {
-        "type": "object",
-        "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["kafka"],
-                "element": {"name": "destination", "property": "method"},
-                "filter": {"name": "metapublish",
-                           "property": "method",
-                           "values": [1],
-                           "type": "output"}
-            },
-            "host": {
-                "type": "string",
-                "description": "host:port to use as bootstrap server.",
-                "filter": {
-                    "name": "metapublish",
-                    "type": "output",
-                    "property": "_METAPUBLISH_KAFKA_HOST_"
+    "frame": {
+        "rtsp": {
+            "type":"object",
+            "properties": {
+                "type": {
+                    "type":"string",
+                    "enum":["rtsp"]
                 },
-                "element": {
-                    "name": "destination",
-                    "property": "address"
+                "path": {
+                    "type":"string",
+                    "minLength": 1,
+                    "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]$"
+                },
+                "cache-length": {
+                    "type":"integer",
+                    "default": 30,
+                    "minimum": 1,
+                    "maximum": 500
                 }
             },
-            "topic": {
-                "type": "string",
-                "element": "destination",
-                "filter": {
-                    "name": "metapublish",
-                    "type": "output",
-                    "property": "_METAPUBLISH_KAFKA_TOPIC_"
-                }
-            }
+            "required": [
+                "type",
+                "path"
+            ]
         },
-        "required": [
-            "type",
-            "host",
-            "topic"
+        "oneOf": [
+            {
+                "$ref": "#/rtsp"
+            }
         ]
     },
-    "oneOf": [
+    "anyOf": [
         {
-            "$ref": "#/kafka"
+            "required":["frame"]
         },
         {
-            "$ref": "#/mqtt"
-        },
-        {
-            "$ref": "#/file"
-        },
-        {
-            "$ref": "#/application"
+            "required":["metadata"]
         }
     ]
 }

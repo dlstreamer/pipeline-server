@@ -214,11 +214,18 @@ class PipelineManager:
 
         self.set_section_defaults(request, config, ["parameters"],
                                   ["parameters", "properties"])
-        if ("destination" in request) and ("type" in request["destination"]):
-            self.set_section_defaults(request, config, ["destination"],
-                                      ["destination",
-                                       request["destination"]["type"],
-                                       "properties"])
+        if "destination" in request:
+            if "type" in request["destination"]:
+                metadata = {"metadata": request["destination"]}
+                request["destination"] = metadata
+
+            for dest_type in request["destination"]:
+                if "type" in request["destination"][dest_type]:
+                    self.set_section_defaults(request, config, ["destination", dest_type],
+                                              ["destination", dest_type,
+                                               request["destination"][dest_type]["type"],
+                                               "properties"])
+
         if ("source" in request) and ("type" in request["source"]):
             self.set_section_defaults(request, config, ["source"],
                                       ["source",
@@ -228,7 +235,7 @@ class PipelineManager:
         self.set_section_defaults(request, config, ["tags"],
                                   ["tags", "properties"])
 
-    def create_instance(self, name, version, request):
+    def create_instance(self, name, version, request_original, options):
         self.logger.info(
             "Creating Instance of Pipeline {name}/{v}".format(name=name, v=version))
         if not self.pipeline_exists(name, version):
@@ -236,6 +243,8 @@ class PipelineManager:
 
         pipeline_type = self.pipelines[name][str(version)]['type']
         pipeline_config = self.pipelines[name][str(version)]
+
+        request = request_original.copy()
 
         self.set_defaults(request, pipeline_config)
 
@@ -254,7 +263,8 @@ class PipelineManager:
             pipeline_config,
             self.model_manager,
             request,
-            self._pipeline_finished)
+            self._pipeline_finished,
+            options)
         self.pipeline_queue.append(self.pipeline_id)
         self._start()
         return self.pipeline_id, None

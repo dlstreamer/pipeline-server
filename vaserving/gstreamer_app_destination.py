@@ -28,10 +28,11 @@ class GStreamerAppDestination(AppDestination):
         AppDestination.__init__(self, request, pipeline)
 
         request_config = request.get("destination", {})
-        self._output_queue = request_config.get("output", None)
+        dest_config = request_config.get("metadata", {})
+        self._output_queue = dest_config.get("output", None)
         if (not isinstance(pipeline, GStreamerPipeline)) or (not self._output_queue):
             raise Exception("GStreamerAppDestination requires GStreamerPipeline and output queue")
-        self._mode = GStreamerAppDestination.Mode(request_config.get("mode", "frames"))
+        self._mode = GStreamerAppDestination.Mode(dest_config.get("mode", "frames"))
 
     def _create_output_item(self, sample):
 

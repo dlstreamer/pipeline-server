@@ -334,6 +334,53 @@ components:
           - mqtt
           type: string
       type: object
+    RTSPDestination:
+      properties:
+        type:
+          enum:
+          - rtsp
+          type: string
+        path:
+          type: string
+          minLength: 1
+          pattern: "^[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]$"
+        cache-length:
+          type: integer
+          default: 30
+          minimum: 1
+          maximum: 500
+      required:
+        - type
+        - path
+      type: object
+    FrameDestination:
+      discriminator:
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/RTSPDestination'
+      type: object
+    FrameAndMetadataDestination:
+      anyOf:
+        - type: object
+          properties:
+            frame:
+              $ref: '#/components/schemas/FrameDestination'
+          required:
+            - frame
+        - type: object
+          properties:
+            metadata:
+              $ref: '#/components/schemas/MetadataDestination'
+          required:
+            - metadata
+    MetadataDestination:
+      discriminator:
+        propertyName: type
+      oneOf:
+        - $ref: '#/components/schemas/KafkaDestination'
+        - $ref: '#/components/schemas/MQTTDestination'
+        - $ref: '#/components/schemas/FileDestination'
+      type: object
     PipelineRequest:
       example:
         source:
@@ -350,12 +397,9 @@ components:
           - $ref: '#/components/schemas/DeviceSource'
           type: object
         destination:
-          discriminator:
-            propertyName: type
           oneOf:
-          - $ref: '#/components/schemas/KafkaDestination'
-          - $ref: '#/components/schemas/MQTTDestination'
-          - $ref: '#/components/schemas/FileDestination'
+          - $ref: '#/components/schemas/MetadataDestination'
+          - $ref: '#/components/schemas/FrameAndMetadataDestination'
           type: object
         tags:
           description: Client specified values. Returned with results.

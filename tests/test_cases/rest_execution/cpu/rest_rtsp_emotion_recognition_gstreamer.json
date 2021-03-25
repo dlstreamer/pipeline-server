@@ -1,0 +1,36 @@
+{
+    "path": "pipelines/emotion_recognition/1",
+    "start" : {
+        "body": {
+            "source": {
+                "uri": "file:///home/video-analytics-serving/samples/classroom.mp4",
+                "type": "uri"
+            },
+            "destination": {
+                "metadata":{
+                    "type": "file",
+                    "path": "/tmp/rest_emotion_recognition",
+                    "format": "json-lines"
+                },
+                "frame":{
+                    "type": "rtsp",
+                    "path": "classroom-emotions"
+                }
+            }
+        }
+    },
+    "check_running" : {
+        "timeout": 2.0
+    },
+    "check_rtsp_stream" : {
+        "delay": 1,
+        "url" : "rtsp://localhost",
+        "port" : 8554
+    },
+    "abort" : {
+        "delay" : 0.5
+    },
+    "check_stopped" : {
+        "timeout": 0.5
+    }
+}

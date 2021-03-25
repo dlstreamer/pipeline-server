@@ -144,6 +144,52 @@ $ docker stop video-analytics-serving-gstreamer
 $ docker stop video-analytics-serving-ffmpeg
 ```
 
+# Real Time Streaming Protocol (RTSP) Re-streaming
+VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
+
+### Enable RTSP in service
+```bash
+$ docker/run.sh --enable-rtsp
+```
+> **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
+
+### Connect and visualize
+> **Note:** Leverage REST client when available.
+
+*  Start a pipeline with curl request with frame destination set as rtsp and custom path set. For demonstration, path set as `bottle-detection` in example request below.
+```bash
+curl localhost:8080/pipelines/object_detection/1 -X POST -H \
+'Content-Type: application/json' -d \
+'{
+  "source": {
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+    "type": "uri"
+  },
+  "destination": {
+    "metadata": { 
+      "type": "file",
+      "path": "/tmp/results.txt",
+      "format": "json-lines"
+    },
+    "frame": { 
+      "type": "rtsp",
+      "path": "bottle-detection"
+    }
+  }
+}'
+```
+*  Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect to the RTSP server.
+*  Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/bottle-detection`.
+
+### RTSP destination params.
+```bash
+"frame": { 
+  "type": "rtsp",
+  "path" : <custom rtsp path>(required. When path already exists, throws error)
+  "cache-length" : <Number of frames to maintain in queue>(optional. Default 30)
+}
+```
+
 # Selecting Pipelines and Models at Runtime
 
 The models and pipelines loaded by the Video Analytics Serving

@@ -47,6 +47,23 @@ def test_rest_execution(service, test_case, test_filename, generate):
         assert pipeline_processing.wait_for_pipeline_status(instance_url, "RUNNING", states, 
                                         state_transition_timeout), "Pipeline did not start"
         state_transition_timeout = float(test_case["check_stopped"]["timeout"])
+
+        if "check_rtsp_stream" in test_case:
+            time.sleep(test_case["check_rtsp_stream"]["delay"])
+            url = test_case["check_rtsp_stream"]["url"]
+            port = test_case["check_rtsp_stream"]["port"]
+            destination = start_test["body"]["destination"]
+            if "frame" in destination and destination["frame"]["type"] == "rtsp":
+                rtsp_path = destination["frame"]["path"]
+                rtsp_url = "{}:{}/{}".format(url, port, rtsp_path)
+                print("Reading frame from %s", rtsp_url)
+                import cv2
+                cap = cv2.VideoCapture(rtsp_url, cv2.CAP_GSTREAMER)
+                ret, frame = cap.read()
+                cap.release()
+                assert ret, "Unable to read RTSP frame"
+                assert frame.size > 0 , "Unable to read RTSP frame"
+
         if "abort" in test_case:
             time.sleep(test_case["abort"]["delay"])
             response = requests.delete(instance_url, timeout=TIMEOUT)

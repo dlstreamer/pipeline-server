@@ -18,6 +18,8 @@ usage: run.sh
   [--user name of user to pass to docker run]
   [--name container name to pass to docker run]
   [--device device to pass to docker run]
+  [--enable-rtsp To enable rtsp re-streaming]
+  [--rtsp-port Specify the port to use for rtsp re-streaming]
   [--dev run in developer mode]
 ```
 
@@ -64,6 +66,9 @@ This argument runs the image in `developer` mode which configures the environmen
 * Uses the docker option `--network=host`. All ports and network interfaces for the host are shared with the container.
 * Uses the docker option `--privileged`. Operates the container with elevated privileges.
 
+
+### Enable RTSP re-streaming (--enable-rtsp)
+This argument enables rtsp restreaming by setting `ENABLE_RTSP` environment variable and forwards default port `8554` or port specified with argument `--rtsp-port`.
 
 ### Docker run pass-through options
 The following parameters simply map to docker run arguments:

@@ -15,7 +15,6 @@ from vaserving.common import settings
 
 #pylint: disable=C0103
 
-
 class __VAServing:
 
     class ModelProxy:
@@ -175,7 +174,6 @@ class __VAServing:
             except Exception as exception:
                 self._logger.warning("Failed in quitting GStreamer main loop: %s",
                                      exception)
-
         self._stopped = True
 
     def pipeline_instances(self):
@@ -208,7 +206,7 @@ class __VAServing:
 
     def pipeline_instance(self, name, version, request):
         if (not self._stopped):
-            return self.pipeline_manager.create_instance(name, version, request)
+            return self.pipeline_manager.create_instance(name, version, request, self.options)
 
         return None, "VA Serving Stopped"
 

@@ -24,6 +24,8 @@ USER=
 INTERACTIVE=-it
 DEVICE_CGROUP_RULE=
 USER_GROUPS=
+ENABLE_RTSP=
+RTSP_PORT=8554
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -65,6 +67,8 @@ show_help() {
   echo "  [--group-add name of user group to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
   echo "  [--device device to pass to docker run]"
+  echo "  [--enable-rtsp To enable rtsp re-streaming]"
+  echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
   echo "  [--dev run in developer mode]"
   exit 0
 }
@@ -231,6 +235,17 @@ while [[ "$#" -gt 0 ]]; do
             error 'ERROR: "--entrypoint" requires a non-empty option argument.'
         fi
         ;;
+    --rtsp-port)
+        if [ "$2" ]; then
+            RTSP_PORT=$2
+            shift
+        else
+            error 'ERROR: "--rtsp-port" requires a non-empty option argument.'
+        fi
+        ;;
+    --enable-rtsp)
+        ENABLE_RTSP=true
+        ;;
     --non-interactive)
         unset INTERACTIVE
         ;;
@@ -290,6 +305,11 @@ elif [ "${MODE}" == "SERVICE" ]; then
 else
     echo "Invalid Mode"
     show_help
+fi
+
+if [ ! -z "$ENABLE_RTSP" ]; then
+    ENVIRONMENT+="-e ENABLE_RTSP=true -e RTSP_PORT=$RTSP_PORT "
+    PORTS+="-p $RTSP_PORT:$RTSP_PORT "
 fi
 
 if [ ! -z "$MODELS" ]; then

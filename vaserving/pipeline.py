@@ -16,7 +16,7 @@ class Pipeline:
         def stopped(self):
             return not (self is Pipeline.State.QUEUED or self is Pipeline.State.RUNNING)
 
-    def __init__(self, identifier, config, model_manager, request, finished_callback):
+    def __init__(self, identifier, config, model_manager, request, finished_callback, options):
         pass
 
     def start(self):

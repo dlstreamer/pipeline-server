@@ -1,0 +1,36 @@
+{
+    "path": "pipelines/object_detection/1",
+    "start" : {
+        "body": {
+            "source": {
+                "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+                "type": "uri"
+            },
+            "destination": {
+                "metadata": {
+                    "type": "file",
+                    "path": "/tmp/rest_object_detection",
+                    "format": "json-lines"
+                },
+                "frame":{
+                    "type": "rtsp",
+                    "path": "pinwheel-objects"
+                }
+            }
+        }
+    },
+    "check_running" : {
+        "timeout": 2.0
+    },
+    "check_rtsp_stream" : {
+        "delay": 1,
+        "url" : "rtsp://localhost",
+        "port" : 8554
+    },
+    "abort" : {
+        "delay" : 0.5
+    },
+    "check_stopped" : {
+        "timeout": 0.5
+    }
+}
