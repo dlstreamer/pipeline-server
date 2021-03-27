@@ -23,7 +23,8 @@ init-hook=
     from tests.vas_pylint_ignore import VASPylintIgnore;
     default_ignore_paths = "/home/video-analytics-serving/samples/lva_ai_extension/common/grpc_autogen/," \
                            "/home/video-analytics-serving/tests,"\
-                           "/home/video-analytics-serving/samples/lva_ai_extension/tests"
+                           "/home/video-analytics-serving/samples/lva_ai_extension/tests," \
+                           "/home/video-analytics-serving/samples/edgex_bridge/edgex"
     ignore_paths = os.getenv('PYLINT_IGNORE_PATHS', default_ignore_paths)
     VASPylintIgnore(tuple(ignore_paths.split(',')))
 

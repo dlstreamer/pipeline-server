@@ -4,4 +4,4 @@ python_dateutil == 2.8.0
 setuptools >= 41.2.0
 rfc3986-validator == 0.1.1 # uri uri-reference
 rfc3339-validator == 0.1.2 # date-time time
-tornado == 4.5.3
+tornado == 6.1

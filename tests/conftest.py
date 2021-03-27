@@ -27,7 +27,9 @@ class VAServingService:
         if (self._process):
             self._process.send_signal(signal.SIGINT)
             start = time.time()
+            print("Awaiting graceful exit - current epoch: {}".format(start))
             while ((self._process.poll() == None) and ((time.time()-start) < timeout)):
+                print("Awaiting graceful exit: {} / {} seconds".format(time.time()-start, timeout))
                 time.sleep(1)
             if ((self._process.returncode == None) or (self._process.returncode != 0)):
                 graceful_exit = False

@@ -6,9 +6,7 @@
 '''
 
 import sys
-from threading import Thread
 import connexion
-
 from vaserving.common.utils import logging
 from vaserving.vaserving import VAServing
 
@@ -16,13 +14,17 @@ logger = logging.get_logger('main', is_static=True)
 
 def main(options):
     try:
-        app = connexion.App(__name__, specification_dir='rest_api/')
+        app = connexion.App(__name__, port=options.port, specification_dir='rest_api/', server='tornado')
         app.add_api('video-analytics-serving.yaml',
                     arguments={'title': 'Video Analytics Serving API'})
         logger.info("Starting Tornado Server on port: %s", options.port)
-        app.run(server='tornado', port=options.port)
+        app.run(port=options.port, server='tornado')
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Keyboard Interrupt or System Exit")
     except Exception as error:
         logger.error("Error Starting Tornado Server: %s", error)
+    VAServing.stop()
+    logger.info("Exiting")
 
 if __name__ == '__main__':
     try:
@@ -30,17 +32,7 @@ if __name__ == '__main__':
     except Exception as error:
         logger.error("Error Starting VA Serving: %s", error)
         sys.exit(1)
-
     try:
-        thread = Thread(target=main, args=[VAServing.options])
-        thread.daemon = True
-        thread.start()
-        thread.join()
-    except (KeyboardInterrupt, SystemExit):
-        logger.info("Keyboard Interrupt or System Exit")
+        main(VAServing.options)
     except Exception as error:
         logger.error("Unexpected Error: %s", error)
-
-    VAServing.stop()
-
-    logger.info("Exiting")
