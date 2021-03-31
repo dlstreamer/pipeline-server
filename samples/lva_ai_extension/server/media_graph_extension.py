@@ -382,7 +382,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     queued_samples = []
                 # Read request id, sent by client
                 request_seq_num = request.sequence_number
-                self._logger.info("[Received] SeqNum: {0:07d}".format(request_seq_num))
+                self._logger.debug("[Received] SeqNum: {0:07d}".format(request_seq_num))
                 requests_received += 1
                 gva_sample = self._generate_gva_sample(client_state, request)
                 detect_input.put(gva_sample)
@@ -395,7 +395,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                                 gva_sample
                             )
                             responses_sent += 1
-                            self._logger.info(
+                            self._logger.debug(
                                 "[Sent] AckSeqNum: {0:07d}".format(
                                     media_stream_message.ack_sequence_number
                                 )
@@ -428,7 +428,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         while gva_sample:
             media_stream_message = self._generate_media_stream_message(gva_sample)
             responses_sent += 1
-            self._logger.info(
+            self._logger.debug(
                 "[Sent] AckSeqNum: {0:07d}".format(
                     media_stream_message.ack_sequence_number
                 )
