@@ -35,7 +35,7 @@ def get_num_running_clients(clients):
     return count
 
 
-@pytest.mark.timeout(120)
+@pytest.mark.timeout(300)
 def test_pipeline_execution_positive(helpers, test_case, test_filename, generate):
     workdir_path = tempfile.TemporaryDirectory()
     clients = []
