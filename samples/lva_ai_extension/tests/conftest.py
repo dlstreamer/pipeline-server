@@ -1,5 +1,6 @@
-
+import sys
 import subprocess
+import select
 import time
 import os
 import json
@@ -12,10 +13,11 @@ class Helpers:
     def __init__(self):
         self.server_process = None
         self.client_process = None
+        self.poll = None
+        self.start_time = time.time()
 
-    def run_server(self, params):
+    def run_server(self, params, capture_log = False):
         server_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/server", "-p", str(params["port"])]
-
         if params.get("pipeline"):
             pipeline = params["pipeline"]
             if pipeline.get("name"):
@@ -25,10 +27,33 @@ class Helpers:
         server_args.extend(["--max-running-pipelines", str(params.get("max_running_pipelines", 10))])
         print(' '.join(server_args))
         self.server_process = subprocess.Popen(server_args,
+                                               bufsize=0,
                                                stdout=params.get("stdout",None),
-                                               stderr=params.get("stderr",None))
+                                               stderr=params.get("stderr", subprocess.PIPE if capture_log else None))
         time.sleep(params.get("sleep_period",0.25))
+        if capture_log:
+            self.poll = select.poll()
+            self.poll.register(self.server_process.stderr, select.POLLIN)
         return self.server_process
+
+    def get_server_log_message(self):
+        if self.poll and self.poll.poll(0):
+            try:
+                line = self.server_process.stderr.readline()
+                log_message = json.loads(line)
+                if "levelname" in log_message and "message" in log_message:
+                    return log_message["message"]
+            except ValueError:
+                print("Invalid JSON: %s" % (line))
+        return None
+
+    def get_server_log_messages(self):
+        lines = []
+        line = self.get_server_log_message()
+        while line is not None:
+            lines.append(line)
+            line = self.get_server_log_message()
+        return lines
 
     def run_client(self, params, asynchronous=False):
         client_args = ["python3", "/home/video-analytics-serving/samples/lva_ai_extension/client",
@@ -82,11 +107,13 @@ class Helpers:
                             inference["type"] = inference["type"].lower()
                     validate(instance=dictionary,schema=json_schema)
 
-    def get_results_from_file(self, output_location, results):
+    def get_results_from_file(self, output_location):
+        results = []
         with open(output_location) as results_file:
             for x in results_file:
-                if (len(x.strip()) != 0):
+                if len(x.strip()) != 0:
                     results.append(json.loads(x))
+        return results
 
     def cmp_results(self, measured, expected, tolerance):
         if measured == expected:
