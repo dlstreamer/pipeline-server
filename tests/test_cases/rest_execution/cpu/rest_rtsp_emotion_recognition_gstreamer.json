@@ -23,7 +23,7 @@
         "timeout": 2.0
     },
     "check_rtsp_stream" : {
-        "delay": 1,
+        "delay": 0.2,
         "url" : "rtsp://localhost",
         "port" : 8554
     },

@@ -20,7 +20,7 @@ TIMEOUT = 30
 MAX_CONNECTION_ATTEMPTS = 5
 class VAServingService:
 
-    VASERVING_ARGS = ["python3", "-m", "vaserving"]
+    VASERVING_ARGS = ["python3", "-m", "vaserving","--enable-rtsp","true"]
 
     def kill(self, timeout=10):
         graceful_exit = True
