@@ -44,7 +44,7 @@ class Helpers:
                 if "levelname" in log_message and "message" in log_message:
                     return log_message["message"]
             except ValueError:
-                print("Invalid JSON: %s" % (line))
+                pass
         return None
 
     def get_server_log_messages(self):
