@@ -59,14 +59,16 @@ class GStreamerRtspFactory(GstRtspServer.RTSPMediaFactory):
         new_caps = self._select_caps(caps.to_string())
         s_src = "{} caps=\"{}\"".format(GStreamerRtspFactory._source, ','.join(new_caps))
         media_pipeline = GStreamerRtspFactory._RtspVideoPipeline
+        is_audio_pipeline = False
         if caps.to_string().startswith('audio'):
             media_pipeline = GStreamerRtspFactory._RtspAudioPipeline
+            is_audio_pipeline = True
         launch_string = " {} {} ".format(s_src, media_pipeline)
         self._logger.debug("Starting RTSP stream url:{}".format(url))
         self._logger.debug(launch_string)
         pipeline = Gst.parse_launch(launch_string)
         pipeline.caps = caps
         appsrc = pipeline.get_by_name("source")
-        source.set_src_pipeline(appsrc, pipeline)
+        source.set_app_src(appsrc, is_audio_pipeline)
         appsrc.connect('need-data', source.on_need_data)
         return pipeline
