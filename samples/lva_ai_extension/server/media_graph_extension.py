@@ -281,6 +281,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         pipeline_name = self._pipeline
         pipeline_version = self._version
         pipeline_parameters = {}
+        frame_destination = {}
 
         # Set pipeline values if passed through request
         extension_configuration = None
@@ -302,6 +303,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 pipeline_version = pipeline_request["version"]
                 if pipeline_request.get("parameters"):
                     pipeline_parameters = pipeline_request["parameters"]
+                if pipeline_request.get("frame-destination"):
+                    frame_destination = pipeline_request["frame-destination"]
 
             # Reject pipeline if it has debug in its version
             if pipeline_version.startswith("debug"):
@@ -310,7 +313,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         # Set debug properties if debug flag is set
         pipeline_version, pipeline_parameters = self._set_debug_properties(pipeline_version, pipeline_parameters)
 
-        return pipeline_name, pipeline_version, pipeline_parameters
+        return pipeline_name, pipeline_version, pipeline_parameters, frame_destination
 
     # gRPC stubbed function
     # client/gRPC will call this function to send frames/descriptions
@@ -347,13 +350,28 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         responses_sent += 1
         yield media_stream_message
 
-        pipeline_name, pipeline_version, pipeline_parameters = self._set_pipeline_properties(request)
+        pipeline_name, pipeline_version, pipeline_parameters, frame_destination = self._set_pipeline_properties(
+            request)
 
         self._logger.info("Pipeline Name : {}".format(pipeline_name))
         self._logger.info("Pipeline Version : {}".format(pipeline_version))
         self._logger.info("Pipeline Parameters : {}".format(pipeline_parameters))
+        self._logger.info("Frame Destination : {}".format(frame_destination))
         detect_input = Queue(maxsize=self._input_queue_size)
         detect_output = Queue()
+
+        destination = {
+            "metadata":{
+                "type": "application",
+                "class": "GStreamerAppDestination",
+                "output": detect_output,
+                "mode": "frames",
+            }
+        }
+
+        if frame_destination:
+            destination["frame"] = frame_destination
+
         # Start object detection pipeline
         # It will wait until it receives frames via the detect_input queue
         detect_pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
@@ -364,12 +382,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 "input": detect_input,
                 "mode": "push",
             },
-            destination={
-                "type": "application",
-                "class": "GStreamerAppDestination",
-                "output": detect_output,
-                "mode": "frames",
-            },
+            destination=destination,
             parameters=pipeline_parameters,
         )
 

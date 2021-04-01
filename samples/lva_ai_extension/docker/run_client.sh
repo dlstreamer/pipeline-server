@@ -3,9 +3,7 @@
 SERVER_IP=127.0.0.1
 SERVER_PORT=5001
 LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
-SAMPLE_FILE_PATH=$LVA_ROOT/sampleframes/sample01.png
 OUTPUT_FILE_PATH=/tmp/result
-SHARED_MEMORY=
 INTERACTIVE=
 IMAGE=video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
 NAME=${IMAGE//[\:]/_}"_client"
@@ -70,7 +68,7 @@ while [[ "$#" -gt 0 ]]; do
         MODE=DEV
       ;;
     *)
-      ENTRYPOINT_ARGS+=" $1 "
+      ENTRYPOINT_ARGS+=" '$1' "
       ;;
   esac
 
@@ -97,7 +95,7 @@ if [ "$NUMBER_OF_STREAMS" -gt "1" ]; then
     for i in $(seq "$NUMBER_OF_STREAMS")
     do
       echo "Starting Client $i Results to ${OUTPUT_FILE_PATH}_client_$i.jsonl, Output to: client_${i}.stdout.txt"
-      RUN_COMMAND="'python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl $@'"
+      RUN_COMMAND='"'" python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl "'"'
       "$ROOT_DIR/docker/run.sh" --non-interactive --name "${NAME}_${i}" --network host --image $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND" >client_${i}.stdout.txt 2>&1 &
       PIDS+=" $!"
       CONTAINERS+=" ${NAME}_${i}"
@@ -106,6 +104,6 @@ if [ "$NUMBER_OF_STREAMS" -gt "1" ]; then
     echo "waiting for clients to finish"
     wait
 else
-    RUN_COMMAND="'python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl $@'"
+    RUN_COMMAND='"'" python3 $LVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl "'"'
     "$ROOT_DIR/docker/run.sh" --name $NAME --network host --image  $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND"
 fi

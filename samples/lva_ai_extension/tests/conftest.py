@@ -26,6 +26,13 @@ class Helpers:
                 server_args.extend(["--pipeline-version", pipeline["version"]])
         server_args.extend(["--max-running-pipelines", str(params.get("max_running_pipelines", 10))])
         print(' '.join(server_args))
+
+        if "ENABLE_RTSP" in os.environ:
+            del os.environ["ENABLE_RTSP"]
+        if params.get("enable_rtsp", None):
+            os.environ["ENABLE_RTSP"] = "true"
+            os.environ["RTSP_PORT"] = str(params.get("rtsp_port"))
+
         self.server_process = subprocess.Popen(server_args,
                                                bufsize=0,
                                                stdout=params.get("stdout",None),
@@ -70,6 +77,10 @@ class Helpers:
                 if isinstance(pipeline["parameters"], Mapping):
                     pipeline["parameters"] = json.dumps(pipeline["parameters"])
                 client_args.extend(["--pipeline-parameters", pipeline["parameters"]])
+            if pipeline.get("frame-destination", None):
+                if isinstance(pipeline["frame-destination"], Mapping):
+                    pipeline["frame-destination"] = json.dumps(pipeline["frame-destination"])
+                client_args.extend(["--frame-destination", pipeline["frame-destination"]])
         if params.get("shared_memory", False):
             client_args.append("-m")
         if params.get("output_location"):
@@ -219,3 +230,6 @@ def pytest_generate_tests(metafunc):
         test_cases, test_names = load_test_cases(metafunc, "pipeline_execution_positive")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 
+    if "pipeline_execution_one_client" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "pipeline_execution_one_client")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)

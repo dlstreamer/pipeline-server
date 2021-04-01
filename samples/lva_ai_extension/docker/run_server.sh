@@ -12,6 +12,7 @@ PIPELINES=
 ENTRYPOINT_ARGS=
 MODE=
 VOLUME_MOUNT=
+RTSP_ARGS=
 
 function show_help {
   echo ""
@@ -77,12 +78,8 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-if [ ! -z "$PARAMETERS" ]; then
-  ENV+="-e PARAMETERS='$PARAMETERS' "
-fi
-
-if [ ! -z "$PIPELINE_PARAMETERS" ]; then
-  ENV+="-e PIPELINE_PARAMETERS='$PIPELINE_PARAMETERS' "
+if [ ! -z "$ENABLE_RTSP" ]; then
+  RTSP_ARGS="--enable-rtsp"
 fi
 
 if [ ! -z "$GST_DEBUG" ]; then
@@ -97,4 +94,4 @@ if [ "${MODE}" == "DEV" ]; then
     VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV 
+"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $RTSP_ARGS $ENTRYPOINT_ARGS $PIPELINES $ENV

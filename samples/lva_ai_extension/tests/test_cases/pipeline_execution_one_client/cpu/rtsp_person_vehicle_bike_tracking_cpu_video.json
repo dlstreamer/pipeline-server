@@ -1,0 +1,37 @@
+{
+    "server_params": {
+        "sleep_period":0.25,
+        "port":5001,
+        "enable_rtsp":true,
+        "rtsp_port":8554
+    },
+    "client":
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_tracking",
+                    "version":"person_vehicle_bike_tracking",
+                    "parameters": {
+                        "detection-device":"CPU"
+                    },
+                    "frame-destination": {
+                        "type":"rtsp",
+                        "path":"tracking"
+                    }
+                },
+                "rtsp":{
+                    "url" : "rtsp://localhost",
+                    "port" : 8554
+                },
+                "wait_to_complete": false,
+                "source":"/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "output_location":"",
+                "shared_memory":true,
+                "loop_count":1,
+                "sleep_period":5,
+                "port":5001,
+                "timeout":300,
+                "expected_return_code":null
+            }
+        }
+}

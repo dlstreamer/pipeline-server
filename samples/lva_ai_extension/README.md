@@ -188,13 +188,14 @@ $ ./docker/run_server.sh --debug
 
 ### Extension Configuration
 
-The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters are optional.
+The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters and frame-destination are optional.
 ```
 {
     "pipeline": {
         "name": "object_detection",
         "version": "person_vehicle_bike_detection",
-        "parameters": {}
+        "parameters": {},
+        "frame-destination": {}
     }
 }
 ```
@@ -221,6 +222,32 @@ Example extension_configuration
         "name": "object_detection",
         "version": "person_vehicle_bike_detection"
         "parameters": { "detection-device": "GPU"}
+    }
+}
+```
+
+### Real Time Streaming Protocol (RTSP) Re-streaming
+
+Pipelines can be configured to connect and visualize input video with superimposed bounding boxes.
+
+* Enable RTSP at Server start
+```
+$ export ENABLE_RTSP=true
+$ ./docker/run_server.sh
+```
+* Run client with frame destination set. For demonstration, path set as `person-detection` in example request below. 
+```
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}' --loop-count 1000
+```
+* Connect and visualize: Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+
+* Example extension_configuration for re streaming pipeline.
+```
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection"
+        "frame-destination": { "type":"rtsp", "path":"person-detection"}
     }
 }
 ```

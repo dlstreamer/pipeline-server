@@ -20,6 +20,9 @@ extension_config = {
                 },
                 "parameters":{
                     "type":"object"
+                },
+                "frame-destination":{
+                    "type":"object"
                 }
             },
             "required":[

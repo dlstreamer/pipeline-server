@@ -139,18 +139,29 @@ def validate_extension_config(extension_config):
 
 def create_extension_config(args):
     extension_config = {}
-    if args.pipeline_name and args.pipeline_version:
-        pipeline_config = extension_config.setdefault("pipeline", {})
+    pipeline_config = {}
+    if args.pipeline_name:
         pipeline_config["name"] = args.pipeline_name
+    if args.pipeline_version:
         pipeline_config["version"] = args.pipeline_version
-        if args.pipeline_parameters:
-            try:
-                pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
-            except ValueError:
-                logging.error("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
-                sys.exit(1)
+    if args.pipeline_parameters:
+        try:
+            pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
+        except ValueError:
+            logging.error("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
+            sys.exit(1)
+    if args.frame_destination:
+        try:
+            pipeline_config["frame-destination"] = json.loads(args.frame_destination)
+        except ValueError:
+            logging.error("Issue loading frame destination: {}".format(args.frame_destination))
+            sys.exit(1)
+
+    if len(pipeline_config) > 0:
+        extension_config.setdefault("pipeline", pipeline_config)
 
     validate_extension_config(extension_config)
+
     return extension_config
 
 def main():
