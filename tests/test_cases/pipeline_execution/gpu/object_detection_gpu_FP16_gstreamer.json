@@ -15,7 +15,7 @@
             "format": "json-lines"
         },
         "parameters": {
-            "device": "GPU"
+            "detection-device": "GPU"
         }
     },
     "numerical_tolerance": 0.3,

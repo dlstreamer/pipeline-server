@@ -32,7 +32,8 @@ The sample microservice includes three media analytics pipelines.
 | |                  |
 |---------------------------------------------|---------|
 | **object_detection** | Detect and label objects such as bottles and bicycles.
-| **emotion_recognition** | Detect the emotions of a person within a video stream.
+| **object_classification** | Recognize attributes of vehicles within a video stream.
+| **object_tracking** | Track detected objects within a video stream.
 | **audio_detection** | Analyze audio streams for events such as breaking glass or barking dogs.
 
 
@@ -84,19 +85,24 @@ results with the host and is optional in actual deployments.
 Expected output:
 
 ```
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:12,139", "message": "=================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:12,139", "message": "Loading Pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:12,139", "message": "=================", "module": "pipeline_manager"}
-(gst-plugin-scanner:14): GStreamer-WARNING **: 12:37:12.476: Failed to load plugin '/root/gst-video-analytics/build/intel64/Release/lib/libvasot.so': libopencv_video.so.4.4: cannot open shared object file: No such file or directory
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,207", "message": "FFmpeg Pipelines Not Enabled: ffmpeg not installed\n", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,208", "message": "Loading Pipelines from Config Path /home/video-analytics-serving/pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,223", "message": "Loading Pipeline: audio_detection version: 1 type: GStreamer from /home/video-analytics-serving/pipelines/audio_detection/1/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,230", "message": "Loading Pipeline: object_detection version: 1 type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/1/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,240", "message": "Loading Pipeline: emotion_recognition version: 1 type: GStreamer from /home/video-analytics-serving/pipelines/emotion_recognition/1/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,241", "message": "===========================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,241", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,241", "message": "===========================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2020-08-06 12:37:13,333", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "=================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "Loading Pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "=================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,588", "message": "Loading Pipelines from Config Path /home/video-analytics-serving/pipelines", "module": "pipeline_manager"}
+{"levelname": "WARNING", "asctime": "2021-03-16 23:33:10,599", "message": "Missing metaconvert element", "module": "gstreamer_pipeline"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,599", "message": "Loading Pipeline: object_detection version: app_src_dst type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/app_src_dst/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,601", "message": "Loading Pipeline: object_detection version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,611", "message": "Loading Pipeline: object_detection version: edgex type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/edgex/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,612", "message": "Loading Pipeline: object_detection version: 2 type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/2/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,613", "message": "Loading Pipeline: object_classification version: vehicle_attributes type: GStreamer from /home/video-analytics-serving/pipelines/object_classification/vehicle_attributes/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,616", "message": "Loading Pipeline: audio_detection version: environment type: GStreamer from /home/video-analytics-serving/pipelines/audio_detection/environment/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "WARNING", "asctime": "2021-03-16 23:33:10,616", "message": "Missing metaconvert element", "module": "gstreamer_pipeline"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,616", "message": "Loading Pipeline: video_decode version: app_dst type: GStreamer from /home/video-analytics-serving/pipelines/video_decode/app_dst/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "Loading Pipeline: object_tracking version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_tracking/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,702", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
 ```
 
 ## vaClient:
@@ -109,7 +115,7 @@ To accompany the microservice is a sample REST client which can demonstate VA Se
 ```
 
 ### Pipeline Status:
-As the pipeline runs, the status is queried and reported by vaclient. 
+As the pipeline runs, the status is queried and reported by vaclient.
 > Note: When a pipeline is started, the service returns a pipeline ``instance id`` which must be used when requesting status or to stop the pipeline.
 ```json
 Pipeline Status:
@@ -127,35 +133,38 @@ Pipeline Status:
 Once the pipeline run has completed, the detection results will be displayed by vaclient.
 
 ```json
-Detection Result:
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+```
+
+After pretty-printing:
 
 {
   "objects": [
     {
       "detection": {
         "bounding_box": {
-          "x_max": 0.9018613696098328,
-          "x_min": 0.7940059304237366,
-          "y_max": 0.8923144340515137,
-          "y_min": 0.3036338984966278
+          "x_max":0.0503933560103178,
+          "x_min":0.0,
+          "y_max":0.34233352541923523,
+          "y_min":0.14351698756217957
         },
-        "confidence": 0.6951696872711182,
-        "label": "bottle",
-        "label_id": 5
+        "confidence":0.6430817246437073,
+        "label":"vehicle",
+        "label_id":2
       },
-      "h": 212,
-      "roi_type": "bottle",
-      "w": 69,
-      "x": 508,
-      "y": 109
+      "h":86,
+      "roi_type":"vehicle",
+      "w":39,
+      "x":0,
+      "y":62
     }
   ],
   "resolution": {
-    "height": 360,
-    "width": 640
+    "height":432,
+    "width":768
   },
-  "source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-  "timestamp": 39821229050
+  "source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+  "timestamp":49250000000
 }
 ```
 
@@ -163,9 +172,9 @@ Detection Result:
 
 <details>
 
-<summary>Emotion Recognition</summary>
+<summary>Vehicle Attributes Recognition</summary>
 
-## Recognizing Emotions in a Video
+## Recognizing vehicle attributes in a video
 
 ### Example Request:
 
@@ -186,7 +195,7 @@ Response
 </tr>
 <tr>
 <td>
-/pipelines/emotion_recognition/1
+/pipelines/object_classification/vehicle_attributes
 </td>
 <td>
 POST
@@ -201,7 +210,7 @@ JSON
   },
   "destination": {
     "type": "file",
-    "path": "/tmp/results_emotions.txt",
+    "path": "/tmp/object_classification_results.txt",
     "format": "json-lines"
   }
 }
@@ -216,19 +225,19 @@ Pipeline Instance Id
 
 ### Curl Command:
 
-Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/head-pose-face-detection-male.gif).
+Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/person-bicycle-car-detection.gif).
 
 ```bash
-curl localhost:8080/pipelines/emotion_recognition/1 -X POST -H \
+curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {
-    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
     "type": "uri"
   },
   "destination": {
     "type": "file",
-    "path": "/tmp/results_emotions.txt",
+    "path": "/tmp/results_object_classification.txt",
     "format": "json-lines"
   }
 }'
@@ -238,15 +247,15 @@ curl localhost:8080/pipelines/emotion_recognition/1 -X POST -H \
 To view incremental results, execute the following command from the shell.
 
 ```bash
-tail -f /tmp/results_emotions.txt
+tail -f /tmp/results_object_classification.txt
 ```
 
-As the video is being analyzed and as the person's emotions appear and disappear you will see recognition results in the output.
+As the video is being analyzed and vehicle appears in frame you will see vehicle attributes in the output.
 
 Expected Output:
 
 ```json
-{"objects":[{"detection":{"bounding_box":{"x_max":0.567557156085968,"x_min":0.42375022172927856,"y_max":0.5346322059631348,"y_min":0.15673652291297913},"confidence":0.9999996423721313,"label":"face","label_id":1},"emotion":{"label":"neutral","model":{"name":"0003_EmoNet_ResNet10"}},"h":163,"roi_type":"face","w":111,"x":325,"y":68}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true","timestamp":13333333333}
+{"objects":[{"color":{"label":"white","model":{"name":"vehicle-attributes-recognition-barrier-0039"}},"detection":{"bounding_box":{"x_max":0.1612488180398941,"x_min":0.0,"y_max":0.3588942885398865,"y_min":0.12057243287563324},"confidence":0.9822055697441101,"label":"vehicle","label_id":2},"h":103,"roi_type":"vehicle","type":{"label":"car","model":{"name":"vehicle-attributes-recognition-barrier-0039"}},"w":124,"x":0,"y":52}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":48500000000}
 ```
 
 After pretty-printing:
@@ -255,36 +264,42 @@ After pretty-printing:
 {
   "objects": [
     {
-      "detection": {
-        "bounding_box": {
-          "x_max": 0.567557156085968,
-          "x_min": 0.42375022172927856,
-          "y_max": 0.5346322059631348,
-          "y_min": 0.15673652291297913
-        },
-        "confidence": 0.9999996423721313,
-        "label": "face",
-        "label_id": 1
-      },
-      "emotion": {
-        "label": "neutral",
+      "color": {
+        "label": "white",
         "model": {
-          "name": "0003_EmoNet_ResNet10"
+          "name": "vehicle-attributes-recognition-barrier-0039"
         }
       },
-      "h": 163,
-      "roi_type": "face",
-      "w": 111,
-      "x": 325,
-      "y": 68
+      "detection": {
+        "bounding_box": {
+          "x_max":0.1612488180398941,
+          "x_min":0.0,
+          "y_max":0.3588942885398865,
+          "y_min":0.12057243287563324
+        },
+        "confidence":0.9822055697441101,
+        "label":"vehicle",
+        "label_id":2
+      },
+      "h":103,
+      "roi_type":"vehicle",
+      "type": {
+        "label":"car",
+        "model": {
+          "name":"vehicle-attributes-recognition-barrier-0039"
+        }
+      },
+      "w":124,
+      "x":0,
+      "y":52
     }
   ],
   "resolution": {
-    "height": 432,
-    "width": 768
+    "height":432,
+    "width":768
   },
-  "source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true",
-  "timestamp": 13333333333
+  "source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+  "timestamp":48500000000
 }
 ```
 </details>
@@ -312,7 +327,7 @@ Response
 </tr>
 <tr>
 <td>
-/pipelines/audio_detection/1
+/pipelines/audio_detection/environment
 </td>
 <td>
 POST
@@ -345,7 +360,7 @@ Pipeline Instance Id
 Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [audio](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/samples/gst_launch/audio_detect/how_are_you_doing.wav?raw=true).
 
 ```bash
-curl localhost:8080/pipelines/audio_detection/1 -X POST -H \
+curl localhost:8080/pipelines/audio_detection/environment -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {

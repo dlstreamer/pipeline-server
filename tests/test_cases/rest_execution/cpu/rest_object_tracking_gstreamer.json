@@ -1,5 +1,5 @@
 {
-    "path": "pipelines/object_detection/person_vehicle_bike",
+    "path": "pipelines/object_tracking/person_vehicle_bike",
     "start" : {
         "body": {
             "source": {
@@ -12,12 +12,13 @@
                 "format": "json-lines"
             },
             "parameters": {
-                "detection-device": "GPU"
+                "detection-device": "CPU",
+                "classification-device": "CPU"
             }
         }
     },
     "check_running" : {
-        "timeout": 30.0
+        "timeout": 2.0
     },
     "abort" : {
         "delay" : 0.5

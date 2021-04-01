@@ -4,7 +4,7 @@
 	"template": ["multifilesrc location=/home/video-analytics-serving/tests/media/how_are_you_doing.wav loop=True ! wavparse ignore-length=1 ! decodebin ! audioresample ! audioconvert",
                 " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
                 " ! level name=\"level\"",
-                " ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" model-proc=\"{models[audio_detection][1][proc]}\" name=\"detection\"",
+                " ! gvaaudiodetect model=\"{models[audio_detection][environment][network]}\" model-proc=\"{models[audio_detection][environment][proc]}\" name=\"detection\"",
                 " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
                 " ! appsink name=appsink"
                 ],

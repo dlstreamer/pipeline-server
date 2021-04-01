@@ -1,9 +1,9 @@
 {
-    "path": "pipelines/object_detection/1",
+    "path": "pipelines/object_detection/person_vehicle_bike",
     "start" : {
         "body": {
             "source": {
-                "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+                "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
                 "type": "uri"
             },
             "destination": {
@@ -14,8 +14,11 @@
                 },
                 "frame":{
                     "type": "rtsp",
-                    "path": "bottles"
+                    "path": "person"
                 }
+            },
+            "parameters": {
+                "detection-device": "CPU"
             }
         }
     },

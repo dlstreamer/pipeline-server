@@ -2,7 +2,7 @@
     "options": {},
     "pipeline": {
         "name": "audio_detection",
-        "version": 1
+        "version": "environment"
     },
     "request": {
         "source": {

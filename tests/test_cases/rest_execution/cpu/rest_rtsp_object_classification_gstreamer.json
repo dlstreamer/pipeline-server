@@ -1,21 +1,25 @@
 {
-    "path": "pipelines/emotion_recognition/1",
+    "path": "pipelines/object_classification/vehicle_attributes",
     "start" : {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/samples/classroom.mp4",
+                "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
                 "type": "uri"
             },
             "destination": {
                 "metadata":{
                     "type": "file",
-                    "path": "/tmp/rest_emotion_recognition",
+                    "path": "/tmp/rest_object_classification",
                     "format": "json-lines"
                 },
                 "frame":{
                     "type": "rtsp",
-                    "path": "classroom-emotions"
+                    "path": "vehicle_attributes"
                 }
+            },
+            "parameters": {
+                "detection-device": "CPU",
+                "classification-device": "CPU"
             }
         }
     },

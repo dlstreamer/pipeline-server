@@ -1,13 +1,13 @@
 {
     "options": {},
     "pipeline": {
-        "name": "stability_emotion_recognition_gstreamer_pipelines",
+        "name": "stability_object_classification_gstreamer_pipelines",
         "version": 1
     },
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/samples/classroom.mp4"
+            "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4"
         },
         "destination": {
             "type": "file",

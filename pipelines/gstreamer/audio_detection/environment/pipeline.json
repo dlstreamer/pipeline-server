@@ -1,14 +1,14 @@
 {
 	"name": "audio_detection",
 	"type": "GStreamer",
-	"template": ["urisourcebin name=\"source\" ! decodebin ! audioresample ! audioconvert",
-                " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=\"audiomixer\"",
-                " ! level name=\"level\"",
-                " ! gvaaudiodetect model=\"{models[audio_detection][1][network]}\" name=\"detection\"",
+	"template": ["uridecodebin name=source ! audioresample ! audioconvert",
+                " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=audiomixer",
+                " ! level name=level",
+                " ! gvaaudiodetect model={models[audio_detection][environment][network]} name=detection",
                 " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
                 " ! appsink name=appsink"
                 ],
-	"description": "Audio Detection Pipeline",
+	"description": "Environmental sound detection based on Aclnet",
 	"parameters": {
 		"type": "object",
 		"properties": {

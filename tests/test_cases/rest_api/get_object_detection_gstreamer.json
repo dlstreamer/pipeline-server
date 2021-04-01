@@ -1,50 +1,88 @@
 {
     "body": {},
-    "path": "pipelines/object_detection/1",
+    "path": "pipelines/object_detection/person_vehicle_bike",
     "result": {
-        "description": "Object Detection Pipeline",
+        "description": "Object Detection using gstreamer gvadetect element, check more about gvadetect at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect",
         "name": "object_detection",
         "parameters": {
             "properties": {
+                "batch-size": {
+                    "element": "detection",
+                    "type": "integer"
+                },
                 "cpu-throughput-streams": {
                     "element": "detection",
                     "maximum": 4294967295,
                     "minimum": 0,
                     "type": "integer"
                 },
-                "device": {
+                "detection-device": {
+                    "default": "CPU",
+                    "element": {
+                        "name": "detection",
+                        "property": "device"
+                    },
+                    "type": "string"
+                },
+                "detection-model-instance-id": {
+                    "default": "person_vehicle_bike_detection",
+                    "element": {
+                        "name": "detection",
+                        "property": "model-instance-id"
+                    },
+                    "type": "string"
+                },
+                "device-extensions": {
+                    "element": "detection",
+                    "type": "string"
+                },
+                "gpu-throughput-streams": {
+                    "element": "detection",
+                    "maximum": 4294967295,
+                    "minimum": 0,
+                    "type": "integer"
+                },
+                "ie-config": {
                     "element": "detection",
                     "type": "string"
                 },
                 "inference-interval": {
-                    "default": 1,
                     "element": "detection",
                     "maximum": 4294967295,
                     "minimum": 1,
                     "type": "integer"
                 },
-                "model-instance-id": {
-                    "default": "inf0",
-                    "element": "detection",
-                    "type": "string"
-                },
-                "n-threads": {
-                    "default": 1,
-                    "element": "videoconvert",
-                    "type": "integer"
-                },
                 "nireq": {
-                    "default": 2,
                     "element": "detection",
                     "maximum": 64,
                     "minimum": 1,
                     "type": "integer"
+                },
+                "pre-process-backend": {
+                    "element": "detection",
+                    "type": "string"
+                },
+                "reshape": {
+                    "element": "detection",
+                    "type": "boolean"
+                },
+                "reshape-height": {
+                    "element": "detection",
+                    "type": "integer"
+                },
+                "reshape-width": {
+                    "element": "detection",
+                    "type": "integer"
+                },
+                "threshold": {
+                    "element": "detection",
+                    "type": "number"
                 }
             },
             "type": "object"
         },
         "type": "GStreamer",
-        "version": "1"
+        "version": "person_vehicle_bike"
     },
     "status_code": 200,
     "verb": "get"

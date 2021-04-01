@@ -1,0 +1,22 @@
+{
+	"type": "GStreamer",
+	"template": ["uridecodebin name=source",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} model-proc={models[object_detection][person_vehicle_bike][proc]} name=detection",
+				" ! gvaclassify model={models[object_classification][stringified_version][network]} model-proc={models[object_classification][stringified_version][proc]} name=classification",
+				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+				" ! appsink name=appsink"],
+	"description": "Object Classification Pipeline",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"detection-device": {
+				"element": "detection",
+				"type": "string"
+			},
+			"inference-interval": {
+				"element": "detection",
+				"type": "integer"
+			}
+		}
+	}
+}

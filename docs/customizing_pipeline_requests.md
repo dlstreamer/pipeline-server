@@ -16,7 +16,7 @@ Pipeline requests sent to Video Analytics Serving REST-API are json documents th
 ```json
 {
 	"source": {
-		"uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+		"uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
 		"type": "uri"
 	},
 	"destination": {
@@ -42,7 +42,7 @@ Some of the common video sources are:
 ### File Source
 The example request shown in above section has media `source` from a video file checked in github. With the service running, you can use curl command line program to start an object detection pipeline with video source from a video file as follows:
 ```bash
-$ curl localhost:8080/pipelines/object_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
+$ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
 2
 ```
 The number returned on the console is the pipeline instance id (e.g. 2).
@@ -51,7 +51,7 @@ As the video is being analyzed and as events start and stop you will see detecti
 
 ```bash
 $ tail -f /tmp/results.txt
-{"objects":[{"detection":{"bounding_box":{"x_max":0.9022353887557983,"x_min":0.7940621376037598,"y_max":0.8917602300643921,"y_min":0.30396613478660583},"confidence":0.7093080282211304,"label":"bottle","label_id":5},"h":212,"roi_type":"bottle","w":69,"x":508,"y":109}],"resolution":{"height":360,"width":640},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true","timestamp":39553072625}
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
 ```
 
 ### RTSP Source
@@ -73,7 +73,7 @@ In this example we will use `rtsp://192.142.192.142:8654/simulated_camera.sdp` a
 ```
 A sample request to start an object detection pipeline with `source` from this rtsp stream can be initiated using the following command:
 ```bash
-$ curl localhost:8080/pipelines/object_detection/1 -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "rtsp://192.142.192.142:8654/simulated_camera.sdp", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
+$ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H 'Content-Type: application/json' -d '{ "source": { "uri": "rtsp://192.142.192.142:8654/simulated_camera.sdp", "type": "uri" }, "destination": { "type": "file", "path": "/tmp/results.txt", "format":"json-lines"}}'
 3
 ```
 
@@ -86,7 +86,7 @@ $ tail -f /tmp/results.txt
 With an rtsp stream as source, the pipeline keeps running as long as the rtsp stream is live. 
 To get the status of pipeline instance with an instance id for e.g. 3, execute the below command:
 ```bash
-$ curl localhost:8080/pipelines/object_detection/1/3/status -X GET
+$ curl localhost:8080/pipelines/object_detection/person_vehicle_bike/3/status -X GET
 {
   "avg_fps": 56.52932122000287,
   "elapsed_time": 18.08210277557373,
@@ -99,7 +99,7 @@ $ curl localhost:8080/pipelines/object_detection/1/3/status -X GET
 
 To stop the pipeline instance with an instance id for e.g. 3, execute the below command:
 ```bash
-$ curl localhost:8080/pipelines/object_detection/1/3 -X DELETE
+$ curl localhost:8080/pipelines/object_detection/person_vehicle_bike/3 -X DELETE
 ```
 
 > **NOTE:** The below sections are TBD and will be expanded later.

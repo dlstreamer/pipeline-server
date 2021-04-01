@@ -1,5 +1,5 @@
 {
-    "path": "pipelines/audio_detection/1",
+    "path": "pipelines/audio_detection/environment",
     "start" : {
         "body": {
             "source": {
@@ -12,7 +12,7 @@
                 "format": "json-lines"
             },
             "parameters": {
-                "device": "GPU"
+                "detection-device": "GPU"
             }
         }
     },

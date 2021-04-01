@@ -6,7 +6,7 @@
             "type": "uri"
         }
     },
-    "path": "pipelines/object_detection/1",
+    "path": "pipelines/object_detection/person_vehicle_bike",
     "sort_key": "name",
     "result": {
         "detail": "{'uri': 'https://github/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true spaces in uri', 'type': 'uri'} is not valid under any of the given schemas - 'source'",

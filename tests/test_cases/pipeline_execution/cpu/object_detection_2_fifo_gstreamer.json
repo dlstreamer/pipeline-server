@@ -15,7 +15,8 @@
             "format": "json-lines"
         },
         "parameters": {
-            "recording_prefix": "/tmp/bottle"
+            "recording_prefix": "/tmp/bottle",
+            "detection-device": "CPU"
         }
     },
     "numerical_tolerance": 0.3,

@@ -1,0 +1,76 @@
+{
+	"type": "GStreamer",
+	"template": ["uridecodebin name=source",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
+				" ! gvaclassify model={models[object_classification][vehicle_attributes][network]} name=classification",
+				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+				" ! appsink name=appsink"],
+	"description": "Person Vehicle Bike Detection and Vehicle Attributes Classification based on person-vehicle-bike-detection-crossroad-0078 and vehicle-attributes-recognition-barrier-0039",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"classification-device": {
+				"element": {
+					"name": "classification",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"inference-interval": {
+				"element":
+					[ {"name":"detection",
+						"property":"inference-interval"},
+					  {"name":"classification",
+					   "property":"inference-interval"}
+					],
+				"type": "integer"
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "person_vehicle_bike_detection"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string",
+				"default": "vehicle_attributes_recognition"
+			},
+			"object-class": {
+				"element": "classification",
+				"type": "string",
+				"default": "vehicle"
+			},
+			"reclassify-interval": {
+				"element": "classification",
+				"type": "integer"
+			},
+			"detection-threshold": {
+				"element": {
+					"name": "detection",
+					"property": "threshold"
+				},
+				"type": "number"
+			},
+			"classification-threshold": {
+				"element": {
+					"name": "classification",
+					"property": "threshold"
+				},
+				"type": "number"
+			}
+		}
+	}
+}

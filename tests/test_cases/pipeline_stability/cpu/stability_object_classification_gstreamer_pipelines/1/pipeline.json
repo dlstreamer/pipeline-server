@@ -1,0 +1,9 @@
+{
+	"type": "GStreamer",
+	"template": ["multifilesrc location=/home/video-analytics-serving/samples/bottle_detection.mp4 loop=True ! queue ! decodebin",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
+				" ! gvaclassify model={models[object_classification][vehicle_attributes][network]} name=classification",
+				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+				" ! appsink name=appsink"],
+	"description": "Object Classification Pipeline"
+}

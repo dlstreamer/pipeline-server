@@ -2,7 +2,7 @@
     "options": {},
     "pipeline": {
         "name": "audio_detection",
-        "version": 1
+        "version": "environment"
     },
     "request": {
         "source": {
@@ -13,6 +13,9 @@
             "type": "file",
             "path": "/tmp/audio_detection_results.json",
             "format": "json-lines"
+        },
+        "parameters": {
+            "detection-device": "CPU"
         }
     },
     "numerical_tolerance": 0.2,

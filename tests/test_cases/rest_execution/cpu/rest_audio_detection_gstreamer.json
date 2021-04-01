@@ -1,5 +1,5 @@
 {
-    "path": "pipelines/audio_detection/1",
+    "path": "pipelines/audio_detection/environment",
     "start" : {
         "body": {
             "source": {
@@ -10,6 +10,9 @@
                 "type": "file",
                 "path": "/tmp/rest_audio_detection_gstreamer",
                 "format": "json-lines"
+            },
+            "parameters": {
+                "detection-device": "CPU"
             }
         }
     },

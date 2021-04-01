@@ -1,23 +1,23 @@
 {
-    "path": "pipelines/emotion_recognition/1",
+    "path": "pipelines/object_detection/person_vehicle_bike",
     "start" : {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/samples/classroom.mp4",
+                "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
                 "type": "uri"
             },
             "destination": {
                 "type": "file",
-                "path": "/tmp/rest_emotion_recognition",
+                "path": "/tmp/rest_object_detection",
                 "format": "json-lines"
             },
             "parameters": {
-                "device": "GPU"
+                "detection-device": "CPU"
             }
         }
     },
     "check_running" : {
-        "timeout": 30.0
+        "timeout": 2.0
     },
     "abort" : {
         "delay" : 0.5

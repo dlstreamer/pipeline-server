@@ -1,5 +1,5 @@
 {
-    "path": "pipelines/object_detection/person_vehicle_bike",
+    "path": "pipelines/object_tracking/person_vehicle_bike",
     "start" : {
         "body": {
             "source": {
@@ -8,11 +8,12 @@
             },
             "destination": {
                 "type": "file",
-                "path": "/tmp/rest_object_detection",
+                "path": "/tmp/rest_object_tracking",
                 "format": "json-lines"
             },
             "parameters": {
-                "detection-device": "GPU"
+                "detection-device": "GPU",
+                "classification-device": "GPU"
             }
         }
     },

@@ -20,7 +20,7 @@ The tutorial uses [bottle-detection.mp4](https://github.com/intel-iot-devkit/sam
 
 ![bottle-detection.gif](https://github.com/intel-iot-devkit/sample-videos/raw/master/preview/bottle-detection.gif)
 
-# Background 
+# Background
 
 Object detection is a combination of object localization and object
 classification. Object detection models take images as input and
@@ -61,11 +61,11 @@ In a second terminal window launch an interactive session:
 #### Detect Objects on Sample Video
 
 In the interactive session run the sample client to detect objects on
-the sample video using version `1` of the reference pipeline
+the sample video using version `person_vehicle_bike` of the reference pipeline
 `object-detection`.
 
 ```bash
-./samples/sample.py --pipeline object_detection --version 1
+./samples/sample.py --pipeline object_detection --version person_vehicle_bike
 ```
 
 Expected output (abbreviated):
@@ -82,30 +82,32 @@ Pipeline Status:
 }
 <snip>
 {
-	"objects": [{
-		"detection": {
-			"bounding_box": {
-				"x_max": 0.9022353887557983,
-				"x_min": 0.7940621376037598,
-				"y_max": 0.8917602300643921,
-				"y_min": 0.30396613478660583
-			},
-			"confidence": 0.7093080282211304,
-			"label": "bottle",
-			"label_id": 5
-		},
-		"h": 212,
-		"roi_type": "bottle",
-		"w": 69,
-		"x": 508,
-		"y": 109
-	}],
-	"resolution": {
-		"height": 360,
-		"width": 640
-	},
-	"source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
-	"timestamp": 39553072625
+    "objects": [
+        {
+            "detection": {
+                "bounding_box": {
+                    "x_max": 0.16146603226661682,
+                    "x_min": 0.11855315417051315,
+                    "y_max": 0.3684159517288208,
+                    "y_min": 0.30507874488830566
+                },
+                "confidence": 0.5133300423622131,
+                "label": "vehicle",
+                "label_id": 2
+            },
+            "h": 23,
+            "roi_type": "vehicle",
+            "w": 27,
+            "x": 76,
+            "y": 110
+        }
+    ],
+    "resolution": {
+        "height": 360,
+        "width": 640
+    },
+    "source": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+    "timestamp": 39050279329
 }
 ```
 #### Stop the Microservice
@@ -163,8 +165,8 @@ Expected output (abbreviated):
 [ SUCCESS ] Generated IR version 10 model.
 [ SUCCESS ] XML file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
 [ SUCCESS ] BIN file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
-[ SUCCESS ] Total execution time: 5.75 seconds. 
-[ SUCCESS ] Memory consumed: 533 MB. 
+[ SUCCESS ] Total execution time: 5.75 seconds.
+[ SUCCESS ] Memory consumed: 533 MB.
 It's been a while, check for a new version of Intel(R) Distribution of OpenVINO(TM) toolkit here https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html?cid=other&source=Prod&campid=ww_2020_bu_IOTG_OpenVINO-2021-1&content=upg_pro&medium=organic_uid_agjj or on the GitHub*
 
 Downloaded yolo-v2-tiny-tf model-proc file from gst-video-analytics repo
@@ -190,10 +192,10 @@ models
 
 #### Copy and Rename Existing Object Detection Pipeline
 
-Make a copy of the `object_detection` version `1` pipeline definition file and change the version to `yolo-v2-tiny-tf`.
+Make a copy of the `object_detection` version `person_vehicle_bike` pipeline definition file and change the version to `yolo-v2-tiny-tf`.
 
 ```
-$ cp -r pipelines/gstreamer/object_detection/1 pipelines/gstreamer/object_detection/yolo-v2-tiny-tf
+$ cp -r pipelines/gstreamer/object_detection/person_vehicle_bike pipelines/gstreamer/object_detection/yolo-v2-tiny-tf
 ```
 
 > **Note:** You can also update the existing version `1` to point to the new model instead of creating a new version.
@@ -207,9 +209,9 @@ select a different model.
 Original pipeline template:
 
 ```
-"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-            " ! gvadetect model={models[object_detection][1][network]} name=detection",
-            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
+"template": ["uridecodebin name=source",
+            " ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
             " ! appsink name=appsink"
             ]
 ```
@@ -224,9 +226,9 @@ sed -i -e s/\\[1\\]/\\[yolo-v2-tiny-tf\\]/g pipelines/gstreamer/object_detection
 Edited pipeline template:
 
 ```
-"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-            " ! gvadetect model-instance-id=inf0 model={models[object_detection][yolo-v2-tiny-tf][network]} name=detection",
-            " ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
+"template": ["uridecodebin name=source",
+            " ! gvadetect model={models[person_vehicle_bike_detection][yolo-v2-tiny-tf][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
             " ! appsink name=appsink"
             ]
 ```
@@ -249,7 +251,7 @@ Expected output (abbreviated):
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models from Path /home/video-analytics-serving/models", "module": "model_manager"}
 {"levelname": "WARNING", "asctime": "2021-01-21 06:58:11,099", "message": "Models directory is mount point", "module": "model_manager"}
-{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/1/aclnet.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/environment/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/environment/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/environment/aclnet.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: person_vehicle_bike_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP32/person-vehicle-bike-detection-crossroad-0078.xml', 'FP16': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP16/person-vehicle-bike-detection-crossroad-0078.xml', 'model-proc': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/person-vehicle-bike-detection-crossroad-0078.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: face_detection_retail version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml', 'FP16': '/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml', 'model-proc': '/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json'}", "module": "model_manager"}
@@ -387,7 +389,7 @@ Expected output (abbreviated):
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "==============", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,099", "message": "Loading Models from Path /home/video-analytics-serving/models", "module": "model_manager"}
 {"levelname": "WARNING", "asctime": "2021-01-21 06:58:11,099", "message": "Models directory is mount point", "module": "model_manager"}
-{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/1/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/1/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/1/aclnet.json'}", "module": "model_manager"}
+{"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: audio_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/audio_detection/environment/FP32/aclnet.xml', 'FP16': '/home/video-analytics-serving/models/audio_detection/environment/FP16/aclnet.xml', 'model-proc': '/home/video-analytics-serving/models/audio_detection/environment/aclnet.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: person_vehicle_bike_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP32/person-vehicle-bike-detection-crossroad-0078.xml', 'FP16': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/FP16/person-vehicle-bike-detection-crossroad-0078.xml', 'model-proc': '/home/video-analytics-serving/models/person_vehicle_bike_detection/1/person-vehicle-bike-detection-crossroad-0078.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: face_detection_retail version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml', 'FP16': '/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml', 'model-proc': '/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json'}", "module": "model_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 06:58:11,100", "message": "Loading Model: object_detection version: 1 type: IntelDLDT from {'FP32': '/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml', 'FP16': '/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml', 'model-proc': '/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json'}", "module": "model_manager"}

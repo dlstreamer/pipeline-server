@@ -1,9 +1,9 @@
 {
-    "path": "pipelines/object_detection/1",
+    "path": "pipelines/object_detection/person_vehicle_bike",
     "start" : {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/samples/pinwheel.ts",
+                "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
                 "type": "uri"
             },
             "destination": {
@@ -12,7 +12,7 @@
                 "format": "json-lines"
             },
             "parameters": {
-                "device": "BPU"
+                "detection-device": "BPU"
             }
         }
     },

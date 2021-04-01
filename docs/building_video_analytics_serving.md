@@ -70,7 +70,7 @@ Streamer** component.
 ```
 # Selecting Pipelines and Models at Build Time
 
-By default the Video Analytics Serving build scripts include a set of sample pipelines and models for object detection, emotion recognition, and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the `--pipelines` and `--models` flags.
+By default the Video Analytics Serving build scripts include a set of sample pipelines and models for object detection, classification, tracking and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the --pipelines and --models flags.
 
 > **Note:** Selected pipeline definitions must match the media
 > framework supported in the media analytics base image.
