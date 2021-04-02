@@ -63,8 +63,6 @@ get_options "$@"
 # Build LVA image if not specified
 if [ -z "$LVA_IMAGE" ]; then
     echo Building $EXTENSION_IMAGE_TAG
-    # Export to allow nested scripts to digest CACHE_PREFIX
-    export CACHE_PREFIX=${CACHE_PREFIX}
     launch "$LVA_DIR/docker/build.sh"
 fi
 

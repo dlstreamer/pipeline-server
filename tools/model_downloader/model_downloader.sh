@@ -11,8 +11,9 @@ SOURCE_DIR=$(dirname "$TOOLS_DIR")
 OUTPUT_DIR=$(realpath $( pwd ))
 FORCE=
 RUN_PREFIX=
-OPEN_MODEL_ZOO_VERSION="2021.1"
-DL_STREAMER_VERSION="v1.2.1"
+OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.3_vaapi_fix"}
+DL_STREAMER_VERSION=
 MODE=
 MODEL_LIST=$SOURCE_DIR/"models_list/models.list.yml"
 DRY_RUN=
@@ -44,6 +45,14 @@ while [[ "$#" -gt 0 ]]; do
         ;;
     --force)
         FORCE="--force"
+        ;;
+    --open-model-zoo-image)
+        if [ "$2" ]; then
+            OPEN_MODEL_ZOO_TOOLS_IMAGE=$2
+            shift
+        else
+            error 'ERROR: "--open-model-zoo-image" requires an argument.'
+        fi
         ;;
     --open-model-zoo-version)
         if [ "$2" ]; then
@@ -100,8 +109,8 @@ case $OPEN_MODEL_ZOO_VERSION in
     2021.2)
         DL_STREAMER_VERSION="v1.3"
         ;;
-    2021.3)
-        DL_STREAMER_VERSION="v1.4"
+    2021.3*)
+        DL_STREAMER_VERSION="v1.4.1"
         ;;
     *)
         error 'ERROR: Unknown Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION
@@ -113,6 +122,7 @@ fi
 
 if [ ! -d "$OUTPUT_DIR/models" ]; then
     mkdir $OUTPUT_DIR/models
+    echo "Created output models folder as UID: $UID"
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" $NON_INTERACTIVE --dev --image openvino/ubuntu18_data_dev:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+$SOURCE_DIR/docker/run.sh --user "$UID" $NON_INTERACTIVE --dev --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""

@@ -25,16 +25,16 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 0.9070715308189392,
-                        "label": "Rain",
-                        "label_id": 11,
+                        "confidence": 0.7,
+                        "label": "Can opening",
+                        "label_id": 35,
                         "segment": {
                             "end_timestamp": 1000000000,
                             "start_timestamp": 0
                         }
                     },
                     "end_timestamp": 1000000000,
-                    "event_type": "Rain",
+                    "event_type": "Can opening",
                     "start_timestamp": 0
                 }
             ],
@@ -47,16 +47,16 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 0.5903555750846863,
-                        "label": "Insects (flying)",
-                        "label_id": 8,
+                        "confidence": 0.67,
+                        "label": "Cow",
+                        "label_id": 4,
                         "segment": {
                             "end_timestamp": 1200000000,
                             "start_timestamp": 200000000
                         }
                     },
                     "end_timestamp": 1200000000,
-                    "event_type": "Insects (flying)",
+                    "event_type": "Cow",
                     "start_timestamp": 200000000
                 }
             ],
@@ -69,16 +69,16 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 0.7713412642478943,
-                        "label": "Insects (flying)",
-                        "label_id": 8,
+                        "confidence": 0.99,
+                        "label": "Speech",
+                        "label_id": 53,
                         "segment": {
                             "end_timestamp": 1400000000,
                             "start_timestamp": 400000000
                         }
                     },
                     "end_timestamp": 1400000000,
-                    "event_type": "Insects (flying)",
+                    "event_type": "Speech",
                     "start_timestamp": 400000000
                 }
             ],
@@ -91,7 +91,7 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 0.9999994039535522,
+                        "confidence": 1.0,
                         "label": "Speech",
                         "label_id": 53,
                         "segment": {
@@ -267,7 +267,7 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 1.0,
+                        "confidence": 0.99,
                         "label": "Speech",
                         "label_id": 53,
                         "segment": {
@@ -289,7 +289,7 @@
             "events": [
                 {
                     "detection": {
-                        "confidence": 0.9997380375862122,
+                        "confidence": 0.99,
                         "label": "Speech",
                         "label_id": 53,
                         "segment": {

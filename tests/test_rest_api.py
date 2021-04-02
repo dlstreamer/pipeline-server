@@ -42,9 +42,17 @@ def test_rest_api(service, test_case, test_filename, generate):
         if isinstance(expected, list):
             if 'sort_key' in test_case:
                 sort_key = test_case['sort_key']
-                expected = sorted(expected, key=lambda x: x[sort_key])
-                comparison = sorted(comparison, key=lambda x: x[sort_key])
-                assert comparison == expected, "Response Value Mismatch"
+                if 'secondary_sort_key' in test_case:
+                    secondary_sort_key = test_case['secondary_sort_key']
+                    # Sort with primary and secondary keys
+                    expected = sorted(expected, key=lambda x: (x[sort_key], str(x[secondary_sort_key])))
+                    comparison = sorted(comparison, key=lambda x: (x[sort_key], str(x[secondary_sort_key])))
+                    assert comparison == expected, "Response Value Mismatch"
+                else:
+                    # Sort with primary key only
+                    expected = sorted(expected, key=lambda x: x[sort_key])
+                    comparison = sorted(comparison, key=lambda x: x[sort_key])
+                    assert comparison == expected, "Response Value Mismatch"
             else:
                 assert len(comparison) == len(expected), "Response List Length Mismatch"
                 for entry in expected:

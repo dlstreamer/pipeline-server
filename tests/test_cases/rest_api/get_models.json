@@ -1,7 +1,22 @@
 {
     "body": {},
     "path": "models",
+    "sort_key": "name",
+    "secondary_sort_key": "version",
     "result": [
+        {
+            "description": "object_classification",
+            "name": "object_classification",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/vehicle-attributes-recognition-barrier-0039.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP16/vehicle-attributes-recognition-barrier-0039.xml",
+                    "FP32": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP32/vehicle-attributes-recognition-barrier-0039.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "vehicle_attributes"
+        },
         {
             "description": "emotion_recognition",
             "name": "emotion_recognition",
@@ -14,6 +29,19 @@
             },
             "type": "IntelDLDT",
             "version": 1
+        },
+        {
+            "description": "audio_detection",
+            "name": "audio_detection",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/audio_detection/environment/aclnet.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/audio_detection/environment/FP16/aclnet.xml",
+                    "FP32": "/home/video-analytics-serving/models/audio_detection/environment/FP32/aclnet.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "environment"
         },
         {
             "description": "object_detection",
@@ -40,32 +68,6 @@
             },
             "type": "IntelDLDT",
             "version": "person_vehicle_bike"
-        },
-        {
-            "description": "object_classification",
-            "name": "object_classification",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/vehicle-attributes-recognition-barrier-0039.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP16/vehicle-attributes-recognition-barrier-0039.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP32/vehicle-attributes-recognition-barrier-0039.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "vehicle_attributes"
-        },
-        {
-            "description": "audio_detection",
-            "name": "audio_detection",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/audio_detection/environment/aclnet.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/audio_detection/environment/FP16/aclnet.xml",
-                    "FP32": "/home/video-analytics-serving/models/audio_detection/environment/FP32/aclnet.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "environment"
         },
         {
             "description": "face_detection_retail",
