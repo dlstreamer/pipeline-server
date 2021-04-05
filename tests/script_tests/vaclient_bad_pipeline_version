@@ -8,7 +8,7 @@ $SOURCE_DIR/docker/run.sh --non-interactive --name $NAME -v /tmp:/tmp &
 sleep 5
 
 # Run client with bad option
-OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh --version 3)
+OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/123 https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true)
 RETURN_CODE=$?
 
 # Kill server

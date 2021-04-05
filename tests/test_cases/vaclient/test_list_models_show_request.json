@@ -1,0 +1,5 @@
+{
+    "test_function": "list_models",
+    "show_request": true,
+    "expected_output": "GET http://localhost:8080/models"
+}

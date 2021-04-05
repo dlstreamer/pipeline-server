@@ -1,0 +1,7 @@
+{
+    "test_function": "run",
+    "pipeline": "object_detection/person_vehicle_bike",
+    "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+    "sleep_time_sec": 1
+
+}

@@ -1,0 +1,5 @@
+{
+    "test_function": "list_pipelines",
+    "show_request": false,
+    "regex": "( - .+/.+\n)+"
+}

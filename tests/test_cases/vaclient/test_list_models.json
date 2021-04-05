@@ -1,0 +1,5 @@
+{
+    "test_function": "list_models",
+    "show_request": false,
+    "regex": "( - .+/.+\n)+"
+}
