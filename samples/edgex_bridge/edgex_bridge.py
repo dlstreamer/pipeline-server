@@ -18,12 +18,12 @@ def parse_args(args=None):
                         action="store",
                         dest="source",
                         help="URI describing the source media to use as input.",
-                        default="file:///home/video-analytics-serving/samples/classroom.mp4")
+                        default="https://github.com/intel/video-analytics-serving/raw/master/samples/bottle_detection.mp4")
     parser.add_argument("--destination",
                         action="store",
                         dest="destination",
                         help="address of MQTT broker listening for edgex inference results.",
-                        default="localhost:1883")
+                        default="edgex-mqtt-broker:1883")
     parser.add_argument("--edgexdevice",
                         action="store",
                         dest="edgexdevice",
@@ -42,13 +42,18 @@ def parse_args(args=None):
     parser.add_argument("--topic",
                         action="store",
                         dest="topic",
-                        help="destination topic associated with EdgeX Core Data",
+                        help="destination topic associated with EdgeX Core Data.",
                         default="objects_detected")
     parser.add_argument("--generate",
                         action="store_true",
                         dest="generate_profile",
                         help="Generate EdgeX device profile for device-mqtt.",
                         default=False)
+    parser.add_argument("--analytics-image",
+                        action="store",
+                        dest="analyticsimage",
+                        help="Analytics image to use for deployment to Docker compose. This image tag corresponds to the microservice you build for handling a set of source(s) as input, pipeline(s) to process, and topic(s) as output.",
+                        default="edgex-video-analytics-serving:0.5.0")
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
@@ -71,12 +76,15 @@ if __name__ == "__main__":
         parameters = {"edgexbridge":{"topic":args.topic,
                                      "edgexdevice":args.edgexdevice,
                                      "edgexcommand":args.edgexcommand,
-                                     "edgexresource":args.edgexresource}}
+                                     "edgexresource":args.edgexresource,
+                                     "analyticsimage":args.analyticsimage,
+                                     "containername":args.analyticsimage.split(":", 1)[0],
+                                     "source":args.source},
+                      "inference-interval":6}
 
         # TODO: Add parameter to specify edgex folder
-        out_folder = "/home/video-analytics-serving/edgex/"
+        out_folder = "/home/video-analytics-serving/samples/edgex_bridge/edgex/"
         compose_dest = os.path.abspath(os.path.join(out_folder, "docker-compose.override.yml"))
-
         if args.generate_profile:
             TEMPLATE = "name: \"{edgexdevice}\"\n" \
             "manufacturer: \"VideoAnalyticsServing\"\n"\
@@ -121,7 +129,7 @@ if __name__ == "__main__":
                 "[DeviceList.Protocols]\n"\
                 "  [DeviceList.Protocols.mqtt]\n"\
                 "  Schema = 'tcp'\n"\
-                "  Host = 'localhost'\n"\
+                "  Host = 'mqtt-broker'\n"\
                 "  Port = '1883'\n"\
                 "  ClientId = 'videoAnalytics-pub'\n"\
                 "  Topic = 'videoAnalyticsTopic'\n"\
@@ -146,30 +154,66 @@ if __name__ == "__main__":
                 "      DRIVER_RESPONSECLIENTID: edgex-mqtt-command-sub\n"\
                 "      DRIVER_RESPONSETOPIC: Edgex-command-response\n"\
                 "    volumes:\n"\
-                "      - ./res/device-mqtt-go/:/res/\n"\
-                "version: '3.7'"
+                "      - ./res/device-mqtt-go/:/res/\n\n"\
+                "  vaserving:\n"\
+                "    container_name: {containername}\n"\
+                "    depends_on:\n"\
+                "      device-mqtt:\n"\
+                "        condition: service_started\n"\
+                "      data:\n"\
+                "        condition: service_started\n"\
+                "      metadata:\n"\
+                "        condition: service_started\n"\
+                "    environment:\n"\
+                "      CLIENTS_COMMAND_HOST: edgex-core-command\n"\
+                "      CLIENTS_COREDATA_HOST: edgex-core-data\n"\
+                "      CLIENTS_DATA_HOST: edgex-core-data\n"\
+                "      CLIENTS_METADATA_HOST: edgex-core-metadata\n"\
+                "      CLIENTS_NOTIFICATIONS_HOST: edgex-support-notifications\n"\
+                "      CLIENTS_RULESENGINE_HOST: edgex-kuiper\n"\
+                "      CLIENTS_SCHEDULER_HOST: edgex-support-scheduler\n"\
+                "      CLIENTS_VIRTUALDEVICE_HOST: edgex-device-virtual\n"\
+                "      DATABASES_PRIMARY_HOST: edgex-redis\n"\
+                "      DRIVER_INCOMINGHOST: edgex-mqtt-broker\n"\
+                "      DRIVER_RESPONSEHOST: edgex-mqtt-broker\n"\
+                "      EDGEX_SECURITY_SECRET_STORE: 'false'\n"\
+                "      REGISTRY_HOST: edgex-core-consul\n"\
+                "      SERVICE_HOST: {containername}\n"\
+                "      DISPLAY: $DISPLAY\n"\
+                "    volumes:\n"\
+                "      - /tmp/.X11-unix:/tmp/.X11-unix\n"\
+                "    devices:\n"\
+                "      - /dev/dri:/dev/dri\n"\
+                "    hostname: {containername}\n"\
+                "    image: {analyticsimage}\n"\
+                "    command: \"--source={source} --topic={topic}\"\n" \
+                "    user: vaserving\n"\
+                "    networks:\n"\
+                "      edgex-network: {{}}\n"\
+                "    ports:\n"\
+                "    - 127.0.0.1:8080:8080/tcp\n"\
+                "    read_only: true\n"\
+                "version: '3.7'\n\n"
             with open(compose_dest, 'w') as override_file:
                 override_file.write(COMPOSE.format(**parameters["edgexbridge"]))
                 print("Generated EdgeX Compose Override:\n{}\n\n".format(compose_dest))
 
         else:
-            # Raise error if compose override does not exist, expecting the generation to
-            # complete at least once.
-            if os.path.isfile(compose_dest):
-                pipeline_name = "object_detection"
-                pipeline_version = "edgex"
-                VAServing.start({'log_level': 'INFO', "ignore_init_errors":False})
-                pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
-                source = {"uri":args.source, "type":"uri"}
-                destination = {"type":"mqtt",
-                               "host":args.destination,
-                               "topic":'edgex_bridge/'+args.topic}
-                pipeline.start(source=source, destination=destination, parameters=parameters)
-                start_time = None
-                start_size = 0
-                VAServing.wait()
-            else:
-                print("ERROR: Invoke edgex_bridge.py with '--generate' to prepare EdgeX Foundry.")
+            pipeline_name = "object_detection"
+            pipeline_version = "edgex_event_emitter"
+            VAServing.start({'log_level': 'INFO', "ignore_init_errors":False})
+            pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
+            source = {"uri":args.source, "type":"uri"}
+            destination = {"type":"mqtt",
+                           "host":args.destination,
+                           "topic":'edgex_bridge/'+args.topic}
+            pipeline.start(source=source, destination=destination, parameters=parameters)
+            start_time = None
+            start_size = 0
+            VAServing.wait()
+    except FileNotFoundError:
+        print("Did you forget to run ./samples/edgex_bridge/fetch_edgex.sh ?")
+        print("Error processing script: {}".format(traceback.print_exc()))
     except KeyboardInterrupt:
         pass
     except Exception:

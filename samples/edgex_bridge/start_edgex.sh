@@ -4,7 +4,7 @@
 # before running start_edgex.sh.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-COMPOSE_PATH=$SCRIPT_DIR/../../edgex
+COMPOSE_PATH=$SCRIPT_DIR/edgex
 COMPOSE_FILE=$COMPOSE_PATH/docker-compose.override.yml
 
 if test -f "$COMPOSE_FILE"; then

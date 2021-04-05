@@ -1,0 +1,4 @@
+- model: person-vehicle-bike-detection-crossroad-0078
+  alias: object_detection
+  version: person_vehicle_bike
+  precision: [FP16,FP32]

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+EXPECTED_RETVAL=0
+EXPECTED="ERROR cloning EdgeX repository!"
+
+# Create mock command to interrupt normal flow
+function teardown {
+  unset git
+}
+trap teardown EXIT
+
+function git() {
+  echo "git being mocked by script_tests"
+  return 1
+}
+export -f git
+
+# Execute the negative test
+OUTPUT=$($SOURCE_DIR/samples/edgex_bridge/fetch_edgex.sh)
+RETURN_CODE=$?
+if [[ $RETURN_CODE != $EXPECTED_RETVAL ]]; then
+    error "Negative test got $RETURN_CODE instead of $EXPECTED_RETVAL"
+fi
+if [[ ! "$OUTPUT" == *"$EXPECTED"* ]]; then
+    error "Test Case did not receive expected output!"
+else
+    echo "Negative test PASSED"
+fi
