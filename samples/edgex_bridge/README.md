@@ -8,7 +8,7 @@ This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfou
 
 ## EdgeX Foundry
 
-EdgeX Foundry consists of vendor-neutral open-source middleware that provides a common framework to assemble and deploy solutions that utilize edge-based sensors and interoperates with operational technology and information technology systems. Especially suited for industrial IoT computing, EdgeX consists of a core set of loosely coupled microservices organized in different layers. At the [_South Side_](https://en.wikipedia.org/wiki/EdgeX_Foundry) the framework provides extensive integration of devices and software by use of a number of available device services. Each EdgeX device service is able to support a range of devices so long as they conform to a particular protocol. EdgeX also includes a [device-sdk](https://github.com/edgexfoundry/device-sdk-go/) to create new device services as needed. 
+EdgeX Foundry consists of vendor-neutral open-source middleware that provides a common framework to assemble and deploy solutions that utilize edge-based sensors and interoperates with operational technology and information technology systems. Especially suited for industrial IoT computing, EdgeX consists of a core set of loosely coupled microservices organized in different layers. At the [_South Side_](https://en.wikipedia.org/wiki/EdgeX_Foundry) the framework provides extensive integration of devices and software by use of a number of available device services. Each EdgeX device service is able to support a range of devices so long as they conform to a particular protocol. EdgeX also includes a [device-sdk](https://github.com/edgexfoundry/device-sdk-go/) to create new device services as needed.
 
 In this sample VA Serving outputs to [MQTT](https://en.wikipedia.org/wiki/MQTT), a popular IoT messaging protocol. These messages are received as [events](https://nexus.edgexfoundry.org/content/sites/docs/snapshots/master/256/docs/_build/html/Ch-WalkthroughReading.html) by a dynamically configured and listening EdgeX deployment.
 
@@ -73,7 +73,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
 1. Build the sample edgex-video-analytics-serving image.
 
    ```
-   $ ./samples/edgex_bridge/build.sh
+   $ ./samples/edgex_bridge/docker/build.sh
    ```
 
    This also generates the needed EdgeX resources to augment the `./edgex` project subfolder located on your host (created in step 2). To do this the build script has invoked the [edgex_bridge.py](./edgex_bridge.md) entrypoint, passing in the `--generate` parameter. In this way, the sample will inform EdgeX to listen for VA Serving events as they are emitted to the MQTT broker.
@@ -83,8 +83,10 @@ This self-contained tutorial walks through a working example to fetch and prepar
 ### Launch EdgeX Network and Microservices
 
 1. Now that we have the docker-compose and override configuration for device-mqtt prepared, we are ready to launch the EdgeX platform which will now include our built image. In the host terminal session, launch EdgeX platform.
-
+> **Note:**  This sample can only run with Display.
    ```
+   $ xhost local:root
+   $ export DISPLAY=<X display you want to render to>
    $ ./samples/edgex_bridge/start_edgex.sh
    ```
 
@@ -98,7 +100,7 @@ NOTE: The first time this runs, each of the EdgeX microservice images will downl
    Date: Mon, 29 Mar 2021 03:19:18 GMT
    Content-Length: 3
    Content-Type: text/plain; charset=utf-8
-   
+
    770
    ```
    With each analysis run we will see another **770** events loading in to EdgeX, each one ready for further processing by EdgeX Rules Engine and Application Services.
@@ -254,7 +256,7 @@ After you launch build.sh and start_edgex.sh, you will find these events emitted
    edgex-app-service-configurable-rules is up-to-date
    edgex-device-mqtt is up-to-date
    edgex-sys-mgmt-agent is up-to-date
-   Recreating edgex-video-analytics-serving ... 
+   Recreating edgex-video-analytics-serving ...
    Recreating edgex-video-analytics-serving ... done
 
    ```
@@ -292,4 +294,3 @@ This provides you with a bash shell with a complete Python runtime development e
 - Run gst-inspect-1.0 and other commands helpful to pipeline development and troubleshooting. Refer to the general [VA Serving guides](https://gitlab.devtools.intel.com/video-analytics/video-analytics-serving#further-reading) for further assistance.
 
 Also note that you may alternately launch independent container(s) on your host (outside of docker compose), using ./samples/edgex_bridge/docker/run.sh.
-
