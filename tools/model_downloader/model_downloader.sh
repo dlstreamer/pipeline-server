@@ -21,7 +21,7 @@ NON_INTERACTIVE=
 
 show_help() {
   echo "usage: model_downloader.sh"
-  echo "  [--output path where to save models]"  
+  echo "  [--output absolute path where to save models]"
   echo "  [--model-list input file with model names and properties]"
   echo "  [--force force download and conversion of existing models]"
   echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
