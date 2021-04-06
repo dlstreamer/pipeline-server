@@ -81,7 +81,7 @@ microservice.
 
 ### Getting Loaded Pipelines
 **Example:**
-
+> **Note:** In this example we assume you are running FFmpeg Video Analytics based Microservice
 ```bash
 $ curl localhost:8080/pipelines
 [
@@ -89,14 +89,14 @@ $ curl localhost:8080/pipelines
     "description": "Object Detection Pipeline",
     "name": "object_detection",
     <snip>
-    "type": "GStreamer",
+    "type": "FFmpeg",
     "version": "1"
   },
   {
     "description": "Emotion Recognition Pipeline",
     "name": "emotion_recognition",
     <snip>
-    "type": "GStreamer",
+    "type": "FFmpeg",
     "version": "1"
   }
 ]
@@ -104,7 +104,7 @@ $ curl localhost:8080/pipelines
 
 ### Detecting Objects in a Sample Video File
 **Example:**
-
+> **Note:** In this example we assume you are running DL Streamer based Microservice
 ```bash
 curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 'Content-Type: application/json' -d \
@@ -145,6 +145,8 @@ $ docker stop video-analytics-serving-ffmpeg
 ```
 
 # Real Time Streaming Protocol (RTSP) Re-streaming
+> **Note:** RTSP Re-streaming supported only in DL Streamer based Microservice.
+
 VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
 
 ### Enable RTSP in service
@@ -166,12 +168,12 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
     "type": "uri"
   },
   "destination": {
-    "metadata": { 
+    "metadata": {
       "type": "file",
       "path": "/tmp/results.txt",
       "format": "json-lines"
     },
-    "frame": { 
+    "frame": {
       "type": "rtsp",
       "path": "person-detection"
     }
@@ -183,7 +185,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 
 ### RTSP destination params.
 ```bash
-"frame": { 
+"frame": {
   "type": "rtsp",
   "path" : <custom rtsp path>(required. When path already exists, throws error)
   "cache-length" : <Number of frames to maintain in queue>(optional. Default 30)
@@ -242,7 +244,7 @@ NCS2 accelerators require users to have special permissions for hardware access.
 
 > **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
 >
-> ```bash 
+> ```bash
 > ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
 > ```
 >
