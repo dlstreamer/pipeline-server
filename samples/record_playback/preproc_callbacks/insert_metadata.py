@@ -23,6 +23,8 @@ class FrameInfo:
         self.json_objects = []
         self.metadata_file_path = metadata_file_path
         self.offset_timestamp = offset_timestamp
+        if self.metadata_file_path:
+            self.load_file(self.metadata_file_path)
 
     def load_file(self, file_name):
         if path.exists(file_name):
@@ -34,11 +36,6 @@ class FrameInfo:
                 self.json_objects.append(data)
 
     def process_frame(self, frame: VideoFrame, _: float = DETECT_THRESHOLD) -> bool:
-        print("process frame called")
-        if not self.json_objects:
-            #list is empty, need to populate it
-            self.load_file(self.metadata_file_path)
-        print(frame.video_meta().buffer.pts)
         while self.json_objects:
             metadata_pts = self.json_objects[0]["timestamp"] + self.offset_timestamp
             timestamp_difference = abs(frame.video_meta().buffer.pts - metadata_pts)

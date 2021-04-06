@@ -210,69 +210,6 @@
             "version": "person_vehicle_bike"
         },
         {
-            "description": "Object Detection Pipeline",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "cpu-throughput-streams": {
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 0,
-                        "type": "integer"
-                    },
-                    "detection-model-instance-id": {
-                        "default": "inf0",
-                        "element": {
-                            "name": "detection",
-                            "property": "model-instance-id"
-                        },
-                        "type": "string"
-                    },
-                    "device": {
-                        "element": "detection",
-                        "type": "string"
-                    },
-                    "inference-interval": {
-                        "default": 1,
-                        "element": "detection",
-                        "maximum": 4294967295,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "max-size-time": {
-                        "default": 2000000000,
-                        "element": "splitmuxsink",
-                        "maximum": 200000000000,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "n-threads": {
-                        "default": 1,
-                        "element": "videoconvert",
-                        "type": "integer"
-                    },
-                    "nireq": {
-                        "default": 2,
-                        "element": "detection",
-                        "maximum": 64,
-                        "minimum": 1,
-                        "type": "integer"
-                    },
-                    "recording_prefix": {
-                        "default": "/tmp/vaserving",
-                        "element": {
-                            "name": "splitmuxsink",
-                            "property": "location"
-                        },
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "2"
-        },
-        {
             "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
             "name": "object_detection",
             "parameters": {

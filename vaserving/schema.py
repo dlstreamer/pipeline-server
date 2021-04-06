@@ -54,6 +54,20 @@ source = {
         },
         "required": ["type", "uri"]
     },
+    "path": {
+        "type": "object",
+        "properties": {
+            "type": {
+                "type": "string",
+                "enum": ["path"]
+            },
+            "path": {
+                "type": "string",
+                "element": [{"name": "source",
+                             "property": "location"}]}
+        },
+        "required": ["type", "path"]
+    },
     "device": {
         "type": "object",
         "properties": {
@@ -67,6 +81,9 @@ source = {
     "oneOf": [
         {
             "$ref": "#/uri"
+        },
+        {
+            "$ref": "#/path"
         },
         {
             "$ref": "#/device"
@@ -271,6 +288,7 @@ destination = {
         },
         {
             "required":["metadata"]
-        }
+        },
+        {}
     ]
 }
