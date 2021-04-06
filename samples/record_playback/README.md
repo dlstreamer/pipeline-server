@@ -6,7 +6,7 @@ This sample demonstrates how you can record video to the local filesystem and pl
 
 The record_playback.py supports both 'record' and 'playback'
 
-When recording, the only required parameter from the user is the input video source. 
+When recording, the only required parameter from the user is the input video source.
 
 Defaults will be used for output video folder, output metadata file, max chunk size of recorded video
 
@@ -20,11 +20,11 @@ When doing playback, the app requires an input video source. To overlay metadata
 
 [ --input-video-path : (Required) Specify the input source for record or playback. Record does not support a directory as an input source ]
 
-[ --metadata-file-path : (Optional) Specify the metadata file path to record to or read for playback. In record mode, default is /tmp/metadata.txt ]
+[ --metadata-file-path : (Record:Optional) (Playback:Required) Specify the metadata file path to record to or read for playback. In record mode, default is /tmp/metadata.txt ]
 
 [ --output-video-folder : (Optional) (Record mode only) Specify the output directory for recorded video segments. Default is /tmp/video_output ]
 
-[ --max-time : (Optional) (Record mode only) Specify the segment size based on time. Default is 2000000000 ns ] 
+[ --max-time : (Optional) (Record mode only) Specify the segment size based on time. Default is 2000000000 ns ]
 
 ## Running
 
@@ -71,7 +71,6 @@ python3 ./samples/record_playback/record_playback.py --playback --input-video-pa
 ## The 'Playing back video that does not conform to unixtimestamp_pts filename, assuming metadata file and video file timestamps match' warning
 Playback works on both the recorded chunks and the original video for matching up the metadata file. The recorded chunks are in `<unixtimestamp>_<pts>` name format to allow playback to know how to organize the recorded chunks, and if playing back a specific chunk how much to offset the presentations time (pts) to match up properly with the metadata
 
-When playing back the metadata on the original video, this pts info is not available, and a warning is printed that the playback file name does not conform to that format, and playback will assume metadata file and video file timestamps match. 
+When playing back the metadata on the original video, this pts info is not available, and a warning is printed that the playback file name does not conform to that format, and playback will assume metadata file and video file timestamps match.
 
 There won't be an issue unless attempting to playback metadata on a different video file.
-
