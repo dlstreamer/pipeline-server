@@ -102,7 +102,6 @@ The module can be configured using command line options or environment variables
 | gRPC port           | -p                    | PORT                 | 5001             |
 | Pipeline name       | --pipeline-name       | PIPELINE_NAME        | object_detection |
 | Pipeline version    | --pipeline-version    | PIPELINE_VERSION     | person_vehicle_bike_detection |
-| Pipeline parameters | --pipeline-parameters | PIPELINE_PARAMETERS  | {}                |
 | Use debug pipeline  | --debug               | DEBUG_PIPELINE       |                   |
 
 ## Video Analytics Pipelines
@@ -142,7 +141,7 @@ to
 
 ```
 topologyFile: <absolute path to topology file>
-
+```
 
 # Additional Standalone Edge AI Extension Examples
 
@@ -160,13 +159,13 @@ the arguments an error will be reported
 
 ### Selecting and Configuring Pipelines
 
-Run with object classification pipeline specified on command line
+Specify the default pipeline via command line and run the server
 
 ```bash
 $ ./docker/run_server.sh -–pipeline-name object_classification –pipeline-version vehicle_attributes_recognition
 ```
 
-Run with classification pipeline with iGPU inference specified via environment variables
+Specify the default pipeline via environment variables and run the server
 ```
 $ export PIPELINE_NAME=object_classification
 $ export PIPELINE_VERSION=vehicle_attributes_recognition
@@ -273,18 +272,22 @@ Use the --help option to see how to use the script. All arguments are optional.
 ```
 $ ./docker/run_client.sh
 All arguments are optional, usage is as follows
+  [ -s : gRPC server address, defaults to None]
   [ --server-ip : Specify the server ip to connect to ] (defaults to 127.0.0.1)
   [ --server-port : Specify the server port to connect to ] (defaults to 5001)
-  [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
   [ --sample-file-path : Specify the sample file path to run] (defaults to samples/lva_ai_extension/sampleframes/sample01.png)
-  [ --output-file-path : Specify the output file path to save inference results in jsonl format] (defaults to /tmp/results.jsonl)
+  [ --loop-count : How many times to loop the source after it finishes ]
   [ --number-of-streams : Specify number of streams (one client process per stream)]
   [--fps-interval FPS_INTERVAL] (interval between frames in seconds, defaults to 0)
   [--frame-rate FRAME_RATE] (send frames at given fps, default is no limit)
-  [ --dev : Mount local source code] (use for development)
+  [--frame-queue-size : Max number of frames to buffer in client, defaults to 200]
+  [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
+  [ --output-file-path : Specify the output file path to save inference results in jsonl format] (defaults to /tmp/results.jsonl)
   [ --pipeline-name : Name of the pipeline to run]
   [ --pipeline-version : Name of the pipeline version to run]
   [ --pipeline-parameters : Pipeline parameters]
+  [ --frame-destination : Frame destination for rtsp restreaming]
+  [ --dev : Mount local source code] (use for development)
   ```
 Notes:
 * Media or log file must be inside container or in volume mounted path
