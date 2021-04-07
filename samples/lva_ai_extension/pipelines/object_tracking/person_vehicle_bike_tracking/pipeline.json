@@ -26,7 +26,7 @@
 				"default": "CPU"
 			},
 			"tracking-device": {
-				"element": 
+				"element":
 					[ {"name":"tracking",
 						"property":"device"}
 					],
@@ -37,16 +37,16 @@
 				]
 			},
 			"batch-size": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"batch-size"},
 					  {"name":"classification",
 					   "property":"batch-size"}
 					],
 				"type": "integer"
-			},			
+			},
 			"inference-interval": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"inference-interval"},
 					  {"name":"classification",
@@ -57,7 +57,7 @@
 				"maximum": 4294967295
 			},
 			"device-extensions": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"device-extensions"},
 					  {"name":"classification",
@@ -66,7 +66,7 @@
 				"type": "string"
 			},
 			"cpu-throughput-streams": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"cpu-throughput-streams"},
 					  {"name":"classification",
@@ -77,7 +77,7 @@
 				"maximum": 4294967295
 			},
 			"gpu-throughput-streams": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"gpu-throughput-streams"},
 					  {"name":"classification",
@@ -88,7 +88,7 @@
 				"maximum": 4294967295
 			},
 			"ie-config": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"ie-config"},
 					  {"name":"classification",
@@ -113,16 +113,16 @@
 				"default": "vehicle_attributes_recognition"
 			},
 			"pre-process-backend": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"pre-process-backend"},
 					  {"name":"classification",
 					   "property":"pre-process-backend"}
 					],
 				"type": "string"
-			},			
+			},
 			"nireq": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"nireq"},
 					  {"name":"classification",
@@ -133,7 +133,7 @@
 				"maximum": 64
 			},
 			"reshape": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"reshape"},
 					  {"name":"classification",
@@ -142,7 +142,7 @@
 				"type": "boolean"
 			},
 			"reshape-height": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"reshape-height"},
 					  {"name":"classification",
@@ -151,7 +151,7 @@
 				"type": "integer"
 			},
 			"reshape-width": {
-				"element": 
+				"element":
 					[ {"name":"detection",
 						"property":"reshape-width"},
 					  {"name":"classification",
@@ -171,11 +171,7 @@
 			"tracking-type": {
 				"element": "tracking",
 				"type": "string",
-				"default": "short-term",
-				"enum": [
-					"short-term",
-					"zero-term"
-				]
+				"default": "zero-term-imageless"
 			}
 		}
 	}

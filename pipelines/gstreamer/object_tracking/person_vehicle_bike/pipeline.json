@@ -67,7 +67,8 @@
 			},
 			"tracking-type": {
 				"element": "tracking",
-				"type": "string"
+				"type": "string",
+				"default": "zero-term-imageless"
 			},
 			"detection-threshold": {
 				"element": {
