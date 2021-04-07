@@ -1,5 +1,9 @@
 # Video Analytics Serving
-| [Getting Started](#getting-started) | [Documentation](#further-reading) | [Reference Guides](#further-reading) | [Related Links](#related-links) | [Known Issues](#known-issues) |
+| [Getting Started](#getting-started)
+| [Request Customizations](#request-customizations)
+| [Changing Pipeline Model](#changing-pipeline-model)
+| [Further Reading](#further-reading)
+| [Known Issues](#known-issues) |
 
 Video Analytics Serving is a python package and microservice for
 deploying optimized media analytics pipelines. It supports pipelines
@@ -25,17 +29,17 @@ Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 > modification. Developers deploying Video Analytics Serving should
 > review it against their production requirements.
 
-# Getting Started
-
-The sample microservice includes three media analytics pipelines.
+The sample microservice includes four media analytics pipelines.
 
 | |                  |
 |---------------------------------------------|---------|
-| **object_detection** | Detect and label objects such as bottles and bicycles.
-| **object_classification** | Recognize attributes of vehicles within a video stream.
-| **object_tracking** | Track detected objects within a video stream.
+| **object_detection** | Detect and label objects
+| **object_classification** | As object_detection adding meta-data such as object subtype and color
+| **object_tracking** | As object_classification adding tracking identifier to meta-data
 | **audio_detection** | Analyze audio streams for events such as breaking glass or barking dogs.
 
+
+# Getting Started
 
 ## Prerequisites
 
@@ -43,7 +47,6 @@ The sample microservice includes three media analytics pipelines.
 |---------------------------------------------|------------------|
 | **Docker** | Video Analytics Serving requires Docker for it's build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
 | **bash** | Video Analytics Serving's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
-| **curl** | The samples below use the `curl` command line program to issue standard HTTP requests to the microservice. Please install the latest for your platform. Note: any other tool or utility that can issue standard HTTP requests can be used in place of `curl`. |
 
 ## Building the Microservice
 
@@ -85,69 +88,43 @@ results with the host and is optional in actual deployments.
 Expected output:
 
 ```
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "=================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "Loading Pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,093", "message": "=================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,588", "message": "Loading Pipelines from Config Path /home/video-analytics-serving/pipelines", "module": "pipeline_manager"}
-{"levelname": "WARNING", "asctime": "2021-03-16 23:33:10,599", "message": "Missing metaconvert element", "module": "gstreamer_pipeline"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,599", "message": "Loading Pipeline: object_detection version: app_src_dst type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/app_src_dst/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,601", "message": "Loading Pipeline: object_detection version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,611", "message": "Loading Pipeline: object_detection version: edgex type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/edgex/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,612", "message": "Loading Pipeline: object_detection version: 2 type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/2/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,613", "message": "Loading Pipeline: object_classification version: vehicle_attributes type: GStreamer from /home/video-analytics-serving/pipelines/object_classification/vehicle_attributes/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,616", "message": "Loading Pipeline: audio_detection version: environment type: GStreamer from /home/video-analytics-serving/pipelines/audio_detection/environment/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "WARNING", "asctime": "2021-03-16 23:33:10,616", "message": "Missing metaconvert element", "module": "gstreamer_pipeline"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,616", "message": "Loading Pipeline: video_decode version: app_dst type: GStreamer from /home/video-analytics-serving/pipelines/video_decode/app_dst/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "Loading Pipeline: object_tracking version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_tracking/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "===========================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,621", "message": "===========================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-03-16 23:33:10,702", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "=================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "Loading Pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "=================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,073", "message": "Loading Pipelines from Config Path /home/video-analytics-serving/pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,088", "message": "Loading Pipeline: audio_detection version: environment type: GStreamer from /home/video-analytics-serving/pipelines/audio_detection/environment/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,090", "message": "Loading Pipeline: object_classification version: vehicle_attributes type: GStreamer from /home/video-analytics-serving/pipelines/object_classification/vehicle_attributes/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,102", "message": "Loading Pipeline: object_detection version: edgex type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/edgex/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,104", "message": "Loading Pipeline: object_detection version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "Loading Pipeline: object_tracking version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_tracking/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "===========================", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,217", "message": "Starting Tornado Server on port: 8080", "module": "__main__"}
 ```
 
-## vaClient:
+## Running a Pipeline
+VA Serving includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
+> **Note:** Any RESTful tool or library can be used to send requests to the VA Serving service. We are using vaclient as it simplifies interaction with the service.
 
-To accompany the microservice is a sample REST client which can demonstate VA Serving usages.
-
-### Supported Pipelines
-To see which pipelines are loaded by the service run the following. vaclient will request supported pipelines and prints the list in the form of pipeline_name/pipeline_version
+Before running a pipeline, we need to know what pipelines are available. We do this using vaclient's `list-pipeline` command.
+In new shell run the following command:
 ```bash
-./vaclient/vaclient.sh list-pipelines
-```
-As of release v0.5, these are the provided reference pipelines
-```
- - object_detection/app_src_dst
+$ ./vaclient/vaclient.sh list-pipelines
  - object_detection/person_vehicle_bike
- - object_detection/edgex
- - object_detection/2
  - object_classification/vehicle_attributes
  - audio_detection/environment
- - video_decode/app_dst
  - object_tracking/person_vehicle_bike
 ```
+> **Note:** The pipelines you will see may differ slightly
 
-### Supported Models
-Viewing loaded models can also be done with vaclient. Run the following command and the client will use the REST interface to request supported models
-```bash
-./vaclient/vaclient.sh list-models
-```
-As of release v0.5, these are the provided reference models
-```
- - emotion_recognition/1
- - object_detection/1
- - object_detection/person_vehicle_bike
- - object_classification/vehicle_attributes
- - audio_detection/environment
- - face_detection_retail/1
- ```
-### Running Pipelines
-vaclient can be used to send pipeline start requests using the `run` command. With the `run` command you will need to enter two additional arguments the `pipeline` (in the form of pipeline_name/pipeline_version) you wish to use and the `uri` pointing to the media of your choice.
-```
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
-```
-As the pipeline runs, the output file is processed by vaclient and inference information is printed to the screen in the following format: `label (confidence) [t l w h] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, vaclient will output the average fps. More on `stop` below
+Pipelines are displayed as a name/version tuple. The name reflects the action and version supplies more details of that action. Let's go with `object_detection/person_vehicle_bike`. Now we need to choose a media source. We recommend the [IoT Devkit sample videos](https://github.com/intel-iot-devkit/sample-videos) to get started. As the pipeline version indicates support for detecting people, person-bicycle-car-detection.mp4 would go a good choice.
 
+vaclient offers a `run` command that takes two additional arguments the `pipeline` and the `uri` for the media source. The `run` command displays inference results until either the media is exhausted or `CTRL+C` is pressed.
+
+Inference result bounding boxes are displayed in the format `label (confidence) [top left width height] {meta-data}`. At the end of the pipeline run, the average fps is shown.
 ```
+$ ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 Timestamp 48583333333
 - vehicle (0.95) [0.00, 0.12, 0.15, 0.36] {}
 Timestamp 48666666666
@@ -166,342 +143,224 @@ Timestamp 49250000000
 - vehicle (0.64) [0.00, 0.14, 0.05, 0.34] {}
 avg_fps: 39.66
 ```
-### Starting Pipelines
-The `run` command is helpful for quickly showing inference results but `run` blocks until completion. If you want to do your own processing and only want to kickoff a pipeline, this can be done with the `start` command. `start` arguments are the same as `run`, you'll need to provide the `pipeline` and `uri`. Run the following command:
+> **NOTE:** Inference results are not obtained via a REST API but read from an output file.
+The file path is specified in the `destination` section of the REST request and will be discussed in a later section.
+
+## Pipeline States
+### Queued, Running and Completed
+The vaclient `run` command starts the pipeline. The underlying REST request returns a `pipeline instance` which is used to query the state of the pipeline.
+All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the vaclient `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` which is used by the `status` command to view pipeline state.
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
-```
-#### Instance ID
-On a successful start of a pipeline, vaserving assigns a pipeline `instance_id` which is a unique number which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `1`
-```
+$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+<snip>
 Starting pipeline...
-Pipeline running
-Pipeline instance = object_detection/person_vehicle_bike/1
+Pipeline running: object_detection/person_vehicle_bike, instance = 2
 ```
-### Stopping Pipelines
-If you want to stop a pipeline
-
+You will need both the pipeline tuple and `instance` id for the status command. This command will display pipeline state:
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 1
+$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+<snip>
+RUNNING
 ```
-
-
-
-******Old
-Running the vaclient run script will quickly start a pipeline and analyze a sample
-[video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/bottle-detection.gif). Start a new shell and execute the following command:
-
-```bash
-./vaclient/vaclient.sh
+Then wait for a minute or so and try again. Pipeline will be completed.
 ```
-
-### Pipeline Status:
-As the pipeline runs, the status is queried and reported by vaclient.
-> Note: When a pipeline is started, the service returns a pipeline ``instance id`` which must be used when requesting status or to stop the pipeline.
-```json
-Pipeline Status:
-
-{
-  "avg_fps": 98.11027534513353,
-  "elapsed_time": 2.0304791927337646,
-  "id": 3,
-  "start_time": 1614804737.667221,
-  "state": "RUNNING"
-}
+$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+<snip>
+COMPLETED
 ```
-
-### Detection Results:
-Once the pipeline run has completed, the detection results will be displayed by vaclient.
-
-```json
-{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+### Aborted
+If a pipeline is stopped, rather than allowed to complete, it goes into the ABORTED state.
+Start the pipeline again, this time we'll stop it.
 ```
-
-After pretty-printing:
-
-{
-  "objects": [
-    {
-      "detection": {
-        "bounding_box": {
-          "x_max":0.0503933560103178,
-          "x_min":0.0,
-          "y_max":0.34233352541923523,
-          "y_min":0.14351698756217957
-        },
-        "confidence":0.6430817246437073,
-        "label":"vehicle",
-        "label_id":2
-      },
-      "h":86,
-      "roi_type":"vehicle",
-      "w":39,
-      "x":0,
-      "y":62
-    }
-  ],
-  "resolution": {
-    "height":432,
-    "width":768
-  },
-  "source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
-  "timestamp":49250000000
-}
+$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+<snip>
+Starting pipeline...
+Pipeline running: object_detection/person_vehicle_bike, instance = 3
+$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+<snip>
+RUNNING
+$ ./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 3
+<snip>
+Stopping Pipeline...
+Pipeline stopped
+avg_fps: 24.33
+$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+<snip>
+ABORTED
+```
+### Error
+The error state covers a number of outcomes such as the request could not be satisfied, a pipeline dependency was missing or an initialization problem. We can create an error condition by supplying a valid but unreachable uri.
+```
+$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike http://bad-uri
+<snip>
+Starting pipeline...
+Pipeline running: object_detection/person_vehicle_bike, instance = 4
+```
+Note that VA Serving does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
+Checking on state a few seconds later will show the error.
+```
+$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 4
+<snip>
+ERROR
 ```
 
-# More Examples
+## Real Time Streaming Protocol (RTSP)
+RTSP allows you to connect to a server and display a video stream. VA Serving includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/). For this example we'll assume VA Serving and vlc are running on the same host.
 
-<details>
+First start VA Serving with RTSP enabled. By default, the RTSP stream will use port 8554.
+```
+$ docker/run.sh --enable-rtsp -v /tmp:/tmp
+```
+Then start a pipeline specifying the RTSP server endpoint path `vaserving`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
+```
+$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
+```
+If you see the error
+```
+Got unsuccessful status code: 500
+"Unexpected error"
 
-<summary>Vehicle Attributes Recognition</summary>
+Pipeline failed to start
+```
+You probably forgot to enable RTSP in the server.
 
-## Recognizing vehicle attributes in a video
+Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL enter `rtsp://localhost:8554/vaserving` and hit `Play`.
+> **Note:** The pipeline must be running before you hit play otherwise VLC will not be able to connect to the RTSP server.
 
-### Example Request:
+> **Note:** For shorter video files you should have VLC ready to go before starting pipeline otherwise by the time you hit play the pipeline will have completed and the RTSP server will have shut down.
 
-<table>
-<tr>
-<th>
-Endpoint
-</th>
-<th>
-Verb
-</th>
-<th>
-Request
-</th>
-<th>
-Response
-</th>
-</tr>
-<tr>
-<td>
-/pipelines/object_classification/vehicle_attributes
-</td>
-<td>
-POST
-</td>
-<td>
-<pre lang="json">
-JSON
+# Request Customizations
+## Change Pipeline and Source Media
+With vaclient it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the Iot Devkit video `car-detection.mp4`. Note how vaclient now displays classification metadata including type and color of vehicle.
+```
+ $ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+Starting pipeline...
+Pipeline running: object_classification/vehicle_attributes, instance = 1
+<snip>
+Timestamp 18080000000
+- vehicle (1.00) [0.41, 0.00, 0.57, 0.33] {'color': 'red', 'type': 'car'}
+Timestamp 18160000000
+- vehicle (1.00) [0.41, 0.00, 0.57, 0.31] {'color': 'red', 'type': 'car'}
+- vehicle (0.50) [0.09, 0.92, 0.27, 1.00] {'color': 'white', 'type': 'van'}
+Timestamp 18240000000
+- vehicle (1.00) [0.40, 0.00, 0.57, 0.27] {'color': 'red', 'type': 'car'}
+Timestamp 18320000000
+- vehicle (1.00) [0.40, 0.00, 0.56, 0.24] {'color': 'red', 'type': 'car'}
+Timestamp 18400000000
+- vehicle (1.00) [0.40, 0.00, 0.56, 0.22] {'color': 'red', 'type': 'car'}
+- vehicle (0.53) [0.52, 0.19, 0.98, 0.99] {'color': 'black', 'type': 'truck'}
+Timestamp 18480000000
+- vehicle (0.99) [0.40, 0.00, 0.56, 0.20] {'color': 'red', 'type': 'car'}
+- vehicle (0.81) [0.69, 0.00, 1.00, 0.36] {'color': 'black', 'type': 'bus'}
+Timestamp 18560000000
+- vehicle (1.00) [0.40, 0.00, 0.55, 0.18] {'color': 'red', 'type': 'car'}
+- vehicle (0.71) [0.70, 0.00, 1.00, 0.36] {'color': 'black', 'type': 'bus'}
+Timestamp 18640000000
+- vehicle (0.98) [0.40, 0.00, 0.55, 0.15] {'color': 'red', 'type': 'car'}
+```
+If you look at video you can see that there are some errors in classification - there are no trucks or busses in the video. However you can see that associated confidence is much lower than the correct classification of the white and red cars.
+
+## Change Inference Accelerator Device
+Inference accelerator devices can be easily selected using the device parameter. Here we run the car classification pipeline again,
+but this time use the integrated GPU for detection inference by setting the `detection-device` parameter.
+```
+$ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
+Starting pipeline...
+Pipeline running: object_classification/vehicle_attributes, instance = 2
+```
+> **Note:** The GPU inference plug-in dynamically builds OpenCL kernels when it is first loaded resulting in a ~30s delay before inference results are produced.
+
+> **Note:** The `detection-model-instance-id` parameter caches the GPU model with a unique id. For more information read about [model instance ids](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements).
+
+vaclient's fps measurement is useful when assessing pipeline performance with different accelerators.
+
+## View REST Request
+As the previous example has shown, the vaclient application works by converting command line arguments into VA Serving REST requests.
+The `--show-request` option displays the REST verb, uri and body in the request.
+Let's repeat the previous GPU inference example, adding RTSP output and show the underlying request.
+```
+$ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path vaserving --show-request
+<snip>
+POST http://localhost:8080/pipelines/object_classification/vehicle_attributes
+Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/results.jsonl', 'format': 'json-lines'}, 'frame': {'type': 'rtsp', 'path': 'vaserving'}}, 'parameters': {'detection-device': 'GPU'}}
+```
+The REST request is broken into three parts
+1. VERB: `POST`
+1. URI: `http://localhost:8080/pipelines/object_classification/vehicle_attributes`
+2. BODY: `{"source": {"uri": ...`
+
+The uri is easy to decode. It's the service address, `pipelines` command and the pipeline tuplet. The body contains three components:
+1. The media source
+2. The frame and metadata destinations
+3. Pipeline parameters.
+
+They are easier to understand when the json is pretty-printed
+```
 {
   "source": {
-    "uri": "https://example.mp4",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true",
     "type": "uri"
   },
   "destination": {
-    "type": "file",
-    "path": "/tmp/object_classification_results.txt",
-    "format": "json-lines"
+    "metadata": {
+      "type": "file",
+      "path": "/tmp/results.jsonl",
+      "format": "json-lines"
+    },
+    "frame": {
+      "type": "rtsp",
+      "path": "vaserving"
+    }
+  },
+  "parameters": {
+    "detection-device": "GPU"
   }
 }
-</pre>
-</td>
-<td>
-200 <br/> <br/>
-Pipeline Instance Id
-</td>
-</tr>
-</table>
+```
+1. Media source: type is `uri` and the uri is the car-detection.mp4 video
+2. Destinations:
+   * metadata: this is the inference results, they are sent to file `/tmp/results.jsonl` in `json-lines` format. vaclient parses this file to display the inference results and metadata.
+   * frames: this the watermarked frames. Here they are sent to the RTSP server and available over given endpoint `vaserving`.
+3. Parameters set pipeline properties. See the [Defining Pipelines](docs/defining_pipelines.md) document for more details on parameters.
 
-### Curl Command:
-
-Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [video](https://github.com/intel-iot-devkit/sample-videos/blob/master/preview/person-bicycle-car-detection.gif).
-
+The `--show-request` output can be easily converted int a curl command.
+```
+$ curl <URI> -X <VERB> -H "Content-Type: application/json' -d <BODY>
+```
+So the above request would be as below. Note the pipeline instance `1` returned by the request.
 ```bash
-curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -H \
+$ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {
-    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true",
     "type": "uri"
   },
   "destination": {
-    "type": "file",
-    "path": "/tmp/results_object_classification.txt",
-    "format": "json-lines"
+    "metadata": {
+      "type": "file",
+      "path": "/tmp/results.jsonl",
+      "format": "json-lines"
+    },
+    "frame": {
+      "type": "rtsp",
+      "path": "vaserving"
+    }
+  },
+  "parameters": {
+    "detection-device": "GPU"
   }
 }'
+1
 ```
-### Detection Results:
+# Changing Pipeline Model
+Video Analytics Serving makes pipeline customization and model selection a simple task. The [Changing Object Detection Models Tutorial](docs/changing_object_detection_models.md) provides step by step instructions for changing the object detection reference pipeline to use a model better suited to a different video source.
 
-To view incremental results, execute the following command from the shell.
-
-```bash
-tail -f /tmp/results_object_classification.txt
-```
-
-As the video is being analyzed and vehicle appears in frame you will see vehicle attributes in the output.
-
-Expected Output:
-
-```json
-{"objects":[{"color":{"label":"white","model":{"name":"vehicle-attributes-recognition-barrier-0039"}},"detection":{"bounding_box":{"x_max":0.1612488180398941,"x_min":0.0,"y_max":0.3588942885398865,"y_min":0.12057243287563324},"confidence":0.9822055697441101,"label":"vehicle","label_id":2},"h":103,"roi_type":"vehicle","type":{"label":"car","model":{"name":"vehicle-attributes-recognition-barrier-0039"}},"w":124,"x":0,"y":52}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":48500000000}
-```
-
-After pretty-printing:
-
-```json
-{
-  "objects": [
-    {
-      "color": {
-        "label": "white",
-        "model": {
-          "name": "vehicle-attributes-recognition-barrier-0039"
-        }
-      },
-      "detection": {
-        "bounding_box": {
-          "x_max":0.1612488180398941,
-          "x_min":0.0,
-          "y_max":0.3588942885398865,
-          "y_min":0.12057243287563324
-        },
-        "confidence":0.9822055697441101,
-        "label":"vehicle",
-        "label_id":2
-      },
-      "h":103,
-      "roi_type":"vehicle",
-      "type": {
-        "label":"car",
-        "model": {
-          "name":"vehicle-attributes-recognition-barrier-0039"
-        }
-      },
-      "w":124,
-      "x":0,
-      "y":52
-    }
-  ],
-  "resolution": {
-    "height":432,
-    "width":768
-  },
-  "source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
-  "timestamp":48500000000
-}
-```
-</details>
-<details>
-<summary>Audio Event Detection</summary>
-
-## Detecting Audio Events in an Audio Recording
-
-### Example Request:
-
-<table>
-<tr>
-<th>
-Endpoint
-</th>
-<th>
-Verb
-</th>
-<th>
-Request
-</th>
-<th>
-Response
-</th>
-</tr>
-<tr>
-<td>
-/pipelines/audio_detection/environment
-</td>
-<td>
-POST
-</td>
-<td>
-<pre lang="json">
-JSON
-{
-  "source": {
-    "uri": "https://example.wav",
-    "type": "uri"
-  },
-  "destination": {
-    "type": "file",
-    "path": "/tmp/results_audio_events.txt",
-    "format": "json-lines"
-  }
-}
-</pre>
-</td>
-<td>
-200 <br/> <br/>
-Pipeline Instance Id
-</td>
-</tr>
-</table>
-
-### Curl Command:
-
-Start a new shell and execute the following command to issue an HTTP POST request, start a pipeline and analyze a sample [audio](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/samples/gst_launch/audio_detect/how_are_you_doing.wav?raw=true).
-
-```bash
-curl localhost:8080/pipelines/audio_detection/environment -X POST -H \
-'Content-Type: application/json' -d \
-'{
-  "source": {
-    "uri": "https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/samples/gst_launch/audio_detect/how_are_you_doing.wav?raw=true",
-    "type": "uri"
-  },
-  "destination": {
-    "type": "file",
-    "path": "/tmp/results_audio_events.txt",
-    "format": "json-lines"
-  }
-}'
-```
-
-### Detection Results:
-
-To view incremental results, execute the following command from the shell.
-
-```bash
-tail -f /tmp/results_audio_events.txt
-```
-
-As the audio is being analyzed and events are detected, you will see detection results in the output.
-
-Expected Output:
-
-```json
-{"channels":1,"events":[{"detection":{"confidence":1.0,"label":"Speech","label_id":53,"segment":{"end_timestamp":2200000000,"start_timestamp":1200000000}},"end_timestamp":2200000000,"event_type":"Speech","start_timestamp":1200000000}],"rate":16000}
-```
-
-After pretty-printing:
-
-```json
-{
-  "channels": 1,
-  "events": [
-    {
-      "detection": {
-        "confidence": 1,
-        "label": "Speech",
-        "label_id": 53,
-        "segment": {
-          "end_timestamp": 2200000000,
-          "start_timestamp": 1200000000
-        }
-      },
-      "end_timestamp": 2200000000,
-      "event_type": "Speech",
-      "start_timestamp": 1200000000
-    }
-  ],
-  "rate": 16000
-}
-```
-</details>
 
 # Further Reading
 | **Documentation** | **Reference Guides** | **Tutorials** |
 | ------------    | ------------------ | ----------- |
-| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Video Analytics Serving](docs/building_video_analytics_serving.md) <br/> **-** [Running Video Analytics Serving](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) | **-** [Video Analytics Serving Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) | <br/> **-** Object Detecion Tutorials <br/> &nbsp;&nbsp;&nbsp;&nbsp; **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) |
+| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Video Analytics Serving](docs/building_video_analytics_serving.md) <br/> **-** [Running Video Analytics Serving](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) | **-** [Video Analytics Serving Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| <br/> **-** Object Detecion Tutorials <br/> &nbsp;&nbsp;&nbsp;&nbsp; **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) |
 
 ## Related Links
 
