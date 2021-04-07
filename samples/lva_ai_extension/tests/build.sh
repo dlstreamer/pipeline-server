@@ -53,7 +53,7 @@ function get_options {
 }
 
 function show_help {
-  echo "usage: ./run_server.sh"
+  echo "usage: ./build.sh"
   echo "  [ --lva-image : LVA extension image to base test image on ] "
   echo "  [ --docker-cache : Docker cache prefix ] "
 }

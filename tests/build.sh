@@ -16,17 +16,29 @@ function launch { $@
     return $exit_code
 }
 
-launch ". $DIR/../docker/build.sh $@ --dockerfile-dir $DIR/../docker"
+if [ -z "$PARENT_IMAGE" ]; then
+    launch ". $DIR/../docker/build.sh $@ --dockerfile-dir $DIR/../docker"
+    # TAG variable is set through the build script on previous line
+    PARENT_IMAGE=$TAG
+else
+    # NOTE: We support building tests on top of any image. 
+    #       When caller overrides the PARENT_IMAGE, they may also need to supply 
+    #       appropriate overrides of FRAMEWORK and/or PIPELINES depending on needs.
+    if [ -z "$FRAMEWORK" ]; then
+        FRAMEWORK="gstreamer"
+    fi
+    if [ -z "$PIPELINES" ]; then
+        PIPELINES=pipelines/$FRAMEWORK
+    fi
+fi
 
-#VA_SERVING_TAG is used to explicitly define the TAG that was used for building VA Serving
-#TAG variable is set through the build script above
-VA_SERVING_TAG=$TAG
-
+echo "TEST_IMAGE will build on top of PARENT_IMAGE: $PARENT_IMAGE..."
 DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host --no-cache"
-BUILD_ARGS+=" --build-arg BASE=$VA_SERVING_TAG --build-arg FRAMEWORK=$FRAMEWORK"
-TAG="$VA_SERVING_TAG-tests:latest"
+BUILD_ARGS+=" --build-arg BASE=$PARENT_IMAGE --build-arg FRAMEWORK=$FRAMEWORK"
+TAG="video-analytics-serving-$FRAMEWORK-tests:latest"
 
 launch "docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR"
+
