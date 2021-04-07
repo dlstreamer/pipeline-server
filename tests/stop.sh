@@ -14,6 +14,7 @@ docker rm $(docker ps -f name=video-analytics-serving) 2> /dev/null || echo "No 
 function show_help {
   echo "usage: ./stop.sh"
   echo "  [ --remove : remove video analytics serving images ]"
+  echo "  [ --clean-shared-memory : remove files in /dev/shm to clean up shared memory ]"
 }
 
 while [[ "$#" -gt 0 ]]; do
@@ -27,6 +28,11 @@ while [[ "$#" -gt 0 ]]; do
       docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'video-analytics-serving') 2> /dev/null || echo "No images to remove"
       shift
       ;;
+    --clean-shared-memory)
+      echo "Removing all files in /dev/shm"
+      rm /dev/shm/*
+      shift
+      ;;
     *)
       break
       ;;
@@ -34,4 +40,5 @@ while [[ "$#" -gt 0 ]]; do
 
   shift
 done
+echo "Exiting"
 exit 0
