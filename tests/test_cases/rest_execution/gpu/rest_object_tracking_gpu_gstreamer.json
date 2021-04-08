@@ -13,12 +13,14 @@
             },
             "parameters": {
                 "detection-device": "GPU",
-                "classification-device": "GPU"
+                "classification-device": "GPU",
+                "detection-model-instance-id": "rest_gpu_tracking_detection",
+                "classification-model-instance-id": "rest_gpu_tracking_classification"
             }
         }
     },
     "check_running" : {
-        "timeout": 30.0
+        "timeout": 60.0
     },
     "abort" : {
         "delay" : 0.5

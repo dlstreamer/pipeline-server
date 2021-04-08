@@ -17,7 +17,7 @@
         }
     },
     "check_running" : {
-        "timeout": 30.0
+        "timeout": 60.0
     },
     "abort" : {
         "delay" : 0.5
