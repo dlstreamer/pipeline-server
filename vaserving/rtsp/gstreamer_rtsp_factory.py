@@ -71,4 +71,5 @@ class GStreamerRtspFactory(GstRtspServer.RTSPMediaFactory):
         appsrc = pipeline.get_by_name("source")
         source.set_app_src(appsrc, is_audio_pipeline)
         appsrc.connect('need-data', source.on_need_data)
+        appsrc.connect('enough-data', source.enough_data)
         return pipeline

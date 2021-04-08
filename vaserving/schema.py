@@ -263,12 +263,6 @@ destination = {
                     "type":"string",
                     "minLength": 1,
                     "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]$"
-                },
-                "cache-length": {
-                    "type":"integer",
-                    "default": 30,
-                    "minimum": 1,
-                    "maximum": 500
                 }
             },
             "required": [

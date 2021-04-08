@@ -188,7 +188,6 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 "frame": {
   "type": "rtsp",
   "path" : <custom rtsp path>(required. When path already exists, throws error)
-  "cache-length" : <Number of frames to maintain in queue>(optional. Default 30)
 }
 ```
 
