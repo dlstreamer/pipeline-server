@@ -4,9 +4,6 @@ vaclient is a python app intended to be a reference for using VA Serving REST AP
 >**Note:**
 This document assumes you are familiar with vaserving. See the main [README](../README.md) for details on building and running the service.
 
->**Note:**
-Only one instance of the vaclient script can be run at any one time. Subsequent instances you will fail with the error:  `The container name "/video-analytics-serving-gstreamer_client" is already in use`
-
 ## Basic Usage
 ### Listing Supported Pipelines and Models
 To see which models and pipelines are loaded by the service run the following commands. Both models and pipelines are displayed in the tuplet form of name/version.
