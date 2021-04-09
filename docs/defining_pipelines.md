@@ -132,13 +132,7 @@ name. You can use the `model-proc` property to point to custom model-proc by spe
 
 #### Model Persistance in OpenVINO GStreamer Elements
 
-In the section above, the example code for `gvadetect` has the element property
-
-```
-model-instance-id=<id>
-```
-
-This is a special optional property that will hold the model in memory instead
+`model-instance-id` is an optional property that will hold the model in memory instead
 of releasing it when the pipeline completes. This improves load time and reduces memory
 usage when launching the same pipeline multiple times. The model is associated
 with the given ID to allow subsequent runs to use the same model instance.
@@ -146,20 +140,34 @@ with the given ID to allow subsequent runs to use the same model instance.
 It's important to be careful when using this property when running pipelines across
 multiple hardware targets as models are loaded for a specific device. For
 example, if a model is loaded on the CPU and is given an instance ID of 'inf0',
-then that ID must not be used to run the model on the GPU.
+then that ID must not be used to run the model on the GPU. The same caveat applies to the video formats. The model will be set to the initial image format (e.g. RGBx) during the first pipeline run and any subsequent pipeline runs will error if the image formats differs (e.g a YV12).
 
-When using the same pipeline with elements that target different accelerators, the model-instance-id
-must be parameterized so that a unique id can be provided within the request for each
-accelerator.
+When using a pipeline with elements that target different accelerators, the model-instance-id
+property must be parameterized so that a unique id can be provided for each
+accelerator. As an example if you have different detection and classification models,
+they must have different parameter names so that VA Serving can distinguish between them.
+Here is a pipeline definition snippet showing `model-instance-id` properties of `gvadetect` and `gvaclassify` elements mapped to parameters `detection-model-instance-id` and `classification-model-instance-id` respectively.
 
-Ensure that your pipelines also have unique IDs for each model to prevent
-overloading models to the same instance-id. For example, if you have a
-detection model and a classification model, they can not have the same
-model-instance-id value, in any VA-Serving pipeline.
+```
+    "detection-model-instance-id": {
+        "element": {
+            "name": "detection",
+            "property": "model-instance-id"
+        },
+        "type": "string"
+    },
+    "classification-model-instance-id": {
+        "element": {
+            "name": "classification",
+            "property": "model-instance-id"
+        },
+        "type": "string"
+    }
+```
 
 Different pipelines may share the same value for `model-instance-id` as long as
 the model is the same across all instances using the assigned id, and
-targets the same hardware device.
+targets the same hardware device and video format.
 
 #### More Information
 
