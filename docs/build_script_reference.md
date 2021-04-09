@@ -39,11 +39,21 @@ This option can be used to specify path to models directory or a model list file
 ## Open Model Zoo Image (--open-model-zoo-image)
 This option can be used to specify the OpenVINO base image to be used for downloading models from Open Model Zoo.
 
+For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo image as per the table in [section](building_video_analytics_serving.md#supported-base-images).
+
+For FFmpeg, you **must** specify the Open Model Zoo image to build with (i.e., when using `--framework ffmpeg` provide the image corresponding to the table in [section](building_video_analytics_serving.md#supported-base-images)).
+
 ## Open Model Zoo Version (--open-model-zoo-version)
-This option can be used to specify the version of OpenVINO base image to be used for downloading models from Open Model Zoo. VA Serving build script will choose the Open Model Zoo version for the supported images as per the table in [section](building_video_analytics_serving.md#supported-base-images).
+This option can be used to specify the version of OpenVINO base image to be used for downloading models from Open Model Zoo.
+
+For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo version as per the table in [section](building_video_analytics_serving.md#supported-base-images).
+
+For FFmpeg, you **must** specify the Open Model Zoo version to build with (i.e., when using `--framework ffmpeg` provide the version corresponding to the table in [section](building_video_analytics_serving.md#supported-base-images)).
 
 ## Force Model Download (--force-model-download)
-Force the download of models from Open Model Zoo.
+This option instructs the [model download tool](../tools/model_downloader/README.md) to force download of models from Open Model Zoo using the `models.list.yml` even if they already exist in the models directory. This may be useful to guarantee that the models for your build have been generated using the appropriate version of Open Model Zoo before they are embedded into your freshly built image.
+
+If you have previously built for a different framework, you **must** download these again (or archive your models directory to different name), because the version of Open Model Zoo used by `--framework gstreamer` produces different output than when building with `--framework ffmpeg`.
 
 ## Pipeline Directory (--pipelines)
 Path to VA Serving pipelines. Path must be within docker build context which defaults to the root of the video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
