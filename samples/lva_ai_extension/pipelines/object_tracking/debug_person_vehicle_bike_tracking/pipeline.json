@@ -103,16 +103,14 @@
 					"name": "detection",
 					"property": "model-instance-id"
 				},
-				"type": "string",
-				"default": "person_vehicle_bike_detection"
+				"type": "string"
 			},
 			"classification-model-instance-id": {
 				"element": {
 					"name": "classification",
 					"property": "model-instance-id"
 				},
-				"type": "string",
-				"default": "vehicle_attributes_recognition"
+				"type": "string"
 			},
 			"pre-process-backend": {
 				"element":

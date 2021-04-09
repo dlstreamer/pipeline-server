@@ -12,8 +12,7 @@
                                         "name": "detection",
                                         "property": "model-instance-id"
                                 },
-                                "type": "string",
-                                "default": ""
+                                "type": "string"
                         }
                 }
     }

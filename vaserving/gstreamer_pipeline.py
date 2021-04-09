@@ -420,6 +420,17 @@ class GStreamerPipeline(Pipeline):
                 break
         return src
 
+    def _set_model_instance_id(self):
+        model_instance_id = "model-instance-id"
+        gva_elements = [element for element in self.pipeline.iterate_elements()
+                        if (element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)
+                        and model_instance_id in [x.name for x in element.list_properties()]
+                        and (element.get_property(model_instance_id) is None)]
+        for element in gva_elements:
+            name = element.get_property("name")
+            instance_id = name + "_" + str(self.identifier)
+            element.set_property(model_instance_id, instance_id)
+
     def start(self):
 
         self.request["models"] = self.models
@@ -440,6 +451,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_default_models()
                 self._set_model_proc()
                 self._cache_inference_elements()
+                self._set_model_instance_id()
 
                 src = self._get_any_source()
 

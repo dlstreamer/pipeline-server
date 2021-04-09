@@ -11,6 +11,13 @@
     "client": [
         {
             "params": {
+                "pipeline": {
+                    "name":"object_detection",
+                    "version":"person_vehicle_bike_detection",
+                    "parameters": {
+                        "detection-model-instance-id": "object_detection_person_vehicle_bike_detection_cpu_multiple_clients"
+                    }
+                },
                 "source":"/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png",
                 "output_location":"",
                 "shared_memory":true,

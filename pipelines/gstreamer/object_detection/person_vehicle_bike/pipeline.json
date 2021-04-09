@@ -21,8 +21,7 @@
 					"name": "detection",
 					"property": "model-instance-id"
 				},
-				"type": "string",
-				"default": "person_vehicle_bike_detection"
+				"type": "string"
 			},
 			"inference-interval": {
 				"element": "detection",

@@ -5,6 +5,57 @@
     "secondary_sort_key": "version",
     "result": [
         {
+            "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "detection-model-instance-id": {
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "app_src_dst"
+        },
+        {
+            "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
+            "name": "object_detection",
+            "parameters": {
+                "properties": {
+                    "detection-device": {
+                        "element": {
+                            "name": "detection",
+                            "property": "device"
+                        },
+                        "type": "string"
+                    },
+                    "detection-model-instance-id": {
+                        "element": {
+                            "name": "detection",
+                            "property": "model-instance-id"
+                        },
+                        "type": "string"
+                    },
+                    "inference-interval": {
+                        "element": "detection",
+                        "type": "integer"
+                    },
+                    "threshold": {
+                        "element": "detection",
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "GStreamer",
+            "version": "person_vehicle_bike"
+        },
+        {
             "description": "Person Vehicle Bike Detection and Vehicle Attributes Classification based on person-vehicle-bike-detection-crossroad-0078 and vehicle-attributes-recognition-barrier-0039",
             "name": "object_classification",
             "parameters": {
@@ -17,7 +68,6 @@
                         "type": "string"
                     },
                     "classification-model-instance-id": {
-                        "default": "vehicle_attributes_recognition",
                         "element": {
                             "name": "classification",
                             "property": "model-instance-id"
@@ -39,7 +89,6 @@
                         "type": "string"
                     },
                     "detection-model-instance-id": {
-                        "default": "person_vehicle_bike_detection",
                         "element": {
                             "name": "detection",
                             "property": "model-instance-id"
@@ -120,6 +169,12 @@
             "version": "environment"
         },
         {
+            "description": "Decode Pipeline",
+            "name": "video_decode",
+            "type": "GStreamer",
+            "version": "app_dst"
+        },
+        {
             "description": "Person Vehicle Bike Detection wth Tracking and Vehicle Attributes Classification based on person-vehicle-bike-detection-crossroad-0078 and vehicle-attributes-recognition-barrier-0039",
             "name": "object_tracking",
             "parameters": {
@@ -132,7 +187,6 @@
                         "type": "string"
                     },
                     "classification-model-instance-id": {
-                        "default": "vehicle_attributes_recognition",
                         "element": {
                             "name": "classification",
                             "property": "model-instance-id"
@@ -154,7 +208,6 @@
                         "type": "string"
                     },
                     "detection-model-instance-id": {
-                        "default": "person_vehicle_bike_detection",
                         "element": {
                             "name": "detection",
                             "property": "model-instance-id"
@@ -200,74 +253,15 @@
                         "type": "string"
                     },
                     "tracking-type": {
+                        "default": "zero-term-imageless",
                         "element": "tracking",
-                        "type": "string",
-                        "default": "zero-term-imageless"
+                        "type": "string"
                     }
                 },
                 "type": "object"
             },
             "type": "GStreamer",
             "version": "person_vehicle_bike"
-        },
-        {
-            "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "detection-device": {
-                        "element": {
-                            "name": "detection",
-                            "property": "device"
-                        },
-                        "type": "string"
-                    },
-                    "detection-model-instance-id": {
-                        "default": "person_vehicle_bike_detection",
-                        "element": {
-                            "name": "detection",
-                            "property": "model-instance-id"
-                        },
-                        "type": "string"
-                    },
-                    "inference-interval": {
-                        "element": "detection",
-                        "type": "integer"
-                    },
-                    "threshold": {
-                        "element": "detection",
-                        "type": "number"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "person_vehicle_bike"
-        },
-        {
-            "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
-            "name": "object_detection",
-            "parameters": {
-                "properties": {
-                    "detection-model-instance-id": {
-                        "default": "",
-                        "element": {
-                            "name": "detection",
-                            "property": "model-instance-id"
-                        },
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "app_src_dst"
-        },
-        {
-            "description": "Decode Pipeline",
-            "name": "video_decode",
-            "type": "GStreamer",
-            "version": "app_dst"
         }
     ],
     "status_code": 200,
