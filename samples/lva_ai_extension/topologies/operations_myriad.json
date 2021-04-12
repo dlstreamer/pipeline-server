@@ -33,7 +33,7 @@
                         },
                         {
                             "name": "extensionConfiguration",
-                            "value": "{}"
+                            "value": "{\"pipeline\":{\"name\":\"object_detection\",\"version\":\"person_vehicle_bike_detection\",\"parameters\":{\"detection-device\":\"MYRIAD\"}}}"
                         }
                     ]
                 }

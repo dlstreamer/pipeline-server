@@ -126,6 +126,7 @@ You will also need to create a graph topology with gRPC extension and then creat
 ### Topology files
 
 Operations.json is an instruction set used by LVA to perform actions on the IOT Edge.
+* You can set HW target using `extensionConfiguration` in operations.json file. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
 
 Topology.json is a config file used by operations.json to configure edge devices.
 
@@ -234,7 +235,7 @@ Pipelines can be configured to connect and visualize input video with superimpos
 $ export ENABLE_RTSP=true
 $ ./docker/run_server.sh
 ```
-* Run client with frame destination set. For demonstration, path set as `person-detection` in example request below. 
+* Run client with frame destination set. For demonstration, path set as `person-detection` in example request below.
 ```
 $ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}' --loop-count 1000
 ```
