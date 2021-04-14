@@ -1,7 +1,0 @@
-{
-    "test_function": "start_pipeline",
-    "pipeline": "fake_pipeline/fake_version",
-    "uri": "file:///home/video-analytics-serving/tests/media/store-aisle-detection.mp4",
-    "expected_id": null,
-    "expected_output": "Invalid Pipeline or Version"
-}
