@@ -63,7 +63,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "mcr.microsoft.com/media/live-video-analytics:1",
+              "image": "mcr.microsoft.com/media/live-video-analytics:2",
               "createOptions": {
                 "HostConfig": {
                   "LogConfig": {
@@ -106,11 +106,6 @@
                     "80/tcp": {},
                     "5001/tcp" : {}
                 },
-                "Env":[
-                  "PIPELINE_NAME=object_detection",
-                  "PIPELINE_VERSION=person_vehicle_bike_detection",
-                  "PIPELINE_PARAMETERS={\"detection-device\":\"GPU\"}"
-                ],
                 "HostConfig": {
                     "Binds": [
                       "/tmp/:/tmp/"

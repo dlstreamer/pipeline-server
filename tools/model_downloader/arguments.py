@@ -13,7 +13,7 @@ def parse_args(args=None):
                         help='path where to save models')
     parser.add_argument('--model-list', default="models_list/models.list.yml",
                         help='input file with model names and properties')
-    parser.add_argument('--model-proc-version', default="v1.2.1",
+    parser.add_argument('--model-proc-version', default="v1.3",
                         dest="dl_streamer_version",
                         help='DL Streamer version for model proc files')
     parser.add_argument("--force", required=False, dest="force", action="store_true",

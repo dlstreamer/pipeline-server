@@ -63,7 +63,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "mcr.microsoft.com/media/live-video-analytics:1",
+              "image": "mcr.microsoft.com/media/live-video-analytics:2",
               "createOptions": {
                 "HostConfig": {
                   "LogConfig": {

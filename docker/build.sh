@@ -10,8 +10,8 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu18_runtime:2021.1"
-BASE_IMAGE=
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.3_vaapi_fix"
+BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
@@ -33,8 +33,9 @@ BASE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--
 BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
-SUPPORTED_IMAGES=(openvino/ubuntu18_runtime:2021.1 openvisualcloud/xeone3-ubuntu1804-analytics-gst:20.10 openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10)
-OPEN_MODEL_ZOO_VERSION=
+SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
+OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.3_vaapi_fix"}
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
@@ -119,12 +120,20 @@ get_options() {
         --force-model-download)
             FORCE_MODEL_DOWNLOAD="--force"
             ;;
+        --open-model-zoo-image)
+            if [ "$2" ]; then
+                OPEN_MODEL_ZOO_TOOLS_IMAGE=$2
+                shift
+            else
+                error 'ERROR: "--open-model-zoo-image" requires an argument.'
+            fi
+            ;;
         --open-model-zoo-version)
             if [ "$2" ]; then
                 OPEN_MODEL_ZOO_VERSION=$2
                 shift
             else
-                error 'ERROR: "--openvino-version" requires an argument.'
+                error 'ERROR: "--open-model-zoo-version" requires an argument.'
             fi
             ;;
         --pipelines)
@@ -238,30 +247,30 @@ get_options() {
     fi
 
     if [ -f "$MODELS" ]; then
-
         if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
            if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
             error 'ERROR: Unknown version of Intel(R) distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
            fi
-        else
-           OPEN_MODEL_ZOO_VERSION=2021.1
         fi
-
-	if [ ! -d "$SOURCE_DIR/models" ]; then
+        if [ ! -d "$SOURCE_DIR/models" ]; then
             $RUN_PREFIX mkdir $SOURCE_DIR/models
         fi
-       
-	$SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
-           
+        echo " "
+        echo "----------------------------"
+        echo "Running Model Downloader..."
+        echo "OMZ Tools Image: $OPEN_MODEL_ZOO_TOOLS_IMAGE"
+        echo "OMZ Version: $OPEN_MODEL_ZOO_VERSION"
+        echo "----------------------------"
+        $SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-image $OPEN_MODEL_ZOO_TOOLS_IMAGE --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
             $RUN_PREFIX mkdir $SOURCE_DIR/models
         fi
         $RUN_PREFIX cp -R $MODELS/. $SOURCE_DIR/models
     else
-	if [ -n "$MODELS" ]; then
+        if [ -n "$MODELS" ]; then
             error 'ERROR: "'$MODELS'" does not exist.'
-	fi
+        fi
     fi
 
     if [ -z "$PIPELINES" ]; then
@@ -322,7 +331,7 @@ show_image_options() {
     echo "   Build Options: '${BUILD_OPTIONS}'"
     echo "   Build Arguments: '${BUILD_ARGS}'"
     echo "   Models: '${MODELS}'"
-    echo "   Docker Image for downloading models: 'openvino/ubuntu18_data_dev:${OPEN_MODEL_ZOO_VERSION}'"
+    echo "   Docker Image for downloading models: '${OPEN_MODEL_ZOO_TOOLS_IMAGE}:${OPEN_MODEL_ZOO_VERSION}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"
     echo "   Target: '${TARGET}'"
@@ -336,6 +345,7 @@ show_help() {
     echo "  [--base base image]"
     echo "  [--framework ffmpeg || gstreamer]"
     echo "  [--models path to models directory or model list file or NONE]"
+    echo "  [--open-model-zoo-image specify the openvino image to be used for downloading models from Open Model Zoo]"
     echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
     echo "  [--force-model-download force the download of models from Open Model Zoo]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
@@ -373,13 +383,13 @@ if [ "$BASE" == "BUILD" ]; then
 
     BASE_IMAGE=$BASE_BUILD_TAG
 else
-    #Ensure image is latest from Docker Hub
+    # Ensure image is latest from Docker Hub
     launch "$RUN_PREFIX docker pull ${CACHE_PREFIX}$BASE_IMAGE"
 fi
 
 # BUILD IMAGE
 
-BUILD_ARGS+=" --build-arg BASE=$BASE_IMAGE "
+BUILD_ARGS+=" --build-arg BASE=${CACHE_PREFIX}$BASE_IMAGE "
 BUILD_ARGS+=" --build-arg FRAMEWORK=$FRAMEWORK "
 if [ -n "$MODELS" ]; then
     BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS_PATH "
@@ -423,4 +433,7 @@ fi
 
 show_image_options
 
+echo "-----------------------------"
+echo "Building Image..."
+echo "-----------------------------"
 launch "$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR"

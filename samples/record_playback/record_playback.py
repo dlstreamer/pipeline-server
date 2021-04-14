@@ -16,19 +16,12 @@ from pathlib import Path
 import gi
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
-from gi.repository import GObject, Gst
 from vaserving.vaserving import VAServing
 # pylint: enable=wrong-import-position
 
-Gst.init(sys.argv)
-
-# global variable for videoconvert so that decodebin can link to it
-global videoconvert1
-
 # default video folder if not provided
-current_dir = os.getcwd()
-default_video_folder = os.path.join(current_dir, "video_output")
-default_metadata_record_path = os.path.join(current_dir, "metadata.txt")
+default_video_folder = os.path.join("/tmp", "video_output")
+default_metadata_record_path = os.path.join("/tmp", "metadata.txt")
 
 # Options for record playback app
 def get_options():
@@ -68,52 +61,59 @@ def gst_record(options):
     if not options_metadata_file:
         options_metadata_file = default_metadata_record_path
 
+    # Check if have write permissions for metadata file location
+    try:
+        file_handler = open(options_metadata_file, 'w')
+        file_handler.close()
+    except IOError:
+        print("No write permissions for metadata file location")
+        return -1
+
+    # if metadata file already exists, delete it
+    if os.path.exists(options_metadata_file):
+        os.remove(options_metadata_file)
+
+    # If output video directory doesn't exist
+    if not os.path.isdir(options.output_video_folder):
+        os.mkdir(options.output_video_folder)
+
+    # Check if directory has write permissions
+    try:
+        file_check_write_permissions = os.path.join(options.output_video_folder, "checkDirWritable.txt")
+        file_handler = open(file_check_write_permissions, 'w')
+        file_handler.close()
+        os.remove(file_check_write_permissions)
+    except IOError:
+        print("No write permissions for video output directory")
+        return -1
+
     # Populate the request to provide to VAServing library
-    string_request = ('{{'
-                      '"source": {{'
-                      '"type": "uri",'
-                      '"uri": "{source}"'
-                      '}},'
-                      '"destination": {{'
-                      '"type": "file",'
-                      '"path": "{fp}",'
-                      '"format": "json-lines"'
-                      '}},'
-                      '"parameters": {{'
-                      '"recording_prefix": "{output_video_folder}",'
-                      '"max-size-time": {max_size_chunks}'
-                      '}}'
-                      '}}')
-    string_request = string_request.format(source=options_source,
-                                           fp=options_metadata_file,
-                                           output_video_folder=options.output_video_folder,
-                                           max_size_chunks=options.max_time)
-    request = json.loads(string_request)
+    request = {
+        "source": {
+            "type": "uri",
+            "uri": options_source
+            },
+        "destination": {
+            "type": "file",
+            "path": options_metadata_file,
+            "format": "json-lines"
+            },
+        "parameters": {
+            "recording_prefix": options.output_video_folder,
+            "max-size-time": options.max_time
+            }
+        }
 
     # Start the recording, once complete, stop VAServing
-    VAServing.start({'log_level': 'INFO'})
-    pipeline = VAServing.pipeline("object_detection", "2")
+    record_playback_file_dir = os.path.dirname(os.path.realpath(__file__))
+    VAServing.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
+    pipeline = VAServing.pipeline("object_detection", "segment_record")
     pipeline.start(request)
     status = pipeline.status()
     while (not status.state.stopped()):
         time.sleep(0.1)
         status = pipeline.status()
     VAServing.stop()
-
-# Used by playback
-# Gst msgbus callback to determine if error or end-of-stream occured
-def on_message(_: Gst.Bus, message: Gst.Message, loop: GObject.MainLoop):
-    message_type = message.type
-    if message_type == Gst.MessageType.EOS:
-        print("End of stream")
-        loop.quit()
-
-    elif message_type == Gst.MessageType.ERROR:
-        err, debug = message.parse_error()
-        print(err, debug)
-        loop.quit()
-
-    return True
 
 # Used by playback
 # If given a file instead of a folder to playback, check to see if file is in the
@@ -130,94 +130,40 @@ def get_timestamp_from_filename(file_path):
           "Assuming metadata file and video file timestamps match")
     return 0
 
-# Used by playback
-def create_missing_output_directory(options):
-    if not os.path.exists(options.output_video_folder):
-        os.mkdir(options.output_video_folder)
-
-# Used by playback
-# Dynamically link decodebin to the videoconvert element
-def decodebin_pad_added(_, pad):
-    string = pad.query_caps(None).to_string()
-    if string.startswith('video/x-raw'):
-        pad.link(videoconvert1.get_static_pad('sink'))
-
-# Create a Gstreamer Playback Pipeline
-def create_gst_playback_pipeline(options):
-    global videoconvert1
-    # PIPELINE="splitfilesrc ! decodebin ! videoconvert ! video/x-raw,format=BGRx ! \
-    # gvapython module=insert_metadata.py ! \
-    # gvawatermark ! videoconvert ! ximagesink"
-    pipeline = Gst.Pipeline()
-
+def gst_playback(options):
+    location = ""
     start_pts = 0
     if os.path.isdir(options.input_video_path):
-        src = Gst.ElementFactory.make("splitfilesrc")
-        src.set_property("location", options.input_video_path + "/*.mp4")
+        location = options.input_video_path + "/*.mp4"
     else:
-        src = Gst.ElementFactory.make("filesrc")
         start_pts = get_timestamp_from_filename(options.input_video_path)
-        src.set_property("location", options.input_video_path)
+        location = options.input_video_path
 
-    decodebin = Gst.ElementFactory.make("decodebin")
-    videoconvert1 = Gst.ElementFactory.make("videoconvert")
-    capsfilter = Gst.ElementFactory.make("capsfilter")
-    caps = Gst.caps_from_string("video/x-raw, format=(string){BGRx}")
-    capsfilter.set_property("caps", caps)
+    # Populate the request to provide to VAServing library
+    module = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'preproc_callbacks/insert_metadata.py')
+    metadata_args = {"metadata_file_path": options.metadata_file_path, "offset_timestamp": start_pts}
+    request = {
+        "source": {
+            "type": "path",
+            "path": location
+        },
+        "parameters": {
+            "module": module,
+            "kwarg": metadata_args
+            }
+        }
 
-    # Attach the insert_metadata module to gvapython
-    play_script_dir = os.path.dirname(os.path.abspath(__file__))
-    insert_metadata_script = os.path.join(play_script_dir, 'preproc_callbacks/insert_metadata.py')
-    gvapython = Gst.ElementFactory.make("gvapython")
-    gvapython.set_property("module", insert_metadata_script)
-    gvapython.set_property("class", "FrameInfo")
+    # Start the recording, once complete, stop VAServing
+    record_playback_file_dir = os.path.dirname(os.path.realpath(__file__))
+    VAServing.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
+    pipeline = VAServing.pipeline("recording_playback", "playback")
+    pipeline.start(request)
+    status = pipeline.status()
+    while (not status.state.stopped()):
+        time.sleep(0.1)
+        status = pipeline.status()
+    VAServing.stop()
 
-    insert_preproc_metadata_arguments = '{{ "metadata_file_path" : "{input_file}" , '\
-                                        '"offset_timestamp" : {timestamp} }}'
-    insert_preproc_metadata_arguments = insert_preproc_metadata_arguments.format(
-        input_file=options.metadata_file_path, timestamp=start_pts)
-    gvapython.set_property("kwarg", insert_preproc_metadata_arguments)
-
-    gvawatermark = Gst.ElementFactory.make("gvawatermark")
-    videoconvert2 = Gst.ElementFactory.make("videoconvert")
-    ximagesink = Gst.ElementFactory.make("ximagesink")
-
-    pipeline.add(src, decodebin, videoconvert1, capsfilter, gvapython, gvawatermark,
-                 videoconvert2, ximagesink)
-
-    src.link(decodebin)
-
-    # dynamic linking for decodebin
-    decodebin.connect("pad-added", decodebin_pad_added)
-
-    # link the rest of the elements
-    videoconvert1.link(capsfilter)
-    capsfilter.link(gvapython)
-    gvapython.link(gvawatermark)
-    gvawatermark.link(videoconvert2)
-    videoconvert2.link(ximagesink)
-
-    return pipeline
-
-def gst_playback(options):
-    # Playback
-    pipeline = create_gst_playback_pipeline(options)
-
-    bus = pipeline.get_bus()
-    bus.add_signal_watch()
-    pipeline.set_state(Gst.State.PLAYING)
-    loop = GObject.MainLoop()
-    bus.connect("message", on_message, loop)
-
-    try:
-        loop.run()
-    except Exception:
-        loop.quit()
-
-    pipeline.set_state(Gst.State.NULL)
-    del pipeline
-
-# Playback video
 def launch_pipeline(options):
     """Playback the video with metadata inserted back into the video"""
     #if options.record and options.playback:

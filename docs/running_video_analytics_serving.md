@@ -81,7 +81,7 @@ microservice.
 
 ### Getting Loaded Pipelines
 **Example:**
-
+> **Note:** In this example we assume you are running FFmpeg Video Analytics based Microservice
 ```bash
 $ curl localhost:8080/pipelines
 [
@@ -89,14 +89,14 @@ $ curl localhost:8080/pipelines
     "description": "Object Detection Pipeline",
     "name": "object_detection",
     <snip>
-    "type": "GStreamer",
+    "type": "FFmpeg",
     "version": "1"
   },
   {
     "description": "Emotion Recognition Pipeline",
     "name": "emotion_recognition",
     <snip>
-    "type": "GStreamer",
+    "type": "FFmpeg",
     "version": "1"
   }
 ]
@@ -104,13 +104,13 @@ $ curl localhost:8080/pipelines
 
 ### Detecting Objects in a Sample Video File
 **Example:**
-
+> **Note:** In this example we assume you are running DL Streamer based Microservice
 ```bash
-curl localhost:8080/pipelines/object_detection/1 -X POST -H \
+curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {
-    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
     "type": "uri"
   },
   "destination": {
@@ -120,7 +120,7 @@ curl localhost:8080/pipelines/object_detection/1 -X POST -H \
   }
 }'
 $ tail -f /tmp/results.txt
-{"objects":[{"detection":{"bounding_box":{"x_max":0.8810903429985046,"x_min":0.77934330701828,"y_max":0.8930767178535461,"y_min":0.3040514588356018},"confidence":0.5735679268836975,"label":"bottle","label_id":5},"h":213,"roi_type":"bottle","w":65,"x":499,"y":109}],"resolution":{"height":360,"width":640},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true","timestamp":972067039}
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
 ```
 
 Detection results are published to `/tmp/results.txt`.
@@ -142,6 +142,53 @@ $ docker stop video-analytics-serving-gstreamer
 **Example:**
 ```bash
 $ docker stop video-analytics-serving-ffmpeg
+```
+
+# Real Time Streaming Protocol (RTSP) Re-streaming
+> **Note:** RTSP Re-streaming supported only in DL Streamer based Microservice.
+
+VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
+
+### Enable RTSP in service
+```bash
+$ docker/run.sh --enable-rtsp
+```
+> **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
+
+### Connect and visualize
+> **Note:** Leverage REST client when available.
+
+*  Start a pipeline with curl request with frame destination set as rtsp and custom path set. For demonstration, path set as `person-detection` in example request below.
+```bash
+curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
+'Content-Type: application/json' -d \
+'{
+  "source": {
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+    "type": "uri"
+  },
+  "destination": {
+    "metadata": {
+      "type": "file",
+      "path": "/tmp/results.txt",
+      "format": "json-lines"
+    },
+    "frame": {
+      "type": "rtsp",
+      "path": "person-detection"
+    }
+  }
+}'
+```
+*  Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect to the RTSP server.
+*  Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+
+### RTSP destination params.
+```bash
+"frame": {
+  "type": "rtsp",
+  "path" : <custom rtsp path>(required. When path already exists, throws error)
+}
 ```
 
 # Selecting Pipelines and Models at Runtime
@@ -196,7 +243,7 @@ NCS2 accelerators require users to have special permissions for hardware access.
 
 > **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
 >
-> ```bash 
+> ```bash
 > ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
 > ```
 >
@@ -204,7 +251,7 @@ NCS2 accelerators require users to have special permissions for hardware access.
 
 ### Limitations
 DL Streamer pipelines can only target a single neural network model to each NCS2 accelerator in a system. For pipelines that contain multiple models
-(for example, [emotion_recognition](/pipelines/gstreamer/emotion_recognition/1/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
+(for example, [object_classification](/pipelines/gstreamer/object_classification/vehicle_attributes/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
 
 # Developer Mode
 

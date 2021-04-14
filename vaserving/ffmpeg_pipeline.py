@@ -47,7 +47,7 @@ class FFmpegPipeline(Pipeline):
     Input = namedtuple("Input", ["range", "token", "properties"])
     Output = namedtuple("Output", ["range", "token", "format", "properties"])
 
-    def __init__(self, identifier, config, model_manager, request, finished_callback):
+    def __init__(self, identifier, config, model_manager, request, finished_callback, _unused_options):
         # TODO: refactor as abstract interface
         # pylint: disable=super-init-not-called
         self.config = config
@@ -412,10 +412,13 @@ class FFmpegPipeline(Pipeline):
                                      ["parameters", "properties"])
         self._set_section_properties(["destination"],
                                      ["destination", "properties"])
-        if "destination" in self.request and "type" in self.request["destination"]:
-            self._set_section_properties(["destination"],
-                                         ["destination",
-                                          self.request["destination"]["type"], "properties"])
+        if "destination" in self.request and \
+                "metadata" in self.request["destination"] and \
+                    "type" in self.request["destination"]["metadata"]:
+            self._set_section_properties(["destination", "metadata"],
+                                         ["destination", "metadata",
+                                          self.request["destination"]["metadata"]["type"],
+                                          "properties"])
         self._set_section_properties(["source"],
                                      ["source", "properties"])
         if "source" in self.request and "type" in self.request["source"]:

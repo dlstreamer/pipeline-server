@@ -23,6 +23,9 @@ NETWORK=
 USER=
 INTERACTIVE=-it
 DEVICE_CGROUP_RULE=
+USER_GROUPS=
+ENABLE_RTSP=
+RTSP_PORT=8554
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -43,6 +46,7 @@ show_options() {
     echo "   Entrypoint: '${ENTRYPOINT}'"
     echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}'"
     echo "   User: '${USER}'"
+    echo "   User Groups: '${USER_GROUPS}'"
     echo "   Devices: '${DEVICES}'"
     echo "   Device CGroup Rule: '${DEVICE_CGROUP_RULE}'"
     echo ""
@@ -60,8 +64,11 @@ show_help() {
   echo "  [-p additional ports to pass to docker run]"
   echo "  [--network name network to pass to docker run]"
   echo "  [--user name of user to pass to docker run]"
+  echo "  [--group-add name of user group to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
   echo "  [--device device to pass to docker run]"
+  echo "  [--enable-rtsp To enable rtsp re-streaming]"
+  echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
   echo "  [--dev run in developer mode]"
   exit 0
 }
@@ -123,7 +130,15 @@ while [[ "$#" -gt 0 ]]; do
             USER="--user $2"
             shift
         else
-            error 'ERROR: "--models" requires a non-empty option argument.'
+            error 'ERROR: "--user" requires a non-empty option argument.'
+        fi
+        ;;
+    --group-add)
+        if [ "$2" ]; then
+            USER_GROUPS+="--group-add $2 "
+            shift
+        else
+            error 'ERROR: "--group-add" requires a non-empty option argument.'
         fi
         ;;
     --device)
@@ -220,6 +235,17 @@ while [[ "$#" -gt 0 ]]; do
             error 'ERROR: "--entrypoint" requires a non-empty option argument.'
         fi
         ;;
+    --rtsp-port)
+        if [ "$2" ]; then
+            RTSP_PORT=$2
+            shift
+        else
+            error 'ERROR: "--rtsp-port" requires a non-empty option argument.'
+        fi
+        ;;
+    --enable-rtsp)
+        ENABLE_RTSP=true
+        ;;
     --non-interactive)
         unset INTERACTIVE
         ;;
@@ -271,9 +297,6 @@ if [ "${MODE}" == "DEV" ]; then
         PIPELINES=$SOURCE_DIR/pipelines/$FRAMEWORK
     fi
     PRIVILEGED="--privileged "
-    if [ -z "$USER" ]; then
-	    USER="--user $UID"
-    fi
 elif [ "${MODE}" == "SERVICE" ]; then
     if [ -z "$PORTS" ]; then
         PORTS+="-p 8080:8080 "
@@ -282,6 +305,11 @@ elif [ "${MODE}" == "SERVICE" ]; then
 else
     echo "Invalid Mode"
     show_help
+fi
+
+if [ ! -z "$ENABLE_RTSP" ]; then
+    ENVIRONMENT+="-e ENABLE_RTSP=true -e RTSP_PORT=$RTSP_PORT "
+    PORTS+="-p $RTSP_PORT:$RTSP_PORT "
 fi
 
 if [ ! -z "$MODELS" ]; then
@@ -294,11 +322,18 @@ fi
 
 if [ ! -z "$VOLUME_MOUNT" ]; then
     if [ -z "$USER" ]; then
-	    USER="--user $UID"
+        USER="--user $UID"
     fi
+fi
+
+if [ ! -z "$USER" ]; then
+    for group in "video" "audio" "users"
+    do
+        USER_GROUPS+="--group-add $group "
+    done
 fi
 
 show_options
 
 # eval must be used to ensure the --device-cgroup-rule string is correctly parsed
-eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $IMAGE ${ENTRYPOINT_ARGS}"
+eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $USER_GROUPS $IMAGE ${ENTRYPOINT_ARGS}"

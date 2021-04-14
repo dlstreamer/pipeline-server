@@ -1,5 +1,5 @@
 {
-    "apiVersion": "1.0",
+    "apiVersion": "2.0",
     "operations": [
         {
             "opName": "GraphTopologySet",
@@ -28,8 +28,12 @@
                             "value": "testpassword"
                         },
                         {
-                            "name" : "grpcExtensionAddress",
-                            "value" : "tcp://lvaExtension:5001"
+                            "name": "grpcExtensionAddress",
+                            "value": "tcp://lvaExtension:5001"
+                        },
+                        {
+                            "name": "extensionConfiguration",
+                            "value": "{}"
                         }
                     ]
                 }

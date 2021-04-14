@@ -14,6 +14,12 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 - Validated support for [Live Video Analytics on IoT Edge](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/).
 - Supported Configuration: Pre-built Ubuntu Linux container for CPU and iGPU
 
+## What's New
+
+Support for [API 2.0](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/release-notes#december-14-2020) and its new [extension configuration](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/grpc-extension-protocol#configuring-inference-server-for-each-mediagraph-over-grpc-extension) feature.
+
+>**Note:** The extension configuration feature enables pipeline selection and configuration to be done when starting a media session. Pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
+
 # Getting Started
 
 The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Live Video Analytics graph. For more information on deploying the module as part of a Live Video Analytics graph please see [Configuring the AI Extension Module for Live Video Analytics](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Live Video Analytics documentation](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). The following instructions demonstrate building and running the microservice and test client outside of Live Video Analytics.
@@ -34,7 +40,7 @@ Run the docker image build script.
 ```
 $ ./docker/build.sh
 ```
-Resulting image name is `video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension`
+Resulting image name is `video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension`
 
 ## Running the Edge AI Extension Module
 
@@ -102,7 +108,6 @@ The module can be configured using command line options or environment variables
 | gRPC port           | -p                    | PORT                 | 5001             |
 | Pipeline name       | --pipeline-name       | PIPELINE_NAME        | object_detection |
 | Pipeline version    | --pipeline-version    | PIPELINE_VERSION     | person_vehicle_bike_detection |
-| Pipeline parameters | --pipeline-parameters | PIPELINE_PARAMETERS  | {}                |
 | Use debug pipeline  | --debug               | DEBUG_PIPELINE       |                   |
 
 ## Video Analytics Pipelines
@@ -124,50 +129,39 @@ Based on HW target, choose and update the appropriate deployment manifest locate
 
 You will also need to create a graph topology with gRPC extension and then create a graph instance based on that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
 
-# Additional Standalone Edge AI Extension Examples
+### Topology files
 
-### Specifying VAServing parameters for LVA Server
+Operations.json is an instruction set used by LVA to perform actions on the IOT Edge.
+* You can set HW target using `extensionConfiguration` in operations.json file. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
 
-The LVA Server application will filter command line arguments between the LVA layer and VAServing layer.
-Command line arguments are first handled by run_server.sh; if not specifically handled by run_server.sh the argument
-is passed into the LVA Server application.
-Command line arguments that are not recognized by LVA Server are then passed to VAServing, if VAServing does not recognize
-the arguments an error will be reported
+Topology.json is a config file used by operations.json to configure edge devices.
 
-```bash
-./docker/run_server.sh --log_level DEBUG
+Operations.json can refer to the topology through a URL or a file path.
+
+If changes are made locally to the topology file, the operations file will need change to point to the local topology.
+
+Replace
+```
+topologyURL: <url to topology file>
+```
+to
+
+```
+topologyFile: <absolute path to topology file>
 ```
 
-### Selecting and Configuring Pipelines
+### Extension Configuration
 
-Run with object classification pipeline specified on command line
-
-```bash
-$ ./docker/run_server.sh -–pipeline-name object_classification –pipeline-version vehicle_attributes_recognition
+The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters and frame-destination are optional.
 ```
-
-Run with classification pipeline with iGPU inference specified via environment variables
-```
-$ export PIPELINE_NAME=object_classification
-$ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ export PIPELINE_PARAMETERS='{"detection-device":"GPU","classification-device":"GPU"}'
-$ ./docker/run_server.sh
-```
-
-Notes:
-* Parameter `device` has changed to `detection-device` for detection model and `classification-device` for classification model, refer to example above on how to set.
-* Only one pipeline can be enabled per container instance.
-* If selecting a pipeline both name and version must be specified
-* The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
-* The `--parameters` option specifies pipeline parameters for the selected pipeline. It can be either a JSON string or the name of a file containing the JSON. See the parameters section of the [pipeline definition](/docs/defining_pipelines.md#pipeline-parameters) document for more details. The individual definition files for [object_detection](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json), [object_classification](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json), and [object_tracking](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json) contain the supported parameters for the pre-loaded pipelines.
-
-### Debug Mode
-
-Debug pipelines can be selected using the `--debug` command line parameter or setting the `DEBUG_PIPELINE` environment variable. Debug pipelines save watermarked frames to `/tmp/vaserving/{--pipeline-version}/{timestamp}/` as JPEG images.
-
-Run default pipeline in debug mode
-```bash
-$ ./docker/run_server.sh --debug
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection",
+        "parameters": {},
+        "frame-destination": {}
+    }
+}
 ```
 
 ### Inference Accelerators
@@ -182,15 +176,73 @@ for details on docker resources and inference device name for supported accelera
 This will allow you to customize the deployment manifest for a given accelerator.
 
 The run server script will automatically detect installed accelerators and provide access to their resources.
-Here we run the default pipeline with inference running on Intel® Integrated Graphics (be careful with escaping the JSON string)
+
+Pipelines will define a default accelerator in their .json files. To run a pipeline on a different accelerator modify the pipeline json or send in a gRPC request with a extension_configuration. The LVA client generates this gRPC request with the extension configuration
+
+Example extension_configuration
+```
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection"
+        "parameters": { "detection-device": "GPU"}
+    }
+}
+```
+
+# Additional Standalone Edge AI Extension Examples
+
+### Specifying VA Serving parameters for LVA Server
+
+The LVA Server application will filter command line arguments between the LVA layer and VA Serving layer.
+Command line arguments are first handled by run_server.sh; if not specifically handled by run_server.sh the argument
+is passed into the LVA Server application.
+Command line arguments that are not recognized by LVA Server are then passed to VA Serving, if VA Serving does not recognize
+the arguments an error will be reported.
+
 ```bash
-$ ./docker/run_server.sh --pipeline-parameters '{"detection-device":"GPU"}'
+./docker/run_server.sh --log_level DEBUG
+```
+
+### Debug Mode
+
+Debug pipelines can be selected using the `--debug` command line parameter or setting the `DEBUG_PIPELINE` environment variable. Debug pipelines save watermarked frames to `/tmp/vaserving/{--pipeline-version}/{timestamp}/` as JPEG images.
+
+Run default pipeline in debug mode
+```bash
+$ ./docker/run_server.sh --debug
+```
+
+### Real Time Streaming Protocol (RTSP) Re-streaming
+
+Pipelines can be configured to connect and visualize input video with superimposed bounding boxes.
+
+* Enable RTSP at Server start
+```
+$ export ENABLE_RTSP=true
+$ ./docker/run_server.sh
+```
+* Run client with frame destination set. For demonstration, path set as `person-detection` in example request below.
+```
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}' --loop-count 1000
+```
+* Connect and visualize: Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+
+* Example extension_configuration for re streaming pipeline.
+```
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection"
+        "frame-destination": { "type":"rtsp", "path":"person-detection"}
+    }
+}
 ```
 
 ### Logging
 Run the following command to monitor the logs from the docker container
 ```bash
-$ docker logs video-analytics-serving_0.4.1-dlstreamer-edge-ai-extension -f
+$ docker logs video-analytics-serving_0.5.0-dlstreamer-edge-ai-extension -f
 ```
 
 ### Developer Mode
@@ -200,6 +252,26 @@ This mode runs with files from the host, not the container, which is useful for 
 $ ./docker/run_server.sh --dev
 ```
 
+### Selecting Pipelines
+>**Note:** These features are deprecated and will be removed in a future release. Please use extension configuration instead.
+
+Specify the default pipeline via command line and run the server
+
+```bash
+$ ./docker/run_server.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+```
+
+Specify the default pipeline via environment variables and run the server
+```
+$ export PIPELINE_NAME=object_classification
+$ export PIPELINE_VERSION=vehicle_attributes_recognition
+$ ./docker/run_server.sh
+```
+
+Notes:
+* If selecting a pipeline both name and version must be specified
+* The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
+
 # Test Client
 A test client is provided to demonstrate the capabilities of the Edge AI Extension module.
 The test client script `run_client.sh` sends frames(s) to the extension module and prints inference results.
@@ -208,14 +280,21 @@ Use the --help option to see how to use the script. All arguments are optional.
 ```
 $ ./docker/run_client.sh
 All arguments are optional, usage is as follows
+  [ -s : gRPC server address, defaults to None]
   [ --server-ip : Specify the server ip to connect to ] (defaults to 127.0.0.1)
   [ --server-port : Specify the server port to connect to ] (defaults to 5001)
-  [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
   [ --sample-file-path : Specify the sample file path to run] (defaults to samples/lva_ai_extension/sampleframes/sample01.png)
-  [ --output-file-path : Specify the output file path to save inference results in jsonl format] (defaults to /tmp/results.jsonl)
+  [ --loop-count : How many times to loop the source after it finishes ]
   [ --number-of-streams : Specify number of streams (one client process per stream)]
   [--fps-interval FPS_INTERVAL] (interval between frames in seconds, defaults to 0)
   [--frame-rate FRAME_RATE] (send frames at given fps, default is no limit)
+  [--frame-queue-size : Max number of frames to buffer in client, defaults to 200]
+  [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
+  [ --output-file-path : Specify the output file path to save inference results in jsonl format] (defaults to /tmp/results.jsonl)
+  [ --pipeline-name : Name of the pipeline to run]
+  [ --pipeline-version : Name of the pipeline version to run]
+  [ --pipeline-parameters : Pipeline parameters]
+  [ --frame-destination : Frame destination for rtsp restreaming]
   [ --dev : Mount local source code] (use for development)
   ```
 Notes:
@@ -260,6 +339,17 @@ $ ./docker/run_client.sh
 [AIXC] [2020-11-20 23:29:11,418] [MainThread  ] [INFO]: - person (0.60) [0.84, 0.44, 0.05, 0.29]
 <snip>
 ```
+
+## Send a request to the server to run a different pipeline
+```
+$ ./docker/run_client.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+```
+
+## Send a request to the server to run a different pipeline on the GPU
+```
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{"detection-device":"GPU"}'
+```
+
 ## Add New Model to Models List
 
 Copy the existing model list `models/models.list.yml` to `models/yolo-models.list.yml` then add the following entry:
@@ -306,7 +396,7 @@ models
 Check that expected model and pipeline are present in the built image:
 
 ```bash
-$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
+$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension
 vaserving@82dd59743ca3:~$ ls models
 person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
 vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
@@ -318,7 +408,7 @@ debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ### Re-start service
 Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
 ```
-$ docker stop video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
+$ docker stop video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension
 $ docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
 ```
 ### Run the client

@@ -25,10 +25,11 @@ def print_message(message):
 Gst.init(sys.argv)
 logger = logging.get_logger('videoAnalyticsBridge', is_static=True)
 
-class Bridge:  # pylint: disable=too-few-public-methods
+class Bridge:  # pylint: disable=too-few-public-methods, unused-argument
 
     def __init__(self, topic="objects_detected", edgexdevice="videoAnalytics-mqtt",
-                 edgexcommand="videoAnalyticsData", edgexresource="videoAnalyticsData"):
+                 edgexcommand="videoAnalyticsData", edgexresource="videoAnalyticsData",
+                 analyticsimage="edgex-vas:latest", containername="edgex-vas", source="rtsp://cam1"):
         logger.debug('Python Bridge.init() method invoked!')
         self._topic = 'edgex_bridge/' + topic
         self._edgex_device = edgexdevice

@@ -1,4 +1,4 @@
-# Model Downloader 
+# Model Downloader
 | [Specifying Models](#specifying-models) | [Downloading Models](#downloading-models) | [Reference](#command-line-reference) |
 
 The model downloader downloads and prepares models from the
@@ -8,7 +8,7 @@ Video Analytics Serving. It can be run as a standalone tool or as
 part of the Video Analytics Serving build process. For more
 information on model file formats and the directory structure used by
 Video Analytics Serving see [defining_pipelines](/docs/defining_pipelines.md#deep-learning-models).
-	
+
 # Specifying Models
 
 Models are specified using a yaml file containing a list of model
@@ -23,7 +23,7 @@ Zoo](https://github.com/openvinotoolkit/open_model_zoo). The model and
 model-proc files will be downloaded and stored locally using [default
 values](#default-values).
 
-Example: 
+Example:
 
 ```yaml
 - mobilenet-ssd
@@ -37,7 +37,7 @@ more optional properties (alias, version, precision, local
 model-proc). If an optional property is not specified the downloader
 will use [default values](#default-values).
 
-Example: 
+Example:
 
 ```yaml
 - model: yolo-v3-tf
@@ -77,19 +77,20 @@ Example:
 ## Downloading Models with the standalone tool
 
 When run as a standalone tool, the model downloader will run within an
-openvino/ubuntu18_data_dev docker image and download models listed in
+`openvino/ubuntu20_data_dev:2021.3_vaapi_fix` docker image and download models listed in
 a yaml file that can be specified via the  `--model-list` argument.
 
 Example:
 ```bash
-./tools/model_downloader/model_downloader.sh --model-list models_list/models.list.yml --output standalone_models
+mkdir standalone_models
+./tools/model_downloader/model_downloader.sh --model-list models_list/models.list.yml --output ${PWD}/standalone_models
 ```
 
 ### Command Line Reference
 
 ```bash
 usage: model_downloader.sh
-  [--output path where to save models]
+  [--output absolute path where to save models]
   [--model-list input file with model names and properties]
   [--force force download and conversion of existing models]
   [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]

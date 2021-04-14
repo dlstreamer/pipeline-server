@@ -1,0 +1,48 @@
+{
+	"type": "GStreamer",
+	"template": ["splitfilesrc name=source ! decodebin",
+                                " ! gvapython name=gvapython",
+                                " ! gvawatermark ! videoconvert ! ximagesink"
+                                ],
+	"description": "Playback Pipeline",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"location": {
+				"element": "source",
+				"type": "string"
+			},
+			"module": {
+				"element": "gvapython",
+				"type": "string",
+				"default": ""
+			},
+			"class": {
+				"element": "gvapython",
+				"type": "string",
+				"default": "FrameInfo"
+			},
+			"kwarg": {
+				"element": {
+					"name": "gvapython",
+					"format": "json",
+					"property": "kwarg"
+				},
+				"type": "object",
+				"properties": {
+					"metadata_file_path": {
+						"type":"string"
+					},
+					"offset_timestamp": {
+						"type":"integer",
+						"minimum":0,
+						"maximum":1000000
+					}
+				},
+				"default": {
+					"offset_timestamp": 0
+				}
+			}
+		}
+	}
+}

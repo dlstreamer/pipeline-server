@@ -32,7 +32,6 @@ import argparse
 import os
 import sys
 from concurrent import futures
-from collections import defaultdict
 import grpc
 import extension_pb2_grpc  # pylint: disable=import-error
 from vaserving.vaserving import VAServing
@@ -91,22 +90,6 @@ def parse_args(args=None, program_name=PROGRAM_NAME):
         default=int(os.getenv("MAX_RUNNING_PIPELINES", "10")),
     )
 
-    parser.add_argument(
-        "--parameters",
-        action="store",
-        dest="parameters_arg",
-        type=str,
-        default=os.getenv("PARAMETERS", "{}"),
-    )
-
-    parser.add_argument(
-        "--pipeline-parameters",
-        action="store",
-        dest="pipeline_parameters_arg",
-        type=str,
-        default=os.getenv("PIPELINE_PARAMETERS", "{}"),
-    )
-
     if isinstance(args, dict):
         args = ["--{}={}".format(key, value) for key, value in args.items() if value]
 
@@ -130,32 +113,17 @@ if __name__ == "__main__":
 
         try:
             VAServing.start(server_args)
-            pipelines = VAServing.pipelines()
-            pipeline_versions = defaultdict(list)
-            for pipeline in pipelines:
-                pipeline_versions[pipeline.name()].append(pipeline.version())
-            if args.pipeline_name not in pipeline_versions:
-                raise Exception("Unknown Pipeline: {}".format(args.pipeline_name))
-            if (args.debug) and (not args.pipeline_version.startswith("debug")):
-                args.pipeline_version = "debug_{}".format(args.pipeline_version)
-            if args.pipeline_version not in pipeline_versions[args.pipeline_name]:
-                raise Exception(
-                    "Unknown Pipeline Version: {}".format(args.pipeline_version)
-                )
         except Exception as error:
             logger.error(error)
             logger.error("Exception encountered during VAServing start")
             raise
-        # For 0.4.1, if both parameters and pipeline_parameters are specified, pipeline_parameters takes precedence
-        if args.parameters_arg != "{}":
-            logger.warning(
-                "Warning, parameters argument is deprecated and will be removed in 0.5."
-            )
-            logger.warning(
-                "If parameters and pipeline_parameters are defined pipeline_parameters takes precedence"
-            )
-        if args.pipeline_parameters_arg != "{}":
-            args.parameters_arg = args.pipeline_parameters_arg
+
+        if (
+                (args.pipeline_name and not args.pipeline_version)
+                or (not args.pipeline_name and args.pipeline_version)
+        ):
+            logger.error("Pipeline name or version set but not both")
+            raise ValueError('Pipeline name or version set but not both')
 
         # create gRPC server and start running
         server = grpc.server(
@@ -166,7 +134,6 @@ if __name__ == "__main__":
                 args.pipeline_name,
                 args.pipeline_version,
                 args.debug,
-                args.parameters_arg,
             ),
             server,
         )

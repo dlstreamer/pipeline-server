@@ -1,3 +1,15 @@
+- model: person-vehicle-bike-detection-crossroad-0078
+  alias: object_detection
+  version: person_vehicle_bike
+  precision: [FP16,FP32]
+- model: vehicle-attributes-recognition-barrier-0039
+  alias: object_classification
+  version: vehicle_attributes
+  precision: [FP16,FP32]
+- model: aclnet
+  alias: audio_detection
+  version: environment
+  precision: [FP16,FP32]
 - model: mobilenet-ssd
   alias: object_detection
   version: 1
@@ -6,15 +18,7 @@
   alias: emotion_recognition
   version: 1
   precision: [FP16,FP32]
-- model: landmarks-regression-retail-0009
-  alias: landmarks_regression
-  version: 1
-  precision: [FP16,FP32]
 - model: face-detection-retail-0004
   alias: face_detection_retail
-  version: 1
-  precision: [FP16,FP32]
-- model: aclnet
-  alias: audio_detection
   version: 1
   precision: [FP16,FP32]

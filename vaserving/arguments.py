@@ -6,7 +6,7 @@
 import os
 import argparse
 import json
-import distutils.util
+import distutils.util as util
 
 
 def parse_options(args=None):
@@ -38,8 +38,15 @@ def parse_options(args=None):
     parser.add_argument("--ignore_init_errors",
                         dest="ignore_init_errors",
                         action="store",
-                        type=lambda x: bool(distutils.util.strtobool(x)),
-                        default=os.getenv('IGNORE_INIT_ERRORS', False))
+                        type=lambda x: bool(util.strtobool(x)),
+                        default=bool(util.strtobool(os.getenv('IGNORE_INIT_ERRORS', 'false'))))
+    parser.add_argument("--enable-rtsp",
+                        dest="enable_rtsp",
+                        action="store",
+                        type=lambda x: bool(util.strtobool(x)),
+                        default=bool(util.strtobool(os.getenv('ENABLE_RTSP', 'false'))))
+    parser.add_argument("--rtsp-port", action="store", type=int,
+                        dest="rtsp_port", default=int(os.getenv('RTSP_PORT', '8554')))
 
 
     if (isinstance(args, dict)):

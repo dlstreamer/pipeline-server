@@ -53,15 +53,13 @@ class AppDestination(metaclass=abc.ABCMeta):
         """Signals that the pipeline has ended."""
 
     @classmethod
-    def create_app_destination(cls, request, pipeline):
+    def create_app_destination(cls, request, pipeline, dest_type):
         """Factory method for creating an AppDestination instance based on registered subclasses"""
 
-        requested_destination = request.get("destination", {})
-        requested_destination_type = requested_destination.get("type", None)
-        requested_destination_class = requested_destination.get("class", None)
         destination_class = None
-
-        if ((requested_destination_type == "application") and requested_destination_class):
+        requested_destination = request.get("destination", {}).get(dest_type, {})
+        requested_destination_class = requested_destination.get("class", None)
+        if requested_destination_class:
             for destination_class in AppDestination.__subclasses__():
                 if (destination_class.__name__ == requested_destination_class):
                     break

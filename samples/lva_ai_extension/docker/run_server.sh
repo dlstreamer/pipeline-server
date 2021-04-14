@@ -4,7 +4,7 @@ CURRENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
 LVA_DIR=$(dirname $CURRENT_DIR)
 LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
-IMAGE=video-analytics-serving:0.4.1-dlstreamer-edge-ai-extension
+IMAGE=video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension
 VASERVING_ROOT=/home/video-analytics-serving
 NAME=${IMAGE//[\:]/_}
 PORT=5001
@@ -12,6 +12,7 @@ PIPELINES=
 ENTRYPOINT_ARGS=
 MODE=
 VOLUME_MOUNT=
+RTSP_ARGS=
 
 function show_help {
   echo ""
@@ -29,7 +30,7 @@ function show_help {
       PIPELINES="--pipelines $LVA_DIR/pipelines "
   fi
   ENTRYPOINT_ARGS+="--entrypoint-args --help "  
-  "$ROOT_DIR/docker/run.sh" --user "$UID" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
+  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
 }
 
 function error {
@@ -77,12 +78,8 @@ if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
 fi
 
-if [ ! -z "$PARAMETERS" ]; then
-  ENV+="-e PARAMETERS='$PARAMETERS' "
-fi
-
-if [ ! -z "$PIPELINE_PARAMETERS" ]; then
-  ENV+="-e PIPELINE_PARAMETERS='$PIPELINE_PARAMETERS' "
+if [ ! -z "$ENABLE_RTSP" ]; then
+  RTSP_ARGS="--enable-rtsp"
 fi
 
 if [ ! -z "$GST_DEBUG" ]; then
@@ -97,4 +94,4 @@ if [ "${MODE}" == "DEV" ]; then
     VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
 fi
 
-"$ROOT_DIR/docker/run.sh" --user "$UID" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $ENTRYPOINT_ARGS $PIPELINES $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $RTSP_ARGS $ENTRYPOINT_ARGS $PIPELINES $ENV

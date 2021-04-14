@@ -1,16 +1,18 @@
 {
     "type": "GStreamer",
     "template": ["appsrc name=source",
-		 " ! gvadetect model={models[object_detection][1][network]} name=detection",
+		 " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
 		 " ! appsink name=destination"],
-    "description": "Object Detection Pipeline",
+    "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
     "parameters": {
                 "type": "object",
                 "properties": {
                         "detection-model-instance-id": {
-                                "element": "detection",
-                                "type": "string",
-                                "default": ""
+                                "element": {
+                                        "name": "detection",
+                                        "property": "model-instance-id"
+                                },
+                                "type": "string"
                         }
                 }
     }

@@ -176,7 +176,7 @@ def pipelines_name_version_post(name, version):  # noqa: E501
         "POST on /pipelines/{name}/{version}".format(name=name, version=str(version)))
     if connexion.request.is_json:
         try:
-            pipeline_id, err = VAServing.pipeline_manager.create_instance(
+            pipeline_id, err = VAServing.pipeline_instance(
                 name, version, connexion.request.get_json())
             if pipeline_id is not None:
                 return pipeline_id

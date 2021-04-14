@@ -1,5 +1,5 @@
 # Defining Media Analytics Pipelines
-| [Pipeline Definition Files](#pipeline-definition-files) | [Pipeline Discovery](#how-pipeline-definition-files-are-discovered-and-loaded) | [Pipeline Templates](#pipeline-templates) | [Pipeline Parameters](#pipeline-parameters) | [Deep Learning Models](#deep-learning-models) | 
+| [Pipeline Definition Files](#pipeline-definition-files) | [Pipeline Discovery](#how-pipeline-definition-files-are-discovered-and-loaded) | [Pipeline Templates](#pipeline-templates) | [Pipeline Parameters](#pipeline-parameters) | [Deep Learning Models](#deep-learning-models) |
 
 Media analytics pipelines are directed graphs of audio/video
 processing, computer vision, and deep learning inference
@@ -14,7 +14,7 @@ top-level object with four sections.
 |---------|-----|
 |type|Framework type. <br/> <br/> Can be either [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* or [FFmpeg](https://ffmpeg.org/)* |
 |description|Brief description of pipeline.|
-|template|Pipeline graphs and operations as described in the syntax of the media analytics framework. <br/> <br/> For `GStreamer` this is the `PIPELINE-DESCRIPTION` syntax supported by  [`gst-launch-1.0`](https://gstreamer.freedesktop.org/documentation/tutorials/basic/gstreamer-tools.html#gstlaunch10). For a brief `GStreamer` introduction please see the following [overview](gstreamer_overview.md). <br/> <br/> For `FFmpeg` this is the syntax of the [`ffmpeg`](https://ffmpeg.org/ffmpeg.html#toc-Synopsis) command-line tool. 
+|template|Pipeline graphs and operations as described in the syntax of the media analytics framework. <br/> <br/> For `GStreamer` this is the `PIPELINE-DESCRIPTION` syntax supported by  [`gst-launch-1.0`](https://gstreamer.freedesktop.org/documentation/tutorials/basic/gstreamer-tools.html#gstlaunch10). For a brief `GStreamer` introduction please see the following [overview](gstreamer_overview.md). <br/> <br/> For `FFmpeg` this is the syntax of the [`ffmpeg`](https://ffmpeg.org/ffmpeg.html#toc-Synopsis) command-line tool.
 |parameters|Optional JSON object specifying pipeline parameters that can be customized when the pipeline is launched.|
 
 ## How Pipeline Definition Files are Discovered and Loaded
@@ -26,19 +26,22 @@ pipeline directory and loads all pipeline definitions that are found.
 
 The hierarchical directory structure is made up of three levels:
 
-`<pipeline-root-directory>/<pipeline-name>/<version>/<pipeline>.json`. 
+`<pipeline-root-directory>/<pipeline-name>/<version>/<pipeline>.json`.
 
 Here is a sample directory listing:
 ```
 pipelines/gstreamer
     ├── audio_detection
-    │   └── 1
+    │   └── environment
     │       └── pipeline.json
-    ├── emotion_recognition
-    │   └── 1
+    ├── object_classification
+    │   └── vehicle_attributes
     │       └── pipeline.json
-    └── object_detection
-        └── 1
+    ├── object_detection
+    │   └── person_vehicle_bike
+    │       └── pipeline.json
+    └── object_tracking
+        └── person_vehicle_bike
             └── pipeline.json
 ```
 
@@ -65,7 +68,7 @@ for typical `source` and `destination` options.
 ### GStreamer Templates
 
 > **Note:** This section assumes an understanding of the GStreamer
-> framework.  Developers new to GStreamer can start with a brief 
+> framework.  Developers new to GStreamer can start with a brief
 > [GStreamer overview](./gstreamer_overview.md).
 
 
@@ -85,11 +88,11 @@ the calling application.
 #### Object Detection
 **Example:**
 ```
-"template": ["urisourcebin name=source ! concat name=c ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-				" ! gvadetect model={models[object_detection][1][network]} name=detection",
-				" ! gvametaconvert name=metaconvert ! queue ! gvametapublish name=destination",
-				" ! appsink name=appsink"
-				]
+"template": ["uridecodebin name=source",
+            " ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+            " ! appsink name=appsink"
+			]
 ```
 
 #### Element Names
@@ -102,22 +105,22 @@ section of a pipeline definition. More details on parameters can be
 found in the [Pipeline Parameters](#pipeline-parameters) section.
 
 Certain element names also trigger special default handling by the
-Video Analytics Serving modules. For example in the `object_detection`
+Video Analytics Serving modules. For example in the `object_detection/person_vehicle_bike`
 sample template the special element name `source` results in the
 `urisourcebin`'s `uri` property getting automatically set to the
 source uri of an incoming request.
 
 #### Element Properties
 
-Each element in a GStreamer pipeline can be configured through it's
+Each element in a GStreamer pipeline can be configured through its
 set of properties.
 
-The `object_detection` template demonstrates how to set the
+The `object_detection/person_vehicle_bike` template demonstrates how to set the
 `gvadetect` element's properties to select the deep learning model
 used to detect objects in a video frame.
 
 ```
-gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection
+gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={models[person_vehicle_bike_detection][1][proc]} name=detection
 ```
 
 The `model` and `model-proc` properties reference file paths to the
@@ -127,37 +130,44 @@ python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
-#### Special Handling of Model-Instance-ID in OpenVINO Gstreamer elements
+#### Model Persistance in OpenVINO GStreamer Elements
 
-In the section above, the example code for gvadetect has the element property 
-
-```
-model-instance-id=<id>
-```
-
-This is a special optional property that will hold the model in memory instead 
-of releasing it when the pipeline completes. This will save time and memory 
+`model-instance-id` is an optional property that will hold the model in memory instead
+of releasing it when the pipeline completes. This improves load time and reduces memory
 usage when launching the same pipeline multiple times. The model is associated
 with the given ID to allow subsequent runs to use the same model instance.
 
-Its important to be careful when using this property when dealing with 
-multiple hardware targets as models are loaded for a specific device. For 
-example, if a model is loaded on the CPU and is given an instance ID of 'inf0', 
-then that ID must not be used to run the model on the GPU.
+It's important to be careful when using this property when running pipelines across
+multiple hardware targets as models are loaded for a specific device. For
+example, if a model is loaded on the CPU and is given an instance ID of 'inf0',
+then that ID must not be used to run the model on the GPU. The same caveat applies to the video formats. The model will be set to the initial image format (e.g. RGBx) during the first pipeline run and any subsequent pipeline runs will error if the image formats differs (e.g a YV12).
 
-When using the same pipeline with different accelerators, the model-instance-id
-must be parameterized so that a unique id can be provided by the request for each
-accelerator
+When using a pipeline with elements that target different accelerators, the model-instance-id
+property must be parameterized so that a unique id can be provided for each
+accelerator. As an example if you have different detection and classification models,
+they must have different parameter names so that VA Serving can distinguish between them.
+Here is a pipeline definition snippet showing `model-instance-id` properties of `gvadetect` and `gvaclassify` elements mapped to parameters `detection-model-instance-id` and `classification-model-instance-id` respectively.
 
-In the same vein as the hardware targets mentioned above, when working with 
-various models ensure that pipelines have unique IDs for each model to prevent
-overloading models to the same instance-id. For example, if you have a 
-detection model and a classification model, they can not have the same
-model-instance-id value, in any VA-Serving pipeline.
+```
+    "detection-model-instance-id": {
+        "element": {
+            "name": "detection",
+            "property": "model-instance-id"
+        },
+        "type": "string"
+    },
+    "classification-model-instance-id": {
+        "element": {
+            "name": "classification",
+            "property": "model-instance-id"
+        },
+        "type": "string"
+    }
+```
 
-Different pipelines can have the same model-instance-id value, as long as 
-the model is the same one for all instances of that id, and for the same
-hardware target
+Different pipelines may share the same value for `model-instance-id` as long as
+the model is the same across all instances using the assigned id, and
+targets the same hardware device and video format.
 
 #### More Information
 
@@ -172,7 +182,7 @@ with DL Streamer please see the DL Streamer [tutorial](https://github.com/opencv
  Conceptually FFmpeg templates are similar to GStreamer templates but
  the gst-launch string syntax is replaced by the [FFmpeg
  Command-Line](https://ffmpeg.org/ffmpeg.html) syntax.
- 
+
 #### Object Detection
 **Example:**
 
@@ -192,8 +202,8 @@ For more information and examples of media analytics pipelines created
 with FFmpeg Video Analytics please see the FFmpeg Video Analytics
 [getting started
 guide](https://github.com/VCDP/FFmpeg-patch/wiki/Getting-Started-Guide-%5Bv0.5-2020%5D).
- 
- 
+
+
 
 ## Pipeline Parameters
 
@@ -216,7 +226,7 @@ that JSON object. For more details on JSON schemas please refer to JSON schema
 [documentation](https://json-schema.org/understanding-json-schema/reference/object.html).
 
 
-**Example:** 
+**Example:**
 
 The following `parameters` section contains two parameters: `height`
 and `width`:
@@ -248,7 +258,7 @@ direct substitution.
 "template": [   " urisourcebin name=source ! concat name=c ! decodebin ! videoscale",
                 " ! video/x-raw,height={parameters[height]},width={parameters[width]}",
                 " ! appsink name=appsink"
-            ]	
+            ]
 ```
 
 
@@ -272,13 +282,13 @@ The JSON schema for a GStreamer pipeline parameter can include an
    The string indicates the `name` of an element in
    the GStreamer pipeline. The property to be set is taken from the
    parameter name.
-   
+
    **Example:**
-   
+
    The following snippet defines the parameter `inference-interval`
    which sets the `inference-interval` property of the `detection`
    element.
-   
+
    ```json
    "parameters": {
    "type": "object",
@@ -293,18 +303,18 @@ The JSON schema for a GStreamer pipeline parameter can include an
         }
     }
 	```
-   
+
 1. **Object**. <br/> <br/> The object indicates the element `name`,
    `property` and `format` for the parameter. The `format` is only
    required in special cases where the property value has to be
    formatted as a valid JSON document.
-   
+
    **Example:**
-   
+
    The following snippet defines the parameter `interval`
    which sets the `inference-interval` property of the `detection`
    element.
-   
+
    ```json
    "parameters": {
    "type": "object",
@@ -322,23 +332,23 @@ The JSON schema for a GStreamer pipeline parameter can include an
         }
     }
 	```
-   
+
 1. **Array** of Objects or Strings. <br/> <br/> An array specifying
    multiple element properties to be set by the same pipeline
    parameter.
 
    **Example:**
-   
+
    The following snippet defines the parameter `interval` which sets
    the `inference-interval` property of the `detection` element and
    the `inference-interval` property of the `classification` element.
-   
+
    ```json
    "parameters": {
    "type": "object",
    "properties": {
         "interval": {
-            "element": 
+            "element":
                 [ {"name":"detection",
                     "property":"inference-interval"},
                   {"name":"classification",
@@ -364,12 +374,12 @@ The JSON schema for a FFmpeg pipeline parameter can include a
    `type`, `property`, `index` and `format` for the parameter. The
    `format` is only required in special cases where the property value
    has to be formatted as a valid JSON document.
-   
+
    **Example:**
-   
+
    The following snippet defines the parameter `inference-interval` which sets
    the `interval` property of the first `detect` filter.
-   
+
    ```json
    "parameters": {
    "type": "object",
@@ -387,17 +397,17 @@ The JSON schema for a FFmpeg pipeline parameter can include a
         }
     }
 	```
-   
+
 1. **Array** of Objects. <br/> <br/> An array specifying
    multiple filter properties to be set by the same pipeline
    parameter.
 
    **Example:**
-   
+
    The following snippet defines the parameter `interval` which sets
    the `interval` property of the `detect` filter and
    the `interval` property of the `classify` filter.
-   
+
    ```json
    "parameters": {
    "type": "object",
@@ -433,8 +443,8 @@ framework handling.
 #### Direct Substitution
 
 Wherever a value in a pipeline template is referenced through a key in
-the parameters object it's value is taken from the incoming request or
-is set to the specified default value.
+the parameters object its value is taken from the incoming request. If not
+supplied in the request it is set to the specified default value.
 
 **Example:**
 
@@ -444,7 +454,7 @@ Pipeline Template:
 "template": ["urisourcebin name=source uri={source[uri]} ! concat name=c ! decodebin ! videoscale"
              " ! video/x-raw,height={parameters[height]},width={parameters[width]}"
              " ! appsink name=appsink"
-            ]	
+            ]
 ```
 
 Pipeline Parameters:
@@ -504,7 +514,7 @@ Pipeline Template:
 "template": ["urisourcebin name=source ! concat name=c ! decodebin ! videoscale"
              " ! video/x-raw,height=300,width=300"
              " ! appsink name=appsink"
-            ]	
+            ]
 ```
 
 Pipeline Parameters:
@@ -589,13 +599,13 @@ format (`IR`). A model in the `IR` format is represented by two files:
 
 * `<model_name>.xml`. An XML file describing the model layers,
   precision and topology.
-  
+
 * `<model_name>.bin`. A binary file encoding a trained model's weights.
 
 ### Converting Models
 For more information on converting models from popular frameworks into
 `IR` format please see the OpenVINO<sup>&#8482;</sup> Toolkit
-documentation for [model optimizer](https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_Deep_Learning_Model_Optimizer_DevGuide.html). 
+documentation for [model optimizer](https://docs.openvinotoolkit.org/latest/openvino_docs_MO_DG_Deep_Learning_Model_Optimizer_DevGuide.html).
 
 ### Ready To Use Models
 
@@ -628,7 +638,7 @@ and
 
 ### FFmpeg Video Analytics
 For `model-proc` files for use with `FFmpeg Video Analytics` please
-see the following [samples](https://github.com/VCDP/FFmpeg-patch/tree/ffmpeg4.2_va/samples/model_proc) 
+see the following [samples](https://github.com/VCDP/FFmpeg-patch/tree/ffmpeg4.2_va/samples/model_proc)
 
 ## How Deep Learning Models are Discovered and Referenced
 
@@ -645,7 +655,7 @@ The hierarchical directory structure is made up of four levels:
 `<model-root-directory>/<model-name>/<version>/<precision>`
 
 
-Here's a sample directory listing for the `emotion_recognition` model: 
+Here's a sample directory listing for the `emotion_recognition` model:
 
 ```
 models/

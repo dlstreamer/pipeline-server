@@ -78,7 +78,7 @@ def _find_downloaded_model(model_name, download_dir):
 
 
 def _download_model_proc(target_dir, model_name, dl_streamer_version):
-
+    model_proc = None
     if os.path.isdir(MODEL_PROC_ROOT):
         for root, _, files in os.walk(MODEL_PROC_ROOT):
             for filepath in files:
@@ -104,7 +104,7 @@ def _download_model_proc(target_dir, model_name, dl_streamer_version):
                 "{0}/{1}.json".format(temp_dir.name, model_name)
             )
         else:
-            print("Warning, model-proc not found in gst-video-analytics repo.")
+            print("WARNING: model-proc not found in gst-video-analytics repo!")
     if model_proc:
         shutil.move(model_proc, os.path.join(target_dir, "{}.json".format(model_name)))
 

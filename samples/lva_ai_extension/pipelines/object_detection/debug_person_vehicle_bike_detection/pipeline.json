@@ -14,20 +14,20 @@
 					"name": "detection",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "CPU"
 			},
 			"detection-model-instance-id": {
 				"element": {
 					"name": "detection",
 					"property": "model-instance-id"
 				},
-				"type": "string",
-				"default": "person_vehicle_bike_detection"
+				"type": "string"
 			},
 			"batch-size": {
 				"element": "detection",
 				"type": "integer"
-			},			
+			},
 			"inference-interval": {
 				"element": "detection",
 				"type": "integer",
@@ -57,7 +57,7 @@
 			"pre-process-backend": {
 				"element": "detection",
 				"type": "string"
-			},			
+			},
 			"nireq": {
 				"element": "detection",
 				"type": "integer",
