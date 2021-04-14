@@ -14,6 +14,12 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 - Validated support for [Live Video Analytics on IoT Edge](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/).
 - Supported Configuration: Pre-built Ubuntu Linux container for CPU and iGPU
 
+## What's New
+
+Support for [API 2.0](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/release-notes#december-14-2020) and its new [extension configuration](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/grpc-extension-protocol#configuring-inference-server-for-each-mediagraph-over-grpc-extension) feature.
+
+>**Note:** The extension configuration feature enables pipeline selection and configuration to be done when starting a media session. Pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
+
 # Getting Started
 
 The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Live Video Analytics graph. For more information on deploying the module as part of a Live Video Analytics graph please see [Configuring the AI Extension Module for Live Video Analytics](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Live Video Analytics documentation](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). The following instructions demonstrate building and running the microservice and test client outside of Live Video Analytics.
@@ -144,48 +150,6 @@ to
 topologyFile: <absolute path to topology file>
 ```
 
-# Additional Standalone Edge AI Extension Examples
-
-### Specifying VAServing parameters for LVA Server
-
-The LVA Server application will filter command line arguments between the LVA layer and VAServing layer.
-Command line arguments are first handled by run_server.sh; if not specifically handled by run_server.sh the argument
-is passed into the LVA Server application.
-Command line arguments that are not recognized by LVA Server are then passed to VAServing, if VAServing does not recognize
-the arguments an error will be reported
-
-```bash
-./docker/run_server.sh --log_level DEBUG
-```
-
-### Selecting and Configuring Pipelines
-
-Specify the default pipeline via command line and run the server
-
-```bash
-$ ./docker/run_server.sh -–pipeline-name object_classification –pipeline-version vehicle_attributes_recognition
-```
-
-Specify the default pipeline via environment variables and run the server
-```
-$ export PIPELINE_NAME=object_classification
-$ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ ./docker/run_server.sh
-```
-
-Notes:
-* If selecting a pipeline both name and version must be specified
-* The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
-
-### Debug Mode
-
-Debug pipelines can be selected using the `--debug` command line parameter or setting the `DEBUG_PIPELINE` environment variable. Debug pipelines save watermarked frames to `/tmp/vaserving/{--pipeline-version}/{timestamp}/` as JPEG images.
-
-Run default pipeline in debug mode
-```bash
-$ ./docker/run_server.sh --debug
-```
-
 ### Extension Configuration
 
 The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters and frame-destination are optional.
@@ -226,6 +190,29 @@ Example extension_configuration
 }
 ```
 
+# Additional Standalone Edge AI Extension Examples
+
+### Specifying VA Serving parameters for LVA Server
+
+The LVA Server application will filter command line arguments between the LVA layer and VA Serving layer.
+Command line arguments are first handled by run_server.sh; if not specifically handled by run_server.sh the argument
+is passed into the LVA Server application.
+Command line arguments that are not recognized by LVA Server are then passed to VA Serving, if VA Serving does not recognize
+the arguments an error will be reported.
+
+```bash
+./docker/run_server.sh --log_level DEBUG
+```
+
+### Debug Mode
+
+Debug pipelines can be selected using the `--debug` command line parameter or setting the `DEBUG_PIPELINE` environment variable. Debug pipelines save watermarked frames to `/tmp/vaserving/{--pipeline-version}/{timestamp}/` as JPEG images.
+
+Run default pipeline in debug mode
+```bash
+$ ./docker/run_server.sh --debug
+```
+
 ### Real Time Streaming Protocol (RTSP) Re-streaming
 
 Pipelines can be configured to connect and visualize input video with superimposed bounding boxes.
@@ -264,6 +251,26 @@ This mode runs with files from the host, not the container, which is useful for 
 ```bash
 $ ./docker/run_server.sh --dev
 ```
+
+### Selecting Pipelines
+>**Note:** These features are deprecated and will be removed in a future release. Please use extension configuration instead.
+
+Specify the default pipeline via command line and run the server
+
+```bash
+$ ./docker/run_server.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+```
+
+Specify the default pipeline via environment variables and run the server
+```
+$ export PIPELINE_NAME=object_classification
+$ export PIPELINE_VERSION=vehicle_attributes_recognition
+$ ./docker/run_server.sh
+```
+
+Notes:
+* If selecting a pipeline both name and version must be specified
+* The `--debug` option selects debug pipelines that watermark inference results and saves images in `/tmp/vaserving/{--pipeline-version}/{timestamp}/` and can also be set using the environment variable DEBUG_PIPELINE
 
 # Test Client
 A test client is provided to demonstrate the capabilities of the Edge AI Extension module.
