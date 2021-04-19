@@ -100,7 +100,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "<LVA VA SERVING IMAGE AZURE URL>",
+              "image": "intel/video-analytics-serving:latest-dlstreamer-edge-ai-extension",
               "createOptions": {
                   "ExposedPorts": {
                     "80/tcp": {},

@@ -108,7 +108,11 @@
                 },
                 "HostConfig": {
                     "Binds": [
-                      "/tmp/:/tmp/"
+                      "/tmp:/tmp",
+                      "/dev/bus/usb:/dev/bus/usb"
+                    ],
+                    "DeviceCgroupRules":[
+                      "c 189:* rmw"
                     ],
                     "Devices": [
                     {
