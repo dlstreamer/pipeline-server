@@ -220,4 +220,4 @@ def VAServing(request):
 def service(request):
     proxy = VAServingService()
     yield proxy
-    assert proxy.kill(), "VA Serving failed to exit gracefully on sig int"
+    proxy.kill()
