@@ -7,6 +7,7 @@
 import os
 import json
 import traceback
+from threading import Lock
 from collections import deque
 from collections import defaultdict
 import jsonschema
@@ -30,6 +31,8 @@ class PipelineManager:
         self.pipeline_queue = deque()
         self.pipeline_dir = pipeline_dir
         self.logger = logging.get_logger('PipelineManager', is_static=True)
+        self._create_lock = Lock()
+        self._run_counter_lock = Lock()
         success = self._load_pipelines()
         if (not ignore_init_errors) and (not success):
             raise Exception("Error Initializing Pipelines")
@@ -257,17 +260,19 @@ class PipelineManager:
         if not self.is_input_valid(request, pipeline_config, "tags"):
             return None, "Invalid Tags"
 
-        self.pipeline_id += 1
-        self.pipeline_instances[self.pipeline_id] = self.pipeline_types[pipeline_type](
-            self.pipeline_id,
+        with self._create_lock:
+            self.pipeline_id += 1
+            instance_id = self.pipeline_id
+        self.pipeline_instances[instance_id] = self.pipeline_types[pipeline_type](
+            instance_id,
             pipeline_config,
             self.model_manager,
             request,
             self._pipeline_finished,
             options)
-        self.pipeline_queue.append(self.pipeline_id)
+        self.pipeline_queue.append(instance_id)
         self._start()
-        return self.pipeline_id, None
+        return instance_id, None
 
     def _get_next_pipeline_identifier(self):
         if (self.max_running_pipelines > 0):
@@ -286,11 +291,13 @@ class PipelineManager:
         pipeline_identifier = self._get_next_pipeline_identifier()
         if (pipeline_identifier):
             pipeline_to_start = self.pipeline_instances[pipeline_identifier]
-            self.running_pipelines += 1
+            with self._run_counter_lock:
+                self.running_pipelines += 1
             pipeline_to_start.start()
 
     def _pipeline_finished(self):
-        self.running_pipelines -= 1
+        with self._run_counter_lock:
+            self.running_pipelines -= 1
         self._start()
 
     def get_instance_parameters(self, name, version, instance_id):
