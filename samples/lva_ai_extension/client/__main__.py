@@ -160,8 +160,6 @@ def create_extension_config(args):
     if len(pipeline_config) > 0:
         extension_config.setdefault("pipeline", pipeline_config)
 
-    validate_extension_config(extension_config)
-
     return extension_config
 
 def main():
@@ -186,6 +184,19 @@ def main():
             )
             sys.exit(1)
 
+        extension_config = {}
+        if args.extension_config:
+            if args.extension_config.endswith(".json"):
+                with open(args.extension_config, "r") as config:
+                    extension_config = json.loads(config.read())
+            else:
+                extension_config = json.loads(args.extension_config)
+        else:
+            extension_config = create_extension_config(args)
+
+        validate_extension_config(extension_config)
+        logging.info("Extension Configuration: {}".format(extension_config))
+
         msp = MediaStreamProcessor(
             args.grpc_server_address,
             args.use_shared_memory,
@@ -193,9 +204,7 @@ def main():
             len(image),
         )
 
-        extension_config = json.dumps(create_extension_config(args))
-
-        msp.start(width, height, frame_queue, result_queue, extension_config)
+        msp.start(width, height, frame_queue, result_queue, json.dumps(extension_config))
 
         with open(args.output_file, "w") as output:
             start_time = time.time()

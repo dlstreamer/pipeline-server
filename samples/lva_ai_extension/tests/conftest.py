@@ -68,19 +68,8 @@ class Helpers:
                     "-l", str(params.get("loop_count", 1)),
                     "-f", params["source"]]
         if params.get("pipeline"):
-            pipeline = params["pipeline"]
-            if pipeline.get("name"):
-                client_args.extend(["--pipeline-name", pipeline["name"]])
-            if pipeline.get("version"):
-                client_args.extend(["--pipeline-version", pipeline["version"]])
-            if pipeline.get("parameters"):
-                if isinstance(pipeline["parameters"], Mapping):
-                    pipeline["parameters"] = json.dumps(pipeline["parameters"])
-                client_args.extend(["--pipeline-parameters", pipeline["parameters"]])
-            if pipeline.get("frame-destination", None):
-                if isinstance(pipeline["frame-destination"], Mapping):
-                    pipeline["frame-destination"] = json.dumps(pipeline["frame-destination"])
-                client_args.extend(["--frame-destination", pipeline["frame-destination"]])
+            extension_config = json.dumps({"pipeline":params["pipeline"]})
+            client_args.extend(["--extension-config", extension_config])
         if params.get("shared_memory", False):
             client_args.append("-m")
         if params.get("output_location"):

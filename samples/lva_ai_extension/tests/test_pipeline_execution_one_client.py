@@ -30,7 +30,7 @@ def test_pipeline_execution_one_client(helpers, test_case, test_filename, genera
     if rtsp:
         url = rtsp["url"]
         port = rtsp["port"]
-        frame_destination = json.loads(client_params["pipeline"]["frame-destination"])
+        frame_destination = client_params["pipeline"]["frame-destination"]
         if frame_destination.get("type") == "rtsp":
             rtsp_path = frame_destination.get("path")
             rtsp_url = "{}:{}/{}".format(url, port, rtsp_path)

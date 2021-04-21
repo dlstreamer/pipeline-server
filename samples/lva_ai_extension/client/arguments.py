@@ -149,6 +149,14 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
         default="",
     )
 
+    parser.add_argument(
+        "--extension-config",
+        action="store",
+        dest="extension_config",
+        help="extension config in .json file path or as string",
+        default="",
+    )  # nosec
+
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     if isinstance(args, dict):
         args = ["--{}={}".format(key, value) for key, value in args.items() if value]
