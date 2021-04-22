@@ -120,6 +120,10 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
         for region in gva_sample.video_frame.regions():
             inference = msg.media_sample.inferences.add()
+            inference.type = (
+                # pylint: disable=no-member
+                inferencing_pb2.Inference.InferenceType.ENTITY
+            )
 
             attributes = []
             obj_id = None
@@ -138,11 +142,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     obj_label = region.label()
 
                     obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
-
-                    inference.type = (
-                        # pylint: disable=no-member
-                        inferencing_pb2.Inference.InferenceType.ENTITY
-                    )
                     if region.object_id():  # Tracking
                         obj_id = str(region.object_id())
                 elif tensor["label"]:  # Classification
@@ -261,9 +260,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             self._logger.error("Error occured during validation: {}".format(err.message))
             raise
 
-    def _set_debug_properties(self, pipeline_version, pipeline_parameters):
+    def _set_debug_properties(self, pipeline_config):
         if self._debug:
-            pipeline_version = "debug_" + pipeline_version
+            pipeline_config["version"] = "debug_" + pipeline_config["version"]
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             location = os.path.join(
                 tempfile.gettempdir(), "vaserving", self._version, timestamp
@@ -272,16 +271,19 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             debug_parameters = {
                 "location": os.path.join(location, "frame_%07d.jpeg")
             }
+            pipeline_config["parameters"].update(debug_parameters)
 
-            pipeline_parameters.update(debug_parameters)
-        return pipeline_version, pipeline_parameters
+        return pipeline_config
 
     def _set_pipeline_properties(self, request):
         # Set deployment pipeline name, version, and args if set
-        pipeline_name = self._pipeline
-        pipeline_version = self._version
-        pipeline_parameters = {}
-        frame_destination = {}
+
+        pipeline_config = {
+            "name" : self._pipeline,
+            "version" : self._version,
+            "parameters" : {},
+            "frame-destination" : {}
+        }
 
         # Set pipeline values if passed through request
         extension_configuration = None
@@ -298,22 +300,16 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
             # If extension_config has pipeline values, set the properties
             if "pipeline" in extension_configuration:
-                pipeline_request = extension_configuration.get("pipeline")
-                pipeline_name = pipeline_request["name"]
-                pipeline_version = pipeline_request["version"]
-                if pipeline_request.get("parameters"):
-                    pipeline_parameters = pipeline_request["parameters"]
-                if pipeline_request.get("frame-destination"):
-                    frame_destination = pipeline_request["frame-destination"]
+                pipeline_config.update(extension_configuration["pipeline"])
 
             # Reject pipeline if it has debug in its version
-            if pipeline_version.startswith("debug"):
+            if pipeline_config["version"].startswith("debug"):
                 raise ValueError("Cannot specify debug pipelines in request")
 
         # Set debug properties if debug flag is set
-        pipeline_version, pipeline_parameters = self._set_debug_properties(pipeline_version, pipeline_parameters)
+        pipeline_config = self._set_debug_properties(pipeline_config)
 
-        return pipeline_name, pipeline_version, pipeline_parameters, frame_destination
+        return pipeline_config
 
     # gRPC stubbed function
     # client/gRPC will call this function to send frames/descriptions
@@ -350,8 +346,12 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         responses_sent += 1
         yield media_stream_message
 
-        pipeline_name, pipeline_version, pipeline_parameters, frame_destination = self._set_pipeline_properties(
-            request)
+        pipeline_config = self._set_pipeline_properties(request)
+
+        pipeline_name = pipeline_config["name"]
+        pipeline_version = pipeline_config["version"]
+        pipeline_parameters = pipeline_config.get("parameters")
+        frame_destination = pipeline_config.get("frame-destination")
 
         self._logger.info("Pipeline Name : {}".format(pipeline_name))
         self._logger.info("Pipeline Version : {}".format(pipeline_version))
@@ -374,8 +374,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
         # Start object detection pipeline
         # It will wait until it receives frames via the detect_input queue
-        detect_pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
-        detect_pipeline.start(
+        vas_pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
+        vas_pipeline.start(
             source={
                 "type": "application",
                 "class": "GStreamerAppSource",
@@ -390,22 +390,22 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         for request in requestIterator:
             try:
                 if requests_received - responses_sent >= self._input_queue_size:
-                    queued_samples = self._get_queued_samples(detect_output, block=True)
+                    queued_output = self._get_queued_samples(detect_output, block=True)
                 else:
-                    queued_samples = []
+                    queued_output = []
                 # Read request id, sent by client
                 request_seq_num = request.sequence_number
                 self._logger.debug("[Received] SeqNum: {0:07d}".format(request_seq_num))
                 requests_received += 1
-                gva_sample = self._generate_gva_sample(client_state, request)
-                detect_input.put(gva_sample)
-                queued_samples.extend(self._get_queued_samples(detect_output))
+                input_sample = self._generate_gva_sample(client_state, request)
+                detect_input.put(input_sample)
+                queued_output.extend(self._get_queued_samples(detect_output))
                 if context.is_active():
                     # If any processed samples are queued, drain them and yield back to client
-                    for gva_sample in queued_samples:
-                        if gva_sample:
+                    for output_sample in queued_output:
+                        if output_sample:
                             media_stream_message = self._generate_media_stream_message(
-                                gva_sample
+                                output_sample
                             )
                             responses_sent += 1
                             self._logger.debug(
@@ -416,16 +416,16 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                             yield media_stream_message
                 else:
                     break
-                if detect_pipeline.status().state.stopped():
+                if vas_pipeline.status().state.stopped():
                     break
             except:
                 log_exception(self._logger)
                 raise
 
-        if detect_pipeline.status().state.stopped():
+        if vas_pipeline.status().state.stopped():
             try:
                 raise Exception("Pipeline encountered an issue, pipeline state: {}".format(
-                    detect_pipeline.status().state))
+                    vas_pipeline.status().state))
             except:
                 log_exception(self._logger)
                 raise
@@ -434,12 +434,12 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         # Push a None object into the input queue.
         # When the None object comes out of the output queue, we know we've finished
         # processing all requests
-        gva_sample = None
-        if not detect_pipeline.status().state.stopped():
+        output_sample = None
+        if not vas_pipeline.status().state.stopped():
             detect_input.put(None)
-            gva_sample = detect_output.get()
-        while gva_sample:
-            media_stream_message = self._generate_media_stream_message(gva_sample)
+            output_sample = detect_output.get()
+        while output_sample:
+            media_stream_message = self._generate_media_stream_message(output_sample)
             responses_sent += 1
             self._logger.debug(
                 "[Sent] AckSeqNum: {0:07d}".format(
@@ -448,10 +448,10 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             )
             if context.is_active():
                 yield media_stream_message
-            gva_sample = detect_output.get()
+            output_sample = detect_output.get()
 
         # One final check on the pipeline to ensure it worked properly
-        status = detect_pipeline.wait(10)
+        status = vas_pipeline.wait(10)
         if (not status) or (status.state == Pipeline.State.ERROR):
             raise Exception("Pipeline did not complete successfully")
 
