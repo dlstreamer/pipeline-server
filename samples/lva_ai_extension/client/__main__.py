@@ -37,6 +37,7 @@ import cv2
 import jsonschema
 
 from google.protobuf.json_format import MessageToDict
+import samples.lva_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
 from samples.lva_ai_extension.common.exception_handler import log_exception
 import samples.lva_ai_extension.common.extension_schema as extension_schema
 from arguments import parse_args
@@ -86,7 +87,37 @@ def _log_options(args):
         logging.info("{} == {}".format(arg, getattr(args, arg)))
         logging.info(banner)
 
+def _log_entity(inference):
+    tag = inference.entity.tag
+    box = inference.entity.box
+    attributes = []
+    if inference.inference_id:
+        attribute_string = "{}: {}".format('inferenceId', inference.inference_id)
+        attributes.append(attribute_string)
+    if inference.entity.id:
+        attribute_string = "{}: {}".format('id', inference.entity.id)
+        attributes.append(attribute_string)
+    for attribute in inference.entity.attributes:
+        attribute_string = "{}: {}".format(attribute.name, attribute.value)
+        attributes.append(attribute_string)
+    logging.info(
+        "ENTITY - {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(
+            tag.value, tag.confidence, box.l, box.t, box.w, box.h, attributes
+        )
+    )
 
+def _log_event(inference):
+    name = inference.event.name
+    attributes = []
+    if inference.related_inferences:
+        attribute_string = "{}: {}".format('relatedInferences', inference.related_inferences)
+        attributes.append(attribute_string)
+    for attribute in inference.event.properties:
+        attribute_string = "{}: {}".format(attribute, inference.event.properties[attribute])
+        attributes.append(attribute_string)
+    logging.info(
+        "EVENT - {}: {}".format(name, attributes)
+    )
 def _log_result(response, output, log_result=True):
     if not log_result:
         return
@@ -94,28 +125,18 @@ def _log_result(response, output, log_result=True):
         return
     logging.info("Inference result {}".format(response.ack_sequence_number))
     for inference in response.media_sample.inferences:
-        tag = inference.entity.tag
-        box = inference.entity.box
-        log_message = "- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}]"\
-                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h)
-        if inference.entity.id:
-            log_message += " id:{} ".format(inference.entity.id)
-        attributes = []
-        for attribute in inference.entity.attributes:
-            attribute_string = "{}: {}".format(attribute.name, attribute.value)
-            attributes.append(attribute_string)
-        logging.info(
-            "- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(
-                tag.value, tag.confidence, box.l, box.t, box.w, box.h, attributes
-            )
-        )
+        if inference.type == inferencing_pb2.Inference.InferenceType.ENTITY: # pylint: disable=no-member
+            _log_entity(inference)
+
+        if inference.type == inferencing_pb2.Inference.InferenceType.EVENT: # pylint: disable=no-member
+            _log_event(inference)
+
     # default value field is used to avoid not including values set to 0,
     # but it also causes empty lists to be included
     returned_dict = MessageToDict(
         response.media_sample, including_default_value_fields=True
     )
     output.write("{}\n".format(json.dumps(returned_dict)))
-
 
 def _log_fps(start_time, frames_received, prev_fps_delta, fps_interval):
     delta = int(time.time() - start_time)

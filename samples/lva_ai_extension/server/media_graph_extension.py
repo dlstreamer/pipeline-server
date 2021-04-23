@@ -34,6 +34,7 @@ from queue import Queue
 import tempfile
 import time
 import datetime
+import uuid
 from enum import Enum
 import jsonschema
 
@@ -117,14 +118,13 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg = extension_pb2.MediaStreamMessage()
         msg.ack_sequence_number = message["sequence_number"]
         msg.media_sample.timestamp = message["timestamp"]
-
+        inferences = msg.media_sample.inferences
         for region in gva_sample.video_frame.regions():
-            inference = msg.media_sample.inferences.add()
+            inference = inferences.add()
             inference.type = (
                 # pylint: disable=no-member
                 inferencing_pb2.Inference.InferenceType.ENTITY
             )
-
             attributes = []
             obj_id = None
             obj_label = None
@@ -133,6 +133,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             obj_width = 0
             obj_top = 0
             obj_height = 0
+            events = []
 
             for tensor in region.tensors():
                 name = tensor.name()
@@ -144,6 +145,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
                     if region.object_id():  # Tracking
                         obj_id = str(region.object_id())
+                    if 'events' in tensor.fields():
+                        # DL streamer doen't support list
+                        events = json.loads(tensor['events'])
                 elif tensor["label"]:  # Classification
                     attr_name = name
                     attr_label = tensor["label"]
@@ -171,6 +175,19 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     raise
 
                 inference.entity.CopyFrom(entity)
+                if events:
+                    inference.inference_id = uuid.uuid4().hex
+                    for event in events:
+                        inference_event = inferences.add()
+                        inference_event.type = (
+                            # pylint: disable=no-member
+                            inferencing_pb2.Inference.InferenceType.EVENT
+                        )
+                        inference_event.related_inferences.append(inference.inference_id)
+                        inference_event.event.CopyFrom(inferencing_pb2.Event(
+                            name=event["type"],
+                            properties=event["properties"],
+                        ))
 
         return msg
 
