@@ -120,11 +120,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.media_sample.timestamp = message["timestamp"]
         inferences = msg.media_sample.inferences
         for region in gva_sample.video_frame.regions():
-            inference = inferences.add()
-            inference.type = (
-                # pylint: disable=no-member
-                inferencing_pb2.Inference.InferenceType.ENTITY
-            )
+
             attributes = []
             obj_id = None
             obj_label = None
@@ -136,9 +132,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             events = []
 
             for tensor in region.tensors():
-                name = tensor.name()
-
-                if name == "detection":
+                if tensor.is_detection():
                     obj_confidence = region.confidence()
                     obj_label = region.label()
 
@@ -146,13 +140,14 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     if region.object_id():  # Tracking
                         obj_id = str(region.object_id())
                     if 'events' in tensor.fields():
-                        # DL streamer doen't support list
+                        # DL streamer python Tensor class doesn't support adding list
                         events = json.loads(tensor['events'])
                 elif tensor["label"]:  # Classification
-                    attr_name = name
+                    attr_name = tensor.name()
                     attr_label = tensor["label"]
                     attr_confidence = region.confidence()
                     attributes.append([attr_name, attr_label, attr_confidence])
+
             if obj_label is not None:
                 try:
                     entity = inferencing_pb2.Entity(
@@ -173,7 +168,11 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 except:
                     log_exception(self._logger)
                     raise
-
+                inference = inferences.add()
+                inference.type = (
+                    # pylint: disable=no-member
+                    inferencing_pb2.Inference.InferenceType.ENTITY
+                )
                 inference.entity.CopyFrom(entity)
                 if events:
                     inference.inference_id = uuid.uuid4().hex
