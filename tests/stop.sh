@@ -26,12 +26,10 @@ while [[ "$#" -gt 0 ]]; do
     --remove)
       echo "Removing video analytics serving images"
       docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'video-analytics-serving') 2> /dev/null || echo "No images to remove"
-      shift
       ;;
     --clean-shared-memory)
       echo "Removing all files in /dev/shm"
       rm /dev/shm/*
-      shift
       ;;
     *)
       break
