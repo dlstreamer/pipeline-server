@@ -21,6 +21,7 @@
                 "sleep_period":0.25,
                 "port":5001,
                 "timeout":300,
+                "max_frames":100,
                 "expected_return_code":0
             },
             "num_of_concurrent_clients":1
@@ -41,6 +42,7 @@
                 "sleep_period":0.25,
                 "port":5001,
                 "timeout":300,
+                "max_frames":100,
                 "expected_return_code":0
             },
             "num_of_concurrent_clients":1
@@ -61,6 +63,7 @@
                 "sleep_period":0.25,
                 "port":5001,
                 "timeout":300,
+                "max_frames":100,
                 "expected_return_code":0
             },
             "num_of_concurrent_clients":1

@@ -12,13 +12,14 @@
         {
             "params": {
                 "source": "/home/video-analytics-serving/person-bicycle-car-detection.mp4",
-                "output_location": "/tmp/tmpkblh4tis/output0.jsonl",
-                "shared_memory": true,
-                "loop_count": 1,
-                "sleep_period": 0.25,
-                "port": 5001,
-                "timeout": 300,
-                "expected_return_code": 0
+                "output_location": "",
+                "shared_memory":true,
+                "loop_count":1,
+                "sleep_period":0.25,
+                "port":5001,
+                "timeout":300,
+                "max_frames":100,
+                "expected_return_code":0
             },
             "num_of_concurrent_clients": 1
         }

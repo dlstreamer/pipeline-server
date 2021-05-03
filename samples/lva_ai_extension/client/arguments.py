@@ -28,6 +28,7 @@
 * SOFTWARE
 '''
 
+import sys
 import argparse
 
 def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
@@ -65,6 +66,14 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
         dest="sample_file",
         help="Name of the sample video frame.",
         default="/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png",
+    )
+    parser.add_argument(
+        "--max-frames",
+        metavar=("max_frames"),
+        dest="max_frames",
+        help="How many frames to send from video.",
+        type=int,
+        default=sys.maxsize,
     )
     parser.add_argument(
         "-l",

@@ -39,11 +39,17 @@ def get_num_running_clients(clients):
 def test_pipeline_execution_positive(helpers, test_case, test_filename, generate):
     workdir_path = tempfile.TemporaryDirectory()
     clients = []
+    is_max_frames_set = False
     num_of_concurrent_clients = 0
     for test in test_case["client"]:
         num_of_concurrent_clients += test.get("num_of_concurrent_clients", 1)
-    is_concurrent_test = num_of_concurrent_clients > 1
+        if test["params"].get("max_frames"):
+            is_max_frames_set = False
 
+    if (len(test_case["client"]) > 1) and is_max_frames_set and test_case["golden_results"]:
+        assert False, "Cannot limit number of video frames with multiple client test cases using ground truth"
+
+    is_concurrent_test = num_of_concurrent_clients > 1
     helpers.run_server(test_case["server_params"], capture_log=is_concurrent_test)
     for test in test_case["client"]:
         for _ in range(test.get("num_of_concurrent_clients", 1)):
@@ -99,5 +105,8 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
             with open(test_filename+'.generated', "w") as test_output:
                 json.dump(_test_case, test_output, indent=4)
         else:
+            max_frames = test_case["client"][0]["params"].get("max_frames")
+            if max_frames:
+                test_case["results"] = test_case["results"][0:max_frames]
             assert helpers.cmp_results(results, test_case["results"],
                                        test_case["numerical_tolerance"]), "Inference result mismatch"

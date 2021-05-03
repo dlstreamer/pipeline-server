@@ -74,6 +74,8 @@ class Helpers:
             client_args.append("-m")
         if params.get("output_location"):
             client_args.extend(["-o", params["output_location"]])
+        if params.get("max_frames"):
+            client_args.extend(["--max-frames", str(params["max_frames"])])
         print(' '.join(client_args))
         self.client_process = subprocess.Popen(client_args,
                                                stdout=params.get("stdout",None),

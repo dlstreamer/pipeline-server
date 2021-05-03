@@ -230,7 +230,7 @@ def main():
         with open(args.output_file, "w") as output:
             start_time = time.time()
             result = True
-            while image and result:
+            while image and result and frames_sent < args.max_frames:
                 frame_queue.put(image)
                 while not result_queue.empty():
                     result = result_queue.get()
