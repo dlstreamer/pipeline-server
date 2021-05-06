@@ -29,7 +29,7 @@ class ZoneEvents:
     DEFAULT_DETECTION_CONFIDENCE_THRESHOLD = 0.0
 
     # Caller supplies one or more zones via request parameter
-    def __init__(self, zones, enable_watermark, log_level):
+    def __init__(self, zones, enable_watermark=False, log_level="INFO"):
         self._logger = logger
         self._logger.log_level = log_level
         self._enable_watermark = enable_watermark
@@ -121,9 +121,9 @@ class ZoneEvents:
                     existing_events = json.loads(tensor['events'])
                 zone_event = {}
                 zone_event['type'] = ZoneEvents.DEFAULT_EVENT_TYPE
+                zone_event['name'] = zone['name']
                 zone_event['properties'] = {
-                    "status": status,
-                    "name": zone['name']
+                    "status": status
                 }
                 existing_events.append(zone_event)
                 # We assign tensors with novel key "events" for aggregation in media_graph_extension.py

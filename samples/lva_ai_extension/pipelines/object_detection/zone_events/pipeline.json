@@ -50,8 +50,7 @@
 					"log_level": {
 						"type": "string"
 					}
-				},
-				"default": { "zones": [], "enable_watermark": false, "log_level":"INFO" }
+				}
 			}
 		}
 	}
