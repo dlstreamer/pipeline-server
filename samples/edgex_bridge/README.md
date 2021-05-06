@@ -291,6 +291,6 @@ This provides you with a bash shell with a complete Python runtime development e
 - Modify files using your favorite IDE or editor
 - Immediately invoke the container's entrypoint or other commands without needing to rebuild the image.
 - Run all changes made on your host within the context of the container
-- Run gst-inspect-1.0 and other commands helpful to pipeline development and troubleshooting. Refer to the general [VA Serving guides](https://gitlab.devtools.intel.com/video-analytics/video-analytics-serving#further-reading) for further assistance.
+- Run gst-inspect-1.0 and other commands helpful to pipeline development and troubleshooting.
 
 Also note that you may alternately launch independent container(s) on your host (outside of docker compose), using ./samples/edgex_bridge/docker/run.sh.
