@@ -1,0 +1,109 @@
+{
+	"type": "GStreamer",
+	"template": ["appsrc name=source",
+				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
+				" ! queue ! gvatrack name=tracking",
+				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} name=classification",
+				" ! gvapython class=Tracker module=/home/video-analytics-serving/samples/lva_ai_extension/common/gvapython_callbacks/line_cross_tracking.py name=line_events",
+				" ! appsink name=destination"],
+	"description": "Object Tracking pipeline with Line Crossing Tracking module",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"line-event-config": {
+				"element": {
+					"name": "line_events",
+					"property": "kwarg",
+					"format": "json"
+				},
+				"type": "object",
+				"properties": {
+					"lines": {
+						"type": "array",
+						"items": {
+							"type": "object"
+						}
+					},
+					"enable_watermark": {
+						"type": "boolean"
+					},
+					"log_level": {
+						"type": "string"
+					}
+				}
+			},
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"classification-device": {
+				"element": {
+					"name": "classification",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"tracking-device": {
+				"element":
+					[ {"name":"tracking",
+						"property":"device"}
+					],
+				"type": "string"
+			},
+			"inference-interval": {
+				"element":
+					[ {"name":"detection",
+						"property":"inference-interval"},
+					  {"name":"classification",
+					   "property":"inference-interval"}
+					],
+				"type": "integer"
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string"
+			},
+			"object-class": {
+				"element": "classification",
+				"type": "string",
+				"default": "vehicle"
+			},
+			"reclassify-interval": {
+				"element": "classification",
+				"type": "integer"
+			},
+			"tracking-type": {
+				"element": "tracking",
+				"type": "string",
+				"default": "short-term"
+			},
+			"detection-threshold": {
+				"element": {
+					"name": "detection",
+					"property": "threshold"
+				},
+				"type": "number"
+			},
+			"classification-threshold": {
+				"element": {
+					"name": "classification",
+					"property": "threshold"
+				},
+				"type": "number"
+			}
+		}
+	}
+}
