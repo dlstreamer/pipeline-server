@@ -1,0 +1,13 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "zone_events",
+        "parameters": {
+            "detection-device": "CPU",
+            "zone-event-config": { "zone": {
+                "name": "Zone1",
+                "polygon": [[0.01,0.10],[0.005,0.53],[0.11,0.53],[0.095,0.10]]
+            }}
+        }
+    }
+}
