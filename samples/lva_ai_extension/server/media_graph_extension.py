@@ -119,6 +119,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.ack_sequence_number = message["sequence_number"]
         msg.media_sample.timestamp = message["timestamp"]
         inferences = msg.media_sample.inferences
+        zones = {}
         for region in gva_sample.video_frame.regions():
 
             attributes = []
@@ -174,21 +175,52 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     inferencing_pb2.Inference.InferenceType.ENTITY
                 )
                 inference.entity.CopyFrom(entity)
-                if events:
-                    inference.inference_id = uuid.uuid4().hex
-                    for event in events:
-                        inference_event = inferences.add()
-                        inference_event.type = (
-                            # pylint: disable=no-member
-                            inferencing_pb2.Inference.InferenceType.EVENT
-                        )
-                        inference_event.related_inferences.append(inference.inference_id)
-                        inference_event.event.CopyFrom(inferencing_pb2.Event(
-                            name=event["type"],
-                            properties=event["properties"],
-                        ))
-
+                self._process_events(events, inferences, inference, zones)
+        self._add_zone_events(zones, inferences)
         return msg
+
+    def _add_zone_events(self, zones, inferences):
+        for zone in zones:
+            related_inferences = zones[zone]["related_inferences"]
+            properties = {
+                "zoneCount" : str(zones[zone]["zone_count"])
+            }
+            self._add_event(inferences, "zone_event", zone, properties, related_inferences)
+
+    def _process_events(self, events, inferences, inference, zones):
+        if not events:
+            return
+        inference.inference_id = uuid.uuid4().hex
+        inference.subtype = self._pipeline
+        for event in events:
+            event_name = event["name"]
+            event_type = event["type"]
+            if event_type == "zone_event":
+                if not event_name in zones:
+                    zones[event_name] = {
+                        "related_inferences" : [],
+                        "zone_count" : 0
+                    }
+                zones[event_name]["related_inferences"].append(inference.inference_id)
+                zones[event_name]["zone_count"] += 1
+            else:
+                self._add_event(inferences, event_type, event_name, event["properties"],
+                                [inference.inference_id])
+
+    def _add_event(self, inferences, subtype, name, properties, related_inferences):
+        inference_event = inferences.add()
+        inference_event.type = (
+            # pylint: disable=no-member
+            inferencing_pb2.Inference.InferenceType.EVENT
+        )
+        inference_event.inference_id = uuid.uuid4().hex
+        inference_event.subtype = subtype
+        for inference_id in related_inferences:
+            inference_event.related_inferences.append(inference_id)
+        inference_event.event.CopyFrom(inferencing_pb2.Event(
+            name=name,
+            properties=properties,
+        ))
 
     def _generate_gva_sample(self, client_state, request):
 

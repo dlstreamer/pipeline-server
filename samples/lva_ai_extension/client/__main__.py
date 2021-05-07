@@ -94,6 +94,9 @@ def _log_entity(inference):
     if inference.inference_id:
         attribute_string = "{}: {}".format('inferenceId', inference.inference_id)
         attributes.append(attribute_string)
+    if inference.subtype:
+        attribute_string = "{}: {}".format('subtype', inference.subtype)
+        attributes.append(attribute_string)
     if inference.entity.id:
         attribute_string = "{}: {}".format('id', inference.entity.id)
         attributes.append(attribute_string)
@@ -109,6 +112,12 @@ def _log_entity(inference):
 def _log_event(inference):
     name = inference.event.name
     attributes = []
+    if inference.inference_id:
+        attribute_string = "{}: {}".format('inferenceId', inference.inference_id)
+        attributes.append(attribute_string)
+    if inference.subtype:
+        attribute_string = "{}: {}".format('subtype', inference.subtype)
+        attributes.append(attribute_string)
     if inference.related_inferences:
         attribute_string = "{}: {}".format('relatedInferences', inference.related_inferences)
         attributes.append(attribute_string)
