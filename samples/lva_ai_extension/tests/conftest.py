@@ -224,3 +224,7 @@ def pytest_generate_tests(metafunc):
     if "pipeline_execution_one_client" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_execution_one_client")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+
+    if "algorithm" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "algorithm")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)

@@ -1,0 +1,43 @@
+{
+    "server_params": {
+        "sleep_period":0.25,
+        "port":5001
+    },
+    "client":
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_tracking",
+                    "version":"line_crossing",
+                    "parameters": {
+                        "detection-device":"CPU",
+                        "line-event-config": {
+                            "lines": [
+                                {
+                                    "name": "hallway_right",
+                                    "line": [[0.9,0.8],[0.8,0.45]]
+                                },
+                                {
+                                    "name": "hallway_left",
+                                    "line": [[0.15,0.45],[0.05,0.75]]
+                                 },
+                                 {
+                                     "name": "hallway_bottom",
+                                     "line": [[0.1,0.9],[0.8,0.9]]
+                                 }
+                            ]
+                        }
+                    }
+                },
+                "run":true,
+                "source":"/home/video-analytics-serving/people-detection.mp4",
+                "output_location":"",
+                "shared_memory":true,
+                "port":5001,
+                "expected_return_code": 0,
+                "event_parameter": "line-event-config",
+                "expected_event_type" : "lineCrossing",
+                "expected_event_count" : 17
+            }
+        }
+}
