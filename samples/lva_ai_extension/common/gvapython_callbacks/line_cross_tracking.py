@@ -102,7 +102,7 @@ class Tracker: # pylint: disable=too-few-public-methods
 class SpatialAnalysisCrossingLine:
 
     def __init__(self, line):
-        self.event_type = 'line_crossing'
+        self.event_type = 'lineCrossing'
         self._focus_point = 'bottom_center'
         self.cross_count = 0
         self.clockwise_total = 0

@@ -24,7 +24,7 @@ Gst.init(sys.argv)
 logger = logging.get_logger('zone_events', is_static=True)
 
 class ZoneEvents:
-    DEFAULT_EVENT_TYPE = "zone_event"
+    DEFAULT_EVENT_TYPE = "zoneCrossing"
     DEFAULT_TRIGGER_ON_INTERSECT = True
     DEFAULT_DETECTION_CONFIDENCE_THRESHOLD = 0.0
 

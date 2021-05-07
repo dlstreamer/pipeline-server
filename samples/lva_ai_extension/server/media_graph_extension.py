@@ -185,17 +185,17 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             properties = {
                 "zoneCount" : str(zones[zone]["zone_count"])
             }
-            self._add_event(inferences, "zone_event", zone, properties, related_inferences)
+            self._add_event(inferences, "zoneCrossing", zone, properties, related_inferences)
 
     def _process_events(self, events, inferences, inference, zones):
         if not events:
             return
         inference.inference_id = uuid.uuid4().hex
-        inference.subtype = self._pipeline
+        inference.subtype = "objectDetection"
         for event in events:
             event_name = event["name"]
             event_type = event["type"]
-            if event_type == "zone_event":
+            if event_type == "zoneCrossing":
                 if not event_name in zones:
                     zones[event_name] = {
                         "related_inferences" : [],
