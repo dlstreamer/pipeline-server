@@ -12,10 +12,11 @@ sys.path.append('/home/video-analytics-serving/vaclient') # Temp fix before PYTH
 import vaclient
 
 def test_vaclient(service, test_case, test_filename, generate, capsys):
+    show_request = test_case.get('show_request', False)
     if test_case['test_function'] == 'run':
         request = vaclient.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
-        instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=False)
+        instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=show_request)
         assert instance_id is not None
         assert instance_id > 0
         time.sleep(test_case['sleep_time_sec'])
@@ -27,7 +28,7 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
     elif test_case['test_function'] == 'start_pipeline':
         request = vaclient.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
-        instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=False)
+        instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=show_request)
         assert instance_id == test_case['expected_id']
         captured = capsys.readouterr()
         assert test_case['expected_output'] in captured.out
@@ -36,7 +37,7 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
         captured = capsys.readouterr()
         assert test_case['expected_output'] in captured.out
     elif test_case['test_function'] == 'list_pipelines':
-        if test_case['show_request']:
+        if show_request:
             with pytest.raises(SystemExit):
                 vaclient._list('pipelines', True)
             captured = capsys.readouterr()
@@ -55,5 +56,16 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
             vaclient._list('models')
             captured = capsys.readouterr()
             assert re.fullmatch(test_case['regex'], captured.out) is not None
+    elif test_case['test_function'] == 'tags':
+        request = vaclient.REQUEST_TEMPLATE
+        request['source']['uri'] = test_case['uri']
+        request['tags'] = test_case['tags']
+        with pytest.raises(SystemExit):
+            vaclient.start_pipeline(request, test_case['pipeline'], show_request=show_request)
+        captured = capsys.readouterr()
+        print("")
+        print(test_case['expected_output'])
+        print(captured.out)
+        assert test_case['expected_output'] == captured.out
     else:
         pytest.fail()

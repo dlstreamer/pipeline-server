@@ -106,20 +106,19 @@ def list_models(args):
     _list("models", args.show_request)
 
 def update_request_options(request,
-                           args,
-                           tags=None):
+                           args):
     if hasattr(args, 'uri'):
         request["source"]["uri"] = args.uri
     if hasattr(args, 'destination') and args.destination:
         request['destination']['metadata'].update(args.destination)
     if hasattr(args, 'parameters') and args.parameters:
         request["parameters"] = dict(args.parameters)
+    if hasattr(args, 'tags') and args.tags:
+        request["tags"] = dict(args.tags)
     if hasattr(args, 'rtsp_path') and args.rtsp_path:
         rtsp_template = RTSP_TEMPLATE
         rtsp_template['frame']['path'] = args.rtsp_path
         request['destination'].update(rtsp_template)
-    if tags:
-        request["tags"] = tags
 
 def start_pipeline(request,
                    pipeline,

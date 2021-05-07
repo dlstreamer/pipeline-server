@@ -49,7 +49,9 @@ def parse_args(program_name="Video Analytics Serving Client"):
         help='Update destination information with key and value pair')
     parser_run.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
     parser_run.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        dest='parameters', help='Update requeset parameter with key and value pair')
+        dest='parameters', help='Update request parameter with key and value pair')
+    parser_run.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+        dest='tags', help='Update request tags with key and value pair')
     parser_run.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 
     parser_start = subparsers.add_parser('start', help='start specified pipeline')
@@ -62,6 +64,8 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_start.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
     parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='parameters', help='Update requeset parameter with key and value pair')
+    parser_start.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+        dest='tags', help='Update request tags with key and value pair')
     parser_start.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 
     parser_status = subparsers.add_parser('status', help='Print status of specified pipeline')
