@@ -33,7 +33,7 @@
                         },
                         {
                             "name": "extensionConfiguration",
-                            "value": "{\"pipeline\":{\"name\":\"object_detection\",\"version\":\"person_vehicle_bike_detection\",\"parameters\":{\"detection-device\":\"GPU\"}}}"
+                            "value": "{\"pipeline\":{\"name\":\"object_detection\",\"version\":\"person_vehicle_bike_detection\",\"parameters\":{\"detection-device\":\"GPU\", \"detection-model-instance-id\":\"GPU_Detection\"}}}"
                         }
                     ]
                 }
