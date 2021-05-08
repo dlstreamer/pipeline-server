@@ -4,7 +4,7 @@ CURRENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
 LVA_DIR=$(dirname $CURRENT_DIR)
 LVA_ROOT=/home/video-analytics-serving/samples/lva_ai_extension
-IMAGE=video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension
+IMAGE=video-analytics-serving:0.5.1-dlstreamer-edge-ai-extension
 VASERVING_ROOT=/home/video-analytics-serving
 NAME=${IMAGE//[\:]/_}
 PORT=5001
@@ -29,8 +29,8 @@ function show_help {
       VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
       PIPELINES="--pipelines $LVA_DIR/pipelines "
   fi
-  ENTRYPOINT_ARGS+="--entrypoint-args --help "  
-  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES 
+  ENTRYPOINT_ARGS+="--entrypoint-args --help "
+  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES
 }
 
 function error {

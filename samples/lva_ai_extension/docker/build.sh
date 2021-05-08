@@ -4,7 +4,7 @@ WORK_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $WORK_DIR)
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 MODELS="models/models.list.yml"
-TAG="video-analytics-serving:0.5.0-dlstreamer-edge-ai-extension"
+TAG="video-analytics-serving:0.5.1-dlstreamer-edge-ai-extension"
 
 #Get options passed into script
 function get_options {
