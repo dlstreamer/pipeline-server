@@ -32,6 +32,10 @@ ARG USER=vaserving
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
     chown ${USER} -R /home/video-analytics-serving /root
 
+RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]; then \
+       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \ 
+    fi    
+
 RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
