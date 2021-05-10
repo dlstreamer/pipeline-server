@@ -52,24 +52,6 @@
                 "default": "iothubsinkoutput"
             },
             {
-                "name": "imageScaleMode",
-                "type": "String",
-                "description": "image scaling mode",
-                "default": "pad"
-            },
-            {
-                "name": "frameWidth",
-                "type": "String",
-                "description": "Width of the video frame to be received from LVA.",
-                "default": "416"
-            },
-            {
-                "name": "frameHeight",
-                "type": "String",
-                "description": "Height of the video frame to be received from LVA.",
-                "default": "416"
-            },
-            {
                 "name": "extensionConfiguration",
                 "type": "String",
                 "description": "Optional extension configuration for the gRPC server",
@@ -106,15 +88,9 @@
                 },
                 "extensionConfiguration": "${extensionConfiguration}",
                 "dataTransfer": {
-                    "mode": "sharedMemory",
-                    "SharedMemorySizeMiB": "5"
+                    "mode": "Embedded"
                 },
                 "image": {
-                    "scale": {
-                        "mode": "${imageScaleMode}",
-                        "width": "${frameWidth}",
-                        "height": "${frameHeight}"
-                    },
                     "format": {
                         "@type": "#Microsoft.Media.MediaGraphImageFormatRaw",
                         "pixelFormat": "bgr24"
