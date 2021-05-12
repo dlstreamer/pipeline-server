@@ -186,6 +186,12 @@ def create_extension_config(args):
         except ValueError:
             logging.error("Issue loading frame destination: {}".format(args.frame_destination))
             sys.exit(1)
+    if args.pipeline_extensions:
+        try:
+            pipeline_config["pipeline_extensions"] = json.loads(args.pipeline_extensions)
+        except ValueError:
+            logging.error("Issue loading pipeline extensions: {}".format(args.pipeline_extensions))
+            sys.exit(1)
 
     if len(pipeline_config) > 0:
         extension_config.setdefault("pipeline", pipeline_config)

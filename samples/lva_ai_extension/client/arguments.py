@@ -151,6 +151,14 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
     )
 
     parser.add_argument(
+        "--pipeline-extensions",
+        action="store",
+        dest="pipeline_extensions",
+        type=str,
+        default="",
+    )
+
+    parser.add_argument(
         "--frame-destination",
         action="store",
         dest="frame_destination",

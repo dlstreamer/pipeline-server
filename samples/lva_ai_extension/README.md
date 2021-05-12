@@ -291,13 +291,21 @@ All arguments are optional, usage is as follows
   [--frame-queue-size : Max number of frames to buffer in client, defaults to 200]
   [ --shared-memory : Enables and uses shared memory between client and server ] (defaults to off)
   [ --output-file-path : Specify the output file path to save inference results in jsonl format] (defaults to /tmp/results.jsonl)
+  [ --extension-config : JSON string or file containing extension configuration]
   [ --pipeline-name : Name of the pipeline to run]
   [ --pipeline-version : Name of the pipeline version to run]
   [ --pipeline-parameters : Pipeline parameters]
+  [ --pipeline-extensions : JSON string containing tags to be added to extensions field in results]
   [ --frame-destination : Frame destination for rtsp restreaming]
   [ --dev : Mount local source code] (use for development)
   ```
 Notes:
+* If using `--extension-config`, you must not set any of the following options
+  * --pipeline-name
+  * --pipeline-version
+  * --pipeline-parameters
+  * --pipeline-extensions
+  * --frame-destination
 * Media or log file must be inside container or in volume mounted path
 * Either png or mp4 media files are supported
 * If not using shared memory, decoded image frames must be less than 4MB (the maximum gPRC message size)

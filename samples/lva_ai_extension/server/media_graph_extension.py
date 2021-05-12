@@ -112,7 +112,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         self._extension_config_validator = jsonschema.Draft7Validator(schema=self._extension_config_schema,
                                                                       format_checker=jsonschema.draft7_format_checker)
 
-    def _generate_media_stream_message(self, gva_sample):
+    def _generate_media_stream_message(self, gva_sample, extensions):
         message = json.loads(list(gva_sample.video_frame.messages())[0])
 
         msg = extension_pb2.MediaStreamMessage()
@@ -120,6 +120,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.media_sample.timestamp = message["timestamp"]
         inferences = msg.media_sample.inferences
         zones = {}
+
         for region in gva_sample.video_frame.regions():
 
             attributes = []
@@ -174,6 +175,9 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     # pylint: disable=no-member
                     inferencing_pb2.Inference.InferenceType.ENTITY
                 )
+                if extensions:
+                    for key in extensions:
+                        inference.extensions[key] = extensions[key]
                 inference.entity.CopyFrom(entity)
                 self._process_events(events, inferences, inference, zones)
         self._add_zone_events(zones, inferences)
@@ -330,7 +334,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             "name" : self._pipeline,
             "version" : self._version,
             "parameters" : {},
-            "frame-destination" : {}
+            "frame-destination" : {},
+            "extensions" : {}
         }
 
         # Set pipeline values if passed through request
@@ -399,6 +404,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         pipeline_name = pipeline_config["name"]
         pipeline_version = pipeline_config["version"]
         pipeline_parameters = pipeline_config.get("parameters")
+        extensions = pipeline_config.get("extensions")
         frame_destination = pipeline_config.get("frame-destination")
 
         self._logger.info("Pipeline Name : {}".format(pipeline_name))
@@ -453,7 +459,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     for output_sample in queued_output:
                         if output_sample:
                             media_stream_message = self._generate_media_stream_message(
-                                output_sample
+                                output_sample, extensions
                             )
                             responses_sent += 1
                             self._logger.debug(
@@ -487,7 +493,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             detect_input.put(None)
             output_sample = detect_output.get()
         while output_sample:
-            media_stream_message = self._generate_media_stream_message(output_sample)
+            media_stream_message = self._generate_media_stream_message(output_sample, extensions)
             responses_sent += 1
             self._logger.debug(
                 "[Sent] AckSeqNum: {0:07d}".format(

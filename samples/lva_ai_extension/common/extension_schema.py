@@ -23,6 +23,12 @@ extension_config = {
                 },
                 "frame-destination":{
                     "type":"object"
+                },
+                "extensions":{
+                    "type":"object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             },
             "required":[
