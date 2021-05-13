@@ -16,9 +16,11 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 ## What's New
 
-Support for [API 2.0](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/release-notes#december-14-2020) and its new [extension configuration](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/grpc-extension-protocol#configuring-inference-server-for-each-mediagraph-over-grpc-extension) feature.
+- Addition of [line crossing](pipelines/object_tracking/line_crossing/README.md) and [zone counting](pipelines/object_detection/zone_events/README.md) spatial analytic pipelines
+- Allow definition properties to be added to the [extensions](https://github.com/Azure/live-video-analytics/blob/master/contracts/data-schema/Extension%20Data%20Schema.json#L322) field in results
+- Scaling has been removed from topology file as DL Streamer will automatically scale to match selected model
+- Add `XPU` operations file that runs three pipelines executing detection inference on CPU, GPU and VPU (NCS2) respectively.
 
->**Note:** The extension configuration feature enables pipeline selection and configuration to be done when starting a media session. Pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
 
 # Getting Started
 
@@ -128,6 +130,8 @@ Based on HW target, choose and update the appropriate deployment manifest locate
 * Update the 'lvaExtension' -> 'ENV' property to configure container behavior. Our manifest file is configured for object detection by default.
 
 You will also need to create a graph topology with gRPC extension and then create a graph instance based on that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
+
+> **Note:** If using the C# sample [cloud-to-device-console-app](https://github.com/Azure-Samples/live-video-analytics-iot-edge-csharp/tree/master/src/cloud-to-device-console-app) ensure the nuget package `Microsoft.Azure.Devices` is version `1.33.0` or later.
 
 ### Topology files
 
