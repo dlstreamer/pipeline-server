@@ -88,7 +88,8 @@
                 },
                 "extensionConfiguration": "${extensionConfiguration}",
                 "dataTransfer": {
-                    "mode": "Embedded"
+                    "mode": "sharedMemory",
+                    "SharedMemorySizeMiB": "64"
                 },
                 "image": {
                     "format": {
