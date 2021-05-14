@@ -132,7 +132,7 @@ def _log_result(response, output, log_result=True):
         return
     if not response:
         return
-    logging.info("Inference result {}".format(response.ack_sequence_number))
+    logging.debug("Inference result {}".format(response.ack_sequence_number))
     for inference in response.media_sample.inferences:
         if inference.type == inferencing_pb2.Inference.InferenceType.ENTITY: # pylint: disable=no-member
             _log_entity(inference)

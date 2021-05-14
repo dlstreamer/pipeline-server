@@ -65,7 +65,7 @@ class MediaStreamProcessor:
                     media_stream_descriptor=self._descriptor,
                 )
             else:
-                logging.info("MediaSample request #{}".format(self._request_seq_num))
+                logging.debug("MediaSample request #{}".format(self._request_seq_num))
                 image = self._queue.get()
                 if image is None:
                     raise StopIteration
@@ -208,7 +208,7 @@ class MediaStreamProcessor:
         try:
             for response in sequence_iterator:
                 ack_seq_no = response.ack_sequence_number
-                logging.info("[Received] AckNum: {0}".format(ack_seq_no))
+                logging.debug("[Received] AckNum: {0}".format(ack_seq_no))
                 result_queue.put(response)
                 if self._shared_memory_manager:
                     self._shared_memory_manager.delete_slot(ack_seq_no)
