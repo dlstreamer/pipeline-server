@@ -46,23 +46,24 @@ class ResultsWatcher:
 
     # Print Functions
     @classmethod
-    def print_results(cls, obj):
+    def print_results(cls, results):
         """Output as JSON formatted data"""
-        print("Timestamp {}".format(obj["timestamp"]))
-        for objects in obj["objects"]:
+        if "timestamp" in results:
+            print("Timestamp {}".format(results["timestamp"]))
+        for detected_object in results.get("objects", []):
             meta = {}
-            for key in objects:
+            for key in detected_object:
                 if key == "detection":
-                    confidence = objects[key]["confidence"]
-                    label = objects[key]["label"]
-                    x_min = objects[key]["bounding_box"]["x_min"]
-                    y_min = objects[key]["bounding_box"]["y_min"]
-                    x_max = objects[key]["bounding_box"]["x_max"]
-                    y_max = objects[key]["bounding_box"]["y_max"]
+                    confidence = detected_object[key]["confidence"]
+                    label = detected_object[key]["label"]
+                    x_min = detected_object[key]["bounding_box"]["x_min"]
+                    y_min = detected_object[key]["bounding_box"]["y_min"]
+                    x_max = detected_object[key]["bounding_box"]["x_max"]
+                    y_max = detected_object[key]["bounding_box"]["y_max"]
                 elif key == "id":
-                    meta[key] = objects[key]
-                elif isinstance(objects[key], dict) and "label" in objects[key]:
-                    meta[key] = objects[key]["label"]
+                    meta[key] = detected_object[key]
+                elif isinstance(detected_object[key], dict) and "label" in detected_object[key]:
+                    meta[key] = detected_object[key]["label"]
             print("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(label,
                                                                              confidence,
                                                                              x_min,
