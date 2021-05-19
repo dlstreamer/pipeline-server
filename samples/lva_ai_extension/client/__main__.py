@@ -45,9 +45,10 @@ from media_stream_processor import MediaStreamProcessor
 
 
 class VideoSource:
-    def __init__(self, filename, loop_count):
+    def __init__(self, filename, loop_count, scale_factor = 1.0):
         self._loop_count = loop_count
         self._filename = filename
+        self._scale_factor = scale_factor
         self._open_video_source()
 
     def _open_video_source(self):
@@ -57,19 +58,27 @@ class VideoSource:
             sys.exit(1)
 
     def dimensions(self):
-        width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
         return width, height
 
     def get_frame(self):
         ret, frame = self._vid_cap.read()
         if ret:
+            width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+            height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
+            dsize = (width, height)
+            frame = cv2.resize(frame, dsize)
             return frame.tobytes()
         self._loop_count -= 1
         if self._loop_count > 0:
             self._open_video_source()
             ret, frame = self._vid_cap.read()
             if ret:
+                width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+                height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
+                dsize = (width, height)
+                frame = cv2.resize(frame, dsize)
                 return frame.tobytes()
         return None
 
@@ -210,7 +219,7 @@ def main():
         frames_received = 0
         prev_fps_delta = 0
         start_time = None
-        frame_source = VideoSource(args.sample_file, args.loop_count)
+        frame_source = VideoSource(args.sample_file, args.loop_count, args.scale_factor)
         width, height = frame_source.dimensions()
         image = frame_source.get_frame()
 

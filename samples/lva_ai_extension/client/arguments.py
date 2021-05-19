@@ -167,6 +167,15 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
     )
 
     parser.add_argument(
+        "--scale-factor",
+        action="store",
+        dest="scale_factor",
+        help="scale factor for decoded images",
+        type=float,
+        default=1.0,
+    )
+
+    parser.add_argument(
         "--extension-config",
         action="store",
         dest="extension_config",
