@@ -6,3 +6,8 @@
   alias: vehicle_attributes_recognition
   version: 1
   precision: [FP16,FP32]
+- model: person-detection-retail-0013
+  alias: object_detection
+  version: person
+  precision: [FP16,FP32]
+  model-proc: person-detection-retail-0013.json
