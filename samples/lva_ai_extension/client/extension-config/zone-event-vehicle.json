@@ -1,0 +1,16 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "zone_event_vehicle",
+        "parameters": {
+            "zone-event-config": {
+                "zones": [
+                    {
+                        "name": "Zone",
+                        "polygon": [[0.25,0.25],[0.25,0.75],[0.75,0.75],[0.75,0.25]]
+                    }
+                ]
+            }
+        }
+    }
+}

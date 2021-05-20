@@ -11,3 +11,8 @@
   version: person
   precision: [FP16,FP32]
   model-proc: person-detection-retail-0013.json
+- model: vehicle-detection-0202
+  alias: object_detection
+  version: vehicle
+  model-proc: vehicle-detection-0202.json
+  precision: [FP16,FP32]
