@@ -2,7 +2,6 @@
     "pipeline": {
         "name": "object_detection",
         "version": "zone_event_person",
-        "frame-destination": {"type":"rtsp","path":"vaserving"},
         "parameters": {
             "detection-device": "CPU",
             "threshold":0.7,
@@ -12,9 +11,7 @@
                     "name": "Zone",
                     "polygon": [[0.25,0.25],[0.25,0.75],[0.75,0.75],[0.75,0.25]]
                     }
-                ],
-                "enable_watermark":true,
-                "log_level":"DEBUG"
+                ]
             }
         }
     }
