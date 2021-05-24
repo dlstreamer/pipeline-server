@@ -3,7 +3,7 @@
 | [Getting Started](#getting-started) | [Edge AI Extension Module Options](#edge-ai-extension-module-options) | [Additional Examples](#additional-standalone-edge-ai-extension-examples) | [Test Client](#test-client) |
 [Changing Models](#updating-or-changing-detection-and-classification-models)
 
-The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes gRPC APIs that are compatible with [Live Video Analytics on IoT Edge](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
+The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes gRPC APIs that are compatible with [Azure Video Analyzer on IoT Edge](https://azure.microsoft.com/products/video-analyzer). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
 
 ## Highlights:
 
@@ -11,18 +11,18 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 - Pre-loaded Object Detection, Object Classification and Object Tracking pipelines to get started quickly
 - Pre-loaded [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/intel/person-vehicle-bike-detection-crossroad-0078/description/person-vehicle-bike-detection-crossroad-0078.md) and [vehicle-attributes-recognition-barrier-0039](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/intel/vehicle-attributes-recognition-barrier-0039/description/vehicle-attributes-recognition-barrier-0039.md) models.
 - gRPC API enabling fast data transfer rate and low latency
-- Validated support for [Live Video Analytics on IoT Edge](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/).
+- Validated support for [Azure Video Analyzer on IoT Edge](https://azure.microsoft.com/products/video-analyzer).
 - Supported Configuration: Pre-built Ubuntu Linux container for CPU and iGPU
 
 ## What's New
 
-Support for [API 2.0](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/release-notes#december-14-2020) and its new [extension configuration](https://docs.microsoft.com/en-us/azure/media-services/live-video-analytics-edge/grpc-extension-protocol#configuring-inference-server-for-each-mediagraph-over-grpc-extension) feature.
+Supprot for extension configuration feature which enables VA Serving pipeline selection and configuration to be done when starting a media session. 
 
->**Note:** The extension configuration feature enables pipeline selection and configuration to be done when starting a media session. Pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
+>**Note:** VA Serving pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
 
 # Getting Started
 
-The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Live Video Analytics graph. For more information on deploying the module as part of a Live Video Analytics graph please see [Configuring the AI Extension Module for Live Video Analytics](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Live Video Analytics documentation](https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/). The following instructions demonstrate building and running the microservice and test client outside of Live Video Analytics.
+The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Azure Video Analyzer pipeline. For more information on deploying the module as part of an Azure Video Analyzer live pipeline please see [Configuring the AI Extension Module for Azure Video Analyzer](#configuring-the-ai-extension-module-for-azure-video-analyzer) and refer to the [Azure Video Analyzer documentation](https://docs.microsoft.com/azure/azure-video-analyzer/video-analyzer-docs/overview). The following instructions demonstrate building and running the microservice and test client outside of Azure Video Analyzer.
 
 ## Building the Edge AI Extension Module Image
 
@@ -121,22 +121,17 @@ The following pipelines are included in the AI Extension:
 | object_tracking  | person_vehicle_bike_tracking  | [definition](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)|![diagram](pipeline_diagrams/object-tracking.png)|
 
 
-## Configuring the AI Extension Module for Live Video Analytics
+## Configuring the AI Extension Module for Azure Video Analyzer
 
-Based on HW target, choose and update the appropriate deployment manifest located in the [deployment directory](/samples/lva_ai_extension/deployment/).
-* Make sure that the 'lvaExtension'->'image' property shows the Azure URI of VAS LVA Edge AI Extension docker image.
-* Update the 'lvaExtension' -> 'ENV' property to configure container behavior. Our manifest file is configured for object detection by default.
+Update the [deployment manifest](https://raw.githubusercontent.com/Azure-Samples/video-analyzer-iot-edge-csharp/main/src/edge/deployment.openvino.grpc.template.json) 
+so that the 'avaExtension'->'image' property shows the Azure URI of VAS LVA Edge AI Extension docker image.
 
-You will also need to create a graph topology with gRPC extension and then create a graph instance based on that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
+You will also need to create a graph topology with gRPC extension and then create a live pipeline using that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
 
 ### Topology files
+The AVA pipeline toplogy is defined using [a toplogy file](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/pipelines/live/topologies/grpcExtensionOpenVINO/topology.json). Operations.json is an instruction set used by AVA to perform actions on the IOT Edge and refers to the pipeline topology through a URL or a file path.
 
-Operations.json is an instruction set used by LVA to perform actions on the IOT Edge.
-* You can set HW target using `extensionConfiguration` in operations.json file. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
-
-Topology.json is a config file used by operations.json to configure edge devices.
-
-Operations.json can refer to the topology through a URL or a file path.
+You can set the inference accelerator target using `extensionConfiguration` in operations.json file. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
 
 If changes are made locally to the topology file, the operations file will need change to point to the local topology.
 
@@ -152,7 +147,7 @@ topologyFile: <absolute path to topology file>
 
 ### Extension Configuration
 
-The LVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://github.com/Azure/live-video-analytics/blob/6495d58a5f7dc046ad9fb0f690c27a540a83fe45/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters and frame-destination are optional.
+The AVA Server supports the extension_configuration field in the [MediaStreamDescriptor message](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/contracts/grpc/extension.proto#L69). This field contains a JSON string that must match the extension configuration schema. See example below. Note that pipeline name and version fields are required but parameters and frame-destination are optional.
 ```
 {
     "pipeline": {
