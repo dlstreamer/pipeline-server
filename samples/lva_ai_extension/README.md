@@ -16,7 +16,7 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 ## What's New
 
-Supprot for extension configuration feature which enables VA Serving pipeline selection and configuration to be done when starting a media session. 
+Support for the AVA extension configuration feature which enables VA Serving pipeline selection and configuration to be done when starting a media session. 
 
 >**Note:** VA Serving pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
 
@@ -124,14 +124,16 @@ The following pipelines are included in the AI Extension:
 ## Configuring the AI Extension Module for Azure Video Analyzer
 
 Update the [deployment manifest](https://raw.githubusercontent.com/Azure-Samples/video-analyzer-iot-edge-csharp/main/src/edge/deployment.openvino.grpc.template.json) 
-so that the 'avaExtension'->'image' property shows the Azure URI of VAS LVA Edge AI Extension docker image.
+so that the 'avaExtension'->'image' property shows the Azure URI of the OpenVINO™ DL Streamer – Edge AI Extension docker image.
 
-You will also need to create a graph topology with gRPC extension and then create a live pipeline using that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
+You will also need to create a pipeline topology with the extension and then create a live pipeline using that topology. Here is a sample [operations.json](/samples/lva_ai_extension/topologies/operations.json).
 
 ### Topology files
-The AVA pipeline toplogy is defined using [a toplogy file](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/pipelines/live/topologies/grpcExtensionOpenVINO/topology.json). Operations.json is an instruction set used by AVA to perform actions on the IOT Edge and refers to the pipeline topology through a URL or a file path.
+An AVA pipeline topology enables you to define the blueprint of a pipeline, with parameters as placeholders for values. The topology defines the nodes used in the pipeline
+and how they are inter-connected. 
+Here is a [sample toplogy file](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/pipelines/live/topologies/grpcExtensionOpenVINO/topology.json). An [operations file]((/samples/lva_ai_extension/topologies/operations.json) is an instruction set used by AVA to perform actions on the IOT Edge and refers to the pipeline topology through a URL or a file path.
 
-You can set the inference accelerator target using `extensionConfiguration` in operations.json file. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
+The operations file sets the inference accelerator target using the `extensionConfiguration` feature. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
 
 If changes are made locally to the topology file, the operations file will need change to point to the local topology.
 
