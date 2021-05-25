@@ -131,7 +131,7 @@ You will also need to create a pipeline topology with the extension and then cre
 ### Topology files
 An AVA pipeline topology enables you to define the blueprint of a pipeline, with parameters as placeholders for values. The topology defines the nodes used in the pipeline
 and how they are inter-connected. 
-Here is a [sample toplogy file](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/pipelines/live/topologies/grpcExtensionOpenVINO/topology.json). An [operations file]((/samples/lva_ai_extension/topologies/operations.json) is an instruction set used by AVA to perform actions on the IOT Edge and refers to the pipeline topology through a URL or a file path.
+Here is a [sample toplogy file](https://raw.githubusercontent.com/Azure/azure-video-analyzer/main/pipelines/live/topologies/grpcExtensionOpenVINO/topology.json). An [operations file](/samples/lva_ai_extension/topologies/operations.json) is an instruction set used by AVA to perform actions on the IOT Edge and refers to the pipeline topology through a URL or a file path.
 
 The operations file sets the inference accelerator target using the `extensionConfiguration` feature. Here is a sample, setting GPU as target [operations_gpu.json](/samples/lva_ai_extension/topologies/operations_gpu.json)
 
