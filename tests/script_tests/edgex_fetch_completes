@@ -1,6 +1,5 @@
 #!/bin/bash
 
-NAME=vaserving
 EXPECTED="Successfully fetched repo and produced compose file."
 
 # Run script and check for successful complete

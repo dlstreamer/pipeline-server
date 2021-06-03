@@ -6,10 +6,10 @@
 #
 
 echo "Stopping video analytics serving containers"
-docker stop $(docker ps -f name=video-analytics-serving) 2> /dev/null || echo "No containers to stop"
+docker stop $(docker ps -q -f name=video-analytics-serving) 2> /dev/null || echo "No containers to stop"
 
 echo "Removing video analytics serving containers"
-docker rm $(docker ps -f name=video-analytics-serving) 2> /dev/null || echo "No containers to remove"
+docker rm $(docker ps -q -f name=video-analytics-serving) 2> /dev/null || echo "No containers to remove"
 
 function show_help {
   echo "usage: ./stop.sh"
