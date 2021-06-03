@@ -60,7 +60,7 @@ class GStreamerPipeline(Pipeline):
         self.frame_count = 0
         self.start_time = None
         self.stop_time = None
-        self.avg_fps = 0
+        self._avg_fps = 0
         self._gst_launch_string = None
         self.latency_times = dict()
         self.sum_pipeline_latency = 0
@@ -131,6 +131,7 @@ class GStreamerPipeline(Pipeline):
 
 
     def _delete_pipeline(self, new_state):
+        self._cal_avg_fps()
         self.state = new_state
         self.stop_time = time.time()
         self._logger.debug("Setting Pipeline {id}"
@@ -209,7 +210,7 @@ class GStreamerPipeline(Pipeline):
         status_obj = {
             "id": self.identifier,
             "state": self.state,
-            "avg_fps": self.avg_fps,
+            "avg_fps": self.get_avg_fps(),
             "start_time": self.start_time,
             "elapsed_time": elapsed_time
         }
@@ -220,7 +221,12 @@ class GStreamerPipeline(Pipeline):
         return status_obj
 
     def get_avg_fps(self):
-        return self.avg_fps
+        self._cal_avg_fps()
+        return self._avg_fps
+
+    def _cal_avg_fps(self):
+        if not self.state.stopped() and self.start_time is not None:
+            self._avg_fps = self.frame_count / (time.time() - self.start_time)
 
     def _get_element_property(self, element, key):
         if isinstance(element, str):
@@ -511,7 +517,6 @@ class GStreamerPipeline(Pipeline):
         if self.appsink_element is not None:
             self.appsink_element.set_property("emit-signals", True)
             self.appsink_element.set_property('sync', False)
-            self.avg_fps = 0
 
             if not self._app_destinations:
                 self.appsink_element.connect("new-sample", self.on_sample)
@@ -599,7 +604,6 @@ class GStreamerPipeline(Pipeline):
             return Gst.FlowReturn.ERROR
 
         self.frame_count += 1
-        self.avg_fps = self.frame_count / (time.time() - self.start_time)
         return Gst.FlowReturn.OK
 
     def on_sample(self, sink):
@@ -620,7 +624,6 @@ class GStreamerPipeline(Pipeline):
             return Gst.FlowReturn.ERROR
 
         self.frame_count += 1
-        self.avg_fps = self.frame_count / (time.time() - self.start_time)
         return Gst.FlowReturn.OK
 
     def bus_call(self, unused_bus, message, unused_data=None):
@@ -648,6 +651,7 @@ class GStreamerPipeline(Pipeline):
                         self._logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = Pipeline.State.RUNNING
+                        self.start_time = time.time()
         else:
             if self._bus_messages:
                 structure = Gst.Message.get_structure(message)
