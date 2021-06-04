@@ -29,7 +29,15 @@ while [[ "$#" -gt 0 ]]; do
       ;;
     --clean-shared-memory)
       echo "Removing all files in /dev/shm"
-      rm /dev/shm/*
+      rm /dev/shm/* 2> /dev/null || echo "No files to remove in /dev/shm"
+      ;;
+    --all)
+      echo "Stopping ALL containers"
+      docker stop $(docker ps -q) 2> /dev/null || echo "No containers to stop"
+      echo "killing ALL containers not responsive to stop"
+      docker kill $(docker ps -q) 2> /dev/null || echo "No containers to kill"
+      echo "Removing ALL containers"
+      docker rm $(docker ps -a -q) 2> /dev/null || echo "No containers to remove"
       ;;
     *)
       break
