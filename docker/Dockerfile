@@ -33,8 +33,8 @@ RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-
     chown ${USER} -R /home/video-analytics-serving /root
 
 RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]; then \
-       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \ 
-    fi    
+       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \
+    fi
 
 RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -44,6 +44,12 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; the
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;\
     fi
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get upgrade -y -q && \
+    apt-get dist-upgrade -y -q && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;
 
 RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -56,7 +62,7 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ff
     fi
 
 COPY ./requirements.txt /
-RUN pip3 install  --no-cache-dir -r /requirements.txt
+RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules

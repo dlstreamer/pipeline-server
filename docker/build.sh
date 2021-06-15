@@ -10,7 +10,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.3_vaapi_fix"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.3_vaapi_fix_sec"
 BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
