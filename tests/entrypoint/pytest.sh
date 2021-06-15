@@ -12,9 +12,12 @@ mkdir -p "$RESULTS_DIR"
 
 COV_CONFIG="$TESTS_DIR/config/coveragerc_${FRAMEWORK}"
 COV_DIR="$RESULTS_DIR/coverage"
+CACHE_DIR="$RESULTS_DIR/cache"
 
 rm -rf "$COV_DIR"
+rm -rf "$CACHE_DIR"
 
 cd ${SOURCE_DIR};
 python3 -m pytest -s --html="$RESULTS_DIR/report.html" --ignore=$SOURCE_DIR/samples --self-contained-html \
-  --cov-report=html:"$COV_DIR" --cov-config=$COV_CONFIG --cov=vaserving $PYTEST_ARGS
+  --cov-report=html:"$COV_DIR" --cov-config=$COV_CONFIG --cov=vaserving $PYTEST_ARGS -o cache_dir=$CACHE_DIR
+

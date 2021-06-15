@@ -20,10 +20,6 @@ OUTPUT_DIR="$PYTEST_GSTREAMER_RESULTS_DIR"
 SELECTED="--pytest-gstreamer"
 ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 
-# For default gstreamer image, it requires extra permisions to generate coverage report. needs to investigate more.
-# TODO: fix user permsion issue for generating reports
-USER="--user root"
-
 function show_help {
   echo "usage: run.sh (options are exclusive)"
   echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
@@ -36,6 +32,13 @@ function show_help {
 function error {
     printf '%s\n' "$1" >&2
     exit
+}
+
+function recreate_shared_path() {
+  SHARED_PATH=$1
+  echo "recreating $SHARED_PATH"
+  rm -Rf "$SHARED_PATH"
+  mkdir -p "$SHARED_PATH"
 }
 
 ARGS=$@
@@ -82,8 +85,7 @@ LOCAL_RESULTS_DIR="$TESTS_DIR/$OUTPUT_DIR"
 echo "running $SELECTED"
 ENVIRONMENT="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
 
-mkdir -p "$LOCAL_RESULTS_DIR"
-
+recreate_shared_path "$LOCAL_RESULTS_DIR"
 VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
 
-$SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $USER $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT "$@"
+$SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT "$@"
