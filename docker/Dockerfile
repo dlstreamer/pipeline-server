@@ -133,4 +133,8 @@ ARG USER=vaserving
 
 ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
 
+# Prepare XDG_RUNTIME_DIR
+ENV XDG_RUNTIME_DIR=/home/.xdg_runtime_dir
+RUN mkdir -p -m g+s $XDG_RUNTIME_DIR && chown ${USER}:users $XDG_RUNTIME_DIR
+
 USER ${USER}
