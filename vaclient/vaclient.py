@@ -39,6 +39,7 @@ RTSP_TEMPLATE = {
         "path": ""
     }
 }
+SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the vaserving microservice is running"
 
 def run(args):
     request = REQUEST_TEMPLATE
@@ -201,8 +202,8 @@ def post(url, body, show_request=False):
             return instance_id
         print("Got unsuccessful status code: {}".format(launch_response.status_code))
         print(launch_response.text)
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def get(url, show_request=False):
@@ -215,8 +216,8 @@ def get(url, show_request=False):
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
         print(status_response.text)
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def delete(url, show_request=False):
@@ -226,10 +227,10 @@ def delete(url, show_request=False):
             sys.exit(0)
         stop_response = requests.delete(url, timeout=TIMEOUT)
         if stop_response.status_code != RESPONSE_SUCCESS:
-            print("Unsucessful status code {} - {}".format(stop_response.status_code, stop_response.text))
+            print("Unsuccessful status code {} - {}".format(stop_response.status_code, stop_response.text))
         return stop_response.status_code
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def print_fps(status):

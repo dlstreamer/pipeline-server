@@ -111,6 +111,8 @@ Expected output:
 VA Serving includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
 > **Note:** Any RESTful tool or library can be used to send requests to the VA Serving service. We are using vaclient as it simplifies interaction with the service.
 
+> **Note:**  The microservice has to be up and running before the sample client is invoked.
+
 Before running a pipeline, we need to know what pipelines are available. We do this using vaclient's `list-pipeline` command.
 In new shell run the following command:
 ```bash
