@@ -127,9 +127,15 @@ def start_pipeline(request,
                    show_request=False):
     """Launch requested pipeline"""
     try:
-        os.remove(os.path.abspath(request['destination']['metadata']['path']))
-    except OSError:
+        if request['destination']['metadata']['type'] == 'file':
+            output_file = request['destination']['metadata']['path']
+            os.remove(os.path.abspath(output_file))
+    except KeyError:
         pass
+    except FileNotFoundError:
+        pass
+    except OSError:
+        raise OSError("Unable to delete destination metadata file {}".format(output_file))
     if verbose and not show_request:
         print("Starting pipeline...")
 
