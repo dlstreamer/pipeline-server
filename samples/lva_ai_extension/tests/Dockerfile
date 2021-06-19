@@ -1,4 +1,4 @@
-ARG BASE="video-analytics-serving:0.5.1-dlstreamer-edge-ai-extension"
+ARG BASE="video-analytics-serving:0.5.2-dlstreamer-edge-ai-extension"
 FROM ${BASE} as video-analytics-serving-lva-tests
 
 USER root
