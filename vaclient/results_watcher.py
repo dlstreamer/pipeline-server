@@ -7,7 +7,6 @@
 
 import json
 import time
-import sys
 from threading import Thread
 WATCHER_POLL_TIME = 0.01
 
@@ -17,6 +16,7 @@ class ResultsWatcher:
         self.sleep_time = sleep_time
         self.watcher_thread = None
         self.trigger_stop = False
+        self.error_message = None
 
     def watch(self):
         self.watcher_thread = Thread(target=self.watch_method)
@@ -26,10 +26,12 @@ class ResultsWatcher:
     def stop(self):
         self.trigger_stop = True
         self.watcher_thread.join()
+        if self.error_message:
+            raise OSError(self.error_message)
 
     def watch_method(self):
-        file = open(self.filename, 'r')
         try:
+            file = open(self.filename, 'r')
             while not self.trigger_stop:
                 where = file.tell()
                 line = file.readline()
@@ -41,8 +43,8 @@ class ResultsWatcher:
                         ResultsWatcher.print_results(json.loads(line))
                     except ValueError:
                         pass
-        except KeyboardInterrupt:
-            sys.exit(0)
+        except OSError:
+            self.error_message = "Unable to read from destination metadata file {}".format(self.filename)
 
     # Print Functions
     @classmethod

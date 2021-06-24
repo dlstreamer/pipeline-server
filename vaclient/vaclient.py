@@ -45,26 +45,28 @@ def run(args):
     request = REQUEST_TEMPLATE
     update_request_options(request, args)
     try:
+        watcher = None
         started_instance_id = start_pipeline(request,
                                              args.pipeline,
                                              verbose=args.verbose,
                                              show_request=args.show_request)
         if started_instance_id is None:
-            watcher = None
             sys.exit(1)
-        watcher = ResultsWatcher(request['destination']['metadata']['path'])
-
-        watcher.watch()
-        print_fps(wait_for_pipeline(started_instance_id,
-                                    args.pipeline))
-        watcher.stop()
+        try:
+            if request['destination']['metadata']['type'] == 'file':
+                watcher = ResultsWatcher(request['destination']['metadata']['path'])
+                watcher.watch()
+        except KeyError:
+            pass
+        print_fps(wait_for_pipeline(started_instance_id, args.pipeline))
     except KeyboardInterrupt:
-        if watcher:
-            watcher.stop()
         print()
         if started_instance_id:
             stop_pipeline(args.pipeline, started_instance_id)
             print_fps(wait_for_pipeline(started_instance_id, args.pipeline))
+    finally:
+        if watcher:
+            watcher.stop()
 
 def start(args):
     request = REQUEST_TEMPLATE
