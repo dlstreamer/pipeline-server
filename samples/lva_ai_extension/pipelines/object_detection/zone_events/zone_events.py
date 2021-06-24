@@ -12,7 +12,6 @@ import gi
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst
-from gstgva import VideoFrame
 from vaserving.common.utils import logging
 # pylint: enable=wrong-import-position
 
@@ -45,7 +44,7 @@ class ZoneEvents:
                 zone["threshold"] = ZoneEvents.DEFAULT_DETECTION_CONFIDENCE_THRESHOLD
         return zones
 
-    def process_frame(self, frame: VideoFrame) -> bool:
+    def process_frame(self, frame):
         try:
             if self._zones:
                 self._process_regions(frame)
@@ -94,13 +93,34 @@ class ZoneEvents:
         detection_poly[3] = (x_max, y_min)
         return detection_poly
 
-    def _process_regions(self, frame: VideoFrame):
-        for detected_object in frame.regions():
-            for zone in self._zones:
-                if not detected_object.label().startswith(zone["name"]):
-                    self._detect_zone_triggers(frame, detected_object, zone)
+    def _add_events(self, frame, zone_events):
+        if zone_events:
+            events_tensor = None
+            existing_events = []
+            for tensor in frame.tensors():
+                if 'events' in tensor.fields():
+                    events_tensor = tensor
+                    existing_events = json.loads(tensor['events'])
+                    break
+            if not events_tensor:
+                events_tensor = frame.add_tensor()
+            existing_events.extend(zone_events)
+            events_tensor['events'] = json.dumps(existing_events)
 
-    def _detect_zone_triggers(self, frame, detected_object, zone):
+    def _process_regions(self, frame):
+        zone_events = []
+        for zone in self._zones:
+            zone_event = {}
+            for index, detected_object in enumerate(frame.regions()):
+                if not detected_object.label().startswith(zone["name"]):
+                    self._detect_zone_triggers(frame, zone_event, detected_object, index, zone)
+            if zone_event:
+                zone_event["properties"]["zoneCount"] = str(len(zone_event['related_regions']))
+                zone_events.append(zone_event)
+        self._add_events(frame, zone_events)
+
+
+    def _detect_zone_triggers(self, frame, zone_event, detected_object, detected_object_index, zone):
         object_poly = self._get_detection_poly(detected_object)
         intersects_zone = False
         within_zone = False
@@ -109,25 +129,21 @@ class ZoneEvents:
             if (not within_zone) and (ZoneEvents.DEFAULT_TRIGGER_ON_INTERSECT):
                 intersects_zone = self.detection_intersects_zone(zone["polygon"], object_poly)
                 if intersects_zone:
-                    self._add_zone_event(frame, detected_object, zone, "intersects")
+                    self._add_zone_event(frame, detected_object_index, zone, "intersects", zone_event)
             if within_zone:
-                self._add_zone_event(frame, detected_object, zone, "within")
+                self._add_zone_event(frame, detected_object_index, zone, "within", zone_event)
 
-    def _add_zone_event(self, frame, detected_object, zone, status):
-        for tensor in detected_object.tensors():
-            if tensor.is_detection():
-                existing_events = []
-                if 'events' in tensor.fields():
-                    existing_events = json.loads(tensor['events'])
-                zone_event = {}
-                zone_event['type'] = ZoneEvents.DEFAULT_EVENT_TYPE
-                zone_event['name'] = zone['name']
-                zone_event['properties'] = {
-                    "status": status
-                }
-                existing_events.append(zone_event)
-                # We assign tensors with novel key "events" for aggregation in media_graph_extension.py
-                tensor['events'] = json.dumps(existing_events)
+    def _add_zone_event(self, frame, detected_object_index, zone, status, zone_event):
+        if not zone_event:
+            zone_event['type'] = ZoneEvents.DEFAULT_EVENT_TYPE
+            zone_event['name'] = zone['name']
+            zone_event['related_regions'] = [detected_object_index]
+            zone_event['properties'] = {
+                "status": status
+            }
+        else:
+            zone_event['related_regions'].append(detected_object_index)
+
         if self._enable_watermark:
             event_label = "{}-{}".format(zone["name"], status)
             self._add_watermark_region(frame, zone, event_label, True)

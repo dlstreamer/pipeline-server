@@ -7,7 +7,6 @@
 import os
 import json
 from collections import namedtuple
-from gstgva import VideoFrame
 from vaserving.common.utils import logging
 
 Point = namedtuple('Point', ['x', 'y'])
@@ -38,38 +37,39 @@ class Tracker: # pylint: disable=too-few-public-methods
                 logger.error(error)
                 logger.error("Exception creating SpatialAnalysisCrossingLine: {}".format(line))
 
-    def _create_events(self, region):
+    def _create_events(self, frame):
         events = []
-        track_id = region.object_id()
-        left, top, width, height = region.normalized_rect()
-        bounding_box = BoundingBox(left, top, width, height)
-        if track_id in self._tracked:
-            for line in self._lines:
-                orientation = line.intersect(self._tracked[track_id], bounding_box)
-                if orientation is not None:
-                    if orientation == Segment.CLOCKWISE:
-                        direction = "clockwise"
-                        line.clockwise_total += 1
-                    elif orientation == Segment.COUNTERCLOCKWISE:
-                        direction = "counterclockwise"
-                        line.counterclockwise_total += 1
-                    else:
-                        direction = "Parallel"
-                    logger.debug('ID {} {} {}'.format(track_id, direction, line.name))
-                    total = line.clockwise_total + line.counterclockwise_total
-                    events.append(
-                        {
-                            'type': line.event_type,
-                            'name': line.name,
-                            'properties': {
-                                'direction': direction,
-                                'clockwiseTotal': str(line.clockwise_total),
-                                'counterclockwiseTotal': str(line.counterclockwise_total),
-                                'total': str(total)
+        for index, region in enumerate(frame.regions()):
+            track_id = region.object_id()
+            bounding_box = BoundingBox(*region.normalized_rect())
+            if track_id in self._tracked:
+                for line in self._lines:
+                    orientation = line.intersect(self._tracked[track_id], bounding_box)
+                    if orientation is not None:
+                        if orientation == Segment.CLOCKWISE:
+                            direction = "clockwise"
+                            line.clockwise_total += 1
+                        elif orientation == Segment.COUNTERCLOCKWISE:
+                            direction = "counterclockwise"
+                            line.counterclockwise_total += 1
+                        else:
+                            direction = "Parallel"
+                        logger.debug('ID {} {} {}'.format(track_id, direction, line.name))
+                        total = line.clockwise_total + line.counterclockwise_total
+                        events.append(
+                            {
+                                'type': line.event_type,
+                                'name': line.name,
+                                'related_regions': [index],
+                                'properties': {
+                                    'direction': direction,
+                                    'clockwiseTotal': str(line.clockwise_total),
+                                    'counterclockwiseTotal': str(line.counterclockwise_total),
+                                    'total': str(total)
+                                }
                             }
-                        }
-                    )
-        self._tracked[track_id] = bounding_box
+                        )
+            self._tracked[track_id] = bounding_box
         return events
 
     def _add_point(self, frame, point, label):
@@ -84,14 +84,12 @@ class Tracker: # pylint: disable=too-few-public-methods
             self._add_point(frame, self._lines[index].get_segment_midpoint(),
                             "{}_Count".format(self._lines[index].cross_count))
 
-    def process_frame(self, frame: VideoFrame) -> bool:
+    def process_frame(self, frame):
         try:
-            for region in frame.regions():
-                for tensor in region.tensors():
-                    if tensor.is_detection():
-                        events = self._create_events(region)
-                        if events:
-                            tensor['events'] = json.dumps(events)
+            events = self._create_events(frame)
+            if events:
+                event_tensor = frame.add_tensor()
+                event_tensor['events'] = json.dumps(events)
             if self._enable_watermark:
                 self._add_watermark(frame)
 

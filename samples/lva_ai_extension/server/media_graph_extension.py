@@ -119,9 +119,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.ack_sequence_number = message["sequence_number"]
         msg.media_sample.timestamp = message["timestamp"]
         inferences = msg.media_sample.inferences
-        zones = {}
-
-        for region in gva_sample.video_frame.regions():
+        events = self._get_events(gva_sample)
+        for region_index, region in enumerate(gva_sample.video_frame.regions()):
 
             attributes = []
             obj_id = None
@@ -131,7 +130,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
             obj_width = 0
             obj_top = 0
             obj_height = 0
-            events = []
 
             for tensor in region.tensors():
                 if tensor.is_detection():
@@ -141,9 +139,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     obj_left, obj_top, obj_width, obj_height = region.normalized_rect()
                     if region.object_id():  # Tracking
                         obj_id = str(region.object_id())
-                    if 'events' in tensor.fields():
-                        # DL streamer python Tensor class doesn't support adding list
-                        events = json.loads(tensor['events'])
                 elif tensor["label"]:  # Classification
                     attr_name = tensor.name()
                     attr_label = tensor["label"]
@@ -179,51 +174,44 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                     for key in extensions:
                         inference.extensions[key] = extensions[key]
                 inference.entity.CopyFrom(entity)
-                self._process_events(events, inferences, inference, zones)
-        self._add_zone_events(zones, inferences)
+                self._update_inference_ids(events, inference, region_index)
+        self._process_events(events, inferences)
         return msg
 
-    def _add_zone_events(self, zones, inferences):
-        for zone in zones:
-            related_inferences = zones[zone]["related_inferences"]
-            properties = {
-                "zoneCount" : str(zones[zone]["zone_count"])
-            }
-            self._add_event(inferences, "zoneCrossing", zone, properties, related_inferences)
+    def _get_events(self, gva_sample):
+        events = []
+        for tensor in gva_sample.video_frame.tensors():
+            if 'events' in tensor.fields():
+                # DL streamer python Tensor class doesn't support adding list
+                events = json.loads(tensor['events'])
+        return events
 
-    def _process_events(self, events, inferences, inference, zones):
-        if not events:
-            return
-        inference.inference_id = uuid.uuid4().hex
-        inference.subtype = "objectDetection"
+    def _update_inference_ids(self, events, inference, region_index):
         for event in events:
-            event_name = event["name"]
-            event_type = event["type"]
-            if event_type == "zoneCrossing":
-                if not event_name in zones:
-                    zones[event_name] = {
-                        "related_inferences" : [],
-                        "zone_count" : 0
-                    }
-                zones[event_name]["related_inferences"].append(inference.inference_id)
-                zones[event_name]["zone_count"] += 1
-            else:
-                self._add_event(inferences, event_type, event_name, event["properties"],
-                                [inference.inference_id])
+            for i in range(len(event['related_regions'])):
+                if region_index == event['related_regions'][i]:
+                    if not inference.inference_id:
+                        inference.inference_id = uuid.uuid4().hex
+                        inference.subtype = "objectDetection"
+                    event['related_regions'][i] = inference.inference_id
 
-    def _add_event(self, inferences, subtype, name, properties, related_inferences):
+    def _process_events(self, events, inferences):
+        for event in events:
+            self._add_event(inferences, event)
+
+    def _add_event(self, inferences, event):
         inference_event = inferences.add()
         inference_event.type = (
             # pylint: disable=no-member
             inferencing_pb2.Inference.InferenceType.EVENT
         )
         inference_event.inference_id = uuid.uuid4().hex
-        inference_event.subtype = subtype
-        for inference_id in related_inferences:
+        inference_event.subtype = event["type"]
+        for inference_id in event['related_regions']:
             inference_event.related_inferences.append(inference_id)
         inference_event.event.CopyFrom(inferencing_pb2.Event(
-            name=name,
-            properties=properties,
+            name=event["name"],
+            properties=event["properties"],
         ))
 
     def _generate_gva_sample(self, client_state, request):
