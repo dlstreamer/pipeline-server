@@ -13,11 +13,13 @@ import time
 import subprocess
 import shlex
 import statistics
+import sys
 from tests.common import pipeline_processing
 
 TIMEOUT = 120
 HTTP_OK = 200
 states = ["QUEUED", "RUNNING", "ABORTED", "COMPLETED"]
+results_output_file = "/home/video-analytics-serving/tests/results/pytest/gstreamer/average_fps.txt"
 turbo_filepath_string = "/sys/devices/system/cpu/intel_pstate/no_turbo"
 
 @pytest.mark.performance
@@ -37,29 +39,31 @@ def test_pipeline_performance(service, test_case, test_filename, generate):
         pytest.fail("Required parameter gst_launch_string missing")
     if "iterations" in test_case:
         iterations = test_case["iterations"]
-    try:
-        disable_turbo()
-        run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps)
-        run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case)
-        check_results(gst_launch_avg_fps, va_serving_avg_fps, fps_percentage_diff_limit)
-    finally:
-        enable_turbo()
+    check_turbo_is_disabled()
+    run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps)
+    run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case)
+    check_results(gst_launch_avg_fps, va_serving_avg_fps, fps_percentage_diff_limit)
 
 def run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps):
     for i in range(iterations):
-        result = subprocess.run(shlex.split(gst_launch_string), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        start_gst_time = time.time()
+        print("Initiating gst_launch iteration #{iter}".format(iter=i), flush=True)
+        result = subprocess.run(shlex.split(gst_launch_string), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         try:
             gst_launch_avg_fps.append(extract_avg_fps_from_output(result.stdout))
         except:
             print(result.stderr)
             pytest.fail("Unable to get avg_fps from gst-launch command")
-        print("Completed gst_launch iteration #{iter}".format(iter=i))
+        time_elapsed = time.time() - start_gst_time
+        print("##teamcity[buildStatisticValue key='gst_launch_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 
 def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
 
     url = urllib.parse.urljoin(service.host, test_case['path'])
     start_test = test_case["start"]
     for i in range(iterations):
+        start_vas_time = time.time()
+        print("Initiating vas_launch iteration #{iter}".format(iter=i), flush=True)
         response = requests.post(url,
                                 json=start_test["body"],
                                 timeout=TIMEOUT)
@@ -73,15 +77,26 @@ def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
         pipeline_processing.wait_for_pipeline_status(instance_url, "COMPLETED", states, TIMEOUT)
         #   Get avg_fps
         va_serving_avg_fps.append(pipeline_processing.get_pipeline_avg_fps(status_url = instance_url + "/status"))
-        print("Completed vas_launch iteration #{iter}".format(iter=i))
+        time_elapsed = time.time() - start_vas_time
+        print("##teamcity[buildStatisticValue key='va_serving_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 
 def check_results(gst_launch_avg_fps, va_serving_avg_fps, fps_percentage_diff_limit):
     gst_launch_overall_avg_fps = statistics.mean(gst_launch_avg_fps)
     va_serving_overall_avg_fps = statistics.mean(va_serving_avg_fps)
     fps_percentage_diff = abs(va_serving_overall_avg_fps - gst_launch_overall_avg_fps) / gst_launch_overall_avg_fps * 100
-    print("va_serving_avg_fps = {}".format(va_serving_overall_avg_fps))
-    print("gst_launch_avg_fps = {}".format(gst_launch_overall_avg_fps))
-    print("fps_percentage_diff = {}".format(fps_percentage_diff))
+    print("##teamcity[buildStatisticValue key='va_serving_avg_fps' value='{}']".format(round(va_serving_overall_avg_fps,3)))
+    print("##teamcity[buildStatisticValue key='gst_launch_avg_fps' value='{}']".format(round(gst_launch_overall_avg_fps,3)))
+    print("##teamcity[buildStatisticValue key='fps_percentage_diff' value='{}']".format(round(fps_percentage_diff,3)))
+    try:
+        with open(results_output_file, 'a+') as output_file:
+            artifact_result = "va_serving_avg_fps={}\n".format(round(va_serving_overall_avg_fps,3)) + \
+                              "gst_launch_avg_fps={}\n".format(round(gst_launch_overall_avg_fps,3)) + \
+                              "fps_percentage_diff={}\n".format(round(fps_percentage_diff,3))
+            output_file.write(artifact_result)
+            output_file.flush()
+    except OSError:
+        print("Could not open file for write {}".format(results_output_file))
+
     assert fps_percentage_diff < fps_percentage_diff_limit
 
 def extract_avg_fps_from_output(output):
@@ -93,12 +108,12 @@ def extract_avg_fps_from_output(output):
     assert type(avg_fps) == float, "Unable to get avg_fps from gst-launch command"
     return avg_fps
 
-def disable_turbo():
-    disable_turbo_string = "echo \"1\" | sudo tee " + turbo_filepath_string
-    subprocess.run(shlex.split(disable_turbo_string), stdout=subprocess.DEVNULL, check=True)
-    print("turbo disabled")
-
-def enable_turbo():
-    enable_turbo_string = "echo \"0\" | sudo tee " + turbo_filepath_string
-    subprocess.run(shlex.split(enable_turbo_string), stdout=subprocess.DEVNULL, check=True)
-    print("turbo enabled")
+def check_turbo_is_disabled():
+    print("Ensuring turbo is disabled.")
+    # Caller responsible to ensure turbo is disabled - see performance ADR for details
+    inspect_turbo_cmd = "cat " + turbo_filepath_string
+    inspect_turbo_result = subprocess.run(shlex.split(inspect_turbo_cmd), capture_output=True)
+    print("inspect_turbo_result.stdout: {}".format(inspect_turbo_result.stdout), flush=True)
+    print("inspect_turbo_result.stderr: {}".format(inspect_turbo_result.stderr), flush=True)
+    assert inspect_turbo_result.stdout == b'1\n', "Host not prepared for Performance Tests, must have PState no_turbo disabled."
+    print("Host meets requirements to run Performance tests.")

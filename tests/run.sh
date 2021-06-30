@@ -20,9 +20,14 @@ OUTPUT_DIR="$PYTEST_GSTREAMER_RESULTS_DIR"
 SELECTED="--pytest-gstreamer"
 ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 
+# Custom preparation for build configurations
+PREPARE_PERFORMANCE=false
+DISABLED_TURBO=false
+
 function show_help {
   echo "usage: run.sh (options are exclusive)"
   echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
+  echo "  [ --pytest-gstreamer-performance : Run gstreamer performance tests ]"
   echo "  [ --pytest-ffmpeg: Run ffmpeg tests ] "
   echo "  [ --pylint : Run pylint scan ] "
   echo "  [ --pybandit: Run pybandit scan ] "
@@ -70,6 +75,10 @@ while [[ "$#" -gt 0 ]]; do
       ENTRYPOINT="--entrypoint ./tests/entrypoint/clamav.sh"
       SELECTED="$1"
       ;;
+    --pytest-gstreamer-performance)
+      SELECTED="$1"
+      PREPARE_PERFORMANCE=true
+      ;;
     *)
       break
       ;;
@@ -88,4 +97,58 @@ ENVIRONMENT="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
 recreate_shared_path "$LOCAL_RESULTS_DIR"
 VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
 
-$SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT "$@"
+# This block is specific to --pytest-gstreamer-performance
+if [ $PREPARE_PERFORMANCE == true ]; then
+  PSTATE_NO_TURBO="/sys/devices/system/cpu/intel_pstate/no_turbo"
+  function disable_turbo {
+    echo "Running disable_turbo()"
+    PREV_VALUE=$(<${PSTATE_NO_TURBO})
+    echo "Current value of ${PSTATE_NO_TURBO}: [$PREV_VALUE]"
+    if [ "$PREV_VALUE" == "0" ]; then
+      echo "Disabling turbo on this host via intel_pstate/no_turbo"
+      if [ "$EUID" -ne 0 ]; then
+        echo "Hint: You may wish to update visudo to locally permit NOPASSWD for /usr/bin/tee"
+      fi
+      echo 1 | sudo tee ${PSTATE_NO_TURBO}
+      CURR_VALUE=$(<${PSTATE_NO_TURBO})
+      echo "Updated value of ${PSTATE_NO_TURBO} - now: [$CURR_VALUE]"
+        if [ "$CURR_VALUE" == "$PREV_VALUE" ]; then
+            echo "Failed to update turbo pstate!"
+        else
+            return 0
+        fi
+    else
+        echo "ERROR expected intel_pstate/no_turbo to be 0 but got $PREV_VALUE!"
+    fi
+    return 1
+  }
+
+  function restore_turbo {
+    echo "Running restore_turbo()"
+    if [ $DISABLED_TURBO == true ]; then
+      echo "Restoring original turbo value on this host via intel_pstate/no_turbo"
+      echo $PREV_VALUE | sudo tee ${PSTATE_NO_TURBO}
+      CURR_VALUE=$(<${PSTATE_NO_TURBO})
+      echo "Restored value of ${PSTATE_NO_TURBO} - now: [$CURR_VALUE]"
+    else
+      echo "no-op - state was not changed by disable_turbo"
+    fi
+  }
+
+  trap restore_turbo EXIT
+  echo "Preparing for Performance Tests..."
+  disable_turbo
+  if [ "$?" == "0" ]; then
+    echo "disable_turbo was successful!"
+    DISABLED_TURBO=true
+    # Run as with standard --pytest-gstreamer but constrain to performance
+    ENTRYPOINT_ARGS="--entrypoint-args --performance "
+    ENTRYPOINT_ARGS+="--entrypoint-args -k "
+    ENTRYPOINT_ARGS+="--entrypoint-args performance "
+  else
+    echo "disable_turbo failed!"
+    DISABLED_TURBO=false
+  fi
+fi
+
+$SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS "$@"
