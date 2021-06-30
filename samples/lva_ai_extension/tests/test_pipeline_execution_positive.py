@@ -8,17 +8,17 @@ import time
 import parse
 
 class ClientProcess:
-    def __init__(self, process, params):
-        self.process = process
+    def __init__(self, helpers, params, is_concurrent_test):
+        self.process = helpers.run_client(params, asynchronous=is_concurrent_test)
+        self.helpers = helpers
         self.return_code = params.get("expected_return_code", 0)
         self.output_location = params["output_location"]
 
     def is_running(self):
         return self.process.poll() is None
 
-    def kill(self):
-        if self.is_running():
-            self.process.kill()
+    def stop(self):
+        self.helpers.stop_process(self.process)
 
     def has_correct_return_code(self):
         return self.process.returncode == self.return_code
@@ -56,8 +56,7 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
             output_file = "output{}.jsonl".format(len(clients))
             output_location = os.path.join(workdir_path.name, output_file)
             test["params"]["output_location"] = output_location
-            p = helpers.run_client(test["params"], asynchronous=is_concurrent_test)
-            client = ClientProcess(p, test["params"])
+            client = ClientProcess(helpers, test["params"], is_concurrent_test)
             clients.append(client)
 
     if is_concurrent_test:
@@ -92,7 +91,7 @@ def test_pipeline_execution_positive(helpers, test_case, test_filename, generate
             assert max_running_pipelines == 1, "More than one concurrent pipeline running in serial mode"
 
     for client in clients:
-        client.kill()
+        client.stop()
         helpers.validate_output_against_schema(client.get_output_location())
 
     if test_case["golden_results"]:

@@ -5,6 +5,7 @@ import time
 import os
 import json
 import pytest
+import signal
 
 from jsonschema import validate
 from collections.abc import Mapping
@@ -159,8 +160,18 @@ class Helpers:
         return True
 
     def cleanup_processes(self):
-        if self.server_process is not None:
-            self.server_process.kill()
+        self.stop_process(self.server_process)
+        self.server_process = None
+
+    def stop_process(self, process, timeout = 10):
+        if process is not None and process.poll() is None:
+            process.send_signal(signal.SIGINT)
+            print("Awaiting graceful exit")
+            try:
+                process.wait(timeout)
+            except subprocess.TimeoutExpired:
+                print("TimeoutExpired, killing process")
+                process.kill()
 
 @pytest.fixture
 def helpers():

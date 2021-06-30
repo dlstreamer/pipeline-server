@@ -54,8 +54,7 @@ class VideoSource:
     def _open_video_source(self):
         self._vid_cap = cv2.VideoCapture(self._filename, cv2.CAP_GSTREAMER)
         if self._vid_cap is None or not self._vid_cap.isOpened():
-            logging.error("Error opening video source: {}".format(self._filename))
-            sys.exit(1)
+            raise Exception("Error opening video source: {}".format(self._filename))
 
     def dimensions(self):
         width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
@@ -173,8 +172,7 @@ def validate_extension_config(extension_config):
                                                format_checker=jsonschema.draft4_format_checker)
         validator.validate(extension_config)
     except jsonschema.exceptions.ValidationError as err:
-        logging.error("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
-        sys.exit(1)
+        raise Exception("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
 
 def create_extension_config(args):
     extension_config = {}
@@ -187,20 +185,17 @@ def create_extension_config(args):
         try:
             pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
         except ValueError:
-            logging.error("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
-            sys.exit(1)
+            raise Exception("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
     if args.frame_destination:
         try:
             pipeline_config["frame-destination"] = json.loads(args.frame_destination)
         except ValueError:
-            logging.error("Issue loading frame destination: {}".format(args.frame_destination))
-            sys.exit(1)
+            raise Exception("Issue loading frame destination: {}".format(args.frame_destination))
     if args.pipeline_extensions:
         try:
             pipeline_config["pipeline_extensions"] = json.loads(args.pipeline_extensions)
         except ValueError:
-            logging.error("Issue loading pipeline extensions: {}".format(args.pipeline_extensions))
-            sys.exit(1)
+            raise Exception("Issue loading pipeline extensions: {}".format(args.pipeline_extensions))
 
     if len(pipeline_config) > 0:
         extension_config.setdefault("pipeline", pipeline_config)
@@ -208,11 +203,12 @@ def create_extension_config(args):
     return extension_config
 
 def main():
+    msp = None
+    frame_source = None
     try:
         args = parse_args()
         _log_options(args)
         frame_delay = 1 / args.frame_rate if args.frame_rate > 0 else 0
-        frame_source = None
         frame_queue = queue.Queue(args.frame_queue_size)
         result_queue = queue.Queue()
         frames_sent = 0
@@ -224,10 +220,7 @@ def main():
         image = frame_source.get_frame()
 
         if not image:
-            logging.error(
-                "Error getting frame from video source: {}".format(args.sample_file)
-            )
-            sys.exit(1)
+            raise Exception("Error getting frame from video source: {}".format(args.sample_file))
 
         extension_config = {}
         if args.extension_config:
@@ -259,9 +252,7 @@ def main():
                 while not result_queue.empty():
                     result = result_queue.get()
                     if isinstance(result, Exception):
-                        logging.error(result)
-                        frame_source.close()
-                        sys.exit(1)
+                        raise result
                     frames_received += 1
                     prev_fps_delta = _log_fps(
                         start_time, frames_received, prev_fps_delta, args.fps_interval
@@ -276,9 +267,7 @@ def main():
                 result = result_queue.get()
             while result:
                 if isinstance(result, Exception):
-                    logging.error(result)
-                    frame_source.close()
-                    sys.exit(1)
+                    raise result
                 frames_received += 1
                 prev_fps_delta = _log_fps(
                     start_time, frames_received, prev_fps_delta, args.fps_interval
@@ -286,7 +275,6 @@ def main():
                 _log_result(result, output)
                 result = result_queue.get()
 
-        frame_source.close()
         delta = time.time() - start_time
         logging.info(
             "Start Time: {} End Time: {} Frames: Tx {} Rx {} FPS: {}".format(
@@ -298,18 +286,20 @@ def main():
             )
         )
 
-    except Exception:
+        if frames_sent != frames_received:
+            raise Exception("Sent {} requests, received {} responses".format(
+                frames_sent, frames_received))
+
+        return True
+
+    except (KeyboardInterrupt, SystemExit, Exception):
         log_exception()
-        return -1
-
-    if frames_sent != frames_received:
-        logging.error("Sent {} requests, received {} responses".format(
-            frames_sent, frames_received
-        ))
-        return 1
-
-    return 0
-
+        return False
+    finally:
+        if msp:
+            msp.stop()
+        if frame_source:
+            frame_source.close()
 
 if __name__ == "__main__":
     # Set logging parameters
@@ -323,6 +313,6 @@ if __name__ == "__main__":
     )
 
     # Call Main logic
-    ret = main()
+    if not main():
+        sys.exit(1)
     logging.info("Client finished execution")
-    sys.exit(ret)

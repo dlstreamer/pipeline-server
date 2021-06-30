@@ -142,6 +142,8 @@ class MediaStreamProcessor:
             self._grpc_stub = extension_pb2_grpc.MediaGraphExtensionStub(
                 self._grpc_channel
             )
+            self._stop = False
+            self._thread = None
 
         except Exception:
             log_exception()
@@ -199,14 +201,21 @@ class MediaStreamProcessor:
         response = next(sequence_iterator)
         ack_seq_no = response.ack_sequence_number
         logging.info("[Received] AckNum: {0}".format(ack_seq_no))
-        thread = threading.Thread(
+        self._thread = threading.Thread(
             target=self.run, args=(sequence_iterator, result_queue)
         )
-        thread.start()
+        self._thread.start()
+
+    def stop(self):
+        self._stop = True
+        if self._thread:
+            self._thread.join()
 
     def run(self, sequence_iterator, result_queue):
         try:
             for response in sequence_iterator:
+                if self._stop:
+                    break
                 ack_seq_no = response.ack_sequence_number
                 logging.debug("[Received] AckNum: {0}".format(ack_seq_no))
                 result_queue.put(response)

@@ -31,7 +31,7 @@
                 "sleep_period":5,
                 "port":5001,
                 "timeout":300,
-                "expected_return_code":null
+                "expected_return_code": 1
             }
         }
 }

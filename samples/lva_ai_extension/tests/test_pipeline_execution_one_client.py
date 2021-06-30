@@ -43,8 +43,8 @@ def test_pipeline_execution_one_client(helpers, test_case, test_filename, genera
 
     if client_params["wait_to_complete"]:
         process.wait()
-    elif process.poll() is None:
-        process.kill()
+    else:
+        helpers.stop_process(process)
 
     assert process.returncode == expected_return_code
 
