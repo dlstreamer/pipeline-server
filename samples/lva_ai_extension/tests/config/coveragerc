@@ -3,4 +3,5 @@ data_file = /home/video-analytics-serving/samples/lva_ai_extension/tests/results
 concurrency = multiprocessing
 
 [report]
-include = server/*, client/*
+include = server/*, client/*, common/*
+omit = common/grpc_autogen/*
