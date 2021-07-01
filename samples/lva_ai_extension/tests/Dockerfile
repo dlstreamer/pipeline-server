@@ -24,10 +24,12 @@ RUN wget -O person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit
 RUN wget -O people-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
 RUN wget --no-proxy -O person-bicycle-car-detection_1920_1080_2min.mp4 https://gitlab.devtools.intel.com/media-analytics-pipeline-zoo/media/-/raw/main/video/person-bicycle-car-detection/person-bicycle-car-detection_1920_1080_2min.mp4?inline=false
 
+ENV COVERAGE_RCFILE=/home/video-analytics-serving/samples/lva_ai_extension/tests/config/coveragerc
+
 ARG USER=vaserving
 
 USER ${USER}
 
 WORKDIR /home/video-analytics-serving/samples/lva_ai_extension
 
-ENTRYPOINT [ "pytest", "-s", "--html=tests/results/report.html", "--self-contained-html"]
+ENTRYPOINT [ "./tests/entrypoint/pytest.sh" ]

@@ -1,0 +1,6 @@
+[run]
+data_file = /home/video-analytics-serving/samples/lva_ai_extension/tests/results/.coverage
+concurrency = multiprocessing
+
+[report]
+include = server/*, client/*
