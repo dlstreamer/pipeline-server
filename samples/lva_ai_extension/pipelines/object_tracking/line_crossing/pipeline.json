@@ -4,7 +4,7 @@
 				" ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
 				" ! queue ! gvatrack name=tracking",
 				" ! gvaclassify model={models[vehicle_attributes_recognition][1][network]} name=classification",
-				" ! gvapython class=Tracker module=/home/video-analytics-serving/samples/lva_ai_extension/pipelines/object_tracking/line_crossing/line_cross_tracking.py name=line_events",
+				" ! gvapython class=Tracker module=/home/video-analytics-serving/extensions/spatial_analytics/line_cross_tracking.py name=line_events",
 				" ! appsink name=destination"],
 	"description": "Object Tracking pipeline with Line Crossing Tracking module",
 	"parameters": {

@@ -107,6 +107,9 @@ ONBUILD ARG PIPELINES_PATH
 ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
 ONBUILD COPY ${PIPELINES_PATH} /home/video-analytics-serving/pipelines
 
+# Copy GVA Python extensions
+ONBUILD COPY ./extensions /home/video-analytics-serving/extensions
+
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines
 ########################################################

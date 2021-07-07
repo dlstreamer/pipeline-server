@@ -2,7 +2,7 @@
 	"type": "GStreamer",
 	"template": ["appsrc name=source",
                 " ! gvadetect model={models[object_detection][vehicle][network]} name=detection",
-                " ! gvapython name=zoneevents class=ZoneEvents module=/home/video-analytics-serving/samples/lva_ai_extension/pipelines/object_detection/zone_events/zone_events.py",
+                " ! gvapython name=zoneevents class=ZoneEvents module=/home/video-analytics-serving/extensions/spatial_analytics/zone_events.py",
                 " ! appsink name=destination"],
 	"description": "Spatial Analytics zone events with model trained for vehicle detection",
 	"parameters": {
