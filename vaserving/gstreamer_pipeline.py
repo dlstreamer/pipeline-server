@@ -95,7 +95,7 @@ class GStreamerPipeline(Pipeline):
 
         self.rtsp_server = GStreamerPipeline._rtsp_server
 
-        self._verify_and_set_rtsp_destination()
+
 
     @staticmethod
     def mainloop_quit():
@@ -116,7 +116,7 @@ class GStreamerPipeline(Pipeline):
         frame_destination = destination.get("frame", {})
         frame_destination_type = frame_destination.get("type", None)
         if frame_destination_type == "rtsp":
-            if not self.rtsp_server:
+            if (not self.appsink_element) or (not self.rtsp_server):
                 raise Exception("Unsupported Frame Destination: RTSP Server isn't enabled")
             self.rtsp_path = frame_destination["path"]
             if not self.rtsp_path.startswith('/'):
@@ -503,6 +503,8 @@ class GStreamerPipeline(Pipeline):
         app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, ["GstAppSink"])
         if (app_sink_elements):
             self.appsink_element = app_sink_elements[0]
+
+        self._verify_and_set_rtsp_destination()
 
         destination = self.request.get("destination", None)
         if destination and "metadata" in destination and destination["metadata"]["type"] == "application":

@@ -28,6 +28,11 @@ class GStreamerRtspDestination(AppDestination):
         self._logger = logging.get_logger('GStreamerRtspDestination', is_static=True)
         self._start_time = None
         self._need_data = False
+        caps = Gst.Caps.from_string("video/x-raw")
+        if self._pipeline.appsink_element.props.caps:
+            caps = caps.intersect(self._pipeline.appsink_element.props.caps)
+        self._pipeline.appsink_element.props.caps = caps
+
 
     def _init_stream(self, sample):
         caps = sample.get_caps()
