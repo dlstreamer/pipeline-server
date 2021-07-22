@@ -12,6 +12,7 @@ import os
 import sys
 import requests
 from results_watcher import ResultsWatcher
+from vaserving.pipeline import Pipeline
 
 SERVER_ADDRESS = "http://localhost:8080/"
 RESPONSE_SUCCESS = 200
@@ -53,17 +54,18 @@ def run(args):
         if started_instance_id is None:
             sys.exit(1)
         try:
-            if request['destination']['metadata']['type'] == 'file':
+            if request['destination']['metadata']['type'] == 'file'and \
+                os.path.exists(request['destination']['metadata']['path']):
                 watcher = ResultsWatcher(request['destination']['metadata']['path'])
                 watcher.watch()
         except KeyError:
             pass
-        print_fps(wait_for_pipeline(started_instance_id, args.pipeline))
+        print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
     except KeyboardInterrupt:
         print()
         if started_instance_id:
             stop_pipeline(args.pipeline, started_instance_id)
-            print_fps(wait_for_pipeline(started_instance_id, args.pipeline))
+            print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
     finally:
         if watcher:
             watcher.stop()
@@ -87,13 +89,13 @@ def wait(args):
             print(pipeline_status["state"])
         else:
             print("Unable to fetch status")
-        print_fps(wait_for_pipeline(args.instance,
-                                    args.pipeline))
+        print_fps(wait_for_pipeline_completion(args.pipeline,
+                                               args.instance))
     except KeyboardInterrupt:
         print()
         stop_pipeline(args.pipeline, args.instance)
-        print_fps(wait_for_pipeline(args.instance,
-                                    args.pipeline))
+        print_fps(wait_for_pipeline_completion(args.pipeline,
+                                               args.instance))
 
 def status(args):
     pipeline_status = get_pipeline_status(args.pipeline, args.instance, args.show_request)
@@ -168,19 +170,16 @@ def stop_pipeline(pipeline, instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
-def wait_for_pipeline(instance_id,
-                      pipeline):
-    #Await pipeline completion
-    status = {"state": "RUNNING"}
-    while ((status["state"] is None) or
-           (status["state"] == "QUEUED") or
-           (status["state"] == "RUNNING")):
-        #Fetch status of requested pipeline
+def wait_for_pipeline_completion(pipeline,
+                                 instance_id):
+    status = {"state" : "RUNNING"}
+    while status and not Pipeline.State[status["state"]].stopped():
         status = get_pipeline_status(pipeline,
-                                     str(instance_id))
-        if status is None:
-            return None
+                                     instance_id)
         time.sleep(SLEEP_FOR_STATUS)
+    if status and status["state"] == "ERROR":
+        raise ValueError("Error in pipeline, please check vaserving log messages")
+
     return status
 
 def get_pipeline_status(pipeline, instance_id, show_request=False):
