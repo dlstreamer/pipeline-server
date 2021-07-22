@@ -11,6 +11,8 @@ from shutil import copyfile
 import traceback
 from vaserving.vaserving import VAServing
 
+DEFAULT_SOURCE_URI = "https://github.com/intel/video-analytics-serving/raw/master/samples/bottle_detection.mp4"
+
 def parse_args(args=None):
     parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -18,7 +20,7 @@ def parse_args(args=None):
                         action="store",
                         dest="source",
                         help="URI describing the source media to use as input.",
-                        default="https://github.com/intel/video-analytics-serving/raw/master/samples/bottle_detection.mp4")
+                        default=DEFAULT_SOURCE_URI)
     parser.add_argument("--destination",
                         action="store",
                         dest="destination",
@@ -52,7 +54,7 @@ def parse_args(args=None):
     parser.add_argument("--analytics-image",
                         action="store",
                         dest="analyticsimage",
-                        help="Analytics image to use for deployment to Docker compose. This image tag corresponds to the microservice you build for handling a set of source(s) as input, pipeline(s) to process, and topic(s) as output.",
+                        help="Analytics image to use for uService deployment to Docker compose.",
                         default="edgex-video-analytics-serving:0.5.0")
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)

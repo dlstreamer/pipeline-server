@@ -23,6 +23,7 @@ ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 # Custom preparation for build configurations
 PREPARE_PERFORMANCE=false
 DISABLED_TURBO=false
+ENVIRONMENT=
 
 function show_help {
   echo "usage: run.sh (options are exclusive)"
@@ -64,6 +65,7 @@ while [[ "$#" -gt 0 ]]; do
       OUTPUT_DIR="$PYLINT_RESULTS_DIR"
       ENTRYPOINT="--entrypoint ./tests/entrypoint/pylint.sh"
       SELECTED="$1"
+      ENVIRONMENT+=" -e PYLINTHOME=$DOCKER_TESTS_DIR/$OUTPUT_DIR "
       ;;
     --pybandit)
       OUTPUT_DIR="$PYBANDIT_RESULTS_DIR"
@@ -92,7 +94,7 @@ DOCKER_RESULTS_DIR="$DOCKER_TESTS_DIR/$OUTPUT_DIR"
 LOCAL_RESULTS_DIR="$TESTS_DIR/$OUTPUT_DIR"
 
 echo "running $SELECTED"
-ENVIRONMENT="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
+ENVIRONMENT+="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
 
 recreate_shared_path "$LOCAL_RESULTS_DIR"
 VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "

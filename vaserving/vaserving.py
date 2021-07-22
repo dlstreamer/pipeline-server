@@ -127,7 +127,6 @@ class __VAServing:
         self._logger.info(banner)
 
     def start(self, _options=None):
-        #pylint: disable=C0330
         if (self._stopped):
             self.options = parse_options(_options)
             settings.set_log_level(self.options.log_level)
