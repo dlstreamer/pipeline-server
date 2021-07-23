@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import tempfile
 import shlex
+from glob import glob
 import requests
 import yaml
 from jsonschema import Draft7Validator, FormatChecker
@@ -37,7 +38,8 @@ MODEL_PROC_ROOT = "/opt/intel/dl_streamer/samples/model_proc"
 DL_STREAMER_REPO_ROOT = (
     "https://raw.githubusercontent.com/openvinotoolkit/dlstreamer_gst"
 )
-
+DLSTREAMER_VERSION_FILE = "/opt/intel/openvino/data_processing/dl_streamer/version.txt"
+MODEL_PROC_SEARCH_PATH  = "/opt/intel/openvino/data_processing/dl_streamer/samples/model_proc/**/{0}.json"
 
 def _validate_schema(model_list):
     try:
@@ -76,6 +78,24 @@ def _find_downloaded_model(model_name, download_dir):
             return os.path.abspath(os.path.join(root, model_name))
     return None
 
+def _copy_datadev_model_proc(target_dir, model_name, dl_streamer_version):
+    result = None
+    with open(DLSTREAMER_VERSION_FILE) as local_version:
+        version = "v" + local_version.readline()
+        if version.startswith(dl_streamer_version):
+            model_proc = None
+            search_path = MODEL_PROC_SEARCH_PATH.format(model_name)
+            for model_proc in glob(search_path, recursive=True):
+                break
+            if model_proc:
+                try:
+                    result = shutil.copy(model_proc, os.path.join(target_dir, "{}.json".format(model_name)))
+                    print("Copied model_proc to: {}".format(result))
+                except PermissionError:
+                    print("Permission denied copying model_proc")
+                except:
+                    print("Unexpected error:", sys.exc_info())
+    return result
 
 def _download_model_proc(target_dir, model_name, dl_streamer_version):
     model_proc = None
@@ -213,9 +233,8 @@ def _download_and_convert_model(
                 print("Error, model-proc {} specified but not found", model_proc)
                 sys.exit(1)
         else:
-            _download_model_proc(
-                target_dir, model_name, dl_streamer_version
-            )
+            if _copy_datadev_model_proc(target_dir, model_name, dl_streamer_version) is None:
+                _download_model_proc(target_dir, model_name, dl_streamer_version)
 
 
 def download_and_convert_models(

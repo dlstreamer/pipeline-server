@@ -1,6 +1,6 @@
 {
     "path": "pipelines/object_detection/person_vehicle_bike",
-    "start" : {
+    "start": {
         "body": {
             "source": {
                 "uri": "https://lvamedia.blob.core.windows.net/public/homes_00425.mkv",
@@ -16,13 +16,14 @@
             }
         }
     },
-    "check_running" : {
+    "check_running": {
         "timeout": 5.0
     },
-    "abort" : {
-        "delay" : 0.5
+    "abort": {
+        "delay": 0.5
     },
-    "check_stopped" : {
+    "check_stopped": {
         "timeout": 0.5
-    }
+    },
+    "result": 3
 }

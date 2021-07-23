@@ -1533,7 +1533,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.703125,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1542,7 +1544,7 @@
                         "bounding_box": {
                             "x_max": 1.0,
                             "x_min": 0.12040278315544128,
-                            "y_max": 0.9923244714736938,
+                            "y_max": 0.9923244416713715,
                             "y_min": 0.016869157552719116
                         },
                         "confidence": 0.5703125,
@@ -1552,7 +1554,9 @@
                     "h": 421,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97705078125,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1574,14 +1578,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3475894331932068,
+                            "x_max": 0.3475894257426262,
                             "x_min": 0.12036877125501633,
                             "y_max": 1.0,
                             "y_min": 0.8394560217857361
@@ -1593,7 +1599,9 @@
                     "h": 69,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1615,7 +1623,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1634,7 +1644,9 @@
                     "h": 82,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97412109375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1656,7 +1668,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1675,7 +1689,9 @@
                     "h": 92,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.7529296875,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1697,7 +1713,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1716,7 +1734,9 @@
                     "h": 101,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1738,14 +1758,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.37015360593795776,
+                            "x_max": 0.37015362083911896,
                             "x_min": 0.11448986828327179,
                             "y_max": 1.0,
                             "y_min": 0.7276272177696228
@@ -1757,7 +1779,9 @@
                     "h": 118,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.65478515625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1779,14 +1803,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.998046875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3686634302139282,
+                            "x_max": 0.3686634451150894,
                             "x_min": 0.10009826719760895,
                             "y_max": 0.9958221912384033,
                             "y_min": 0.7029062509536743
@@ -1798,7 +1824,9 @@
                     "h": 127,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.70556640625,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1820,7 +1848,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9970703125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1839,7 +1869,9 @@
                     "h": 139,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1850,7 +1882,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.580078125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1859,7 +1893,7 @@
                         "bounding_box": {
                             "x_max": 1.0,
                             "x_min": 0.12536385655403137,
-                            "y_max": 0.9955346584320068,
+                            "y_max": 0.9955346882343292,
                             "y_min": 0.02691391110420227
                         },
                         "confidence": 0.68310546875,
@@ -1869,7 +1903,9 @@
                     "h": 418,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1891,14 +1927,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.998046875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3793950080871582,
+                            "x_max": 0.379394993185997,
                             "x_min": 0.10510461032390594,
                             "y_max": 1.0,
                             "y_min": 0.6494059562683105
@@ -1910,7 +1948,9 @@
                     "h": 151,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1921,7 +1961,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.74560546875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1930,7 +1972,7 @@
                         "bounding_box": {
                             "x_max": 1.0,
                             "x_min": 0.12222746014595032,
-                            "y_max": 0.971942663192749,
+                            "y_max": 0.9719426929950714,
                             "y_min": 0.030920296907424927
                         },
                         "confidence": 0.615234375,
@@ -1940,7 +1982,9 @@
                     "h": 407,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9970703125,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1962,7 +2006,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -1981,7 +2027,9 @@
                     "h": 159,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.998046875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2003,7 +2051,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2022,7 +2072,9 @@
                     "h": 167,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2044,7 +2096,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2063,7 +2117,9 @@
                     "h": 178,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2085,14 +2141,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.37695789337158203,
+                            "x_max": 0.3769579082727432,
                             "x_min": 0.11771871149539948,
                             "y_max": 0.9972928166389465,
                             "y_min": 0.5633212924003601
@@ -2104,7 +2162,9 @@
                     "h": 187,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2126,7 +2186,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2145,7 +2207,9 @@
                     "h": 199,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2167,7 +2231,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2186,7 +2252,9 @@
                     "h": 205,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2208,7 +2276,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2227,7 +2297,9 @@
                     "h": 214,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9970703125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2238,7 +2310,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.51025390625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2257,7 +2331,9 @@
                     "h": 338,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97607421875,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2279,7 +2355,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2298,7 +2376,9 @@
                     "h": 214,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.986328125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2320,7 +2400,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2329,7 +2411,7 @@
                         "bounding_box": {
                             "x_max": 0.35505685210227966,
                             "x_min": 0.14808067679405212,
-                            "y_max": 0.9988706111907959,
+                            "y_max": 0.9988706409931183,
                             "y_min": 0.47576263546943665
                         },
                         "confidence": 0.9970703125,
@@ -2339,7 +2421,9 @@
                     "h": 226,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9892578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2361,7 +2445,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2380,7 +2466,9 @@
                     "h": 229,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9921875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2402,7 +2490,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2411,7 +2501,7 @@
                         "bounding_box": {
                             "x_max": 0.349021315574646,
                             "x_min": 0.16008824110031128,
-                            "y_max": 0.9476717710494995,
+                            "y_max": 0.9476718008518219,
                             "y_min": 0.4328749477863312
                         },
                         "confidence": 0.9970703125,
@@ -2421,7 +2511,9 @@
                     "h": 222,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.984375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2432,7 +2524,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.46240234375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2441,7 +2535,7 @@
                         "bounding_box": {
                             "x_max": 0.9694280028343201,
                             "x_min": 0.3383790850639343,
-                            "y_max": 0.8000519275665283,
+                            "y_max": 0.8000518977642059,
                             "y_min": 0.06632372736930847
                         },
                         "confidence": 0.630859375,
@@ -2451,7 +2545,9 @@
                     "h": 317,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2473,7 +2569,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2482,7 +2580,7 @@
                         "bounding_box": {
                             "x_max": 0.3443219065666199,
                             "x_min": 0.16223597526550293,
-                            "y_max": 0.9352672100067139,
+                            "y_max": 0.9352672398090363,
                             "y_min": 0.4229278862476349
                         },
                         "confidence": 0.998046875,
@@ -2492,7 +2590,9 @@
                     "h": 221,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.99609375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2503,7 +2603,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.595703125,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2522,7 +2624,9 @@
                     "h": 375,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2544,7 +2648,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2563,7 +2669,9 @@
                     "h": 219,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.96044921875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2574,16 +2682,18 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.603515625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9635106325149536,
+                            "x_max": 0.963510662317276,
                             "x_min": 0.3220074474811554,
-                            "y_max": 0.8963061571121216,
+                            "y_max": 0.896306186914444,
                             "y_min": 0.04749062657356262
                         },
                         "confidence": 0.51953125,
@@ -2593,7 +2703,9 @@
                     "h": 367,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2615,7 +2727,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2634,7 +2748,9 @@
                     "h": 213,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.8857421875,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2645,7 +2761,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.451416015625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2664,7 +2782,9 @@
                     "h": 344,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2686,7 +2806,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2705,7 +2827,9 @@
                     "h": 211,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.98291015625,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2716,14 +2840,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.385009765625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9623501300811768,
+                            "x_max": 0.9623501002788544,
                             "x_min": 0.3161943852901459,
                             "y_max": 0.9165883660316467,
                             "y_min": 0.06445068120956421
@@ -2735,7 +2861,9 @@
                     "h": 368,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2757,7 +2885,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2776,7 +2906,9 @@
                     "h": 206,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.98828125,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2787,16 +2919,18 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.64208984375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9589753150939941,
+                            "x_max": 0.9589752852916718,
                             "x_min": 0.3226974904537201,
-                            "y_max": 0.8813126087188721,
+                            "y_max": 0.8813125789165497,
                             "y_min": 0.07168349623680115
                         },
                         "confidence": 0.66015625,
@@ -2806,7 +2940,9 @@
                     "h": 350,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2828,7 +2964,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2847,7 +2985,9 @@
                     "h": 199,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9873046875,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2858,7 +2998,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.451416015625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2867,7 +3009,7 @@
                         "bounding_box": {
                             "x_max": 0.963532567024231,
                             "x_min": 0.32231128215789795,
-                            "y_max": 0.8280346393585205,
+                            "y_max": 0.8280346691608429,
                             "y_min": 0.050637632608413696
                         },
                         "confidence": 0.74267578125,
@@ -2877,7 +3019,9 @@
                     "h": 336,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2899,7 +3043,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2918,7 +3064,9 @@
                     "h": 199,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9921875,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2929,14 +3077,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.62353515625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9617877006530762,
+                            "x_max": 0.9617877304553986,
                             "x_min": 0.3415224850177765,
                             "y_max": 0.8493712544441223,
                             "y_min": 0.04604274034500122
@@ -2948,7 +3098,9 @@
                     "h": 347,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.998046875,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2970,7 +3122,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -2989,7 +3143,9 @@
                     "h": 196,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9970703125,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3000,14 +3156,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.5205078125,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9758070707321167,
+                            "x_max": 0.9758071005344391,
                             "x_min": 0.2979799807071686,
                             "y_max": 0.8705800175666809,
                             "y_min": 0.03198111057281494
@@ -3019,7 +3177,9 @@
                     "h": 362,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3041,7 +3201,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3060,7 +3222,9 @@
                     "h": 192,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3071,16 +3235,18 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.4658203125,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9554251432418823,
+                            "x_max": 0.9554251134395599,
                             "x_min": 0.3141256272792816,
-                            "y_max": 0.8313776254653931,
+                            "y_max": 0.8313775956630707,
                             "y_min": 0.0392669141292572
                         },
                         "confidence": 0.75537109375,
@@ -3090,7 +3256,9 @@
                     "h": 342,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3112,7 +3280,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3131,7 +3301,9 @@
                     "h": 187,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9052734375,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3142,14 +3314,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.427490234375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9504762887954712,
+                            "x_max": 0.9504763185977936,
                             "x_min": 0.3260479271411896,
                             "y_max": 0.828931450843811,
                             "y_min": 0.0362015962600708
@@ -3161,7 +3335,9 @@
                     "h": 342,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3183,7 +3359,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3202,7 +3380,9 @@
                     "h": 187,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.486328125,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3213,7 +3393,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.48291015625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3232,7 +3414,9 @@
                     "h": 343,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3254,14 +3438,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.31153881549835205,
+                            "x_max": 0.31153880804777145,
                             "x_min": 0.10528063029050827,
                             "y_max": 0.7102987170219421,
                             "y_min": 0.283316969871521
@@ -3273,7 +3459,9 @@
                     "h": 184,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.7041015625,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3284,7 +3472,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.46630859375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3293,7 +3483,7 @@
                         "bounding_box": {
                             "x_max": 0.9640405178070068,
                             "x_min": 0.3273431062698364,
-                            "y_max": 0.8389708995819092,
+                            "y_max": 0.8389709293842316,
                             "y_min": 0.03752294182777405
                         },
                         "confidence": 0.74658203125,
@@ -3303,7 +3493,9 @@
                     "h": 346,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3325,7 +3517,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3344,7 +3538,9 @@
                     "h": 180,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.52197265625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3355,7 +3551,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.6435546875,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3364,7 +3562,7 @@
                         "bounding_box": {
                             "x_max": 0.9582197070121765,
                             "x_min": 0.34046322107315063,
-                            "y_max": 0.8172402381896973,
+                            "y_max": 0.8172402083873749,
                             "y_min": 0.045290082693099976
                         },
                         "confidence": 0.7822265625,
@@ -3374,7 +3572,9 @@
                     "h": 333,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9970703125,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3396,14 +3596,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3025694191455841,
+                            "x_max": 0.3025694116950035,
                             "x_min": 0.08169689029455185,
                             "y_max": 0.6735799312591553,
                             "y_min": 0.2819697856903076
@@ -3415,7 +3617,9 @@
                     "h": 169,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.705078125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3426,7 +3630,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.5654296875,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3445,7 +3651,9 @@
                     "h": 336,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3467,7 +3675,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3486,7 +3696,9 @@
                     "h": 166,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9853515625,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3497,14 +3709,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.5791015625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.975265383720398,
+                            "x_max": 0.9752654135227203,
                             "x_min": 0.34655383229255676,
                             "y_max": 0.8570611476898193,
                             "y_min": 0.0452151894569397
@@ -3516,7 +3730,9 @@
                     "h": 351,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3538,14 +3754,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.28869566321372986,
+                            "x_max": 0.28869567066431046,
                             "x_min": 0.06680700927972794,
                             "y_max": 0.6483340263366699,
                             "y_min": 0.2645982801914215
@@ -3557,7 +3775,9 @@
                     "h": 166,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3579,7 +3799,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3598,7 +3820,9 @@
                     "h": 162,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3609,7 +3833,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.7109375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3618,7 +3844,7 @@
                         "bounding_box": {
                             "x_max": 0.9606611728668213,
                             "x_min": 0.34636378288269043,
-                            "y_max": 0.7144993543624878,
+                            "y_max": 0.7144993841648102,
                             "y_min": 0.06445220112800598
                         },
                         "confidence": 0.5869140625,
@@ -3628,7 +3854,9 @@
                     "h": 281,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3650,14 +3878,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.2777746617794037,
+                            "x_max": 0.2777746543288231,
                             "x_min": 0.043299101293087006,
                             "y_max": 0.6272884607315063,
                             "y_min": 0.2599388062953949
@@ -3669,7 +3899,9 @@
                     "h": 159,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3680,14 +3912,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.65283203125,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9816415309906006,
+                            "x_max": 0.981641560792923,
                             "x_min": 0.34444645047187805,
                             "y_max": 0.8918988704681396,
                             "y_min": 0.03341317176818848
@@ -3699,7 +3933,9 @@
                     "h": 371,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3721,7 +3957,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3740,7 +3978,9 @@
                     "h": 153,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3762,7 +4002,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3781,7 +4023,9 @@
                     "h": 151,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3803,7 +4047,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3822,7 +4068,9 @@
                     "h": 146,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3844,7 +4092,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3863,7 +4113,9 @@
                     "h": 145,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3885,7 +4137,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3904,7 +4158,9 @@
                     "h": 142,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3926,7 +4182,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3945,7 +4203,9 @@
                     "h": 138,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3956,7 +4216,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.5849609375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3975,7 +4237,9 @@
                     "h": 302,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -3997,14 +4261,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.21990147233009338,
+                            "x_max": 0.2184760570526123,
                             "x_min": 0.0,
                             "y_max": 0.5582777261734009,
                             "y_min": 0.24285709857940674
@@ -4016,25 +4282,29 @@
                     "h": 136,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 169,
+                    "w": 168,
                     "x": 0,
                     "y": 105
                 },
                 {
                     "color": {
+                        "confidence": 0.53076171875,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.9725333452224731,
+                            "x_max": 0.9725333154201508,
                             "x_min": 0.37442609667778015,
                             "y_max": 0.8088143467903137,
                             "y_min": 0.039873719215393066
@@ -4046,7 +4316,9 @@
                     "h": 332,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.998046875,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4068,7 +4340,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4087,7 +4361,9 @@
                     "h": 132,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4109,14 +4385,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1989123523235321,
+                            "x_max": 0.1989123597741127,
                             "x_min": 0.0003910735249519348,
                             "y_max": 0.5384117364883423,
                             "y_min": 0.24003919959068298
@@ -4128,7 +4406,9 @@
                     "h": 129,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4150,14 +4430,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1870766282081604,
+                            "x_max": 0.187076635658741,
                             "x_min": 0.0016545727849006653,
                             "y_max": 0.534761369228363,
                             "y_min": 0.22802776098251343
@@ -4169,7 +4451,9 @@
                     "h": 133,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9912109375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4191,14 +4475,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1745513379573822,
+                            "x_max": 0.1745513305068016,
                             "x_min": 0.0019214078783988953,
                             "y_max": 0.5303561091423035,
                             "y_min": 0.2242509126663208
@@ -4210,7 +4496,9 @@
                     "h": 132,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.94970703125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4232,16 +4520,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1644415259361267,
+                            "x_max": 0.1644415184855461,
                             "x_min": 0.0031630322337150574,
-                            "y_max": 0.5231719613075256,
+                            "y_max": 0.5231719762086868,
                             "y_min": 0.2210758477449417
                         },
                         "confidence": 0.998046875,
@@ -4251,7 +4541,9 @@
                     "h": 131,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.86279296875,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4273,16 +4565,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.16137176752090454,
+                            "x_max": 0.15875952690839767,
                             "x_min": 0.0,
-                            "y_max": 0.527094841003418,
+                            "y_max": 0.5270948261022568,
                             "y_min": 0.22262220084667206
                         },
                         "confidence": 0.9970703125,
@@ -4292,12 +4586,14 @@
                     "h": 132,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9150390625,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 124,
+                    "w": 122,
                     "x": 0,
                     "y": 96
                 }
@@ -4314,7 +4610,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4323,7 +4621,7 @@
                         "bounding_box": {
                             "x_max": 0.14425572752952576,
                             "x_min": 0.0005446076393127441,
-                            "y_max": 0.523607611656189,
+                            "y_max": 0.5236075967550278,
                             "y_min": 0.22235874831676483
                         },
                         "confidence": 0.9912109375,
@@ -4333,7 +4631,9 @@
                     "h": 130,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9716796875,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4344,7 +4644,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.87744140625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4353,7 +4655,7 @@
                         "bounding_box": {
                             "x_max": 1.0,
                             "x_min": 0.11609500646591187,
-                            "y_max": 0.9424291849136353,
+                            "y_max": 0.9424291551113129,
                             "y_min": 0.03886982798576355
                         },
                         "confidence": 0.50634765625,
@@ -4363,7 +4665,9 @@
                     "h": 390,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4385,7 +4689,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4394,7 +4700,7 @@
                         "bounding_box": {
                             "x_max": 0.13162371516227722,
                             "x_min": 0.0013486146926879883,
-                            "y_max": 0.5231589078903198,
+                            "y_max": 0.5231588929891586,
                             "y_min": 0.23117850720882416
                         },
                         "confidence": 0.888671875,
@@ -4404,7 +4710,9 @@
                     "h": 126,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.626953125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4426,14 +4734,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1258975863456726,
+                            "x_max": 0.12512705475091934,
                             "x_min": 0.0,
                             "y_max": 0.5165330171585083,
                             "y_min": 0.2425607144832611
@@ -4445,12 +4755,14 @@
                     "h": 118,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.80517578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 97,
+                    "w": 96,
                     "x": 0,
                     "y": 105
                 }
@@ -4467,14 +4779,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.11177588999271393,
+                            "x_max": 0.11177589371800423,
                             "x_min": 0.0004979409277439117,
                             "y_max": 0.5152428150177002,
                             "y_min": 0.24029052257537842
@@ -4486,7 +4800,9 @@
                     "h": 119,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.94287109375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4508,14 +4824,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.09919849038124084,
+                            "x_max": 0.09919848665595055,
                             "x_min": 0.0014171116054058075,
                             "y_max": 0.5178567171096802,
                             "y_min": 0.2378397285938263
@@ -4527,7 +4845,9 @@
                     "h": 121,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.916015625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4549,16 +4869,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.0884154736995697,
+                            "x_max": 0.08820446953177452,
                             "x_min": 0.0,
-                            "y_max": 0.5177698731422424,
+                            "y_max": 0.5177698880434036,
                             "y_min": 0.23733873665332794
                         },
                         "confidence": 0.55615234375,
@@ -4568,7 +4890,9 @@
                     "h": 121,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.8642578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4590,16 +4914,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.07897697389125824,
+                            "x_max": 0.07836604863405228,
                             "x_min": 0.0,
-                            "y_max": 0.5104437470436096,
+                            "y_max": 0.5104437321424484,
                             "y_min": 0.23954157531261444
                         },
                         "confidence": 0.77880859375,
@@ -4609,12 +4935,14 @@
                     "h": 117,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97705078125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 61,
+                    "w": 60,
                     "x": 0,
                     "y": 103
                 }
@@ -4631,16 +4959,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.06681744754314423,
+                            "x_max": 0.06681744381785393,
                             "x_min": 0.000369783490896225,
-                            "y_max": 0.5065475106239319,
+                            "y_max": 0.5065475255250931,
                             "y_min": 0.24162657558918
                         },
                         "confidence": 0.7421875,
@@ -4650,7 +4980,9 @@
                     "h": 114,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.86572265625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4661,7 +4993,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.60400390625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4680,7 +5014,9 @@
                     "h": 40,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9912109375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4702,7 +5038,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4721,7 +5059,9 @@
                     "h": 108,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.65380859375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4743,7 +5083,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4762,7 +5104,9 @@
                     "h": 94,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.79150390625,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4784,14 +5128,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.03901814669370651,
+                            "x_max": 0.038553595542907715,
                             "x_min": 0.0,
                             "y_max": 0.48980435729026794,
                             "y_min": 0.27339133620262146
@@ -4803,7 +5149,9 @@
                     "h": 93,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.5458984375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4825,7 +5173,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.89599609375,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4834,7 +5184,7 @@
                         "bounding_box": {
                             "x_max": 0.9350455403327942,
                             "x_min": 0.051790595054626465,
-                            "y_max": 0.9710118770599365,
+                            "y_max": 0.9710118472576141,
                             "y_min": 0.0027694404125213623
                         },
                         "confidence": 0.50341796875,
@@ -4844,7 +5194,9 @@
                     "h": 418,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9658203125,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4866,7 +5218,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.65185546875,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4885,7 +5239,9 @@
                     "h": 311,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4907,7 +5263,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.75390625,
                         "label": "black",
+                        "label_id": 6,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4926,7 +5284,9 @@
                     "h": 404,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -4949,7 +5309,7 @@
                 {
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.05791924148797989,
+                            "x_max": 0.05791923962533474,
                             "x_min": 0.0036154966801404953,
                             "y_max": 0.2682834565639496,
                             "y_min": 0.09508556127548218
@@ -5007,9 +5367,9 @@
                 {
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.07431929558515549,
+                            "x_max": 0.07431929372251034,
                             "x_min": 0.015436423942446709,
-                            "y_max": 0.2671271562576294,
+                            "y_max": 0.26712716370821,
                             "y_min": 0.08977002650499344
                         },
                         "confidence": 0.89501953125,
@@ -5096,7 +5456,7 @@
                         "bounding_box": {
                             "x_max": 0.07014986127614975,
                             "x_min": 0.03895062208175659,
-                            "y_max": 0.2709060311317444,
+                            "y_max": 0.2709060236811638,
                             "y_min": 0.08736460655927658
                         },
                         "confidence": 0.85693359375,
@@ -5154,7 +5514,7 @@
                         "bounding_box": {
                             "x_max": 0.10234379768371582,
                             "x_min": 0.050181563943624496,
-                            "y_max": 0.2616545557975769,
+                            "y_max": 0.2616545632481575,
                             "y_min": 0.08932552486658096
                         },
                         "confidence": 0.96044921875,
@@ -5241,7 +5601,7 @@
                         "bounding_box": {
                             "x_max": 0.10781509429216385,
                             "x_min": 0.0688730850815773,
-                            "y_max": 0.2572619616985321,
+                            "y_max": 0.2572619542479515,
                             "y_min": 0.08866994827985764
                         },
                         "confidence": 0.7421875,
@@ -5328,7 +5688,7 @@
                         "bounding_box": {
                             "x_max": 0.14289620518684387,
                             "x_min": 0.0893193781375885,
-                            "y_max": 0.2588496208190918,
+                            "y_max": 0.2588496133685112,
                             "y_min": 0.08258893340826035
                         },
                         "confidence": 0.98095703125,
@@ -5386,7 +5746,7 @@
                         "bounding_box": {
                             "x_max": 0.15694455802440643,
                             "x_min": 0.09727443754673004,
-                            "y_max": 0.2538610100746155,
+                            "y_max": 0.2538610175251961,
                             "y_min": 0.08144781738519669
                         },
                         "confidence": 0.98095703125,
@@ -5415,7 +5775,7 @@
                         "bounding_box": {
                             "x_max": 0.1584051251411438,
                             "x_min": 0.10756057500839233,
-                            "y_max": 0.2548065483570099,
+                            "y_max": 0.2548065558075905,
                             "y_min": 0.07871789485216141
                         },
                         "confidence": 0.986328125,
@@ -5473,7 +5833,7 @@
                         "bounding_box": {
                             "x_max": 0.1577029675245285,
                             "x_min": 0.13114164769649506,
-                            "y_max": 0.2509571611881256,
+                            "y_max": 0.2509571686387062,
                             "y_min": 0.08313754945993423
                         },
                         "confidence": 0.5615234375,
@@ -5589,7 +5949,7 @@
                         "bounding_box": {
                             "x_max": 0.1983824074268341,
                             "x_min": 0.14549696445465088,
-                            "y_max": 0.24194318056106567,
+                            "y_max": 0.24194318801164627,
                             "y_min": 0.06729308515787125
                         },
                         "confidence": 0.96044921875,
@@ -5618,7 +5978,7 @@
                         "bounding_box": {
                             "x_max": 0.19658158719539642,
                             "x_min": 0.15929926931858063,
-                            "y_max": 0.24708041548728943,
+                            "y_max": 0.24708040803670883,
                             "y_min": 0.06951534003019333
                         },
                         "confidence": 0.93408203125,
@@ -5647,7 +6007,7 @@
                         "bounding_box": {
                             "x_max": 0.19639818370342255,
                             "x_min": 0.16696299612522125,
-                            "y_max": 0.24645280838012695,
+                            "y_max": 0.24645281583070755,
                             "y_min": 0.05969301611185074
                         },
                         "confidence": 0.8173828125,
@@ -5705,7 +6065,7 @@
                         "bounding_box": {
                             "x_max": 0.22884857654571533,
                             "x_min": 0.17744988203048706,
-                            "y_max": 0.23413494229316711,
+                            "y_max": 0.23413493484258652,
                             "y_min": 0.06559231132268906
                         },
                         "confidence": 0.94921875,
@@ -5734,7 +6094,7 @@
                         "bounding_box": {
                             "x_max": 0.23789235949516296,
                             "x_min": 0.18597912788391113,
-                            "y_max": 0.23300287127494812,
+                            "y_max": 0.23300287872552872,
                             "y_min": 0.06729993969202042
                         },
                         "confidence": 0.86279296875,
@@ -5821,7 +6181,7 @@
                         "bounding_box": {
                             "x_max": 0.23920011520385742,
                             "x_min": 0.20877861976623535,
-                            "y_max": 0.23137885332107544,
+                            "y_max": 0.23137886077165604,
                             "y_min": 0.05114118009805679
                         },
                         "confidence": 0.74853515625,
@@ -5879,7 +6239,7 @@
                         "bounding_box": {
                             "x_max": 0.25845053791999817,
                             "x_min": 0.22121915221214294,
-                            "y_max": 0.22186821699142456,
+                            "y_max": 0.22186822444200516,
                             "y_min": 0.042683131992816925
                         },
                         "confidence": 0.94189453125,
@@ -5995,7 +6355,7 @@
                         "bounding_box": {
                             "x_max": 0.2787598669528961,
                             "x_min": 0.23940880596637726,
-                            "y_max": 0.21191996335983276,
+                            "y_max": 0.21191995590925217,
                             "y_min": 0.02691148966550827
                         },
                         "confidence": 0.56591796875,
@@ -6024,7 +6384,7 @@
                         "bounding_box": {
                             "x_max": 0.28462111949920654,
                             "x_min": 0.2544555068016052,
-                            "y_max": 0.21498101949691772,
+                            "y_max": 0.21498101204633713,
                             "y_min": 0.026277922093868256
                         },
                         "confidence": 0.79931640625,
@@ -6053,7 +6413,7 @@
                         "bounding_box": {
                             "x_max": 0.2907387912273407,
                             "x_min": 0.25994518399238586,
-                            "y_max": 0.20809736847877502,
+                            "y_max": 0.20809737592935562,
                             "y_min": 0.02286333590745926
                         },
                         "confidence": 0.83251953125,
@@ -6111,7 +6471,7 @@
                         "bounding_box": {
                             "x_max": 0.3109442889690399,
                             "x_min": 0.2677382528781891,
-                            "y_max": 0.19709473848342896,
+                            "y_max": 0.19709474593400955,
                             "y_min": 0.023023582994937897
                         },
                         "confidence": 0.9658203125,
@@ -6126,7 +6486,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.73974609375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6145,7 +6507,9 @@
                     "h": 64,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.5751953125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6170,7 +6534,7 @@
                         "bounding_box": {
                             "x_max": 0.31605011224746704,
                             "x_min": 0.27424490451812744,
-                            "y_max": 0.1826784610748291,
+                            "y_max": 0.1826784685254097,
                             "y_min": 0.019097842276096344
                         },
                         "confidence": 0.97998046875,
@@ -6185,14 +6549,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.96435546875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.30277103185653687,
+                            "x_max": 0.30277102440595627,
                             "x_min": 0.08790003508329391,
                             "y_max": 1.0,
                             "y_min": 0.826282799243927
@@ -6204,7 +6570,9 @@
                     "h": 75,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.5859375,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6244,14 +6612,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.95703125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.30718305706977844,
+                            "x_max": 0.30718304961919785,
                             "x_min": 0.08905681222677231,
                             "y_max": 1.0,
                             "y_min": 0.7978842258453369
@@ -6263,7 +6633,9 @@
                     "h": 87,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.90869140625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6303,7 +6675,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.998046875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6322,7 +6696,9 @@
                     "h": 96,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9990234375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6347,14 +6723,14 @@
                         "bounding_box": {
                             "x_max": 0.32442253828048706,
                             "x_min": 0.29126524925231934,
-                            "y_max": 0.18818780779838562,
+                            "y_max": 0.18110723793506622,
                             "y_min": 0.0
                         },
                         "confidence": 0.92919921875,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 81,
+                    "h": 78,
                     "roi_type": "person",
                     "w": 25,
                     "x": 224,
@@ -6362,7 +6738,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.9853515625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6381,7 +6759,9 @@
                     "h": 104,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.99609375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6406,7 +6786,7 @@
                         "bounding_box": {
                             "x_max": 0.3376306891441345,
                             "x_min": 0.296927273273468,
-                            "y_max": 0.16862495243549347,
+                            "y_max": 0.1681327372789383,
                             "y_min": 0.0
                         },
                         "confidence": 0.97314453125,
@@ -6421,7 +6801,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.95361328125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6440,7 +6822,9 @@
                     "h": 117,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.99609375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6465,7 +6849,7 @@
                         "bounding_box": {
                             "x_max": 0.3411957621574402,
                             "x_min": 0.2996976375579834,
-                            "y_max": 0.15986931324005127,
+                            "y_max": 0.15930316597223282,
                             "y_min": 0.0
                         },
                         "confidence": 0.96533203125,
@@ -6480,7 +6864,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.9921875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6499,7 +6885,9 @@
                     "h": 126,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6524,14 +6912,14 @@
                         "bounding_box": {
                             "x_max": 0.34659627079963684,
                             "x_min": 0.302900105714798,
-                            "y_max": 0.15766769647598267,
+                            "y_max": 0.15610823780298233,
                             "y_min": 0.0
                         },
                         "confidence": 0.9853515625,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 68,
+                    "h": 67,
                     "roi_type": "person",
                     "w": 34,
                     "x": 233,
@@ -6539,7 +6927,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.97998046875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6558,7 +6948,9 @@
                     "h": 139,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.98828125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6583,14 +6975,14 @@
                         "bounding_box": {
                             "x_max": 0.3451942801475525,
                             "x_min": 0.30916470289230347,
-                            "y_max": 0.15586122870445251,
+                            "y_max": 0.15071630477905273,
                             "y_min": 0.0
                         },
                         "confidence": 0.94287109375,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 67,
+                    "h": 65,
                     "roi_type": "person",
                     "w": 28,
                     "x": 237,
@@ -6598,14 +6990,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.94384765625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.34190016984939575,
+                            "x_max": 0.34190017729997635,
                             "x_min": 0.09463126212358475,
                             "y_max": 1.0,
                             "y_min": 0.6525471210479736
@@ -6617,7 +7011,9 @@
                     "h": 150,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97607421875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6642,14 +7038,14 @@
                         "bounding_box": {
                             "x_max": 0.3481554388999939,
                             "x_min": 0.3160114288330078,
-                            "y_max": 0.14837172627449036,
+                            "y_max": 0.14560792595148087,
                             "y_min": 0.0
                         },
                         "confidence": 0.96533203125,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 64,
+                    "h": 63,
                     "roi_type": "person",
                     "w": 25,
                     "x": 243,
@@ -6657,14 +7053,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.81591796875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.34459468722343445,
+                            "x_max": 0.34459467977285385,
                             "x_min": 0.09948953241109848,
                             "y_max": 0.9992311596870422,
                             "y_min": 0.6354891657829285
@@ -6676,7 +7074,9 @@
                     "h": 157,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.986328125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6701,14 +7101,14 @@
                         "bounding_box": {
                             "x_max": 0.3531385064125061,
                             "x_min": 0.3200553059577942,
-                            "y_max": 0.15395480394363403,
+                            "y_max": 0.14818238466978073,
                             "y_min": 0.0
                         },
                         "confidence": 0.87353515625,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 67,
+                    "h": 64,
                     "roi_type": "person",
                     "w": 25,
                     "x": 246,
@@ -6716,7 +7116,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.5283203125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6735,7 +7137,9 @@
                     "h": 165,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9892578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6760,14 +7164,14 @@
                         "bounding_box": {
                             "x_max": 0.3581762909889221,
                             "x_min": 0.32407504320144653,
-                            "y_max": 0.14711646735668182,
+                            "y_max": 0.1445833444595337,
                             "y_min": 0.0
                         },
                         "confidence": 0.79052734375,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 64,
+                    "h": 62,
                     "roi_type": "person",
                     "w": 26,
                     "x": 249,
@@ -6775,7 +7179,9 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.888671875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6794,7 +7200,9 @@
                     "h": 174,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.96435546875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6819,14 +7227,14 @@
                         "bounding_box": {
                             "x_max": 0.3615882098674774,
                             "x_min": 0.32893696427345276,
-                            "y_max": 0.14856745302677155,
+                            "y_max": 0.14173541963100433,
                             "y_min": 0.0
                         },
                         "confidence": 0.61474609375,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 64,
+                    "h": 61,
                     "roi_type": "person",
                     "w": 25,
                     "x": 253,
@@ -6834,14 +7242,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.6533203125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.35681965947151184,
+                            "x_max": 0.35681966692209244,
                             "x_min": 0.11789233237504959,
                             "y_max": 0.996006965637207,
                             "y_min": 0.5701382160186768
@@ -6853,7 +7263,9 @@
                     "h": 184,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.98388671875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6878,14 +7290,14 @@
                         "bounding_box": {
                             "x_max": 0.36444857716560364,
                             "x_min": 0.33212193846702576,
-                            "y_max": 0.14863640069961548,
+                            "y_max": 0.14284918457269669,
                             "y_min": 0.0
                         },
                         "confidence": 0.88134765625,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 64,
+                    "h": 62,
                     "roi_type": "person",
                     "w": 25,
                     "x": 255,
@@ -6893,14 +7305,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.623046875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.36102455854415894,
+                            "x_max": 0.36102457344532013,
                             "x_min": 0.10940529406070709,
                             "y_max": 1.0,
                             "y_min": 0.5518882870674133
@@ -6912,7 +7326,9 @@
                     "h": 194,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9951171875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6937,14 +7353,14 @@
                         "bounding_box": {
                             "x_max": 0.36900630593299866,
                             "x_min": 0.33495333790779114,
-                            "y_max": 0.1363198459148407,
+                            "y_max": 0.13070686161518097,
                             "y_min": 0.0
                         },
                         "confidence": 0.52880859375,
                         "label": "person",
                         "label_id": 1
                     },
-                    "h": 59,
+                    "h": 56,
                     "roi_type": "person",
                     "w": 26,
                     "x": 257,
@@ -6952,14 +7368,16 @@
                 },
                 {
                     "color": {
+                        "confidence": 0.8662109375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3627619743347168,
+                            "x_max": 0.3627619668841362,
                             "x_min": 0.11689942330121994,
                             "y_max": 1.0,
                             "y_min": 0.5341583490371704
@@ -6971,7 +7389,9 @@
                     "h": 201,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.97802734375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -6993,7 +7413,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.72314453125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7012,7 +7434,9 @@
                     "h": 208,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9931640625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7034,7 +7458,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.80078125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7053,7 +7479,9 @@
                     "h": 213,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7075,7 +7503,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.6337890625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7094,7 +7524,9 @@
                     "h": 221,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7116,7 +7548,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9326171875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7135,7 +7569,9 @@
                     "h": 228,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.939453125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7157,7 +7593,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9658203125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7166,7 +7604,7 @@
                         "bounding_box": {
                             "x_max": 0.37133777141571045,
                             "x_min": 0.1368488073348999,
-                            "y_max": 0.9824002981185913,
+                            "y_max": 0.9824003279209137,
                             "y_min": 0.45224669575691223
                         },
                         "confidence": 0.9912109375,
@@ -7176,7 +7614,9 @@
                     "h": 229,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.95166015625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7198,7 +7638,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.98291015625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7217,7 +7659,9 @@
                     "h": 222,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.7802734375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7239,7 +7683,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.97412109375,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7258,7 +7704,9 @@
                     "h": 224,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.8037109375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7280,7 +7728,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9931640625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7289,7 +7739,7 @@
                         "bounding_box": {
                             "x_max": 0.3659660816192627,
                             "x_min": 0.1623578816652298,
-                            "y_max": 0.9029293060302734,
+                            "y_max": 0.9029293358325958,
                             "y_min": 0.3989392817020416
                         },
                         "confidence": 1.0,
@@ -7299,7 +7749,9 @@
                     "h": 218,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.580078125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7321,7 +7773,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9951171875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7340,7 +7794,9 @@
                     "h": 214,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.5400390625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7362,7 +7818,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.998046875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7381,7 +7839,9 @@
                     "h": 212,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.489013671875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7403,7 +7863,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7422,7 +7884,9 @@
                     "h": 207,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.7431640625,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7444,7 +7908,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7463,7 +7929,9 @@
                     "h": 202,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.72216796875,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7485,7 +7953,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7504,7 +7974,9 @@
                     "h": 196,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.66845703125,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7526,7 +7998,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7545,7 +8019,9 @@
                     "h": 193,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.72412109375,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7567,7 +8043,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9716796875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7586,7 +8064,9 @@
                     "h": 191,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.90869140625,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7608,7 +8088,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.98828125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7627,7 +8109,9 @@
                     "h": 187,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.8173828125,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7649,7 +8133,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.79248046875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7668,7 +8154,9 @@
                     "h": 172,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.64306640625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7690,7 +8178,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.986328125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7709,7 +8199,9 @@
                     "h": 172,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.41064453125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7731,7 +8223,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9482421875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7750,7 +8244,9 @@
                     "h": 176,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.544921875,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7772,7 +8268,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.939453125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7781,7 +8279,7 @@
                         "bounding_box": {
                             "x_max": 0.3371809720993042,
                             "x_min": 0.1875266581773758,
-                            "y_max": 0.6003051996231079,
+                            "y_max": 0.6003052145242691,
                             "y_min": 0.2073926478624344
                         },
                         "confidence": 1.0,
@@ -7791,7 +8289,9 @@
                     "h": 170,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.5185546875,
                         "label": "bus",
+                        "label_id": 3,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7813,7 +8313,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.8798828125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7832,7 +8334,9 @@
                     "h": 168,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.61083984375,
                         "label": "truck",
+                        "label_id": 2,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7854,7 +8358,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.73876953125,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7873,7 +8379,9 @@
                     "h": 169,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.76171875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7895,7 +8403,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.794921875,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7914,7 +8424,9 @@
                     "h": 161,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9892578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7936,7 +8448,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.740234375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7945,7 +8459,7 @@
                         "bounding_box": {
                             "x_max": 0.3258419930934906,
                             "x_min": 0.1474340856075287,
-                            "y_max": 0.514846920967102,
+                            "y_max": 0.5148469060659409,
                             "y_min": 0.1577286571264267
                         },
                         "confidence": 1.0,
@@ -7955,7 +8469,9 @@
                     "h": 154,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.90234375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7977,7 +8493,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.7001953125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -7986,7 +8504,7 @@
                         "bounding_box": {
                             "x_max": 0.32255664467811584,
                             "x_min": 0.13708704710006714,
-                            "y_max": 0.5008751153945923,
+                            "y_max": 0.5008751004934311,
                             "y_min": 0.15693019330501556
                         },
                         "confidence": 1.0,
@@ -7996,7 +8514,9 @@
                     "h": 149,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.986328125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8018,14 +8538,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.525390625,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.31732967495918274,
+                            "x_max": 0.31732968240976334,
                             "x_min": 0.12466240674257278,
                             "y_max": 0.48286566138267517,
                             "y_min": 0.14934000372886658
@@ -8037,7 +8559,9 @@
                     "h": 144,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.98291015625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8059,16 +8583,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.50146484375,
                         "label": "blue",
+                        "label_id": 5,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.3125600516796112,
+                            "x_max": 0.3125600591301918,
                             "x_min": 0.10266713052988052,
-                            "y_max": 0.4709075689315796,
+                            "y_max": 0.4709075838327408,
                             "y_min": 0.14617283642292023
                         },
                         "confidence": 1.0,
@@ -8078,7 +8604,9 @@
                     "h": 140,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.8974609375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8100,7 +8628,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.54541015625,
                         "label": "gray",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8119,7 +8649,9 @@
                     "h": 138,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.6533203125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8141,7 +8673,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.83251953125,
                         "label": "blue",
+                        "label_id": 5,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8150,7 +8684,7 @@
                         "bounding_box": {
                             "x_max": 0.29436594247817993,
                             "x_min": 0.07459069788455963,
-                            "y_max": 0.441942036151886,
+                            "y_max": 0.4419420510530472,
                             "y_min": 0.13655342161655426
                         },
                         "confidence": 1.0,
@@ -8160,7 +8694,9 @@
                     "h": 132,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.857421875,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8182,7 +8718,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.650390625,
                         "label": "blue",
+                        "label_id": 5,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8201,7 +8739,9 @@
                     "h": 125,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.955078125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8223,7 +8763,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.916015625,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8242,7 +8784,9 @@
                     "h": 121,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9384765625,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8264,7 +8808,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9462890625,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8273,7 +8819,7 @@
                         "bounding_box": {
                             "x_max": 0.2703717350959778,
                             "x_min": 0.0320902019739151,
-                            "y_max": 0.40553349256515503,
+                            "y_max": 0.40553347766399384,
                             "y_min": 0.13135747611522675
                         },
                         "confidence": 1.0,
@@ -8283,7 +8829,9 @@
                     "h": 118,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.94189453125,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8305,14 +8853,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.2578159272670746,
+                            "x_max": 0.257815919816494,
                             "x_min": 0.017970196902751923,
                             "y_max": 0.3981398046016693,
                             "y_min": 0.1277659833431244
@@ -8324,7 +8874,9 @@
                     "h": 117,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.88818359375,
                         "label": "van",
+                        "label_id": 1,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8346,16 +8898,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.24712353944778442,
+                            "x_max": 0.24712354689836502,
                             "x_min": 0.0044031813740730286,
-                            "y_max": 0.39336884021759033,
+                            "y_max": 0.39336882531642914,
                             "y_min": 0.12341718375682831
                         },
                         "confidence": 1.0,
@@ -8365,7 +8919,9 @@
                     "h": 117,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.72607421875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8387,14 +8943,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.99609375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.23488879203796387,
+                            "x_max": 0.23488879948854446,
                             "x_min": 0.005332477390766144,
                             "y_max": 0.39095181226730347,
                             "y_min": 0.12401485443115234
@@ -8406,7 +8964,9 @@
                     "h": 115,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.94970703125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8428,7 +8988,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9990234375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8437,7 +8999,7 @@
                         "bounding_box": {
                             "x_max": 0.22491370141506195,
                             "x_min": 0.0018980205059051514,
-                            "y_max": 0.3851422667503357,
+                            "y_max": 0.3851422518491745,
                             "y_min": 0.12475787103176117
                         },
                         "confidence": 1.0,
@@ -8447,7 +9009,9 @@
                     "h": 112,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.96435546875,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8469,14 +9033,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9990234375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.21684375405311584,
+                            "x_max": 0.21684374660253525,
                             "x_min": 0.0025182291865348816,
                             "y_max": 0.3797946870326996,
                             "y_min": 0.12398484349250793
@@ -8488,7 +9054,9 @@
                     "h": 111,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8510,7 +9078,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9990234375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8529,7 +9099,9 @@
                     "h": 108,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8551,16 +9123,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.1855648159980774,
+                            "x_max": 0.18491113185882568,
                             "x_min": 0.0,
-                            "y_max": 0.3677557408809662,
+                            "y_max": 0.3677557483315468,
                             "y_min": 0.12215987592935562
                         },
                         "confidence": 1.0,
@@ -8570,12 +9144,14 @@
                     "h": 106,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 143,
+                    "w": 142,
                     "x": 0,
                     "y": 53
                 }
@@ -8592,14 +9168,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.17549273371696472,
+                            "x_max": 0.17368648946285248,
                             "x_min": 0.0,
                             "y_max": 0.3636353611946106,
                             "y_min": 0.11900858581066132
@@ -8611,12 +9189,14 @@
                     "h": 106,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 135,
+                    "w": 133,
                     "x": 0,
                     "y": 51
                 }
@@ -8633,14 +9213,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.16111984848976135,
+                            "x_max": 0.16057897359132767,
                             "x_min": 0.0,
                             "y_max": 0.35918664932250977,
                             "y_min": 0.12090246379375458
@@ -8652,12 +9234,14 @@
                     "h": 103,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 124,
+                    "w": 123,
                     "x": 0,
                     "y": 52
                 }
@@ -8674,7 +9258,9 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 1.0,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8693,7 +9279,9 @@
                     "h": 102,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8715,16 +9303,18 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9990234375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.135961651802063,
+                            "x_max": 0.1355281099677086,
                             "x_min": 0.0,
-                            "y_max": 0.3564893901348114,
+                            "y_max": 0.3564893826842308,
                             "y_min": 0.12311049550771713
                         },
                         "confidence": 0.79638671875,
@@ -8734,7 +9324,9 @@
                     "h": 101,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 1.0,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8756,14 +9348,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.998046875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.11241176724433899,
+                            "x_max": 0.11241176351904869,
                             "x_min": 0.0019334815442562103,
                             "y_max": 0.3555787205696106,
                             "y_min": 0.12638607621192932
@@ -8775,7 +9369,9 @@
                     "h": 99,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9912109375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8797,14 +9393,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9453125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.09890197217464447,
+                            "x_max": 0.09890197589993477,
                             "x_min": 0.003579992800951004,
                             "y_max": 0.3583957552909851,
                             "y_min": 0.12627488374710083
@@ -8816,7 +9414,9 @@
                     "h": 100,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9892578125,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8838,14 +9438,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.40673828125,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.08764876425266266,
+                            "x_max": 0.08764876797795296,
                             "x_min": 0.001752469688653946,
                             "y_max": 0.3631870150566101,
                             "y_min": 0.12999658286571503
@@ -8857,7 +9459,9 @@
                     "h": 101,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.9375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8879,14 +9483,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.9248046875,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.0735417902469635,
+                            "x_max": 0.0735417939722538,
                             "x_min": 0.004187736660242081,
                             "y_max": 0.3510858416557312,
                             "y_min": 0.14408665895462036
@@ -8898,7 +9504,9 @@
                     "h": 89,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.73193359375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
@@ -8920,14 +9528,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.95068359375,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.06876043230295181,
+                            "x_max": 0.0628456398844719,
                             "x_min": 0.0,
                             "y_max": 0.3494546115398407,
                             "y_min": 0.14372679591178894
@@ -8939,12 +9549,14 @@
                     "h": 89,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.82568359375,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 53,
+                    "w": 48,
                     "x": 0,
                     "y": 62
                 }
@@ -8961,14 +9573,16 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.71728515625,
                         "label": "white",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
                     "detection": {
                         "bounding_box": {
-                            "x_max": 0.05021049827337265,
+                            "x_max": 0.04953538253903389,
                             "x_min": 0.0,
                             "y_max": 0.34265345335006714,
                             "y_min": 0.14355680346488953
@@ -8980,12 +9594,14 @@
                     "h": 86,
                     "roi_type": "vehicle",
                     "type": {
+                        "confidence": 0.91650390625,
                         "label": "car",
+                        "label_id": 0,
                         "model": {
                             "name": "vehicle-attributes-recognition-barrier-0039"
                         }
                     },
-                    "w": 39,
+                    "w": 38,
                     "x": 0,
                     "y": 62
                 }

@@ -1,6 +1,6 @@
 {
     "path": "pipelines/audio_detection/environment",
-    "start" : {
+    "start": {
         "body": {
             "source": {
                 "uri": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
@@ -16,13 +16,14 @@
             }
         }
     },
-    "check_running" : {
+    "check_running": {
         "timeout": 1.0
     },
-    "abort" : {
-        "delay" : 0
+    "abort": {
+        "delay": 0
     },
-    "check_stopped" : {
+    "check_stopped": {
         "timeout": 0.5
-    }
+    },
+    "result": 9
 }

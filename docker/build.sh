@@ -10,7 +10,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.3_vaapi_fix_sec"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4"
 BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
@@ -35,7 +35,7 @@ BASE_BUILD_OPTIONS="--network=host "
 
 SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.3_vaapi_fix"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4"}
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"

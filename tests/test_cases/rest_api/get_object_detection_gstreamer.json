@@ -2,22 +2,11 @@
     "body": {},
     "path": "pipelines/object_detection/person_vehicle_bike",
     "result": {
-        "description": "Object Detection using gstreamer gvadetect element, check more about gvadetect at https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect",
+        "description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
         "name": "object_detection",
         "parameters": {
             "properties": {
-                "batch-size": {
-                    "element": "detection",
-                    "type": "integer"
-                },
-                "cpu-throughput-streams": {
-                    "element": "detection",
-                    "maximum": 4294967295,
-                    "minimum": 0,
-                    "type": "integer"
-                },
                 "detection-device": {
-                    "default": "CPU",
                     "element": {
                         "name": "detection",
                         "property": "device"
@@ -25,52 +14,13 @@
                     "type": "string"
                 },
                 "detection-model-instance-id": {
-                    "default": "person_vehicle_bike_detection",
                     "element": {
                         "name": "detection",
                         "property": "model-instance-id"
                     },
                     "type": "string"
                 },
-                "device-extensions": {
-                    "element": "detection",
-                    "type": "string"
-                },
-                "gpu-throughput-streams": {
-                    "element": "detection",
-                    "maximum": 4294967295,
-                    "minimum": 0,
-                    "type": "integer"
-                },
-                "ie-config": {
-                    "element": "detection",
-                    "type": "string"
-                },
                 "inference-interval": {
-                    "element": "detection",
-                    "maximum": 4294967295,
-                    "minimum": 1,
-                    "type": "integer"
-                },
-                "nireq": {
-                    "element": "detection",
-                    "maximum": 64,
-                    "minimum": 1,
-                    "type": "integer"
-                },
-                "pre-process-backend": {
-                    "element": "detection",
-                    "type": "string"
-                },
-                "reshape": {
-                    "element": "detection",
-                    "type": "boolean"
-                },
-                "reshape-height": {
-                    "element": "detection",
-                    "type": "integer"
-                },
-                "reshape-width": {
                     "element": "detection",
                     "type": "integer"
                 },

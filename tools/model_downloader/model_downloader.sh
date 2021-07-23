@@ -12,7 +12,7 @@ OUTPUT_DIR=$(realpath $( pwd ))
 FORCE=
 RUN_PREFIX=
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.3_vaapi_fix"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4"}
 DL_STREAMER_VERSION=
 MODE=
 MODEL_LIST=$SOURCE_DIR/"models_list/models.list.yml"
@@ -111,6 +111,9 @@ case $OPEN_MODEL_ZOO_VERSION in
         ;;
     2021.3*)
         DL_STREAMER_VERSION="v1.4.1"
+        ;;
+    2021.4*)
+        DL_STREAMER_VERSION="v1.5"
         ;;
     *)
         error 'ERROR: Unknown Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION

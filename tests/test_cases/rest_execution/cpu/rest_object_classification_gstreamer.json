@@ -1,6 +1,6 @@
 {
     "path": "pipelines/object_classification/vehicle_attributes",
-    "start" : {
+    "start": {
         "body": {
             "source": {
                 "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
@@ -17,13 +17,14 @@
             }
         }
     },
-    "check_running" : {
+    "check_running": {
         "timeout": 2.0
     },
-    "abort" : {
-        "delay" : 0.5
+    "abort": {
+        "delay": 0.5
     },
-    "check_stopped" : {
+    "check_stopped": {
         "timeout": 0.5
-    }
+    },
+    "result": 7
 }

@@ -26,7 +26,7 @@ can be customized to meet an application's requirements.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/build.sh`| **ubuntu20_data_runtime:2021.3_vaapi_fix_sec** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh`| **ubuntu20_data_runtime:2021.4** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
 | `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
 ### Building with OpenVINO, Ubuntu 20.04 and DL Streamer Support
 **Example:**

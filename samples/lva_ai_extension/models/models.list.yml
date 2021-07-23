@@ -14,5 +14,5 @@
 - model: vehicle-detection-0202
   alias: object_detection
   version: vehicle
-  model-proc: vehicle-detection-0202.json
   precision: [FP16,FP32]
+  model-proc: vehicle-detection-0202.json

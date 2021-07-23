@@ -80,9 +80,10 @@ error() {
 
 enable_hardware_access() {
     # GPU
-    if [ -d /dev/dri ]; then
-        echo "Found /dev/dri - enabling for GPU"
+    if ls /dev/dri/render* 1> /dev/null 2>&1; then
+        echo "Found /dev/dri/render entry - enabling for GPU"
         DEVICES+='--device /dev/dri '
+        USER_GROUPS+="--group-add $(stat -c '%g' /dev/dri/render*) "
     fi
 
     # NCS2
@@ -327,7 +328,7 @@ if [ ! -z "$VOLUME_MOUNT" ]; then
 fi
 
 if [ ! -z "$USER" ]; then
-    for group in "video" "audio" "users"
+    for group in "audio" "users"
     do
         USER_GROUPS+="--group-add $group "
     done

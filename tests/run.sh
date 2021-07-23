@@ -1,5 +1,6 @@
 #!/bin/bash
 
+VOLUME_MOUNT=
 ENTRYPOINT_ARGS=
 DOCKER_RUN_OPTIONS=
 TESTS_DIR=$(dirname "$(readlink -f "$0")")
@@ -21,6 +22,7 @@ SELECTED="--pytest-gstreamer"
 ENTRYPOINT="--entrypoint ./tests/entrypoint/pytest.sh"
 
 # Custom preparation for build configurations
+PREPARE_GROUND_TRUTH=${PREPARE_GROUND_TRUTH:-false}
 PREPARE_PERFORMANCE=false
 DISABLED_TURBO=false
 ENVIRONMENT=
@@ -28,8 +30,10 @@ ENVIRONMENT=
 function show_help {
   echo "usage: run.sh (options are exclusive)"
   echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
+  echo "  [ --pytest-gstreamer-generate : Generate new gstreamer ground truth ]"
   echo "  [ --pytest-gstreamer-performance : Run gstreamer performance tests ]"
   echo "  [ --pytest-ffmpeg: Run ffmpeg tests ] "
+  echo "  [ --pytest-ffmpeg-generate: Generate new ffmpeg ground truth ] "
   echo "  [ --pylint : Run pylint scan ] "
   echo "  [ --pybandit: Run pybandit scan ] "
   echo "  [ --clamav : Run antivirus scan ] "
@@ -55,6 +59,11 @@ while [[ "$#" -gt 0 ]]; do
       exit
       ;;
     --pytest-gstreamer)
+      ;;
+    --pytest-gstreamer-generate)
+      ENTRYPOINT_ARGS+="--entrypoint-args --generate "
+      VOLUME_MOUNT+="-v $TESTS_DIR/test_cases:$DOCKER_TESTS_DIR/test_cases "
+      PREPARE_GROUND_TRUTH=${PREPARE_GROUND_TRUTH:-true}
       ;;
     --pytest-ffmpeg)
       OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"
@@ -97,7 +106,7 @@ echo "running $SELECTED"
 ENVIRONMENT+="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
 
 recreate_shared_path "$LOCAL_RESULTS_DIR"
-VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
+VOLUME_MOUNT+="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
 
 # This block is specific to --pytest-gstreamer-performance
 if [ $PREPARE_PERFORMANCE == true ]; then
@@ -154,3 +163,8 @@ if [ $PREPARE_PERFORMANCE == true ]; then
 fi
 
 $SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS "$@"
+
+if [ $PREPARE_GROUND_TRUTH == true ]; then
+  echo "Renaming .json.generated files to .json in preparation to update ground truth."
+  find $TESTS_DIR/test_cases -depth -name "*.json.generated" -exec sh -c 'mv "$1" "${1%.json.generated}.json"' _ {} \;
+fi

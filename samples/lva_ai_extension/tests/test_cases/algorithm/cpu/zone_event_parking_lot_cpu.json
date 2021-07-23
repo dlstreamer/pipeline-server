@@ -1,37 +1,53 @@
 {
     "server_params": {
-        "sleep_period":0.25,
-        "port":5001
+        "sleep_period": 0.25,
+        "port": 5001
     },
-    "client":
-        {
-            "params": {
-                "pipeline": {
-                    "name":"object_detection",
-                    "version":"zone_event_vehicle",
-                    "parameters": {
-                        "detection-device":"CPU",
-                        "zone-event-config": {
-                            "zones": [
-                                {
-                                    "name": "Zone",
-                                    "polygon": [[0.01,0.6],[0.25,0.125],[0.5,0.125],[0.6,0.95]]
-                                }
-                            ]
-                        }
+    "client": {
+        "params": {
+            "pipeline": {
+                "name": "object_detection",
+                "version": "zone_event_vehicle",
+                "parameters": {
+                    "detection-device": "CPU",
+                    "zone-event-config": {
+                        "zones": [
+                            {
+                                "name": "Zone",
+                                "polygon": [
+                                    [
+                                        0.01,
+                                        0.6
+                                    ],
+                                    [
+                                        0.25,
+                                        0.125
+                                    ],
+                                    [
+                                        0.5,
+                                        0.125
+                                    ],
+                                    [
+                                        0.6,
+                                        0.95
+                                    ]
+                                ]
+                            }
+                        ]
                     }
-                },
-                "run":true,
-                "source":"https://lvamedia.blob.core.windows.net/public/lots_015.mkv",
-                "output_location":"",
-                "max_frames": 100,
-                "shared_memory":true,
-                "port":5001,
-                "expected_return_code": 0,
-                "event_parameter": "zone-event-config",
-                "expected_event_type" : "zoneCrossing",
-                "expected_event_count" : 100,
-                "expected_total_count" : 1083
-            }
+                }
+            },
+            "run": true,
+            "source": "https://lvamedia.blob.core.windows.net/public/lots_015.mkv",
+            "output_location": "",
+            "max_frames": 100,
+            "shared_memory": true,
+            "port": 5001,
+            "event_parameter": "zone-event-config",
+            "expected_event_type": "zoneCrossing"
         }
+    },
+    "expected_return_code": 0,
+    "expected_event_count": 100,
+    "expected_total_count": 1083
 }
