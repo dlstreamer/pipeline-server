@@ -7,10 +7,10 @@
         "params": {
             "pipeline": {
                 "name": "object_tracking",
-                "version": "line_crossing",
+                "version": "object_line_crossing",
                 "parameters": {
                     "detection-device": "CPU",
-                    "line-event-config": {
+                    "object-line-crossing-config": {
                         "lines": [
                             {
                                 "name": "hallway_right",
@@ -60,8 +60,8 @@
             "output_location": "",
             "shared_memory": true,
             "port": 5001,
-            "event_parameter": "line-event-config",
-            "expected_event_type": "lineCrossing"
+            "event_parameter": "object-line-crossing-config",
+            "expected_event_type" : "object-line-crossing"
         }
     },
     "expected_return_code": 0,

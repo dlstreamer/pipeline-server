@@ -1,9 +1,9 @@
 {
     "pipeline": {
         "name": "object_detection",
-        "version": "zone_event_vehicle",
+        "version": "object_zone_count_vehicle",
         "parameters": {
-            "zone-event-config": {
+            "object-zone-count-config": {
                 "zones": [
                     {
                         "name": "Zone",

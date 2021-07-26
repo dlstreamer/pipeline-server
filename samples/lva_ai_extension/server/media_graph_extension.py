@@ -203,38 +203,51 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
     def _get_events(self, gva_sample):
         events = []
-        for tensor in gva_sample.video_frame.tensors():
-            if 'events' in tensor.fields():
-                # DL streamer python Tensor class doesn't support adding list
-                events = json.loads(tensor['events'])
+        for message in gva_sample.video_frame.messages():
+            message_obj = json.loads(message)
+            if "events" in message_obj.keys():
+                events = message_obj["events"]
+                break
         return events
 
     def _update_inference_ids(self, events, inference, region_index):
         for event in events:
-            for i in range(len(event['related_regions'])):
-                if region_index == event['related_regions'][i]:
+            for i in range(len(event['related-objects'])):
+                if region_index == event['related-objects'][i]:
                     if not inference.inference_id:
                         inference.inference_id = uuid.uuid4().hex
                         inference.subtype = "objectDetection"
-                    event['related_regions'][i] = inference.inference_id
+                    event['related-objects'][i] = inference.inference_id
 
     def _process_events(self, events, inferences):
         for event in events:
             self._add_event(inferences, event)
 
     def _add_event(self, inferences, event):
+        event_name = ""
+        event_properties = {}
         inference_event = inferences.add()
         inference_event.type = (
             # pylint: disable=no-member
             inferencing_pb2.Inference.InferenceType.EVENT
         )
         inference_event.inference_id = uuid.uuid4().hex
-        inference_event.subtype = event["type"]
-        for inference_id in event['related_regions']:
+        inference_event.subtype = event["event-type"]
+
+        for inference_id in event['related-objects']:
             inference_event.related_inferences.append(inference_id)
+
+        for key, value in event.items():
+            if key in ('event-type', 'related-objects'):
+                continue
+            if "name" in key:
+                event_name = value
+            else:
+                event_properties[key] = str(value)
+
         inference_event.event.CopyFrom(inferencing_pb2.Event(
-            name=event["name"],
-            properties=event["properties"],
+            name=event_name,
+            properties=event_properties,
         ))
 
     def _generate_gva_sample(self, client_state, request):

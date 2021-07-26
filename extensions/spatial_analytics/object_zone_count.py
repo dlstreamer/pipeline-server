@@ -4,31 +4,24 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-import json
-import sys
 import traceback
-import gi
-
-gi.require_version('Gst', '1.0')
-# pylint: disable=wrong-import-position
-from gi.repository import Gst
+import spatial_analytics_events
 from vaserving.common.utils import logging
-# pylint: enable=wrong-import-position
 
 def print_message(message):
     print("", flush=True)
     print(message, flush=True)
 
-Gst.init(sys.argv)
-logger = logging.get_logger('zone_events', is_static=True)
+logger = logging.get_logger('object_zone_count', is_static=True)
 
-class ZoneEvents:
-    DEFAULT_EVENT_TYPE = "zoneCrossing"
+class ObjectZoneCount:
+    DEFAULT_EVENT_TYPE = "object-zone-count"
     DEFAULT_TRIGGER_ON_INTERSECT = True
     DEFAULT_DETECTION_CONFIDENCE_THRESHOLD = 0.0
 
     # Caller supplies one or more zones via request parameter
     def __init__(self, zones, enable_watermark=False, log_level="INFO"):
+        self._zones = []
         self._logger = logger
         self._logger.log_level = log_level
         self._enable_watermark = enable_watermark
@@ -41,15 +34,28 @@ class ZoneEvents:
     def _assign_defaults(self, zones):
         for zone in zones:
             if not "threshold" in zone:
-                zone["threshold"] = ZoneEvents.DEFAULT_DETECTION_CONFIDENCE_THRESHOLD
+                zone["threshold"] = ObjectZoneCount.DEFAULT_DETECTION_CONFIDENCE_THRESHOLD
         return zones
 
     def process_frame(self, frame):
         try:
-            if self._zones:
-                self._process_regions(frame)
-                if self._enable_watermark:
-                    self._add_watermark_regions(frame)
+            for zone in self._zones:
+                statuses = []
+                related_objects = []
+                for object_index, detected_object in enumerate(frame.regions()):
+                    zone_status = self._detect_zone_count(frame, detected_object, zone)
+                    if zone_status:
+                        statuses.append(zone_status)
+                        related_objects.append(object_index)
+                if related_objects:
+                    spatial_analytics_events.add_event(frame,
+                                                       event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
+                                                       attributes={'zone-name':zone['name'],
+                                                                   'related-objects':related_objects,
+                                                                   'status':statuses,
+                                                                   'zone-count': len(related_objects)})
+            if self._enable_watermark:
+                self._add_watermark_regions(frame)
         except Exception:
             print_message("Error processing frame: {}".format(traceback.format_exc()))
         return True
@@ -93,57 +99,23 @@ class ZoneEvents:
         detection_poly[3] = (x_max, y_min)
         return detection_poly
 
-    def _add_events(self, frame, zone_events):
-        if zone_events:
-            events_tensor = None
-            existing_events = []
-            for tensor in frame.tensors():
-                if 'events' in tensor.fields():
-                    events_tensor = tensor
-                    existing_events = json.loads(tensor['events'])
-                    break
-            if not events_tensor:
-                events_tensor = frame.add_tensor()
-            existing_events.extend(zone_events)
-            events_tensor['events'] = json.dumps(existing_events)
-
-    def _process_regions(self, frame):
-        zone_events = []
-        for zone in self._zones:
-            zone_event = {}
-            for index, detected_object in enumerate(frame.regions()):
-                if not detected_object.label().startswith(zone["name"]):
-                    self._detect_zone_triggers(frame, zone_event, detected_object, index, zone)
-            if zone_event:
-                zone_event["properties"]["zoneCount"] = str(len(zone_event['related_regions']))
-                zone_events.append(zone_event)
-        self._add_events(frame, zone_events)
-
-
-    def _detect_zone_triggers(self, frame, zone_event, detected_object, detected_object_index, zone):
+    def _detect_zone_count(self, frame, detected_object, zone):
         object_poly = self._get_detection_poly(detected_object)
         intersects_zone = False
         within_zone = False
         if (detected_object.confidence() >= zone["threshold"]):  # applying optional confidence filter
             within_zone = self.detection_within_zone(zone["polygon"], object_poly)
-            if (not within_zone) and (ZoneEvents.DEFAULT_TRIGGER_ON_INTERSECT):
+            if (not within_zone) and (ObjectZoneCount.DEFAULT_TRIGGER_ON_INTERSECT):
                 intersects_zone = self.detection_intersects_zone(zone["polygon"], object_poly)
                 if intersects_zone:
-                    self._add_zone_event(frame, detected_object_index, zone, "intersects", zone_event)
+                    self._add_status_watermark(frame, zone, "intersects")
+                    return "intersects"
             if within_zone:
-                self._add_zone_event(frame, detected_object_index, zone, "within", zone_event)
+                self._add_status_watermark(frame, zone, "within")
+                return "within"
+        return None
 
-    def _add_zone_event(self, frame, detected_object_index, zone, status, zone_event):
-        if not zone_event:
-            zone_event['type'] = ZoneEvents.DEFAULT_EVENT_TYPE
-            zone_event['name'] = zone['name']
-            zone_event['related_regions'] = [detected_object_index]
-            zone_event['properties'] = {
-                "status": status
-            }
-        else:
-            zone_event['related_regions'].append(detected_object_index)
-
+    def _add_status_watermark(self, frame, zone, status):
         if self._enable_watermark:
             event_label = "{}-{}".format(zone["name"], status)
             self._add_watermark_region(frame, zone, event_label, True)

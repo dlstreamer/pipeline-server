@@ -1,9 +1,10 @@
 {
     "pipeline": {
         "name": "object_tracking",
-        "version": "line_crossing",
+        "version": "object_line_crossing",
+        "frame-destination": { "type":"rtsp", "path":"vaserving"},
         "parameters": {
-            "line-event-config": {
+            "object-line-crossing-config": {
                 "lines": [
                     {
                         "name": "hallway_right",
@@ -17,7 +18,9 @@
                          "name": "hallway_bottom",
                          "line": [[0.1,0.9],[0.8,0.9]]
                      }
-                ]
+                ],
+                "enable_watermark":true,
+                "log_level":"DEBUG"
             }
         }
     }

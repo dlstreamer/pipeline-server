@@ -1,11 +1,11 @@
 {
     "pipeline": {
         "name": "object_detection",
-        "version": "zone_event_person",
+        "version": "object_zone_count_person",
         "parameters": {
             "detection-device": "CPU",
             "threshold":0.7,
-            "zone-event-config": {
+            "object-zone-count-config": {
                 "zones": [
                     {
                     "name": "Zone",

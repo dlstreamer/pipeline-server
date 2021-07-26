@@ -19,8 +19,8 @@ def count_events(results, event_type, valid_event_names):
                         if inference['type'] == 'EVENT' and inference['subtype'] == event_type:
                             if inference['event']['name'] in valid_event_names:
                                 num_events+=1
-                                if event_type == "zoneCrossing":
-                                    key = "zoneCount"
+                                if event_type == "object-zone-count":
+                                    key = "zone-count"
                                     total_zone_count += int(inference['event']['properties'][key])
                                 print(inference)
     return num_events, total_zone_count
@@ -29,7 +29,7 @@ def get_event_names(client_params):
     event_parameter_key = client_params["event_parameter"]
     pipeline_parameter = client_params["pipeline"]["parameters"][event_parameter_key]
     key = event_parameter_key.split('-')
-    event_parameter_child = key[0] + 's'
+    event_parameter_child = key[1] + 's'
     event_parameters = pipeline_parameter[event_parameter_child]
     event_names = []
     for parameter in event_parameters:
@@ -72,5 +72,3 @@ def test_algorithm(helpers, test_case, test_filename, generate):
     else:
         assert event_count == test_case["expected_event_count"], "Incorrect number of events detected"
         assert total_count == test_case.get("expected_total_count", 0), "Incorrect total count detected"
-
-

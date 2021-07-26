@@ -7,10 +7,10 @@
         "params": {
             "pipeline": {
                 "name": "object_detection",
-                "version": "zone_events",
+                "version": "object_zone_count",
                 "parameters": {
-                    "detection-device": "CPU",
-                    "zone-event-config": {
+                    "detection-device":"CPU",
+                    "object-zone-count-config": {
                         "zones": [
                             {
                                 "name": "Zone1",
@@ -84,8 +84,8 @@
             "output_location": "",
             "shared_memory": true,
             "port": 5001,
-            "event_parameter": "zone-event-config",
-            "expected_event_type": "zoneCrossing"
+            "event_parameter": "object-zone-count-config",
+            "expected_event_type" : "object-zone-count"
         }
     },
     "expected_return_code": 0,
