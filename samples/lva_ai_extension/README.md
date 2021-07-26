@@ -20,6 +20,7 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 - Allow definition properties to be added to the [extensions](https://github.com/Azure/live-video-analytics/blob/master/contracts/data-schema/Extension%20Data%20Schema.json#L322) field in results
 - Scaling has been removed from topology file as DL Streamer will automatically scale to match selected model
 - Add `XPU` operations file that runs three pipelines executing detection inference on CPU, GPU and VPU (NCS2) respectively.
+- (Preview) Action Recognition general purpose pipeline
 
 
 # Getting Started
@@ -121,7 +122,7 @@ The following pipelines are included in the AI Extension:
 | object_detection | person_vehicle_bike_detection  | [definition](/samples/lva_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json)|![diagram](pipeline_diagrams/object-detection.png)|
 | object_classification  | vehicle_attributes_recognition  | [definition](/samples/lva_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json)|![diagram](pipeline_diagrams/object-classification.png)|
 | object_tracking  | person_vehicle_bike_tracking  | [definition](/samples/lva_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)|![diagram](pipeline_diagrams/object-tracking.png)|
-
+| [Preview] action_recognition | general  | [definition](/samples/lva_ai_extension/pipelines/action_recognition/general/pipeline.json)|![diagram](pipeline_diagrams/action-recognition.png)|
 
 ## Configuring the AI Extension Module for Live Video Analytics
 

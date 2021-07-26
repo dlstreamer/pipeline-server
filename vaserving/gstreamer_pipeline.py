@@ -30,7 +30,8 @@ class GStreamerPipeline(Pipeline):
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
                                    "GstGvaClassify",
                                    "GstGvaInference",
-                                   "GvaAudioDetect"]
+                                   "GvaAudioDetect",
+                                   "GstGvaActionRecognitionBin"]
 
     _inference_element_cache = {}
     _mainloop = None
@@ -299,15 +300,22 @@ class GStreamerPipeline(Pipeline):
             GStreamerPipeline._inference_element_cache[key].pipelines.append(self)
 
     def _set_default_models(self):
-        gva_elements = [element for element in self.pipeline.iterate_elements() if (
-            element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and
-            "VA_DEVICE_DEFAULT" in element.get_property("model"))]
-        for element in gva_elements:
-            network = self.model_manager.get_default_network_for_device(
-                element.get_property("device"), element.get_property("model"))
-            self._logger.debug("Setting model to {} for element {}".format(
-                network, element.get_name()))
-            element.set_property("model", network)
+        model_device_pairing = [("model", "device"),
+                                ("enc-model", "enc-device"),
+                                ("dec-model", "dec-device")]
+
+        for model_name, device_name in model_device_pairing:
+            gva_elements = [element for element in self.pipeline.iterate_elements() if (
+                element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and
+                element.find_property(model_name) and
+                "VA_DEVICE_DEFAULT" in element.get_property(model_name))]
+
+            for element in gva_elements:
+                network = self.model_manager.get_default_network_for_device(
+                    element.get_property(device_name), element.get_property(model_name))
+                self._logger.debug("Setting {} to {} for element {}".format(
+                    model_name, network, element.get_name()))
+                element.set_property(model_name, network)
 
     @staticmethod
     def _get_elements_by_type(pipeline, type_strings):

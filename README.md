@@ -37,7 +37,7 @@ The sample microservice includes four media analytics pipelines.
 | **object_classification** | As object_detection adding meta-data such as object subtype and color
 | **object_tracking** | As object_classification adding tracking identifier to meta-data
 | **audio_detection** | Analyze audio streams for events such as breaking glass or barking dogs.
-
+| [Preview] **action_recognition**  | Classifies general purpose actions in input video such as tying a bow tie or shaking hands.
 
 # Getting Started
 

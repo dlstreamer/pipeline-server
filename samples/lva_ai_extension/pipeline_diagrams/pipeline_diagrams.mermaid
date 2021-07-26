@@ -4,8 +4,8 @@
 graph LR
     frame-->appsrc
     subgraph "Object Detection"
-    appsrc-->gavdetect
-    gavdetect-->appsink
+    appsrc-->gvadetect
+    gvadetect-->appsink
     end
     appsink-->meta_data
 ```
@@ -15,8 +15,8 @@ graph LR
 graph LR
     frame-->appsrc
     subgraph "Object Classification"
-    appsrc-->gavdetect
-    gavdetect-->gvaclassify
+    appsrc-->gvadetect
+    gvadetect-->gvaclassify
     gvaclassify-->appsink
     end
     appsink-->meta_data
@@ -27,10 +27,21 @@ graph LR
 graph LR
     frame-->appsrc
     subgraph "Object Tracking"
-    appsrc-->gavdetect
-    gavdetect-->gvatrack
+    appsrc-->gvadetect
+    gvadetect-->gvatrack
     gvatrack-->gvaclassify
     gvaclassify-->appsink
+    end
+    appsink-->meta_data
+```
+
+### Action Recognition
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Action Recognition"
+    appsrc-->gvaactionrecognitionbin
+    gvaactionrecognitionbin-->appsink
     end
     appsink-->meta_data
 ```

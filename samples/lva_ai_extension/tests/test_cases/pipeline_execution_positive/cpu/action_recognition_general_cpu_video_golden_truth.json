@@ -1,0 +1,1916 @@
+{
+    "server_params": {
+        "pipeline": {
+            "name": "action_recognition",
+            "version": "general"
+        },
+        "max_running_pipelines": 10,
+        "sleep_period": 0.25,
+        "port": 5001
+    },
+    "client": [
+        {
+            "params": {
+                "source": "/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "output_location": "/tmp/tmpgptydh4p/output0.jsonl",
+                "shared_memory": true,
+                "loop_count": 1,
+                "sleep_period": 0.25,
+                "port": 5001,
+                "timeout": 300,
+                "max_frames": 100,
+                "expected_return_code": 0
+            },
+            "num_of_concurrent_clients": 1
+        }
+    ],
+    "golden_results": true,
+    "numerical_tolerance": 0.3,
+    "results": [
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "surfing crowd",
+                            "confidence": 0.0050005647
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "surfing crowd",
+                            "confidence": 0.0051664407
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "surfing crowd",
+                            "confidence": 0.0052805836
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "surfing crowd",
+                            "confidence": 0.005292196
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "blasting sand",
+                            "confidence": 0.0055062734
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.006268071
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.007256751
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.008321527
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.009833019
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.011683118
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.014085618
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.016702045
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.019570034
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.02304484
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.027087098
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030588578
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030522298
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029657923
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029514356
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029123668
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029585214
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.02876902
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.028278645
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.028297773
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029114602
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030796468
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03113378
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03170752
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.031896602
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.031571552
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030569138
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.033820778
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03639359
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04242276
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04817417
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.056281444
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.06255476
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.07106215
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.078614905
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.08672016
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.092667475
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.09382345
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.09578279
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.09317322
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.09647498
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.099142544
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.10833432
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.107196674
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.11874556
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.10819593
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.10572954
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.104323685
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.102460586
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.10068068
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.09069777
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.09127399
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.08067588
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.07080411
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.06210561
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.05456305
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "skateboarding",
+                            "confidence": 0.046882506
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04016368
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.036351506
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.033070594
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.029911244
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.027656578
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.02726346
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.026770448
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.028157102
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.028686233
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.02945218
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030090356
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030316304
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030446224
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.030775588
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.031865764
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.033677842
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03490627
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.035373453
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.037100576
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03895106
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.038563542
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.040276736
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.040324945
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.0397041
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.039274417
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.040190037
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.040772535
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04179818
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.041951526
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04134314
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04076006
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03924666
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.039203152
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03958435
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.03881484
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.038892202
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.040207613
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "inferences": [
+                {
+                    "type": "CLASSIFICATION",
+                    "classification": {
+                        "tag": {
+                            "value": "hopscotch",
+                            "confidence": 0.04036316
+                        },
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
+        },
+        {
+            "timestamp": "0",
+            "inferences": []
+        }
+    ]
+}

@@ -120,6 +120,29 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         msg.media_sample.timestamp = message["timestamp"]
         inferences = msg.media_sample.inferences
         events = self._get_events(gva_sample)
+
+        # gvaactionrecognitionbin element has no video frame regions
+        if not list(gva_sample.video_frame.regions()):
+            for tensor in gva_sample.video_frame.tensors():
+                if tensor.name() == "action":
+                    try:
+                        label = tensor.label()
+                        confidence = tensor.confidence()
+                        classification = inferencing_pb2.Classification(
+                            tag=inferencing_pb2.Tag(
+                                value=label, confidence=confidence
+                            )
+                        )
+                    except:
+                        log_exception(self._logger)
+                        raise
+                    inference = inferences.add()
+                    inference.type = (
+                        # pylint: disable=no-member
+                        inferencing_pb2.Inference.InferenceType.CLASSIFICATION
+                    )
+                    inference.classification.CopyFrom(classification)
+
         for region_index, region in enumerate(gva_sample.video_frame.regions()):
 
             attributes = []

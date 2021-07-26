@@ -135,6 +135,11 @@ def _log_event(inference):
     logging.info(
         "EVENT - {}: {}".format(name, attributes)
     )
+
+def _log_classification(inference):
+    tag = inference.classification.tag
+    logging.info("CLASSIFICATION - {} ({:.2f})".format(tag.value, tag.confidence))
+
 def _log_result(response, output, log_result=True):
     if not log_result:
         return
@@ -147,6 +152,9 @@ def _log_result(response, output, log_result=True):
 
         if inference.type == inferencing_pb2.Inference.InferenceType.EVENT: # pylint: disable=no-member
             _log_event(inference)
+
+        if inference.type == inferencing_pb2.Inference.InferenceType.CLASSIFICATION: # pylint: disable=no-member
+            _log_classification(inference)
 
     # default value field is used to avoid not including values set to 0,
     # but it also causes empty lists to be included

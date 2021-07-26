@@ -54,6 +54,7 @@ class ResultsWatcher:
             print("Timestamp {}".format(results["timestamp"]))
         for detected_object in results.get("objects", []):
             meta = {}
+            results_output = []
             for key in detected_object:
                 if key == "detection":
                     confidence = detected_object[key]["confidence"]
@@ -62,14 +63,23 @@ class ResultsWatcher:
                     y_min = detected_object[key]["bounding_box"]["y_min"]
                     x_max = detected_object[key]["bounding_box"]["x_max"]
                     y_max = detected_object[key]["bounding_box"]["y_max"]
+                    results_output.append(label)
+                    results_output.append("({:.2f})".format(confidence))
+                    results_output.append("[{:.2f}, {:.2f}, {:.2f}, {:.2f}]".format(x_min,
+                                                                                    y_min,
+                                                                                    x_max,
+                                                                                    y_max))
                 elif key == "id":
                     meta[key] = detected_object[key]
+                    results_output.append(str(meta))
                 elif isinstance(detected_object[key], dict) and "label" in detected_object[key]:
                     meta[key] = detected_object[key]["label"]
-            print("- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(label,
-                                                                             confidence,
-                                                                             x_min,
-                                                                             y_min,
-                                                                             x_max,
-                                                                             y_max,
-                                                                             str(meta)))
+                    results_output.append(str(meta))
+                elif key == "tensors":
+                    for tensor in detected_object[key]:
+                        if "name" in tensor and tensor["name"] == "action":
+                            confidence = tensor["confidence"]
+                            label = tensor["label"]
+                            results_output.append(label)
+                            results_output.append("({:.2f})".format(confidence))
+            print("- {}".format(" ".join(results_output)))

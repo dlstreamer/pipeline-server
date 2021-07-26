@@ -81,6 +81,32 @@
             },
             "type": "IntelDLDT",
             "version": 1
+        },
+        {
+            "description": "action_recognition",
+            "name": "action_recognition",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/action_recognition/decoder/action-recognition-0001.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
+                    "FP32": "/home/video-analytics-serving/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "decoder"
+        },
+        {
+            "description": "action_recognition",
+            "name": "action_recognition",
+            "networks": {
+                "model-proc": null,
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
+                    "FP32": "/home/video-analytics-serving/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "encoder"
         }
     ],
     "status_code": 200,
