@@ -50,6 +50,8 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_run.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
     parser_run.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='parameters', help='Update request parameter with key and value pair')
+    parser_run.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
+        with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
     parser_run.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='tags', help='Update request tags with key and value pair')
     parser_run.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
@@ -64,6 +66,8 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_start.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
     parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='parameters', help='Update requeset parameter with key and value pair')
+    parser_start.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
+        with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
     parser_start.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='tags', help='Update request tags with key and value pair')
     parser_start.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')

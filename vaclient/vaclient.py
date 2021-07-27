@@ -118,6 +118,9 @@ def update_request_options(request,
         request['destination']['metadata'].update(args.destination)
     if hasattr(args, 'parameters') and args.parameters:
         request["parameters"] = dict(args.parameters)
+    if hasattr(args, 'parameter_file') and args.parameter_file:
+        with open(args.parameter_file, 'r') as parameter_file:
+            request.update(json.load(parameter_file))
     if hasattr(args, 'tags') and args.tags:
         request["tags"] = dict(args.tags)
     if hasattr(args, 'rtsp_path') and args.rtsp_path:

@@ -52,7 +52,7 @@ class ResultsWatcher:
         """Output as JSON formatted data"""
         if "timestamp" in results:
             print("Timestamp {}".format(results["timestamp"]))
-        for detected_object in results.get("objects", []):
+        for index, detected_object in enumerate(results.get("objects", [])):
             meta = {}
             results_output = []
             for key in detected_object:
@@ -83,3 +83,10 @@ class ResultsWatcher:
                             results_output.append(label)
                             results_output.append("({:.2f})".format(confidence))
             print("- {}".format(" ".join(results_output)))
+            
+        for event in results.get("events", []):
+            event_str = "Event: "
+            for key in event:
+                event_str += "{}: {}, ".format(key, event[key])
+            print(event_str.rstrip(', '))              
+            

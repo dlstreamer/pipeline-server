@@ -1,0 +1,61 @@
+{
+	"type": "GStreamer",
+	"template": ["uridecodebin name=source",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
+				" ! gvapython name=object-zone-count class=ObjectZoneCount module=/home/video-analytics-serving/extensions/spatial_analytics/object_zone_count.py",
+				" ! gvametaconvert name=metaconvert",
+				" ! gvapython module=/home/video-analytics-serving/extensions/spatial_analytics/gva_event_convert.py",
+				" ! gvametapublish name=destination",
+				" ! appsink name=appsink"
+			],
+	"description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string"
+			},
+			"inference-interval": {
+				"element": "detection",
+				"type": "integer"
+			},
+			"threshold": {
+				"element": "detection",
+				"type": "number"
+			},
+			"object-zone-count-config": {
+				"element": {
+					"name": "object-zone-count",
+					"property": "kwarg",
+					"format": "json"
+				},
+				"type": "object",
+				"properties": {
+					"zones": {
+						"type": "array",
+						"items": {
+							"type": "object"
+						}
+					},
+					"enable_watermark": {
+						"type": "boolean"
+					},
+					"log_level": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}
