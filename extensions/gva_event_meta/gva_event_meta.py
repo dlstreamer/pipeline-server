@@ -7,9 +7,9 @@
 import json
 from vaserving.common.utils import logging
 
-logger = logging.get_logger('spatial_analytics_events', is_static=True)
+logger = logging.get_logger('gva_event_meta', is_static=True)
 '''
-spatial_analytics_events module is a set of APIs for developers to add, remove, and get events.
+The gva_event_meta module is a set of APIs for developers to add, remove, and get events.
 GVAJSONMeta (frame message) is utilized for storing events.
 To avoid multiple "events" entries, already existing events are retrieved,
 removed from frame, updated with the new event, and stored back to the frame.

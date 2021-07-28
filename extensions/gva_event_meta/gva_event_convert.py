@@ -5,7 +5,7 @@
 '''
 
 import json
-import spatial_analytics_events
+import gva_event_meta
 from vaserving.common.utils import logging
 
 logger = logging.get_logger('gva_event_convert', is_static=True)
@@ -19,10 +19,10 @@ def process_frame(frame):
     return True
 
 def add_events_message(frame):
-    events = spatial_analytics_events.events(frame)
+    events = gva_event_meta.events(frame)
     if not events:
         return
-    spatial_analytics_events.remove_events(frame)
+    gva_event_meta.remove_events(frame)
     for message in frame.messages():
         message_obj = json.loads(message)
         if "objects" in message_obj:

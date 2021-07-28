@@ -5,7 +5,7 @@
 '''
 
 import traceback
-import spatial_analytics_events
+from extensions.gva_event_meta import gva_event_meta
 from vaserving.common.utils import logging
 
 def print_message(message):
@@ -48,7 +48,7 @@ class ObjectZoneCount:
                         statuses.append(zone_status)
                         related_objects.append(object_index)
                 if related_objects:
-                    spatial_analytics_events.add_event(frame,
+                    gva_event_meta.add_event(frame,
                                                        event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
                                                        attributes={'zone-name':zone['name'],
                                                                    'related-objects':related_objects,
