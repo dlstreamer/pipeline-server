@@ -71,10 +71,8 @@ class ResultsWatcher:
                                                                                     y_max))
                 elif key == "id":
                     meta[key] = detected_object[key]
-                    results_output.append(str(meta))
                 elif isinstance(detected_object[key], dict) and "label" in detected_object[key]:
                     meta[key] = detected_object[key]["label"]
-                    results_output.append(str(meta))
                 elif key == "tensors":
                     for tensor in detected_object[key]:
                         if "name" in tensor and tensor["name"] == "action":
@@ -82,6 +80,8 @@ class ResultsWatcher:
                             label = tensor["label"]
                             results_output.append(label)
                             results_output.append("({:.2f})".format(confidence))
+            if meta:
+                results_output.append(str(meta))
             print("- {}".format(" ".join(results_output)))
             
         for event in results.get("events", []):
