@@ -16,14 +16,11 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 ## What's New
 
-- Updated to integrate with latest AVA (Azure Video Analyzer, formerly known as Live Video Analytics or LVA).
-- Added reference spatial analytics pipelines:
-  - object_tracking/object_line_crossing
-  - object_detection/object_zone_count pipelines
-- Added support for AVA extension configuration feature which enables VA Serving pipeline selection and configuration to be done when starting a media session.
+- Added line crossing and zone counting spatial analytics pipelines.
 - Added `XPU` operations file that runs three pipelines executing detection inference on CPU, GPU and VPU (NCS2) respectively.
-- (Preview) Action Recognition general purpose pipeline.
 - Removed scaling from topology file as DL Streamer will automatically scale to match the selected model.
+- Allow properties specified in media stream descriptor to be added to the [extensions](https://github.com/Azure/video-analyzer/blob/main/contracts/data-schema/Extension%20Data%20Schema.json#L322) field in results object.
+- [Preview] Action Recognition general purpose pipeline.
 
 > Note: VA Serving pipeline selection is still supported via deployment file but this is a deprecated feature. Pipeline parameterization (e.g. setting inference accelerator device) is no longer possible via deployment file.
 
