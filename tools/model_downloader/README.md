@@ -77,7 +77,7 @@ Example:
 ## Downloading Models with the standalone tool
 
 When run as a standalone tool, the model downloader will run within an
-`openvino/ubuntu20_data_dev:2021.3_vaapi_fix` docker image and download models listed in
+`openvino/ubuntu20_data_dev:2021.4` docker image and download models listed in
 a yaml file that can be specified via the  `--model-list` argument.
 
 Example:
