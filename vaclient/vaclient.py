@@ -12,6 +12,7 @@ import os
 import sys
 import requests
 from results_watcher import ResultsWatcher
+from vaserving.pipeline import Pipeline
 
 SERVER_ADDRESS = "http://localhost:8080/"
 RESPONSE_SUCCESS = 200
@@ -39,31 +40,35 @@ RTSP_TEMPLATE = {
         "path": ""
     }
 }
+SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the vaserving microservice is running"
 
 def run(args):
     request = REQUEST_TEMPLATE
     update_request_options(request, args)
     try:
+        watcher = None
         started_instance_id = start_pipeline(request,
                                              args.pipeline,
                                              verbose=args.verbose,
                                              show_request=args.show_request)
         if started_instance_id is None:
-            watcher = None
             sys.exit(1)
-        watcher = ResultsWatcher(request['destination']['metadata']['path'])
-
-        watcher.watch()
-        print_fps(wait_for_pipeline(started_instance_id,
-                                    args.pipeline))
-        watcher.stop()
+        try:
+            if request['destination']['metadata']['type'] == 'file'and \
+                os.path.exists(request['destination']['metadata']['path']):
+                watcher = ResultsWatcher(request['destination']['metadata']['path'])
+                watcher.watch()
+        except KeyError:
+            pass
+        print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
     except KeyboardInterrupt:
-        if watcher:
-            watcher.stop()
         print()
         if started_instance_id:
             stop_pipeline(args.pipeline, started_instance_id)
-            print_fps(wait_for_pipeline(started_instance_id, args.pipeline))
+            print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
+    finally:
+        if watcher:
+            watcher.stop()
 
 def start(args):
     request = REQUEST_TEMPLATE
@@ -84,13 +89,13 @@ def wait(args):
             print(pipeline_status["state"])
         else:
             print("Unable to fetch status")
-        print_fps(wait_for_pipeline(args.instance,
-                                    args.pipeline))
+        print_fps(wait_for_pipeline_completion(args.pipeline,
+                                               args.instance))
     except KeyboardInterrupt:
         print()
         stop_pipeline(args.pipeline, args.instance)
-        print_fps(wait_for_pipeline(args.instance,
-                                    args.pipeline))
+        print_fps(wait_for_pipeline_completion(args.pipeline,
+                                               args.instance))
 
 def status(args):
     pipeline_status = get_pipeline_status(args.pipeline, args.instance, args.show_request)
@@ -106,20 +111,22 @@ def list_models(args):
     _list("models", args.show_request)
 
 def update_request_options(request,
-                           args,
-                           tags=None):
+                           args):
     if hasattr(args, 'uri'):
         request["source"]["uri"] = args.uri
     if hasattr(args, 'destination') and args.destination:
         request['destination']['metadata'].update(args.destination)
     if hasattr(args, 'parameters') and args.parameters:
         request["parameters"] = dict(args.parameters)
+    if hasattr(args, 'parameter_file') and args.parameter_file:
+        with open(args.parameter_file, 'r') as parameter_file:
+            request.update(json.load(parameter_file))
+    if hasattr(args, 'tags') and args.tags:
+        request["tags"] = dict(args.tags)
     if hasattr(args, 'rtsp_path') and args.rtsp_path:
         rtsp_template = RTSP_TEMPLATE
         rtsp_template['frame']['path'] = args.rtsp_path
         request['destination'].update(rtsp_template)
-    if tags:
-        request["tags"] = tags
 
 def start_pipeline(request,
                    pipeline,
@@ -127,9 +134,15 @@ def start_pipeline(request,
                    show_request=False):
     """Launch requested pipeline"""
     try:
-        os.remove(os.path.abspath(request['destination']['metadata']['path']))
-    except OSError:
+        if request['destination']['metadata']['type'] == 'file':
+            output_file = request['destination']['metadata']['path']
+            os.remove(os.path.abspath(output_file))
+    except KeyError:
         pass
+    except FileNotFoundError:
+        pass
+    except OSError:
+        raise OSError("Unable to delete destination metadata file {}".format(output_file))
     if verbose and not show_request:
         print("Starting pipeline...")
 
@@ -160,19 +173,16 @@ def stop_pipeline(pipeline, instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
-def wait_for_pipeline(instance_id,
-                      pipeline):
-    #Await pipeline completion
-    status = {"state": "RUNNING"}
-    while ((status["state"] is None) or
-           (status["state"] == "QUEUED") or
-           (status["state"] == "RUNNING")):
-        #Fetch status of requested pipeline
+def wait_for_pipeline_completion(pipeline,
+                                 instance_id):
+    status = {"state" : "RUNNING"}
+    while status and not Pipeline.State[status["state"]].stopped():
         status = get_pipeline_status(pipeline,
-                                     str(instance_id))
-        if status is None:
-            return None
+                                     instance_id)
         time.sleep(SLEEP_FOR_STATUS)
+    if status and status["state"] == "ERROR":
+        raise ValueError("Error in pipeline, please check vaserving log messages")
+
     return status
 
 def get_pipeline_status(pipeline, instance_id, show_request=False):
@@ -202,8 +212,8 @@ def post(url, body, show_request=False):
             return instance_id
         print("Got unsuccessful status code: {}".format(launch_response.status_code))
         print(launch_response.text)
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def get(url, show_request=False):
@@ -216,8 +226,8 @@ def get(url, show_request=False):
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
         print(status_response.text)
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def delete(url, show_request=False):
@@ -227,10 +237,10 @@ def delete(url, show_request=False):
             sys.exit(0)
         stop_response = requests.delete(url, timeout=TIMEOUT)
         if stop_response.status_code != RESPONSE_SUCCESS:
-            print("Unsucessful status code {} - {}".format(stop_response.status_code, stop_response.text))
+            print("Unsuccessful status code {} - {}".format(stop_response.status_code, stop_response.text))
         return stop_response.status_code
-    except Exception as error:
-        print(error)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
     return None
 
 def print_fps(status):

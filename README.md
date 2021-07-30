@@ -29,15 +29,15 @@ Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 > modification. Developers deploying Video Analytics Serving should
 > review it against their production requirements.
 
-The sample microservice includes four media analytics pipelines.
+The sample microservice includes five categories of media analytics pipelines. Click on the links below to find out more about each of them.
 
 | |                  |
 |---------------------------------------------|---------|
-| **object_detection** | Detect and label objects
-| **object_classification** | As object_detection adding meta-data such as object subtype and color
-| **object_tracking** | As object_classification adding tracking identifier to meta-data
-| **audio_detection** | Analyze audio streams for events such as breaking glass or barking dogs.
-
+| **[object_detection](pipelines/gstreamer/object_detection)** | Detect and label objects
+| **[object_classification](pipelines/gstreamer/object_classification)** | As object_detection adding meta-data such as object subtype and color
+| **[object_tracking](pipelines/gstreamer/object_tracking)** | As object_classification adding tracking identifier to meta-data
+| **[audio_detection](pipelines/gstreamer/audio_detection)** | Analyze audio streams for events such as breaking glass or barking dogs.
+| [Preview] **[action_recognition](pipelines/gstreamer/action_recognition/general/README.md)**  | Classifies general purpose actions in input video such as tying a bow tie or shaking hands.
 
 # Getting Started
 
@@ -47,6 +47,10 @@ The sample microservice includes four media analytics pipelines.
 |---------------------------------------------|------------------|
 | **Docker** | Video Analytics Serving requires Docker for it's build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
 | **bash** | Video Analytics Serving's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
+
+## Supported Hardware
+
+Refer to [OpenVINO System Requirements](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/system-requirements.html) for supported development and target runtime platforms and the [OpenVINO Container Release Notes](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) for details on providing access to accelerator devices.
 
 ## Building the Microservice
 
@@ -107,6 +111,8 @@ Expected output:
 VA Serving includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
 > **Note:** Any RESTful tool or library can be used to send requests to the VA Serving service. We are using vaclient as it simplifies interaction with the service.
 
+> **Note:**  The microservice has to be up and running before the sample client is invoked.
+
 Before running a pipeline, we need to know what pipelines are available. We do this using vaclient's `list-pipeline` command.
 In new shell run the following command:
 ```bash
@@ -118,29 +124,29 @@ $ ./vaclient/vaclient.sh list-pipelines
 ```
 > **Note:** The pipelines you will see may differ slightly
 
-Pipelines are displayed as a name/version tuple. The name reflects the action and version supplies more details of that action. Let's go with `object_detection/person_vehicle_bike`. Now we need to choose a media source. We recommend the [IoT Devkit sample videos](https://github.com/intel-iot-devkit/sample-videos) to get started. As the pipeline version indicates support for detecting people, person-bicycle-car-detection.mp4 would go a good choice.
+Pipelines are displayed as a name/version tuple. The name reflects the action and version supplies more details of that action. Let's go with `object_detection/person_vehicle_bike`. Now we need to choose a media source. We recommend the [IoT Devkit sample videos](https://github.com/intel-iot-devkit/sample-videos) to get started. As the pipeline version indicates support for detecting people, person-bicycle-car-detection.mp4 would be a good choice.
 
 vaclient offers a `run` command that takes two additional arguments the `pipeline` and the `uri` for the media source. The `run` command displays inference results until either the media is exhausted or `CTRL+C` is pressed.
 
-Inference result bounding boxes are displayed in the format `label (confidence) [top left width height] {meta-data}`. At the end of the pipeline run, the average fps is shown.
+Inference result bounding boxes are displayed in the format `label (confidence) [top left width height] {meta-data}` provided applicable data is present. At the end of the pipeline run, the average fps is shown.
 ```
 $ ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 Timestamp 48583333333
-- vehicle (0.95) [0.00, 0.12, 0.15, 0.36] {}
+- vehicle (0.95) [0.00, 0.12, 0.15, 0.36]
 Timestamp 48666666666
-- vehicle (0.79) [0.00, 0.12, 0.14, 0.36] {}
+- vehicle (0.79) [0.00, 0.12, 0.14, 0.36]
 Timestamp 48833333333
-- vehicle (0.68) [0.00, 0.13, 0.11, 0.36] {}
+- vehicle (0.68) [0.00, 0.13, 0.11, 0.36]
 Timestamp 48916666666
-- vehicle (0.78) [0.00, 0.13, 0.10, 0.36] {}
+- vehicle (0.78) [0.00, 0.13, 0.10, 0.36]
 Timestamp 49000000000
-- vehicle (0.63) [0.00, 0.13, 0.09, 0.36] {}
+- vehicle (0.63) [0.00, 0.13, 0.09, 0.36]
 Timestamp 49083333333
-- vehicle (0.63) [0.00, 0.14, 0.07, 0.35] {}
+- vehicle (0.63) [0.00, 0.14, 0.07, 0.35]
 Timestamp 49166666666
-- vehicle (0.69) [0.00, 0.14, 0.07, 0.35] {}
+- vehicle (0.69) [0.00, 0.14, 0.07, 0.35]
 Timestamp 49250000000
-- vehicle (0.64) [0.00, 0.14, 0.05, 0.34] {}
+- vehicle (0.64) [0.00, 0.14, 0.05, 0.34]
 avg_fps: 39.66
 ```
 > **NOTE:** Inference results are not obtained via a REST API but read from an output file.
@@ -217,10 +223,9 @@ $ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://gith
 ```
 If you see the error
 ```
-Got unsuccessful status code: 500
-"Unexpected error"
-
-Pipeline failed to start
+Starting pipeline...
+Pipeline running: object_detection/person_vehicle_bike, instance = 1
+Error in pipeline, please check vaserving log messages
 ```
 You probably forgot to enable RTSP in the server.
 
@@ -360,7 +365,7 @@ Video Analytics Serving makes pipeline customization and model selection a simpl
 # Further Reading
 | **Documentation** | **Reference Guides** | **Tutorials** |
 | ------------    | ------------------ | ----------- |
-| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Video Analytics Serving](docs/building_video_analytics_serving.md) <br/> **-** [Running Video Analytics Serving](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) | **-** [Video Analytics Serving Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| <br/> **-** Object Detecion Tutorials <br/> &nbsp;&nbsp;&nbsp;&nbsp; **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) |
+| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Video Analytics Serving](docs/building_video_analytics_serving.md) <br/> **-** [Running Video Analytics Serving](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Video Analytics Serving Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| <br/> **-** [Changing Object Detection Models](docs/changing_object_detection_models.md)
 
 ## Related Links
 

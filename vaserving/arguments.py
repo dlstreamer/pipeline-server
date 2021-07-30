@@ -67,4 +67,4 @@ def parse_network_preference(options):
     try:
         options.network_preference = json.loads(options.network_preference)
     except Exception:
-        options.network_prefernce = {}
+        options.network_preference = {}

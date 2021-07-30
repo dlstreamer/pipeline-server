@@ -26,7 +26,7 @@ can be customized to meet an application's requirements.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/build.sh`| **ubuntu20_data_runtime:2021.3_vaapi_fix** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh`| **ubuntu20_data_runtime:2021.4** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
 | `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
 ### Building with OpenVINO, Ubuntu 20.04 and DL Streamer Support
 **Example:**
@@ -70,7 +70,7 @@ All validation is done in docker environment. Host built (aka "bare metal") conf
 
 | **Base Image** | **Framework** | **Openvino Version** | **Link** | **Default** |
 |---------------------|---------------|---------------|------------------------|-------------|
-| OpenVINO 2021.3 ubuntu20_data_runtime | GStreamer | 2021.3_vaapi_fix | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | Y |
+| OpenVINO 2021.3 ubuntu20_data_runtime | GStreamer | 2021.3_vaapi_fix_sec | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | Y |
 | Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | Y |
 
 ---

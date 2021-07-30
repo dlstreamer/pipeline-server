@@ -1,0 +1,22 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "object_zone_count_vehicle",
+        "frame-destination": {
+            "type":"rtsp",
+            "path":"zone-event"
+        },
+        "parameters": {
+            "object-zone-count-config": {
+                "zones": [
+                    {
+                        "name": "Zone",
+                        "polygon": [[0.01,0.6],[0.25,0.125],[0.5,0.125],[0.6,0.95]]
+                    }
+                ],
+                "enable_watermark":true,
+                "log_level":"DEBUG"
+            }
+        }
+    }
+}

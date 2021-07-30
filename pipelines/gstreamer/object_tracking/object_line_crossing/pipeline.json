@@ -1,0 +1,112 @@
+{
+	"type": "GStreamer",
+	"template": ["uridecodebin name=source",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
+				" ! gvatrack name=tracking",
+				" ! gvaclassify model={models[object_classification][vehicle_attributes][network]} name=classification",
+				" ! gvapython class=ObjectLineCrossing module=/home/video-analytics-serving/extensions/spatial_analytics/object_line_crossing.py name=object-line-crossing",
+				" ! gvametaconvert name=metaconvert",
+				" ! gvapython module=/home/video-analytics-serving/extensions/gva_event_meta/gva_event_convert.py",
+				" ! gvametapublish name=destination",
+				" ! appsink name=appsink"],
+	"description": "Object Tracking pipeline with Line Crossing Tracking module",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"object-line-crossing-config": {
+				"element": {
+					"name": "object-line-crossing",
+					"property": "kwarg",
+					"format": "json"
+				},
+				"type": "object",
+				"properties": {
+					"lines": {
+						"type": "array",
+						"items": {
+							"type": "object"
+						}
+					},
+					"enable_watermark": {
+						"type": "boolean"
+					},
+					"log_level": {
+						"type": "string"
+					}
+				}
+			},
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"classification-device": {
+				"element": {
+					"name": "classification",
+					"property": "device"
+				},
+				"type": "string"
+			},
+			"tracking-device": {
+				"element":
+					[ {"name":"tracking",
+						"property":"device"}
+					],
+				"type": "string"
+			},
+			"inference-interval": {
+				"element":
+					[ {"name":"detection",
+						"property":"inference-interval"},
+					  {"name":"classification",
+					   "property":"inference-interval"}
+					],
+				"type": "integer"
+			},
+			"detection-model-instance-id": {
+				"element": {
+					"name": "detection",
+					"property": "model-instance-id"
+				},
+				"type": "string"
+			},
+			"classification-model-instance-id": {
+				"element": {
+					"name": "classification",
+					"property": "model-instance-id"
+				},
+				"type": "string"
+			},
+			"object-class": {
+				"element": "classification",
+				"type": "string",
+				"default": "vehicle"
+			},
+			"reclassify-interval": {
+				"element": "classification",
+				"type": "integer"
+			},
+			"tracking-type": {
+				"element": "tracking",
+				"type": "string",
+				"default": "short-term"
+			},
+			"detection-threshold": {
+				"element": {
+					"name": "detection",
+					"property": "threshold"
+				},
+				"type": "number"
+			},
+			"classification-threshold": {
+				"element": {
+					"name": "classification",
+					"property": "threshold"
+				},
+				"type": "number"
+			}
+		}
+	}
+}

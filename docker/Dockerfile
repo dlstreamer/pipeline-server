@@ -32,6 +32,10 @@ ARG USER=vaserving
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/video-analytics-serving && \
     chown ${USER} -R /home/video-analytics-serving /root
 
+RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]; then \
+       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \
+    fi
+
 RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
@@ -40,6 +44,12 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; the
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;\
     fi
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get upgrade -y -q && \
+    apt-get dist-upgrade -y -q && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;
 
 RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -52,7 +62,7 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ff
     fi
 
 COPY ./requirements.txt /
-RUN pip3 install  --no-cache-dir -r /requirements.txt
+RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
 # Video Analytics Serving Python Modules
@@ -97,6 +107,9 @@ ONBUILD ARG PIPELINES_PATH
 ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
 ONBUILD COPY ${PIPELINES_PATH} /home/video-analytics-serving/pipelines
 
+# Copy GVA Python extensions
+ONBUILD COPY ./extensions /home/video-analytics-serving/extensions
+
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines
 ########################################################
@@ -122,5 +135,9 @@ FROM ${FINAL_STAGE} as deploy
 ARG USER=vaserving
 
 ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
+
+# Prepare XDG_RUNTIME_DIR
+ENV XDG_RUNTIME_DIR=/home/.xdg_runtime_dir
+RUN mkdir -p -m g+s $XDG_RUNTIME_DIR && chown ${USER}:users $XDG_RUNTIME_DIR
 
 USER ${USER}

@@ -1,0 +1,24 @@
+{
+	"type": "GStreamer",
+	"template": ["appsrc name=source ! videoconvert ! video/x-raw,format=BGRx",
+		" ! gvaactionrecognitionbin enc-model={models[action_recognition][encoder][network]} dec-model={models[action_recognition][decoder][network]} model-proc={models[action_recognition][decoder][proc]} name=action_recognition",
+		" ! appsink name=destination"],
+	"description": "General action recognition based on action-recognition-0001",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"dec-device": {
+				"element": "action_recognition",
+				"description": "Decoder inference device: [CPU, GPU]",
+				"type": "string",
+				"default": "CPU"
+			},
+			"enc-device": {
+				"element": "action_recognition",
+				"description": "Encoder inference device: [CPU, GPU]",
+				"type": "string",
+				"default": "CPU"
+			}
+		}
+	}
+}

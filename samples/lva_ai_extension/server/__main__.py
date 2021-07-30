@@ -37,6 +37,7 @@ import extension_pb2_grpc  # pylint: disable=import-error
 from vaserving.vaserving import VAServing
 from vaserving.common.utils.logging import get_logger
 from media_graph_extension import MediaGraphExtension
+from samples.lva_ai_extension.common.exception_handler import log_exception
 
 PROGRAM_NAME = "DL Streamer Edge AI Extension"
 
@@ -106,6 +107,7 @@ if __name__ == "__main__":
 
     args, va_serving_args = parse_args()
     logger = get_logger("Main")
+    server = None
     try:
         server_args = append_default_server_args(
             va_serving_args, args.max_running_pipelines
@@ -141,9 +143,11 @@ if __name__ == "__main__":
         logger.info("Starting %s on port: %d", PROGRAM_NAME, args.port)
         server.start()
         server.wait_for_termination()
-        VAServing.stop()
 
-    except Exception as error:
-        logger.error(error)
-        VAServing.stop()
+    except (KeyboardInterrupt, SystemExit, Exception):
+        log_exception()
         sys.exit(-1)
+    finally:
+        if server:
+            server.stop(None)
+        VAServing.stop()

@@ -12,7 +12,7 @@ OUTPUT_DIR=$(realpath $( pwd ))
 FORCE=
 RUN_PREFIX=
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.3_vaapi_fix"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4"}
 DL_STREAMER_VERSION=
 MODE=
 MODEL_LIST=$SOURCE_DIR/"models_list/models.list.yml"
@@ -112,6 +112,9 @@ case $OPEN_MODEL_ZOO_VERSION in
     2021.3*)
         DL_STREAMER_VERSION="v1.4.1"
         ;;
+    2021.4*)
+        DL_STREAMER_VERSION="v1.5"
+        ;;
     *)
         error 'ERROR: Unknown Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION
 esac
@@ -125,4 +128,4 @@ if [ ! -d "$OUTPUT_DIR/models" ]; then
     echo "Created output models folder as UID: $UID"
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" $NON_INTERACTIVE --dev --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""

@@ -30,7 +30,8 @@ class GStreamerPipeline(Pipeline):
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
                                    "GstGvaClassify",
                                    "GstGvaInference",
-                                   "GvaAudioDetect"]
+                                   "GvaAudioDetect",
+                                   "GstGvaActionRecognitionBin"]
 
     _inference_element_cache = {}
     _mainloop = None
@@ -60,7 +61,7 @@ class GStreamerPipeline(Pipeline):
         self.frame_count = 0
         self.start_time = None
         self.stop_time = None
-        self.avg_fps = 0
+        self._avg_fps = 0
         self._gst_launch_string = None
         self.latency_times = dict()
         self.sum_pipeline_latency = 0
@@ -95,7 +96,7 @@ class GStreamerPipeline(Pipeline):
 
         self.rtsp_server = GStreamerPipeline._rtsp_server
 
-        self._verify_and_set_rtsp_destination()
+
 
     @staticmethod
     def mainloop_quit():
@@ -116,7 +117,7 @@ class GStreamerPipeline(Pipeline):
         frame_destination = destination.get("frame", {})
         frame_destination_type = frame_destination.get("type", None)
         if frame_destination_type == "rtsp":
-            if not self.rtsp_server:
+            if (not self.appsink_element) or (not self.rtsp_server):
                 raise Exception("Unsupported Frame Destination: RTSP Server isn't enabled")
             self.rtsp_path = frame_destination["path"]
             if not self.rtsp_path.startswith('/'):
@@ -131,6 +132,7 @@ class GStreamerPipeline(Pipeline):
 
 
     def _delete_pipeline(self, new_state):
+        self._cal_avg_fps()
         self.state = new_state
         self.stop_time = time.time()
         self._logger.debug("Setting Pipeline {id}"
@@ -209,7 +211,7 @@ class GStreamerPipeline(Pipeline):
         status_obj = {
             "id": self.identifier,
             "state": self.state,
-            "avg_fps": self.avg_fps,
+            "avg_fps": self.get_avg_fps(),
             "start_time": self.start_time,
             "elapsed_time": elapsed_time
         }
@@ -220,7 +222,12 @@ class GStreamerPipeline(Pipeline):
         return status_obj
 
     def get_avg_fps(self):
-        return self.avg_fps
+        self._cal_avg_fps()
+        return self._avg_fps
+
+    def _cal_avg_fps(self):
+        if not self.state.stopped() and self.start_time is not None:
+            self._avg_fps = self.frame_count / (time.time() - self.start_time)
 
     def _get_element_property(self, element, key):
         if isinstance(element, str):
@@ -293,15 +300,22 @@ class GStreamerPipeline(Pipeline):
             GStreamerPipeline._inference_element_cache[key].pipelines.append(self)
 
     def _set_default_models(self):
-        gva_elements = [element for element in self.pipeline.iterate_elements() if (
-            element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and
-            "VA_DEVICE_DEFAULT" in element.get_property("model"))]
-        for element in gva_elements:
-            network = self.model_manager.get_default_network_for_device(
-                element.get_property("device"), element.get_property("model"))
-            self._logger.debug("Setting model to {} for element {}".format(
-                network, element.get_name()))
-            element.set_property("model", network)
+        model_device_pairing = [("model", "device"),
+                                ("enc-model", "enc-device"),
+                                ("dec-model", "dec-device")]
+
+        for model_name, device_name in model_device_pairing:
+            gva_elements = [element for element in self.pipeline.iterate_elements() if (
+                element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES and
+                element.find_property(model_name) and
+                "VA_DEVICE_DEFAULT" in element.get_property(model_name))]
+
+            for element in gva_elements:
+                network = self.model_manager.get_default_network_for_device(
+                    element.get_property(device_name), element.get_property(model_name))
+                self._logger.debug("Setting {} to {} for element {}".format(
+                    model_name, network, element.get_name()))
+                element.set_property(model_name, network)
 
     @staticmethod
     def _get_elements_by_type(pipeline, type_strings):
@@ -498,6 +512,8 @@ class GStreamerPipeline(Pipeline):
         if (app_sink_elements):
             self.appsink_element = app_sink_elements[0]
 
+        self._verify_and_set_rtsp_destination()
+
         destination = self.request.get("destination", None)
         if destination and "metadata" in destination and destination["metadata"]["type"] == "application":
             app_destination = AppDestination.create_app_destination(
@@ -511,7 +527,6 @@ class GStreamerPipeline(Pipeline):
         if self.appsink_element is not None:
             self.appsink_element.set_property("emit-signals", True)
             self.appsink_element.set_property('sync', False)
-            self.avg_fps = 0
 
             if not self._app_destinations:
                 self.appsink_element.connect("new-sample", self.on_sample)
@@ -599,7 +614,6 @@ class GStreamerPipeline(Pipeline):
             return Gst.FlowReturn.ERROR
 
         self.frame_count += 1
-        self.avg_fps = self.frame_count / (time.time() - self.start_time)
         return Gst.FlowReturn.OK
 
     def on_sample(self, sink):
@@ -620,7 +634,6 @@ class GStreamerPipeline(Pipeline):
             return Gst.FlowReturn.ERROR
 
         self.frame_count += 1
-        self.avg_fps = self.frame_count / (time.time() - self.start_time)
         return Gst.FlowReturn.OK
 
     def bus_call(self, unused_bus, message, unused_data=None):
@@ -648,6 +661,7 @@ class GStreamerPipeline(Pipeline):
                         self._logger.info(
                             "Setting Pipeline {id} State to RUNNING".format(id=self.identifier))
                         self.state = Pipeline.State.RUNNING
+                        self.start_time = time.time()
         else:
             if self._bus_messages:
                 structure = Gst.Message.get_structure(message)

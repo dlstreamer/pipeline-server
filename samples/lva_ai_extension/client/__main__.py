@@ -37,6 +37,7 @@ import cv2
 import jsonschema
 
 from google.protobuf.json_format import MessageToDict
+import samples.lva_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
 from samples.lva_ai_extension.common.exception_handler import log_exception
 import samples.lva_ai_extension.common.extension_schema as extension_schema
 from arguments import parse_args
@@ -44,31 +45,39 @@ from media_stream_processor import MediaStreamProcessor
 
 
 class VideoSource:
-    def __init__(self, filename, loop_count):
+    def __init__(self, filename, loop_count, scale_factor = 1.0):
         self._loop_count = loop_count
         self._filename = filename
+        self._scale_factor = scale_factor
         self._open_video_source()
 
     def _open_video_source(self):
         self._vid_cap = cv2.VideoCapture(self._filename, cv2.CAP_GSTREAMER)
         if self._vid_cap is None or not self._vid_cap.isOpened():
-            logging.error("Error opening video source: {}".format(self._filename))
-            sys.exit(1)
+            raise Exception("Error opening video source: {}".format(self._filename))
 
     def dimensions(self):
-        width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+        height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
         return width, height
 
     def get_frame(self):
         ret, frame = self._vid_cap.read()
         if ret:
+            width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+            height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
+            dsize = (width, height)
+            frame = cv2.resize(frame, dsize)
             return frame.tobytes()
         self._loop_count -= 1
         if self._loop_count > 0:
             self._open_video_source()
             ret, frame = self._vid_cap.read()
             if ret:
+                width = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH) * self._scale_factor)
+                height = int(self._vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * self._scale_factor)
+                dsize = (width, height)
+                frame = cv2.resize(frame, dsize)
                 return frame.tobytes()
         return None
 
@@ -86,36 +95,73 @@ def _log_options(args):
         logging.info("{} == {}".format(arg, getattr(args, arg)))
         logging.info(banner)
 
+def _log_entity(inference):
+    tag = inference.entity.tag
+    box = inference.entity.box
+    attributes = []
+    if inference.inference_id:
+        attribute_string = "{}: {}".format('inferenceId', inference.inference_id)
+        attributes.append(attribute_string)
+    if inference.subtype:
+        attribute_string = "{}: {}".format('subtype', inference.subtype)
+        attributes.append(attribute_string)
+    if inference.entity.id:
+        attribute_string = "{}: {}".format('id', inference.entity.id)
+        attributes.append(attribute_string)
+    for attribute in inference.entity.attributes:
+        attribute_string = "{}: {}".format(attribute.name, attribute.value)
+        attributes.append(attribute_string)
+    logging.info(
+        "ENTITY - {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(
+            tag.value, tag.confidence, box.l, box.t, box.w, box.h, attributes
+        )
+    )
+
+def _log_event(inference):
+    name = inference.event.name
+    attributes = []
+    if inference.inference_id:
+        attribute_string = "{}: {}".format('inferenceId', inference.inference_id)
+        attributes.append(attribute_string)
+    if inference.subtype:
+        attribute_string = "{}: {}".format('subtype', inference.subtype)
+        attributes.append(attribute_string)
+    if inference.related_inferences:
+        attribute_string = "{}: {}".format('relatedInferences', inference.related_inferences)
+        attributes.append(attribute_string)
+    for attribute in inference.event.properties:
+        attribute_string = "{}: {}".format(attribute, inference.event.properties[attribute])
+        attributes.append(attribute_string)
+    logging.info(
+        "EVENT - {}: {}".format(name, attributes)
+    )
+
+def _log_classification(inference):
+    tag = inference.classification.tag
+    logging.info("CLASSIFICATION - {} ({:.2f})".format(tag.value, tag.confidence))
 
 def _log_result(response, output, log_result=True):
     if not log_result:
         return
     if not response:
         return
-    logging.info("Inference result {}".format(response.ack_sequence_number))
+    logging.debug("Inference result {}".format(response.ack_sequence_number))
     for inference in response.media_sample.inferences:
-        tag = inference.entity.tag
-        box = inference.entity.box
-        log_message = "- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}]"\
-                     .format(tag.value, tag.confidence, box.l, box.t, box.w, box.h)
-        if inference.entity.id:
-            log_message += " id:{} ".format(inference.entity.id)
-        attributes = []
-        for attribute in inference.entity.attributes:
-            attribute_string = "{}: {}".format(attribute.name, attribute.value)
-            attributes.append(attribute_string)
-        logging.info(
-            "- {} ({:.2f}) [{:.2f}, {:.2f}, {:.2f}, {:.2f}] {}".format(
-                tag.value, tag.confidence, box.l, box.t, box.w, box.h, attributes
-            )
-        )
+        if inference.type == inferencing_pb2.Inference.InferenceType.ENTITY: # pylint: disable=no-member
+            _log_entity(inference)
+
+        if inference.type == inferencing_pb2.Inference.InferenceType.EVENT: # pylint: disable=no-member
+            _log_event(inference)
+
+        if inference.type == inferencing_pb2.Inference.InferenceType.CLASSIFICATION: # pylint: disable=no-member
+            _log_classification(inference)
+
     # default value field is used to avoid not including values set to 0,
     # but it also causes empty lists to be included
     returned_dict = MessageToDict(
         response.media_sample, including_default_value_fields=True
     )
     output.write("{}\n".format(json.dumps(returned_dict)))
-
 
 def _log_fps(start_time, frames_received, prev_fps_delta, fps_interval):
     delta = int(time.time() - start_time)
@@ -134,8 +180,7 @@ def validate_extension_config(extension_config):
                                                format_checker=jsonschema.draft4_format_checker)
         validator.validate(extension_config)
     except jsonschema.exceptions.ValidationError as err:
-        logging.error("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
-        sys.exit(1)
+        raise Exception("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
 
 def create_extension_config(args):
     extension_config = {}
@@ -148,43 +193,55 @@ def create_extension_config(args):
         try:
             pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
         except ValueError:
-            logging.error("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
-            sys.exit(1)
+            raise Exception("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
     if args.frame_destination:
         try:
             pipeline_config["frame-destination"] = json.loads(args.frame_destination)
         except ValueError:
-            logging.error("Issue loading frame destination: {}".format(args.frame_destination))
-            sys.exit(1)
+            raise Exception("Issue loading frame destination: {}".format(args.frame_destination))
+    if args.pipeline_extensions:
+        try:
+            pipeline_config["pipeline_extensions"] = json.loads(args.pipeline_extensions)
+        except ValueError:
+            raise Exception("Issue loading pipeline extensions: {}".format(args.pipeline_extensions))
 
     if len(pipeline_config) > 0:
         extension_config.setdefault("pipeline", pipeline_config)
 
-    validate_extension_config(extension_config)
-
     return extension_config
 
 def main():
+    msp = None
+    frame_source = None
     try:
         args = parse_args()
         _log_options(args)
         frame_delay = 1 / args.frame_rate if args.frame_rate > 0 else 0
-        frame_source = None
         frame_queue = queue.Queue(args.frame_queue_size)
         result_queue = queue.Queue()
         frames_sent = 0
         frames_received = 0
         prev_fps_delta = 0
         start_time = None
-        frame_source = VideoSource(args.sample_file, args.loop_count)
+        frame_source = VideoSource(args.sample_file, args.loop_count, args.scale_factor)
         width, height = frame_source.dimensions()
         image = frame_source.get_frame()
 
         if not image:
-            logging.error(
-                "Error getting frame from video source: {}".format(args.sample_file)
-            )
-            sys.exit(1)
+            raise Exception("Error getting frame from video source: {}".format(args.sample_file))
+
+        extension_config = {}
+        if args.extension_config:
+            if args.extension_config.endswith(".json"):
+                with open(args.extension_config, "r") as config:
+                    extension_config = json.loads(config.read())
+            else:
+                extension_config = json.loads(args.extension_config)
+        else:
+            extension_config = create_extension_config(args)
+
+        validate_extension_config(extension_config)
+        logging.info("Extension Configuration: {}".format(extension_config))
 
         msp = MediaStreamProcessor(
             args.grpc_server_address,
@@ -193,21 +250,17 @@ def main():
             len(image),
         )
 
-        extension_config = json.dumps(create_extension_config(args))
-
-        msp.start(width, height, frame_queue, result_queue, extension_config)
+        msp.start(width, height, frame_queue, result_queue, json.dumps(extension_config))
 
         with open(args.output_file, "w") as output:
             start_time = time.time()
             result = True
-            while image and result:
+            while image and result and frames_sent < args.max_frames:
                 frame_queue.put(image)
                 while not result_queue.empty():
                     result = result_queue.get()
                     if isinstance(result, Exception):
-                        logging.error(result)
-                        frame_source.close()
-                        sys.exit(1)
+                        raise result
                     frames_received += 1
                     prev_fps_delta = _log_fps(
                         start_time, frames_received, prev_fps_delta, args.fps_interval
@@ -222,9 +275,7 @@ def main():
                 result = result_queue.get()
             while result:
                 if isinstance(result, Exception):
-                    logging.error(result)
-                    frame_source.close()
-                    sys.exit(1)
+                    raise result
                 frames_received += 1
                 prev_fps_delta = _log_fps(
                     start_time, frames_received, prev_fps_delta, args.fps_interval
@@ -232,7 +283,6 @@ def main():
                 _log_result(result, output)
                 result = result_queue.get()
 
-        frame_source.close()
         delta = time.time() - start_time
         logging.info(
             "Start Time: {} End Time: {} Frames: Tx {} Rx {} FPS: {}".format(
@@ -244,18 +294,20 @@ def main():
             )
         )
 
-    except Exception:
+        if frames_sent != frames_received:
+            raise Exception("Sent {} requests, received {} responses".format(
+                frames_sent, frames_received))
+
+        return True
+
+    except (KeyboardInterrupt, SystemExit, Exception):
         log_exception()
-        return -1
-
-    if frames_sent != frames_received:
-        logging.error("Sent {} requests, received {} responses".format(
-            frames_sent, frames_received
-        ))
-        return 1
-
-    return 0
-
+        return False
+    finally:
+        if msp:
+            msp.stop()
+        if frame_source:
+            frame_source.close()
 
 if __name__ == "__main__":
     # Set logging parameters
@@ -269,6 +321,6 @@ if __name__ == "__main__":
     )
 
     # Call Main logic
-    ret = main()
+    if not main():
+        sys.exit(1)
     logging.info("Client finished execution")
-    sys.exit(ret)

@@ -1,0 +1,16 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "object_zone_count_vehicle",
+        "parameters": {
+            "object-zone-count-config": {
+                "zones": [
+                    {
+                        "name": "Zone",
+                        "polygon": [[0.25,0.25],[0.25,0.75],[0.75,0.75],[0.75,0.25]]
+                    }
+                ]
+            }
+        }
+    }
+}

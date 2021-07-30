@@ -16,7 +16,7 @@ reference pipeline to use a different object detection model.
 
 Original: [person-vehicle-bike](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078)
 
-After Change: [yolo-v2-tiny-tf](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/yolo-v2-tiny-tf/yolo-v2-tiny-tf.md)
+After Change: [yolo-v2-tiny-tf](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/public/yolo-v2-tiny-tf)
 
 ## Sample Videos Used:
 
@@ -48,15 +48,17 @@ Build and run the sample microservice with the following commands:
 ```
 
 ### List Models
-Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also counbt the number of models. In this example there are 6.
+Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also count the number of models. In this example there are 8.
 ```
 $ ./vaclient/vaclient.sh list-models
- - audio_detection/environment
- - face_detection_retail/1
- - object_classification/vehicle_attributes
+ - emotion_recognition/1
  - object_detection/1
  - object_detection/person_vehicle_bike
- - emotion_recognition/1
+ - object_classification/vehicle_attributes
+ - audio_detection/environment
+ - action_recognition/encoder
+ - action_recognition/decoder
+ - face_detection_retail/1
 ```
 
 ### Detect Objects on Sample Video
@@ -67,19 +69,19 @@ In a second terminal window use [vaclient](/vaclient/README.md) to run the pipel
 Starting pipeline...
 Pipeline running: object_detection/person_vehicle_bike, instance = 1
 Timestamp 33519553
-- vehicle (0.53) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.53) [0.79, 0.71, 0.89, 0.88]
 Timestamp 67039106
-- vehicle (0.57) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.57) [0.79, 0.71, 0.89, 0.88]
 Timestamp 100558659
-- vehicle (0.51) [0.79, 0.72, 0.89, 0.88] {}
+- vehicle (0.51) [0.79, 0.72, 0.89, 0.88]
 Timestamp 134078212
-- vehicle (0.50) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.50) [0.79, 0.71, 0.89, 0.88]
 Timestamp 167597765
-- vehicle (0.52) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.52) [0.79, 0.71, 0.89, 0.88]
 Timestamp 201117318
-- vehicle (0.52) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.52) [0.79, 0.71, 0.89, 0.88]
 Timestamp 569832402
-- vehicle (0.54) [0.79, 0.71, 0.89, 0.88] {}
+- vehicle (0.54) [0.79, 0.71, 0.89, 0.88]
 ```
 You can see that a model trained for vehicles cannot detect bottles.
 
@@ -209,27 +211,32 @@ pipelines to make testing local changes easier.
 ```
 Once started you can verify that the new model and pipeline have been loaded.
 
-The `list-models` command now shows 7 models, including `object_detection/yolo-v2-tiny-tf`
+The `list-models` command now shows 9 models, including `object_detection/yolo-v2-tiny-tf`
 ```bash
 $ ./vaclient/vaclient.sh list-models
- - audio_detection/environment
- - face_detection_retail/1
- - object_classification/vehicle_attributes
- - object_detection/yolo-v2-tiny-tf
- - object_detection/1
- - object_detection/person_vehicle_bike
  - emotion_recognition/1
+ - object_detection/1
+ - object_detection/yolo-v2-tiny-tf
+ - object_detection/person_vehicle_bike
+ - object_classification/vehicle_attributes
+ - audio_detection/environment
+ - action_recognition/encoder
+ - action_recognition/decoder
+ - face_detection_retail/1
 ```
 The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
 ```bash
 $ ./vaclient/vaclient.sh list-pipelines
- - audio_detection/environment
- - object_classification/vehicle_attributes
- - video_decode/app_dst
  - object_detection/app_src_dst
  - object_detection/yolo-v2-tiny-tf
+ - object_detection/object_zone_count
  - object_detection/person_vehicle_bike
+ - object_classification/vehicle_attributes
+ - audio_detection/environment
+ - video_decode/app_dst
+ - object_tracking/object_line_crossing
  - object_tracking/person_vehicle_bike
+ - action_recognition/general
 ```
 
 
@@ -241,15 +248,15 @@ You can see the `yolo-v2-tiny-tf` model in action as objects are now correctly d
 $ ./vaclient/vaclient.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4
 Pipeline running: object_detection/yolo-v2-tiny-tf, instance = 1
 Timestamp 972067039
-- bottle (0.51) [0.09, 0.36, 0.18, 0.62] {}
+- bottle (0.51) [0.09, 0.36, 0.18, 0.62]
 Timestamp 1005586592
-- bottle (0.54) [0.09, 0.37, 0.18, 0.62] {}
+- bottle (0.54) [0.09, 0.37, 0.18, 0.62]
 Timestamp 1039106145
-- bottle (0.52) [0.09, 0.36, 0.18, 0.62] {}
+- bottle (0.52) [0.09, 0.36, 0.18, 0.62]
 Timestamp 1139664804
-- bottle (0.50) [0.08, 0.36, 0.18, 0.62] {}
+- bottle (0.50) [0.08, 0.36, 0.18, 0.62]
 Timestamp 1206703910
-- bottle (0.51) [0.08, 0.36, 0.18, 0.62] {}
+- bottle (0.51) [0.08, 0.36, 0.18, 0.62]
 ```
 
 ## Step 6. Rebuild Microservice with New Model and Pipeline
@@ -267,13 +274,15 @@ rm -r models
 Once started you can verify that the new model has been loaded.
 ```bash
 $ ./vaclient/vaclient.sh list-models
- - audio_detection/environment
- - face_detection_retail/1
- - object_classification/vehicle_attributes
- - object_detection/yolo-v2-tiny-tf
- - object_detection/1
- - object_detection/person_vehicle_bike
  - emotion_recognition/1
+ - object_detection/1
+ - object_detection/yolo-v2-tiny-tf
+ - object_detection/person_vehicle_bike
+ - object_classification/vehicle_attributes
+ - audio_detection/environment
+ - action_recognition/encoder
+ - action_recognition/decoder
+ - face_detection_retail/1
 ```
 
 # Further Reading

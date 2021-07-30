@@ -28,6 +28,7 @@
 * SOFTWARE
 '''
 
+import sys
 import argparse
 
 def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
@@ -65,6 +66,14 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
         dest="sample_file",
         help="Name of the sample video frame.",
         default="/home/video-analytics-serving/samples/lva_ai_extension/sampleframes/sample01.png",
+    )
+    parser.add_argument(
+        "--max-frames",
+        metavar=("max_frames"),
+        dest="max_frames",
+        help="How many frames to send from video.",
+        type=int,
+        default=sys.maxsize,
     )
     parser.add_argument(
         "-l",
@@ -142,12 +151,37 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
     )
 
     parser.add_argument(
+        "--pipeline-extensions",
+        action="store",
+        dest="pipeline_extensions",
+        type=str,
+        default="",
+    )
+
+    parser.add_argument(
         "--frame-destination",
         action="store",
         dest="frame_destination",
         type=str,
         default="",
     )
+
+    parser.add_argument(
+        "--scale-factor",
+        action="store",
+        dest="scale_factor",
+        help="scale factor for decoded images",
+        type=float,
+        default=1.0,
+    )
+
+    parser.add_argument(
+        "--extension-config",
+        action="store",
+        dest="extension_config",
+        help="extension config in .json file path or as string",
+        default="",
+    )  # nosec
 
     parser.add_argument("--version", action="version", version="%(prog)s 1.0")
     if isinstance(args, dict):

@@ -6,59 +6,34 @@ Third party programs and their corresponding required notices and/or license ter
 -------------------------------------------------------------
 
 
-1. setuptools (MIT)
-   https://setuptools.readthedocs.io/en/latest/setuptools.html
-   https://packages.debian.org/sid/python3-setuptools
-   https://github.com/pypa/setuptools/blob/master/LICENSE
-
+1. setuptools
     Copyright (C) 2016 Jason R Coombs <jaraco@jaraco.com>
 
-   pip3 (MIT)
-   https://packages.debian.org/sid/python3-pip
-   https://github.com/pypa/pip/blob/master/LICENSE.txt
-
+   pip3
     Copyright (c) 2008-2020 The pip developers (see AUTHORS.txt file)
 
-   jsonschema (MIT)
-   https://github.com/Julian/jsonschema/
-   https://github.com/Julian/jsonschema/blob/main/COPYING
-
+   jsonschema
     Copyright (c) 2013 Julian Berman
 
-   rfc3986-validator (MIT)
-   https://pypi.org/project/rfc3986-validator/
-   https://github.com/naimetti/rfc3986-validator/blob/master/LICENSE
-
+   rfc3986-validator
     Copyright (c) 2019, Nicolas Aimetti
 
-   rfc3339-validator (MIT)
-   https://pypi.org/project/rfc3339-validator/
-   https://github.com/naimetti/rfc3339-validator/blob/master/LICENSE
+   rfc3339-validator
     Copyright (c) 2019, Nicolas Aimetti
 
-   pyyaml (MIT)
-   https://pypi.org/project/PyYAML/
-   https://github.com/yaml/pyyaml/blob/master/LICENSE
-
+   pyyaml
     Copyright (c) 2017-2020 Ingy döt Net
     Copyright (c) 2006-2016 Kirill Simonov
 
-   Live Video Analytics (MIT)
+   Live Video Analytics
    https://azure.microsoft.com/en-us/services/media-services/live-video-analytics/
-   https://github.com/Azure/live-video-analytics/blob/master/LICENSE
-
     Copyright 2020 Microsoft Corporation
     Modifications Copyright 2020 Intel Corporation
 
-   VAAPI driver for the Intel GEN8+ Graphics family (MIT)
-   https://packages.ubuntu.com/focal/intel-media-va-driver-non-free
-   https://github.com/intel/media-driver/blob/master/LICENSE.md
-
+   VAAPI driver for the Intel GEN8+ Graphics family
     Copyright (c) 2017-2021, Intel Corporation
 
    Intel OpenCL
-   https://github.com/intel/compute-runtime/blob/master/LICENSE
-
     Copyright (C) 2018-2021 Intel Corporation
 
 MIT License
@@ -70,63 +45,35 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -------------------------------------------------------------
 
 
-2. grpcio (Apache 2.0)
-   https://grpc.io/docs/guides/
-   https://pypi.org/project/grpcio/
-   https://github.com/grpc/grpc/blob/master/LICENSE
-
+2. grpcio
     Copyright 2014 gRPC authors.
 
-   aclnet.bin (Apache 2.0)
-   aclnet.mapping
-   aclnet.xml
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/LICENSE
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/aclnet/model.yml
-
+   aclnet
+    https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/public/aclnet
     Copyright (c) 2020 Intel Corporation
 
-   person-vehicle-bike-detection-crossroad-0078.bin (Apache 2.0)
-   person-vehicle-bike-detection-crossroad-0078.xml​
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/LICENSE
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/intel/person-vehicle-bike-detection-crossroad-0078/model.yml
-
-    Copyright (c) 2020 Intel Corporation
-
-   vehicle-attributes-recognition-barrier-0039.bin (Apache 2.0)
-   vehicle-attributes-recognition-barrier-0039.xml
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/LICENSE
-   https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/intel/vehicle-attributes-recognition-barrier-0039/model.yml
-
-    Copyright (c) 2020 Intel Corporation
-
-   Requests (Apache 2.0)
-   https://packages.debian.org/sid/python3-requests
-   https://github.com/kennethreitz/requests/blob/master/LICENSE
-
+   person-vehicle-bike-detection-crossroad-0078
+   vehicle-attributes-recognition-barrier-0039
+   vehicle-detection-0202
+   person-detection-retail-0013
+   action-recognition-0001-decoder
+   action-recognition-0001-encoder
+   driver-action-recognition-adas-0002-decoder
+   driver-action-recognition-adas-0002-encoder
+    https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel
+    Copyright (c) 2021 Intel Corporation
+   
+   Requests
     Copyright 2019 Kenneth Reitz
 
-   swagger-ui-bundle (Apache 2.0)
-   https://pypi.org/project/swagger-ui-bundle/
-   https://libraries.io/pypi/swagger-ui-bundle
-   https://github.com/swagger-api/swagger-ui/blob/master/LICENSE
-
+   swagger-ui-bundle
     Copyright 2020 SmartBear Software Inc.
 
-   Tornado Web Server (Apache 2.0)
-   https://packages.debian.org/sid/python3-tornado
-   https://github.com/tornadoweb/tornado/blob/master/LICENSE
-   https://launchpad.net/ubuntu/precise/+source/python-tornado/+copyright
-
+   Tornado Web Server
     Copyright: 2009-2011 Facebook
 
-   Zalando Connexion (Apache 2.0)
-   https://pypi.org/project/connexion/
-   https://github.com/zalando/connexion/blob/master/LICENSE.txt
-
-   Copyright 2015 Zalando SE
-
-
-
+   Zalando Connexion
+    Copyright 2015 Zalando SE
 
 Apache 2.0 License
  
@@ -334,10 +281,7 @@ Apache 2.0 License
 
 -------------------------------------------------------------
 
-3. Python 3 (PSF)
-   https://packages.debian.org/sid/python3
-   https://docs.python.org/3/license.html
-
+3. Python 3
    Copyright © 2001-2020 Python Software Foundation; All Rights
    Reserved
 
@@ -386,9 +330,6 @@ Apache 2.0 License
 -------------------------------------------------------------
 
 4. Numpy (BSD 3-clause Numpy Customized)
-   https://github.com/numpy/numpy
-   https://github.com/numpy/numpy/blob/master/LICENSE.txt
-
     Copyright (c) 2005-2020, NumPy Developers.
     All rights reserved.
 
@@ -423,9 +364,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------
 
 5. protobuf (BSD 3-clause Google Customized)
-   https://github.com/protocolbuffers/protobuf
-   https://github.com/protocolbuffers/protobuf/blob/master/LICENSE
-
     Copyright 2008 Google Inc.  All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -461,9 +399,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------
 
-6. python-psutil (BSD 3-clause) https://psutil.readthedocs.io/en/latest/
-   https://github.com/giampaolo/psutil/blob/master/LICENSE
-
+6. python-psutil 
     Copyright (c) 2009, Jay Loden, Dave Daeschler, Giampaolo Rodola'
     All rights reserved.
 
@@ -499,10 +435,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------
 
-7. jemalloc (BSD2)
-   http://jemalloc.net/
-   https://github.com/jemalloc/jemalloc
-   https://github.com/jemalloc/jemalloc/blob/dev/COPYING
+7. jemalloc
   
 Unless otherwise specified, files in the jemalloc source distribution are
 subject to the following license:
@@ -533,10 +466,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------
 
-8. Python Paho MQTT Client (Eclipse Distribution License 1.0 (BSD))
-
-https://pypi.org/project/paho-mqtt/
-https://projects.eclipse.org/projects/iot.paho
+8. Python Paho MQTT Client
 
 Eclipse Distribution License - v 1.0
 Copyright (c) 2007, Eclipse Foundation, Inc. and its licensors.
@@ -552,13 +482,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -------------------------------------------------------------
 
-9. python-dateutil (Apache 2.0)
-   https://pypi.org/project/python-dateutil/
-   https://github.com/dateutil/dateutil/blob/master/LICENSE
-
-    Copyright 2017- Paul Ganssle <paul@ganssle.io>
-    Copyright 2017- dateutil contributors (see AUTHORS file)
-
+9. python-dateutil
 
 Copyright 2017- Paul Ganssle <paul@ganssle.io>
 Copyright 2017- dateutil contributors (see AUTHORS file)
@@ -681,10 +605,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 This docker installs third party components licensed under various open source licenses. The terms under which those components may be used and distributed can be found with the license document that is provided with those components. Please familiarize yourself with those terms to ensure your distribution of those components complies with the terms of those licenses.
 
 -------------------------------------------------------------
-
-
-
 Other names and brands may be claimed as the property of others. 
-
-
 

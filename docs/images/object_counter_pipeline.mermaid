@@ -1,0 +1,15 @@
+## Pipeline Diagrams
+### Object Counter
+```mermaid
+graph LR
+    media-->uridecodebin
+    subgraph "Object Counter"
+    uridecodebin-->gvadetect
+    gvadetect-->objectcounter
+    objectcounter-->gvametaconvert
+    gvametaconvert-->gvaeventconvert
+    gvaeventconvert-->gvametapublish
+    gvametapublish-->appsink
+    end
+    gvametapublish-->metadata
+```
