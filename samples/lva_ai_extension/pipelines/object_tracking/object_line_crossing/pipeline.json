@@ -87,8 +87,7 @@
 			},
 			"tracking-type": {
 				"element": "tracking",
-				"type": "string",
-				"default": "short-term"
+				"type": "string"
 			},
 			"detection-threshold": {
 				"element": {

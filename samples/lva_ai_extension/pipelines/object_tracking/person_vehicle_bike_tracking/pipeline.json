@@ -168,8 +168,7 @@
 			},
 			"tracking-type": {
 				"element": "tracking",
-				"type": "string",
-				"default": "zero-term-imageless"
+				"type": "string"
 			}
 		}
 	}

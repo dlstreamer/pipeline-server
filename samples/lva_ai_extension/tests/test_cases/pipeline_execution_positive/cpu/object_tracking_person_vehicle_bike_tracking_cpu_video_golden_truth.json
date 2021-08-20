@@ -159,8 +159,30 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.6744792,
+                            "t": 0.8726852,
+                            "w": 0.071614586,
+                            "h": 0.12268519
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "inferences": [
@@ -177,7 +199,7 @@
                             "w": 0.06717813,
                             "h": 0.1723851
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -203,7 +225,7 @@
                             "w": 0.06424129,
                             "h": 0.18914932
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -229,7 +251,7 @@
                             "w": 0.06378853,
                             "h": 0.21156448
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -255,7 +277,7 @@
                             "w": 0.06689739,
                             "h": 0.22757244
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -281,7 +303,7 @@
                             "w": 0.07277942,
                             "h": 0.23570335
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -307,7 +329,7 @@
                             "w": 0.07464826,
                             "h": 0.24191117
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -333,7 +355,7 @@
                             "w": 0.071341634,
                             "h": 0.24938452
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -359,7 +381,7 @@
                             "w": 0.06600654,
                             "h": 0.23630273
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -385,7 +407,7 @@
                             "w": 0.061315656,
                             "h": 0.19413567
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -411,7 +433,7 @@
                             "w": 0.059005857,
                             "h": 0.18460464
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -437,7 +459,7 @@
                             "w": 0.063902855,
                             "h": 0.23336577
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -463,7 +485,7 @@
                             "w": 0.06841791,
                             "h": 0.24584174
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -489,7 +511,7 @@
                             "w": 0.060946345,
                             "h": 0.20299816
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -515,7 +537,7 @@
                             "w": 0.06012237,
                             "h": 0.19993663
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -541,7 +563,7 @@
                             "w": 0.06285143,
                             "h": 0.20727313
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -567,7 +589,7 @@
                             "w": 0.06481433,
                             "h": 0.21084714
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -579,12 +601,56 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.71223956,
+                            "t": 0.5972222,
+                            "w": 0.061197918,
+                            "h": 0.2037037
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.7161458,
+                            "t": 0.587963,
+                            "w": 0.061197918,
+                            "h": 0.2037037
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "inferences": [
@@ -601,7 +667,7 @@
                             "w": 0.059869647,
                             "h": 0.21045041
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -627,7 +693,7 @@
                             "w": 0.057510734,
                             "h": 0.20893276
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -653,7 +719,7 @@
                             "w": 0.057091117,
                             "h": 0.17773366
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -679,7 +745,7 @@
                             "w": 0.05107963,
                             "h": 0.1634059
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -705,7 +771,7 @@
                             "w": 0.051761627,
                             "h": 0.17246556
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -731,7 +797,7 @@
                             "w": 0.05401206,
                             "h": 0.1653806
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -757,7 +823,7 @@
                             "w": 0.063486814,
                             "h": 0.20076704
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -783,7 +849,7 @@
                             "w": 0.057802796,
                             "h": 0.18775523
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -809,7 +875,7 @@
                             "w": 0.058839917,
                             "h": 0.19846535
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -835,7 +901,7 @@
                             "w": 0.06264353,
                             "h": 0.21859345
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -861,7 +927,7 @@
                             "w": 0.07074797,
                             "h": 0.22883952
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -873,12 +939,56 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.7682292,
+                            "t": 0.46064815,
+                            "w": 0.063802086,
+                            "h": 0.2175926
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.77734375,
+                            "t": 0.4513889,
+                            "w": 0.0625,
+                            "h": 0.2175926
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "inferences": [
@@ -895,7 +1005,7 @@
                             "w": 0.04907632,
                             "h": 0.2026625
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -921,7 +1031,7 @@
                             "w": 0.052559853,
                             "h": 0.17237246
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -947,7 +1057,7 @@
                             "w": 0.050801516,
                             "h": 0.17859343
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -973,7 +1083,7 @@
                             "w": 0.05325067,
                             "h": 0.16498926
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -999,7 +1109,7 @@
                             "w": 0.05395162,
                             "h": 0.17231616
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1025,7 +1135,7 @@
                             "w": 0.05602038,
                             "h": 0.1766626
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1051,7 +1161,7 @@
                             "w": 0.05867207,
                             "h": 0.18108618
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1077,7 +1187,7 @@
                             "w": 0.055439115,
                             "h": 0.20141989
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1103,7 +1213,7 @@
                             "w": 0.06410432,
                             "h": 0.19586319
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1115,12 +1225,56 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.83984375,
+                            "t": 0.38657406,
+                            "w": 0.0625,
+                            "h": 0.19444445
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.84505206,
+                            "t": 0.38194445,
+                            "w": 0.0625,
+                            "h": 0.19444445
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "inferences": [
@@ -1137,7 +1291,7 @@
                             "w": 0.05566156,
                             "h": 0.18334556
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1163,7 +1317,7 @@
                             "w": 0.04517567,
                             "h": 0.17539549
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1189,7 +1343,7 @@
                             "w": 0.048897505,
                             "h": 0.17755216
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1215,7 +1369,7 @@
                             "w": 0.04462993,
                             "h": 0.17136684
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1241,7 +1395,7 @@
                             "w": 0.055560112,
                             "h": 0.17433015
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1267,7 +1421,7 @@
                             "w": 0.051983595,
                             "h": 0.16819102
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1293,7 +1447,7 @@
                             "w": 0.05444634,
                             "h": 0.1660024
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1319,7 +1473,7 @@
                             "w": 0.05595708,
                             "h": 0.1850271
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1345,7 +1499,7 @@
                             "w": 0.055173397,
                             "h": 0.19344509
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1357,12 +1511,56 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.90755206,
+                            "t": 0.3148148,
+                            "w": 0.0546875,
+                            "h": 0.18518518
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.91276044,
+                            "t": 0.3101852,
+                            "w": 0.0546875,
+                            "h": 0.18518518
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "inferences": [
@@ -1379,7 +1577,7 @@
                             "w": 0.059316278,
                             "h": 0.17387837
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1405,7 +1603,7 @@
                             "w": 0.049933076,
                             "h": 0.17974228
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1431,7 +1629,7 @@
                             "w": 0.0526644,
                             "h": 0.1843735
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1457,7 +1655,7 @@
                             "w": 0.04981494,
                             "h": 0.17109424
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1483,7 +1681,7 @@
                             "w": 0.053396463,
                             "h": 0.17203617
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1509,7 +1707,7 @@
                             "w": 0.06827295,
                             "h": 0.20877105
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1535,7 +1733,7 @@
                             "w": 0.04793358,
                             "h": 0.18108535
                         },
-                        "id": "3",
+                        "id": "2",
                         "attributes": []
                     },
                     "subtype": "",
@@ -1547,20 +1745,108 @@
             "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.95182294,
+                            "t": 0.2523148,
+                            "w": 0.048177082,
+                            "h": 0.18055555
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.95182294,
+                            "t": 0.24537037,
+                            "w": 0.048177082,
+                            "h": 0.18055555
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.953125,
+                            "t": 0.2523148,
+                            "w": 0.046875,
+                            "h": 0.18055555
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
-            "timestamp": "0",
-            "inferences": []
+            "inferences": [
+                {
+                    "type": "ENTITY",
+                    "entity": {
+                        "tag": {
+                            "value": "person",
+                            "confidence": 1.0
+                        },
+                        "box": {
+                            "l": 0.95182294,
+                            "t": 0.24768518,
+                            "w": 0.046875,
+                            "h": 0.18055555
+                        },
+                        "id": "2",
+                        "attributes": []
+                    },
+                    "subtype": "",
+                    "inferenceId": "",
+                    "relatedInferences": [],
+                    "extensions": {}
+                }
+            ],
+            "timestamp": "0"
         },
         {
             "timestamp": "0",
