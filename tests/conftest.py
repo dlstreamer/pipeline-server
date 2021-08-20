@@ -24,17 +24,20 @@ class VAServingService:
 
     def kill(self, timeout=10):
         graceful_exit = True
-        if (self._process):
+        if self._process is not None and self._process.poll() is None:
             self._process.send_signal(signal.SIGINT)
-            start = time.time()
-            print("Awaiting graceful exit - current epoch: {}".format(start))
-            while ((self._process.poll() == None) and ((time.time()-start) < timeout)):
-                print("Awaiting graceful exit: {} / {} seconds".format(time.time()-start, timeout))
-                time.sleep(1)
-            if ((self._process.returncode == None) or (self._process.returncode != 0)):
-                graceful_exit = False
-            else:
+            print("Awaiting graceful exit")
+            try:
+                self._process.wait(timeout)
+                if ((self._process.returncode == None) or (self._process.returncode != 0)):
+                    print("Invalid process exit code ", self._process.returncode)
+                    graceful_exit = False
+                else:
+                    print("Gracefully exited")
+            except subprocess.TimeoutExpired:
+                print("TimeoutExpired, killing process")
                 self._process.kill()
+                graceful_exit = False
             self._process = None
         return graceful_exit
 
