@@ -220,8 +220,7 @@ Pipelines can be configured to connect and visualize input video with superimpos
 
 * Enable RTSP at Server start
 ```
-$ export ENABLE_RTSP=true
-$ ./docker/run_server.sh
+$ ./docker/run_server.sh --enable-rtsp
 ```
 * Run client with frame destination set. For demonstration, path set as `person-detection` in example request below.
 ```

@@ -21,6 +21,7 @@ function show_help {
   echo "usage: ./run_server.sh"
   echo "  [ -p : Specify the port to use ] "
   echo "  [ --dev : Mount local source code] "
+  echo "  [ --enable-rtsp : To enable rtsp re-streaming ] "
   echo ""
   echo "**Application**"
   echo ""
@@ -56,6 +57,9 @@ while [[ "$#" -gt 0 ]]; do
 	PIPELINES="--pipelines $LVA_DIR/pipelines "
 	MODE="DEV"
       ;;
+    --enable-rtsp)
+  RTSP_ARGS="--enable-rtsp"
+      ;;
     *)
       ENTRYPOINT_ARGS+="--entrypoint-args '$1' "
       ;;
@@ -76,10 +80,6 @@ fi
 
 if [ ! -z "$DEBUG_PIPELINE" ]; then
   ENV+="-e DEBUG_PIPELINE=$DEBUG_PIPELINE "
-fi
-
-if [ ! -z "$ENABLE_RTSP" ]; then
-  RTSP_ARGS="--enable-rtsp"
 fi
 
 if [ ! -z "$GST_DEBUG" ]; then
