@@ -43,22 +43,26 @@ class ObjectZoneCount:
                 statuses = []
                 related_objects = []
                 for object_index, detected_object in enumerate(frame.regions()):
-                    zone_status = self._detect_zone_count(frame, detected_object, zone)
-                    if zone_status:
-                        statuses.append(zone_status)
-                        related_objects.append(object_index)
+                    if not self._is_watermark_region(zone, detected_object):
+                        zone_status = self._detect_zone_count(frame, detected_object, zone)
+                        if zone_status:
+                            statuses.append(zone_status)
+                            related_objects.append(object_index)
                 if related_objects:
                     gva_event_meta.add_event(frame,
-                                                       event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
-                                                       attributes={'zone-name':zone['name'],
-                                                                   'related-objects':related_objects,
-                                                                   'status':statuses,
-                                                                   'zone-count': len(related_objects)})
+                                             event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
+                                             attributes={'zone-name':zone['name'],
+                                                         'related-objects':related_objects,
+                                                         'status':statuses,
+                                                         'zone-count': len(related_objects)})
             if self._enable_watermark:
                 self._add_watermark_regions(frame)
         except Exception:
             print_message("Error processing frame: {}".format(traceback.format_exc()))
         return True
+
+    def _is_watermark_region(self, zone, region):
+        return region.label().startswith(zone["name"])
 
     def _add_watermark_regions(self, frame):
         for zone in self._zones:
