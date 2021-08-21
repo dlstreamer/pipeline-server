@@ -10,7 +10,8 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4.1"
+
 BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
 BASE_BUILD_DOCKERFILE=
@@ -35,7 +36,7 @@ BASE_BUILD_OPTIONS="--network=host "
 
 SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.1"}
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
@@ -240,9 +241,9 @@ get_options() {
 
     if [ -z "$BASE_IMAGE" ]; then
         if [ $FRAMEWORK = 'ffmpeg' ]; then
-            BASE_IMAGE=$BASE_IMAGE_FFMPEG
+            BASE_IMAGE=${CACHE_PREFIX}$BASE_IMAGE_FFMPEG
         else
-            BASE_IMAGE=$BASE_IMAGE_GSTREAMER
+            BASE_IMAGE=${CACHE_PREFIX}$BASE_IMAGE_GSTREAMER
         fi
     fi
 
@@ -258,10 +259,14 @@ get_options() {
         echo " "
         echo "----------------------------"
         echo "Running Model Downloader..."
-        echo "OMZ Tools Image: $OPEN_MODEL_ZOO_TOOLS_IMAGE"
+        echo "OMZ Tools Image: ${CACHE_PREFIX}$OPEN_MODEL_ZOO_TOOLS_IMAGE"
         echo "OMZ Version: $OPEN_MODEL_ZOO_VERSION"
         echo "----------------------------"
-        $SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD --open-model-zoo-image $OPEN_MODEL_ZOO_TOOLS_IMAGE --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION $DRY_RUN
+        $SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $MODELS \
+          --output $SOURCE_DIR $FORCE_MODEL_DOWNLOAD \
+          --open-model-zoo-image ${CACHE_PREFIX}$OPEN_MODEL_ZOO_TOOLS_IMAGE \
+          --open-model-zoo-version $OPEN_MODEL_ZOO_VERSION \
+          $DRY_RUN
     elif [ -d "$MODELS" ]; then
         if [ ! -d "$SOURCE_DIR/models" ]; then
             $RUN_PREFIX mkdir $SOURCE_DIR/models
@@ -380,16 +385,15 @@ if [ "$BASE" == "BUILD" ]; then
     show_base_options
 
     launch "$RUN_PREFIX docker build "$BASE_BUILD_CONTEXT" -f "$BASE_BUILD_DOCKERFILE" $BASE_BUILD_OPTIONS $BASE_BUILD_ARGS -t $BASE_BUILD_TAG"
-
     BASE_IMAGE=$BASE_BUILD_TAG
 else
     # Ensure image is latest from Docker Hub
-    launch "$RUN_PREFIX docker pull ${CACHE_PREFIX}$BASE_IMAGE"
+    launch "$RUN_PREFIX docker pull $BASE_IMAGE"
 fi
 
 # BUILD IMAGE
 
-BUILD_ARGS+=" --build-arg BASE=${CACHE_PREFIX}$BASE_IMAGE "
+BUILD_ARGS+=" --build-arg BASE=$BASE_IMAGE "
 BUILD_ARGS+=" --build-arg FRAMEWORK=$FRAMEWORK "
 if [ -n "$MODELS" ]; then
     BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS_PATH "
@@ -429,8 +433,8 @@ if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
     cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
     echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
-    printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/video-analytics-serving\n" >> $DOCKERFILE_DIR/Dockerfile.env   
-fi  
+    printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/video-analytics-serving\n" >> $DOCKERFILE_DIR/Dockerfile.env
+fi
 
 show_image_options
 
