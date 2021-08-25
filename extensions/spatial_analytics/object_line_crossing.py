@@ -83,7 +83,7 @@ class ObjectLineCrossing: # pylint: disable=too-few-public-methods
     def _add_point(self, frame, point, label):
         region = frame.add_region(point.x, point.y, 0, 0, label=label, normalized=True)
         for tensor in region.tensors():
-            tensor.set_name("line_crossing")
+            tensor.set_name("watermark_region")
 
     def _add_watermark(self, frame):
         for index in range(0, len(self._lines)):

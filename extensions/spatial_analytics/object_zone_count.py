@@ -25,7 +25,6 @@ class ObjectZoneCount:
         self._logger = logger
         self._logger.log_level = log_level
         self._enable_watermark = enable_watermark
-        self._assign_tensor_name = not self._enable_watermark
         self._zones = self._assign_defaults(zones)
 
     # Note that the pipeline already applies a pipeline-specific threshold value, but
@@ -43,7 +42,7 @@ class ObjectZoneCount:
                 statuses = []
                 related_objects = []
                 for object_index, detected_object in enumerate(frame.regions()):
-                    if not self._is_watermark_region(zone, detected_object):
+                    if not self._is_watermark_region(detected_object):
                         zone_status = self._detect_zone_count(frame, detected_object, zone)
                         if zone_status:
                             statuses.append(zone_status)
@@ -61,8 +60,11 @@ class ObjectZoneCount:
             print_message("Error processing frame: {}".format(traceback.format_exc()))
         return True
 
-    def _is_watermark_region(self, zone, region):
-        return region.label().startswith(zone["name"])
+    def _is_watermark_region(self, region):
+        for tensor in region.tensors():
+            if tensor.name() == "watermark_region":
+                return True
+        return False
 
     def _add_watermark_regions(self, frame):
         for zone in self._zones:
@@ -86,8 +88,7 @@ class ObjectZoneCount:
                     # Rendering color is currently assigned using position of zone, within extension configuration
                     # list, for simplicity.
                     tensor['label_id'] = self._zones.index(zone)
-                    if self._assign_tensor_name:
-                        tensor.set_name(zone["name"])
+                    tensor.set_name("watermark_region")
                 if draw_label:
                     break
 
