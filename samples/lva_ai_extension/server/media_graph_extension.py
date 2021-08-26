@@ -530,6 +530,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
         # One final check on the pipeline to ensure it worked properly
         status = vas_pipeline.wait(10)
+        self._logger.info("Pipeline Ended Status: {}".format(status))
         if (not status) or (status.state == Pipeline.State.ERROR):
             raise Exception("Pipeline did not complete successfully")
 
@@ -538,6 +539,6 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
                 requests_received, responses_sent
             )
         )
-        self._logger.info(
+        self._logger.debug(
             "MediaStreamDescriptor:\n{0}".format(client_state.media_stream_descriptor)
         )
