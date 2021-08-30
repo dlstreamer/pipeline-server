@@ -3,7 +3,7 @@
     "start": {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+                "uri": "https://lvamedia.blob.core.windows.net/public/homes_00425.mkv",
                 "type": "uri"
             },
             "destination": {
