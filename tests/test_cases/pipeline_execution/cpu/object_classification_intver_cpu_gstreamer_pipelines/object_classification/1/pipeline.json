@@ -1,8 +1,8 @@
 {
 	"type": "GStreamer",
 	"template": ["uridecodebin name=source",
-				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} model-proc={models[object_detection][person_vehicle_bike][proc]} name=detection",
-				" ! gvaclassify model={models[object_classification][stringified_version][network]} model-proc={models[object_classification][stringified_version][proc]} name=classification",
+				" ! gvadetect model={models[object_detection][1][network]} model-proc={models[object_detection][1][proc]} name=detection",
+				" ! gvaclassify model={models[object_classification][1][network]} model-proc={models[object_classification][1][proc]} name=classification",
 				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
 				" ! appsink name=appsink"],
 	"description": "Object Classification Pipeline",

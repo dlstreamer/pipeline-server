@@ -27,12 +27,6 @@ COPY tests/ /home/video-analytics-serving/tests/
 COPY samples/ /home/video-analytics-serving/samples/
 COPY models_list/models.list.yml /home/video-analytics-serving/models/models.list.yml
 
-# Copy and rename for stringified version
-
-RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_stringver_cpu_gstreamer_models/object_classification/stringified_version; cp -rf /home/video-analytics-serving/models/object_classification/vehicle_attributes/* /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_stringver_cpu_gstreamer_models/object_classification/stringified_version
-
-RUN mkdir -p /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_stringver_cpu_gstreamer_models/object_detection/person_vehicle_bike; cp -rf /home/video-analytics-serving/models/object_detection/person_vehicle_bike/*   /home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_stringver_cpu_gstreamer_models/object_detection/person_vehicle_bike
-
 RUN wget -O tests/media/store-aisle-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/store-aisle-detection.mp4?raw=true
 RUN wget -O tests/media/person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 

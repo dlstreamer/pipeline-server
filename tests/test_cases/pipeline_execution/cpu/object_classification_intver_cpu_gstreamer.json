@@ -2,7 +2,7 @@
     "options": {},
     "pipeline": {
         "name": "object_classification",
-        "version": "stringified_version"
+        "version": 1
     },
     "request": {
         "source": {

@@ -112,6 +112,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         _test_case["request"]["source"]["input"] = Queue()
         _test_case["request"]["destination"]["output"] = Queue()
         thread = get_results_app(_test_case, results)
+    assert pipeline is not None, "Failed to Load Pipeline!"
     pipeline.start(_test_case["request"])
     status = pipeline.status()
     transitions = [status]
@@ -133,6 +134,6 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         with open(test_filename+'.generated', "w") as test_output:
             json.dump(test_case, test_output, indent=4)
     else:
-        assert results_processing.cmp_results(results, 
+        assert results_processing.cmp_results(results,
                                               _test_case["result"],
                                               numerical_tolerance), "Inference Result Mismatch"

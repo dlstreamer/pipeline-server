@@ -6,7 +6,6 @@ DOCKER_RUN_OPTIONS=
 TESTS_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $TESTS_DIR)
 INTERACTIVE=--non-interactive
-FRAMEWORK=gstreamer
 DOCKER_TESTS_DIR="/home/video-analytics-serving/tests"
 RESULTS_DIR="results"
 PYTEST_GSTREAMER_RESULTS_DIR="$RESULTS_DIR/pytest/gstreamer"
@@ -107,6 +106,14 @@ ENVIRONMENT+="-e RESULTS_DIR=$DOCKER_RESULTS_DIR"
 
 recreate_shared_path "$LOCAL_RESULTS_DIR"
 VOLUME_MOUNT+="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
+
+# Construct virtual paths to pipelines and models as required by test cases.
+if [[ "${FRAMEWORK}" == "gstreamer" ]]; then
+  SOURCE_MODELS_DIR="$SOURCE_DIR/models"
+  DOCKER_MODELS_DIR="/home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_intver_cpu_gstreamer_models"
+  VOLUME_MOUNT+="-v $SOURCE_MODELS_DIR/object_detection/person_vehicle_bike/:$DOCKER_MODELS_DIR/object_detection/1/ "
+  VOLUME_MOUNT+="-v $SOURCE_MODELS_DIR/object_classification/vehicle_attributes/:$DOCKER_MODELS_DIR/object_classification/1/ "
+fi
 
 # This block is specific to --pytest-gstreamer-performance
 if [ $PREPARE_PERFORMANCE == true ]; then
