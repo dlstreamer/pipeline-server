@@ -58,6 +58,36 @@
                 {
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.7447916666666667,
+                            "x_min": 0.6731770833333334,
+                            "y_max": 0.9884259259259259,
+                            "y_min": 0.8680555555555556
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 52,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 55,
+                    "x": 517,
+                    "y": 375
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 1583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.7441578507423401,
                             "x_min": 0.6759846806526184,
                             "y_max": 1.0,
@@ -68,7 +98,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 52,
                     "x": 519,
@@ -98,7 +128,7 @@
                         "label_id": 1
                     },
                     "h": 82,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 50,
                     "x": 524,
@@ -128,7 +158,7 @@
                         "label_id": 1
                     },
                     "h": 92,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 49,
                     "x": 525,
@@ -158,7 +188,7 @@
                         "label_id": 1
                     },
                     "h": 97,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 51,
                     "x": 525,
@@ -188,7 +218,7 @@
                         "label_id": 1
                     },
                     "h": 103,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 56,
                     "x": 524,
@@ -218,7 +248,7 @@
                         "label_id": 1
                     },
                     "h": 105,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 56,
                     "x": 525,
@@ -248,7 +278,7 @@
                         "label_id": 1
                     },
                     "h": 108,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 55,
                     "x": 528,
@@ -278,7 +308,7 @@
                         "label_id": 1
                     },
                     "h": 102,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 51,
                     "x": 531,
@@ -308,7 +338,7 @@
                         "label_id": 1
                     },
                     "h": 85,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 49,
                     "x": 532,
@@ -338,7 +368,7 @@
                         "label_id": 1
                     },
                     "h": 81,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 46,
                     "x": 536,
@@ -368,7 +398,7 @@
                         "label_id": 1
                     },
                     "h": 101,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 51,
                     "x": 535,
@@ -398,7 +428,7 @@
                         "label_id": 1
                     },
                     "h": 106,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 54,
                     "x": 533,
@@ -428,7 +458,7 @@
                         "label_id": 1
                     },
                     "h": 88,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 47,
                     "x": 540,
@@ -458,7 +488,7 @@
                         "label_id": 1
                     },
                     "h": 86,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 47,
                     "x": 542,
@@ -488,7 +518,7 @@
                         "label_id": 1
                     },
                     "h": 90,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 48,
                     "x": 545,
@@ -518,7 +548,7 @@
                         "label_id": 1
                     },
                     "h": 91,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 50,
                     "x": 544,
@@ -538,6 +568,96 @@
                 {
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.7734375,
+                            "x_min": 0.7122395833333334,
+                            "y_max": 0.8009259259259259,
+                            "y_min": 0.5972222222222222
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 88,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 47,
+                    "x": 547,
+                    "y": 258
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 3000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.7760416666666666,
+                            "x_min": 0.71484375,
+                            "y_max": 0.7893518518518519,
+                            "y_min": 0.5856481481481481
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 88,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 47,
+                    "x": 549,
+                    "y": 253
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 3083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.78125,
+                            "x_min": 0.7200520833333334,
+                            "y_max": 0.7777777777777778,
+                            "y_min": 0.5740740740740741
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 88,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 47,
+                    "x": 553,
+                    "y": 248
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 3166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.7834912538528442,
                             "x_min": 0.7258824110031128,
                             "y_max": 0.7588052153587341,
@@ -548,7 +668,7 @@
                         "label_id": 1
                     },
                     "h": 89,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 44,
                     "x": 557,
@@ -578,7 +698,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 44,
                     "x": 563,
@@ -608,7 +728,7 @@
                         "label_id": 1
                     },
                     "h": 70,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 39,
                     "x": 566,
@@ -638,7 +758,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 568,
@@ -668,7 +788,7 @@
                         "label_id": 1
                     },
                     "h": 72,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 573,
@@ -698,7 +818,7 @@
                         "label_id": 1
                     },
                     "h": 87,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 49,
                     "x": 573,
@@ -728,7 +848,7 @@
                         "label_id": 1
                     },
                     "h": 81,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 44,
                     "x": 581,
@@ -758,7 +878,7 @@
                         "label_id": 1
                     },
                     "h": 85,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 45,
                     "x": 587,
@@ -788,7 +908,7 @@
                         "label_id": 1
                     },
                     "h": 94,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 48,
                     "x": 584,
@@ -818,7 +938,7 @@
                         "label_id": 1
                     },
                     "h": 99,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 55,
                     "x": 584,
@@ -838,6 +958,66 @@
                 {
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.83203125,
+                            "x_min": 0.7682291666666666,
+                            "y_max": 0.6782407407407407,
+                            "y_min": 0.46064814814814814
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 94,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 49,
+                    "x": 590,
+                    "y": 199
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 4083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.83984375,
+                            "x_min": 0.77734375,
+                            "y_max": 0.6712962962962963,
+                            "y_min": 0.4537037037037037
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 94,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 48,
+                    "x": 597,
+                    "y": 196
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 4166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.8428909182548523,
                             "x_min": 0.7936130166053772,
                             "y_max": 0.6424880623817444,
@@ -848,7 +1028,7 @@
                         "label_id": 1
                     },
                     "h": 88,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 38,
                     "x": 609,
@@ -878,7 +1058,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 41,
                     "x": 612,
@@ -908,7 +1088,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 40,
                     "x": 615,
@@ -938,7 +1118,7 @@
                         "label_id": 1
                     },
                     "h": 71,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 619,
@@ -968,7 +1148,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 43,
                     "x": 622,
@@ -998,7 +1178,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 43,
                     "x": 628,
@@ -1028,7 +1208,7 @@
                         "label_id": 1
                     },
                     "h": 79,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 45,
                     "x": 635,
@@ -1058,7 +1238,7 @@
                         "label_id": 1
                     },
                     "h": 87,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 43,
                     "x": 641,
@@ -1088,7 +1268,7 @@
                         "label_id": 1
                     },
                     "h": 84,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 50,
                     "x": 642,
@@ -1108,6 +1288,66 @@
                 {
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.90234375,
+                            "x_min": 0.83984375,
+                            "y_max": 0.5763888888888888,
+                            "y_min": 0.38425925925925924
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 83,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 48,
+                    "x": 645,
+                    "y": 166
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 5000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9075520833333334,
+                            "x_min": 0.84375,
+                            "y_max": 0.5717592592592593,
+                            "y_min": 0.37962962962962965
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 83,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 49,
+                    "x": 648,
+                    "y": 164
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 5083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.9089175462722778,
                             "x_min": 0.8529009819030762,
                             "y_max": 0.5612062215805054,
@@ -1118,7 +1358,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 43,
                     "x": 655,
@@ -1148,7 +1388,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 35,
                     "x": 665,
@@ -1178,7 +1418,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 38,
                     "x": 669,
@@ -1208,7 +1448,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 34,
                     "x": 674,
@@ -1238,7 +1478,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 43,
                     "x": 670,
@@ -1268,7 +1508,7 @@
                         "label_id": 1
                     },
                     "h": 73,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 40,
                     "x": 680,
@@ -1298,7 +1538,7 @@
                         "label_id": 1
                     },
                     "h": 72,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 683,
@@ -1328,7 +1568,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 44,
                     "x": 690,
@@ -1358,7 +1598,7 @@
                         "label_id": 1
                     },
                     "h": 82,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 696,
@@ -1378,6 +1618,66 @@
                 {
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.9622395833333334,
+                            "x_min": 0.90625,
+                            "y_max": 0.5023148148148149,
+                            "y_min": 0.31712962962962965
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 80,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 43,
+                    "x": 696,
+                    "y": 137
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 5916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.96875,
+                            "x_min": 0.9127604166666666,
+                            "y_max": 0.49537037037037035,
+                            "y_min": 0.3101851851851852
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 80,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 43,
+                    "x": 701,
+                    "y": 134
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 6000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.9739574193954468,
                             "x_min": 0.9139014482498169,
                             "y_max": 0.4912499785423279,
@@ -1388,7 +1688,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 46,
                     "x": 702,
@@ -1418,7 +1718,7 @@
                         "label_id": 1
                     },
                     "h": 78,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 39,
                     "x": 711,
@@ -1448,7 +1748,7 @@
                         "label_id": 1
                     },
                     "h": 79,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 41,
                     "x": 713,
@@ -1478,7 +1778,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 39,
                     "x": 716,
@@ -1508,7 +1808,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 42,
                     "x": 715,
@@ -1538,7 +1838,7 @@
                         "label_id": 1
                     },
                     "h": 91,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 53,
                     "x": 714,
@@ -1568,7 +1868,7 @@
                         "label_id": 1
                     },
                     "h": 78,
-                    "id": 2,
+                    "id": 1,
                     "roi_type": "person",
                     "w": 37,
                     "x": 729,
@@ -1582,6 +1882,216 @@
             "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9986979166666666,
+                            "x_min": 0.9518229166666666,
+                            "y_max": 0.4375,
+                            "y_min": 0.2569444444444444
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 36,
+                    "x": 731,
+                    "y": 111
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 6666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.95703125,
+                            "y_max": 0.43518518518518523,
+                            "y_min": 0.25462962962962965
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 33,
+                    "x": 735,
+                    "y": 110
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 6750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.9596354166666666,
+                            "y_max": 0.4305555555555556,
+                            "y_min": 0.25
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 31,
+                    "x": 737,
+                    "y": 108
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 6833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.96484375,
+                            "y_max": 0.4282407407407407,
+                            "y_min": 0.24768518518518517
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 27,
+                    "x": 741,
+                    "y": 107
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 6916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.97265625,
+                            "y_max": 0.4097222222222222,
+                            "y_min": 0.22916666666666666
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 21,
+                    "x": 747,
+                    "y": 99
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 7000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.9739583333333334,
+                            "y_max": 0.40509259259259256,
+                            "y_min": 0.22453703703703703
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 20,
+                    "x": 748,
+                    "y": 97
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 7083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 1.0,
+                            "x_min": 0.9778645833333334,
+                            "y_max": 0.40046296296296297,
+                            "y_min": 0.2199074074074074
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 78,
+                    "id": 1,
+                    "roi_type": "person",
+                    "w": 17,
+                    "x": 751,
+                    "y": 95
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 7166666666
         },
         {
             "objects": [
@@ -1606,7 +2116,7 @@
                         "label_id": 2
                     },
                     "h": 421,
-                    "id": 3,
+                    "id": 2,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97705078125,
@@ -1652,7 +2162,7 @@
                         "label_id": 2
                     },
                     "h": 69,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -1698,7 +2208,7 @@
                         "label_id": 2
                     },
                     "h": 82,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97412109375,
@@ -1744,7 +2254,7 @@
                         "label_id": 2
                     },
                     "h": 92,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.7529296875,
@@ -1790,7 +2300,7 @@
                         "label_id": 2
                     },
                     "h": 101,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -1836,7 +2346,7 @@
                         "label_id": 2
                     },
                     "h": 118,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.65478515625,
@@ -1882,7 +2392,7 @@
                         "label_id": 2
                     },
                     "h": 127,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.70556640625,
@@ -1928,7 +2438,7 @@
                         "label_id": 2
                     },
                     "h": 139,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -1963,7 +2473,7 @@
                         "label_id": 2
                     },
                     "h": 418,
-                    "id": 5,
+                    "id": 4,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.990234375,
@@ -2009,7 +2519,7 @@
                         "label_id": 2
                     },
                     "h": 151,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -2044,7 +2554,6 @@
                         "label_id": 2
                     },
                     "h": 407,
-                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9970703125,
@@ -2090,7 +2599,7 @@
                         "label_id": 2
                     },
                     "h": 159,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.998046875,
@@ -2136,7 +2645,7 @@
                         "label_id": 2
                     },
                     "h": 167,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2182,7 +2691,7 @@
                         "label_id": 2
                     },
                     "h": 178,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2228,7 +2737,7 @@
                         "label_id": 2
                     },
                     "h": 187,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2274,7 +2783,7 @@
                         "label_id": 2
                     },
                     "h": 199,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2320,7 +2829,7 @@
                         "label_id": 2
                     },
                     "h": 205,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2366,7 +2875,7 @@
                         "label_id": 2
                     },
                     "h": 214,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9970703125,
@@ -2401,7 +2910,7 @@
                         "label_id": 2
                     },
                     "h": 338,
-                    "id": 6,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97607421875,
@@ -2447,7 +2956,7 @@
                         "label_id": 2
                     },
                     "h": 214,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.986328125,
@@ -2460,6 +2969,41 @@
                     "w": 164,
                     "x": 109,
                     "y": 214
+                },
+                {
+                    "color": {
+                        "confidence": 0.471435546875,
+                        "label": "gray",
+                        "label_id": 1,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9622395833333334,
+                            "x_min": 0.13671875,
+                            "y_max": 0.8240740740740741,
+                            "y_min": 0.041666666666666664
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 338,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.92431640625,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 634,
+                    "x": 105,
+                    "y": 18
                 }
             ],
             "resolution": {
@@ -2493,7 +3037,7 @@
                         "label_id": 2
                     },
                     "h": 226,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9892578125,
@@ -2506,6 +3050,41 @@
                     "w": 159,
                     "x": 114,
                     "y": 206
+                },
+                {
+                    "color": {
+                        "confidence": 0.407958984375,
+                        "label": "white",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9544270833333334,
+                            "x_min": 0.12890625,
+                            "y_max": 0.8310185185185186,
+                            "y_min": 0.04861111111111111
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 338,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.88134765625,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 634,
+                    "x": 99,
+                    "y": 21
                 }
             ],
             "resolution": {
@@ -2539,7 +3118,7 @@
                         "label_id": 2
                     },
                     "h": 229,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9921875,
@@ -2552,6 +3131,41 @@
                     "w": 155,
                     "x": 118,
                     "y": 195
+                },
+                {
+                    "color": {
+                        "confidence": 0.344970703125,
+                        "label": "white",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9609375,
+                            "x_min": 0.13541666666666666,
+                            "y_max": 0.837962962962963,
+                            "y_min": 0.05555555555555555
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 338,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.97900390625,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 634,
+                    "x": 104,
+                    "y": 24
                 }
             ],
             "resolution": {
@@ -2585,7 +3199,7 @@
                         "label_id": 2
                     },
                     "h": 222,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.984375,
@@ -2620,7 +3234,7 @@
                         "label_id": 2
                     },
                     "h": 317,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2666,7 +3280,7 @@
                         "label_id": 2
                     },
                     "h": 221,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.99609375,
@@ -2701,7 +3315,7 @@
                         "label_id": 2
                     },
                     "h": 375,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2747,7 +3361,7 @@
                         "label_id": 2
                     },
                     "h": 219,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.96044921875,
@@ -2782,7 +3396,7 @@
                         "label_id": 2
                     },
                     "h": 367,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -2828,7 +3442,7 @@
                         "label_id": 2
                     },
                     "h": 213,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.8857421875,
@@ -2863,7 +3477,7 @@
                         "label_id": 2
                     },
                     "h": 344,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2909,7 +3523,7 @@
                         "label_id": 2
                     },
                     "h": 211,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.98291015625,
@@ -2944,7 +3558,7 @@
                         "label_id": 2
                     },
                     "h": 368,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -2990,7 +3604,7 @@
                         "label_id": 2
                     },
                     "h": 206,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.98828125,
@@ -3025,7 +3639,7 @@
                         "label_id": 2
                     },
                     "h": 350,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3071,7 +3685,7 @@
                         "label_id": 2
                     },
                     "h": 199,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9873046875,
@@ -3106,7 +3720,7 @@
                         "label_id": 2
                     },
                     "h": 336,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -3152,7 +3766,7 @@
                         "label_id": 2
                     },
                     "h": 199,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9921875,
@@ -3187,7 +3801,7 @@
                         "label_id": 2
                     },
                     "h": 347,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.998046875,
@@ -3233,7 +3847,7 @@
                         "label_id": 2
                     },
                     "h": 196,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9970703125,
@@ -3268,7 +3882,7 @@
                         "label_id": 2
                     },
                     "h": 362,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3314,7 +3928,7 @@
                         "label_id": 2
                     },
                     "h": 192,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -3349,7 +3963,7 @@
                         "label_id": 2
                     },
                     "h": 342,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -3395,7 +4009,7 @@
                         "label_id": 2
                     },
                     "h": 187,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9052734375,
@@ -3430,7 +4044,7 @@
                         "label_id": 2
                     },
                     "h": 342,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3476,7 +4090,7 @@
                         "label_id": 2
                     },
                     "h": 187,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.486328125,
@@ -3511,7 +4125,7 @@
                         "label_id": 2
                     },
                     "h": 343,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3557,7 +4171,7 @@
                         "label_id": 2
                     },
                     "h": 184,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.7041015625,
@@ -3592,7 +4206,7 @@
                         "label_id": 2
                     },
                     "h": 346,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3638,7 +4252,7 @@
                         "label_id": 2
                     },
                     "h": 180,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.52197265625,
@@ -3673,7 +4287,7 @@
                         "label_id": 2
                     },
                     "h": 333,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9970703125,
@@ -3719,7 +4333,7 @@
                         "label_id": 2
                     },
                     "h": 169,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.705078125,
@@ -3754,7 +4368,7 @@
                         "label_id": 2
                     },
                     "h": 336,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3800,7 +4414,7 @@
                         "label_id": 2
                     },
                     "h": 166,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9853515625,
@@ -3835,7 +4449,7 @@
                         "label_id": 2
                     },
                     "h": 351,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -3881,7 +4495,7 @@
                         "label_id": 2
                     },
                     "h": 166,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -3894,6 +4508,41 @@
                     "w": 170,
                     "x": 51,
                     "y": 114
+                },
+                {
+                    "color": {
+                        "confidence": 0.8125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9674479166666666,
+                            "x_min": 0.3359375,
+                            "y_max": 0.8356481481481481,
+                            "y_min": 0.0787037037037037
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 327,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 485,
+                    "x": 258,
+                    "y": 34
                 }
             ],
             "resolution": {
@@ -3927,7 +4576,7 @@
                         "label_id": 2
                     },
                     "h": 162,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -3962,7 +4611,7 @@
                         "label_id": 2
                     },
                     "h": 281,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4008,7 +4657,7 @@
                         "label_id": 2
                     },
                     "h": 159,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4043,7 +4692,7 @@
                         "label_id": 2
                     },
                     "h": 371,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4089,7 +4738,7 @@
                         "label_id": 2
                     },
                     "h": 153,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4102,6 +4751,41 @@
                     "w": 184,
                     "x": 23,
                     "y": 111
+                },
+                {
+                    "color": {
+                        "confidence": 0.50439453125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9713541666666667,
+                            "x_min": 0.3385416666666667,
+                            "y_max": 0.8657407407407407,
+                            "y_min": 0.037037037037037035
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 358,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 486,
+                    "x": 260,
+                    "y": 16
                 }
             ],
             "resolution": {
@@ -4135,7 +4819,7 @@
                         "label_id": 2
                     },
                     "h": 151,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4148,6 +4832,41 @@
                     "w": 187,
                     "x": 15,
                     "y": 109
+                },
+                {
+                    "color": {
+                        "confidence": 0.5166015625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9674479166666666,
+                            "x_min": 0.33203125,
+                            "y_max": 0.8842592592592593,
+                            "y_min": 0.037037037037037035
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 366,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 488,
+                    "x": 255,
+                    "y": 16
                 }
             ],
             "resolution": {
@@ -4181,7 +4900,7 @@
                         "label_id": 2
                     },
                     "h": 146,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4194,6 +4913,41 @@
                     "w": 189,
                     "x": 8,
                     "y": 111
+                },
+                {
+                    "color": {
+                        "confidence": 0.68505859375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9596354166666666,
+                            "x_min": 0.32421875,
+                            "y_max": 0.8981481481481481,
+                            "y_min": 0.04398148148148148
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 369,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 488,
+                    "x": 249,
+                    "y": 19
                 }
             ],
             "resolution": {
@@ -4227,7 +4981,7 @@
                         "label_id": 2
                     },
                     "h": 145,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4240,6 +4994,41 @@
                     "w": 185,
                     "x": 3,
                     "y": 109
+                },
+                {
+                    "color": {
+                        "confidence": 0.7099609375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9817708333333333,
+                            "x_min": 0.3463541666666667,
+                            "y_max": 0.9120370370370371,
+                            "y_min": 0.05555555555555555
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 370,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 488,
+                    "x": 266,
+                    "y": 24
                 }
             ],
             "resolution": {
@@ -4273,7 +5062,7 @@
                         "label_id": 2
                     },
                     "h": 142,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4286,6 +5075,41 @@
                     "w": 178,
                     "x": 2,
                     "y": 107
+                },
+                {
+                    "color": {
+                        "confidence": 0.703125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9765625,
+                            "x_min": 0.3411458333333333,
+                            "y_max": 0.8842592592592593,
+                            "y_min": 0.027777777777777776
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 370,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 488,
+                    "x": 262,
+                    "y": 12
                 }
             ],
             "resolution": {
@@ -4319,7 +5143,7 @@
                         "label_id": 2
                     },
                     "h": 138,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4354,7 +5178,7 @@
                         "label_id": 2
                     },
                     "h": 302,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4400,7 +5224,7 @@
                         "label_id": 2
                     },
                     "h": 136,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4435,7 +5259,7 @@
                         "label_id": 2
                     },
                     "h": 332,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.998046875,
@@ -4481,7 +5305,7 @@
                         "label_id": 2
                     },
                     "h": 132,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -4494,6 +5318,41 @@
                     "w": 158,
                     "x": 1,
                     "y": 105
+                },
+                {
+                    "color": {
+                        "confidence": 0.62841796875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9622395833333333,
+                            "x_min": 0.3763020833333333,
+                            "y_max": 0.7847222222222222,
+                            "y_min": 0.06481481481481481
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 450,
+                    "x": 289,
+                    "y": 28
                 }
             ],
             "resolution": {
@@ -4527,7 +5386,7 @@
                         "label_id": 2
                     },
                     "h": 129,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4540,6 +5399,41 @@
                     "w": 152,
                     "x": 0,
                     "y": 104
+                },
+                {
+                    "color": {
+                        "confidence": 0.54541015625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9544270833333333,
+                            "x_min": 0.3723958333333333,
+                            "y_max": 0.7824074074074074,
+                            "y_min": 0.0763888888888889
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 305,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 447,
+                    "x": 286,
+                    "y": 33
                 }
             ],
             "resolution": {
@@ -4573,7 +5467,7 @@
                         "label_id": 2
                     },
                     "h": 133,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9912109375,
@@ -4586,6 +5480,41 @@
                     "w": 142,
                     "x": 1,
                     "y": 99
+                },
+                {
+                    "color": {
+                        "confidence": 0.71240234375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9479166666666666,
+                            "x_min": 0.3671875,
+                            "y_max": 0.7847222222222222,
+                            "y_min": 0.08333333333333333
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 303,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 446,
+                    "x": 282,
+                    "y": 36
                 }
             ],
             "resolution": {
@@ -4619,7 +5548,7 @@
                         "label_id": 2
                     },
                     "h": 132,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.94970703125,
@@ -4632,6 +5561,41 @@
                     "w": 133,
                     "x": 1,
                     "y": 97
+                },
+                {
+                    "color": {
+                        "confidence": 0.69140625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.94140625,
+                            "x_min": 0.3606770833333333,
+                            "y_max": 0.7916666666666666,
+                            "y_min": 0.09259259259259259
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 302,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 446,
+                    "x": 277,
+                    "y": 40
                 }
             ],
             "resolution": {
@@ -4665,7 +5629,7 @@
                         "label_id": 2
                     },
                     "h": 131,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.86279296875,
@@ -4678,6 +5642,41 @@
                     "w": 124,
                     "x": 2,
                     "y": 96
+                },
+                {
+                    "color": {
+                        "confidence": 0.4248046875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9609375,
+                            "x_min": 0.3802083333333333,
+                            "y_max": 0.7662037037037037,
+                            "y_min": 0.06712962962962964
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 302,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 446,
+                    "x": 292,
+                    "y": 29
                 }
             ],
             "resolution": {
@@ -4711,7 +5710,7 @@
                         "label_id": 2
                     },
                     "h": 132,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9150390625,
@@ -4724,6 +5723,41 @@
                     "w": 122,
                     "x": 0,
                     "y": 96
+                },
+                {
+                    "color": {
+                        "confidence": 0.65576171875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9544270833333333,
+                            "x_min": 0.3736979166666667,
+                            "y_max": 0.7685185185185185,
+                            "y_min": 0.06944444444444445
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 302,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 446,
+                    "x": 287,
+                    "y": 30
                 }
             ],
             "resolution": {
@@ -4757,7 +5791,7 @@
                         "label_id": 2
                     },
                     "h": 130,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9716796875,
@@ -4792,7 +5826,7 @@
                         "label_id": 2
                     },
                     "h": 390,
-                    "id": 7,
+                    "id": 5,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -4838,7 +5872,7 @@
                         "label_id": 2
                     },
                     "h": 126,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.626953125,
@@ -4851,6 +5885,41 @@
                     "w": 100,
                     "x": 1,
                     "y": 100
+                },
+                {
+                    "color": {
+                        "confidence": 0.87353515625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9518229166666666,
+                            "x_min": 0.13541666666666666,
+                            "y_max": 0.900462962962963,
+                            "y_min": 0.04398148148148148
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 370,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 627,
+                    "x": 104,
+                    "y": 19
                 }
             ],
             "resolution": {
@@ -4884,7 +5953,7 @@
                         "label_id": 2
                     },
                     "h": 118,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.80517578125,
@@ -4897,6 +5966,41 @@
                     "w": 96,
                     "x": 0,
                     "y": 105
+                },
+                {
+                    "color": {
+                        "confidence": 0.86328125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.94921875,
+                            "x_min": 0.09114583333333333,
+                            "y_max": 0.9097222222222222,
+                            "y_min": 0.02546296296296296
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 382,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 659,
+                    "x": 70,
+                    "y": 11
                 }
             ],
             "resolution": {
@@ -4930,7 +6034,7 @@
                         "label_id": 2
                     },
                     "h": 119,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.94287109375,
@@ -4943,6 +6047,41 @@
                     "w": 85,
                     "x": 0,
                     "y": 104
+                },
+                {
+                    "color": {
+                        "confidence": 0.6328125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.97265625,
+                            "x_min": 0.09895833333333333,
+                            "y_max": 0.9282407407407408,
+                            "y_min": 0.032407407407407406
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 387,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 671,
+                    "x": 76,
+                    "y": 14
                 }
             ],
             "resolution": {
@@ -4976,7 +6115,7 @@
                         "label_id": 2
                     },
                     "h": 121,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.916015625,
@@ -4989,6 +6128,41 @@
                     "w": 75,
                     "x": 1,
                     "y": 103
+                },
+                {
+                    "color": {
+                        "confidence": 0.82666015625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9895833333333333,
+                            "x_min": 0.11588541666666667,
+                            "y_max": 0.9421296296296297,
+                            "y_min": 0.04398148148148148
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 388,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 671,
+                    "x": 89,
+                    "y": 19
                 }
             ],
             "resolution": {
@@ -5022,7 +6196,7 @@
                         "label_id": 2
                     },
                     "h": 121,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.8642578125,
@@ -5035,6 +6209,41 @@
                     "w": 68,
                     "x": 0,
                     "y": 103
+                },
+                {
+                    "color": {
+                        "confidence": 0.7724609375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9752604166666667,
+                            "x_min": 0.09505208333333333,
+                            "y_max": 0.9351851851851851,
+                            "y_min": 0.034722222222222224
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 676,
+                    "x": 73,
+                    "y": 15
                 }
             ],
             "resolution": {
@@ -5068,7 +6277,7 @@
                         "label_id": 2
                     },
                     "h": 117,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97705078125,
@@ -5081,6 +6290,41 @@
                     "w": 60,
                     "x": 0,
                     "y": 103
+                },
+                {
+                    "color": {
+                        "confidence": 0.8583984375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9908854166666666,
+                            "x_min": 0.11588541666666667,
+                            "y_max": 0.9375,
+                            "y_min": 0.037037037037037035
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9970703125,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 672,
+                    "x": 89,
+                    "y": 16
                 }
             ],
             "resolution": {
@@ -5114,7 +6358,7 @@
                         "label_id": 2
                     },
                     "h": 114,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.86572265625,
@@ -5149,7 +6393,7 @@
                         "label_id": 2
                     },
                     "h": 40,
-                    "id": 8,
+                    "id": 6,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9912109375,
@@ -5162,6 +6406,41 @@
                     "w": 39,
                     "x": 33,
                     "y": 232
+                },
+                {
+                    "color": {
+                        "confidence": 0.70068359375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9778645833333334,
+                            "x_min": 0.09765625,
+                            "y_max": 0.9282407407407407,
+                            "y_min": 0.027777777777777776
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.998046875,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 676,
+                    "x": 75,
+                    "y": 12
                 }
             ],
             "resolution": {
@@ -5195,7 +6474,7 @@
                         "label_id": 2
                     },
                     "h": 108,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.65380859375,
@@ -5208,6 +6487,76 @@
                     "w": 44,
                     "x": 1,
                     "y": 108
+                },
+                {
+                    "color": {
+                        "confidence": 0.8037109375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9622395833333334,
+                            "x_min": 0.07942708333333333,
+                            "y_max": 0.9305555555555555,
+                            "y_min": 0.03009259259259259
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 678,
+                    "x": 61,
+                    "y": 13
+                },
+                {
+                    "color": {
+                        "confidence": 0.5859375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09244791666666666,
+                            "x_min": 0.041666666666666664,
+                            "y_max": 0.6273148148148148,
+                            "y_min": 0.5347222222222222
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.994140625,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 32,
+                    "y": 231
                 }
             ],
             "resolution": {
@@ -5241,7 +6590,7 @@
                         "label_id": 2
                     },
                     "h": 94,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.79150390625,
@@ -5254,6 +6603,76 @@
                     "w": 34,
                     "x": 2,
                     "y": 118
+                },
+                {
+                    "color": {
+                        "confidence": 0.60107421875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9856770833333334,
+                            "x_min": 0.10286458333333333,
+                            "y_max": 0.9398148148148148,
+                            "y_min": 0.03935185185185185
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 678,
+                    "x": 79,
+                    "y": 17
+                },
+                {
+                    "color": {
+                        "confidence": 0.6181640625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09375,
+                            "x_min": 0.04296875,
+                            "y_max": 0.625,
+                            "y_min": 0.5324074074074074
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.99609375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 33,
+                    "y": 230
                 }
             ],
             "resolution": {
@@ -5287,7 +6706,7 @@
                         "label_id": 2
                     },
                     "h": 93,
-                    "id": 4,
+                    "id": 3,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.5458984375,
@@ -5300,6 +6719,76 @@
                     "w": 30,
                     "x": 0,
                     "y": 118
+                },
+                {
+                    "color": {
+                        "confidence": 0.857421875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9700520833333334,
+                            "x_min": 0.08723958333333333,
+                            "y_max": 0.9328703703703703,
+                            "y_min": 0.032407407407407406
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 678,
+                    "x": 67,
+                    "y": 14
+                },
+                {
+                    "color": {
+                        "confidence": 0.68701171875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09244791666666666,
+                            "x_min": 0.041666666666666664,
+                            "y_max": 0.6226851851851851,
+                            "y_min": 0.5300925925925926
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.99609375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 32,
+                    "y": 229
                 }
             ],
             "resolution": {
@@ -5309,6 +6798,249 @@
             "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19333333333
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 1.0,
+                        "label": "white",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.028645833333333332,
+                            "x_min": 0.0,
+                            "y_max": 0.48611111111111116,
+                            "y_min": 0.26851851851851855
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 94,
+                    "id": 3,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.5166015625,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 22,
+                    "x": 0,
+                    "y": 116
+                },
+                {
+                    "color": {
+                        "confidence": 0.78955078125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9908854166666666,
+                            "x_min": 0.11328125,
+                            "y_max": 0.9328703703703703,
+                            "y_min": 0.032407407407407406
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 389,
+                    "id": 5,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9970703125,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 674,
+                    "x": 87,
+                    "y": 14
+                },
+                {
+                    "color": {
+                        "confidence": 0.625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09375,
+                            "x_min": 0.04296875,
+                            "y_max": 0.625,
+                            "y_min": 0.5324074074074074
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.99609375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 33,
+                    "y": 230
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 19416666666
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 1.0,
+                        "label": "white",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.016927083333333332,
+                            "x_min": 0.0,
+                            "y_max": 0.48842592592592593,
+                            "y_min": 0.2708333333333333
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 94,
+                    "id": 3,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.970703125,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 13,
+                    "x": 0,
+                    "y": 117
+                },
+                {
+                    "color": {
+                        "confidence": 0.62646484375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09244791666666666,
+                            "x_min": 0.041666666666666664,
+                            "y_max": 0.625,
+                            "y_min": 0.5324074074074074
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9970703125,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 32,
+                    "y": 230
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 19500000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.69921875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09375,
+                            "x_min": 0.04296875,
+                            "y_max": 0.6203703703703703,
+                            "y_min": 0.5277777777777778
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 40,
+                    "id": 6,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9970703125,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 39,
+                    "x": 33,
+                    "y": 228
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 19583333333
         },
         {
             "objects": [
@@ -5333,7 +7065,7 @@
                         "label_id": 2
                     },
                     "h": 418,
-                    "id": 9,
+                    "id": 7,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9658203125,
@@ -5379,7 +7111,7 @@
                         "label_id": 2
                     },
                     "h": 311,
-                    "id": 10,
+                    "id": 8,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -5406,6 +7138,420 @@
             "objects": [
                 {
                     "color": {
+                        "confidence": 0.63134765625,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.96484375,
+                            "x_min": 0.21614583333333334,
+                            "y_max": 0.8171296296296297,
+                            "y_min": 0.09722222222222222
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.9990234375,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 166,
+                    "y": 42
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27416666666
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.7470703125,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9583333333333333,
+                            "x_min": 0.20963541666666666,
+                            "y_max": 0.8217592592592593,
+                            "y_min": 0.10185185185185185
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 161,
+                    "y": 44
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27500000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.77734375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.94921875,
+                            "x_min": 0.20052083333333334,
+                            "y_max": 0.8287037037037037,
+                            "y_min": 0.1087962962962963
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 154,
+                    "y": 47
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27583333333
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.76708984375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9375,
+                            "x_min": 0.18880208333333334,
+                            "y_max": 0.837962962962963,
+                            "y_min": 0.11805555555555555
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 145,
+                    "y": 51
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27666666666
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.646484375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9609375,
+                            "x_min": 0.21223958333333334,
+                            "y_max": 0.8125,
+                            "y_min": 0.09259259259259259
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 163,
+                    "y": 40
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27750000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.5537109375,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9518229166666666,
+                            "x_min": 0.203125,
+                            "y_max": 0.8171296296296297,
+                            "y_min": 0.09722222222222222
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 156,
+                    "y": 42
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27833333333
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.6748046875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.94140625,
+                            "x_min": 0.19270833333333334,
+                            "y_max": 0.8240740740740741,
+                            "y_min": 0.10416666666666667
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 148,
+                    "y": 45
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 27916666666
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.6357421875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.96484375,
+                            "x_min": 0.21614583333333334,
+                            "y_max": 0.8333333333333334,
+                            "y_min": 0.11342592592592593
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 166,
+                    "y": 49
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 28000000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.685546875,
+                        "label": "black",
+                        "label_id": 6,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.95703125,
+                            "x_min": 0.20833333333333334,
+                            "y_max": 0.8402777777777778,
+                            "y_min": 0.12037037037037036
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 311,
+                    "id": 8,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "bus",
+                        "label_id": 3,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 575,
+                    "x": 160,
+                    "y": 52
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 28083333333
+        },
+        {
+            "objects": [
+                {
+                    "color": {
                         "confidence": 0.75390625,
                         "label": "black",
                         "label_id": 6,
@@ -5425,7 +7571,7 @@
                         "label_id": 2
                     },
                     "h": 404,
-                    "id": 11,
+                    "id": 8,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -5463,7 +7609,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 42,
                     "x": 3,
@@ -5493,7 +7639,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 43,
                     "x": 6,
@@ -5523,7 +7669,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 45,
                     "x": 12,
@@ -5553,7 +7699,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 35,
                     "x": 17,
@@ -5583,7 +7729,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 26,
                     "x": 22,
@@ -5613,7 +7759,7 @@
                         "label_id": 1
                     },
                     "h": 79,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 30,
@@ -5643,7 +7789,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 34,
                     "x": 35,
@@ -5673,7 +7819,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 40,
                     "x": 39,
@@ -5703,7 +7849,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 44,
                     "x": 43,
@@ -5733,7 +7879,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 42,
                     "x": 46,
@@ -5763,7 +7909,7 @@
                         "label_id": 1
                     },
                     "h": 73,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 30,
                     "x": 53,
@@ -5793,7 +7939,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 59,
@@ -5823,7 +7969,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 65,
@@ -5853,7 +7999,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 41,
                     "x": 69,
@@ -5883,7 +8029,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 43,
                     "x": 75,
@@ -5913,7 +8059,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 46,
                     "x": 75,
@@ -5943,7 +8089,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 39,
                     "x": 83,
@@ -5973,7 +8119,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 90,
@@ -6003,7 +8149,7 @@
                         "label_id": 1
                     },
                     "h": 72,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 20,
                     "x": 101,
@@ -6033,7 +8179,7 @@
                         "label_id": 1
                     },
                     "h": 79,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 30,
                     "x": 102,
@@ -6063,7 +8209,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 39,
                     "x": 106,
@@ -6093,7 +8239,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 43,
                     "x": 109,
@@ -6123,7 +8269,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 41,
                     "x": 112,
@@ -6153,7 +8299,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 29,
                     "x": 122,
@@ -6183,7 +8329,7 @@
                         "label_id": 1
                     },
                     "h": 81,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 23,
                     "x": 128,
@@ -6213,7 +8359,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 23,
                     "x": 136,
@@ -6243,7 +8389,7 @@
                         "label_id": 1
                     },
                     "h": 73,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 39,
                     "x": 136,
@@ -6273,7 +8419,7 @@
                         "label_id": 1
                     },
                     "h": 72,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 40,
                     "x": 143,
@@ -6303,7 +8449,7 @@
                         "label_id": 1
                     },
                     "h": 72,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 43,
                     "x": 145,
@@ -6333,7 +8479,7 @@
                         "label_id": 1
                     },
                     "h": 69,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 34,
                     "x": 153,
@@ -6363,7 +8509,7 @@
                         "label_id": 1
                     },
                     "h": 78,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 23,
                     "x": 160,
@@ -6393,7 +8539,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 165,
@@ -6423,7 +8569,7 @@
                         "label_id": 1
                     },
                     "h": 77,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 29,
                     "x": 170,
@@ -6453,7 +8599,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 35,
                     "x": 171,
@@ -6483,7 +8629,7 @@
                         "label_id": 1
                     },
                     "h": 76,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 41,
                     "x": 173,
@@ -6513,7 +8659,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 37,
                     "x": 176,
@@ -6543,7 +8689,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 30,
                     "x": 184,
@@ -6573,7 +8719,7 @@
                         "label_id": 1
                     },
                     "h": 82,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 23,
                     "x": 195,
@@ -6603,7 +8749,7 @@
                         "label_id": 1
                     },
                     "h": 80,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 24,
                     "x": 200,
@@ -6633,7 +8779,7 @@
                         "label_id": 1
                     },
                     "h": 74,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 32,
                     "x": 204,
@@ -6663,7 +8809,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 33,
                     "x": 206,
@@ -6690,7 +8836,7 @@
                         "label_id": 2
                     },
                     "h": 64,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.5751953125,
@@ -6728,7 +8874,7 @@
                         "label_id": 1
                     },
                     "h": 71,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 32,
                     "x": 211,
@@ -6755,7 +8901,7 @@
                         "label_id": 2
                     },
                     "h": 75,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.5859375,
@@ -6793,7 +8939,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 28,
                     "x": 215,
@@ -6820,7 +8966,7 @@
                         "label_id": 2
                     },
                     "h": 87,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.90869140625,
@@ -6858,7 +9004,7 @@
                         "label_id": 1
                     },
                     "h": 75,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 28,
                     "x": 218,
@@ -6885,7 +9031,7 @@
                         "label_id": 2
                     },
                     "h": 96,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9990234375,
@@ -6923,7 +9069,7 @@
                         "label_id": 1
                     },
                     "h": 78,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 25,
                     "x": 224,
@@ -6950,7 +9096,7 @@
                         "label_id": 2
                     },
                     "h": 104,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.99609375,
@@ -6988,7 +9134,7 @@
                         "label_id": 1
                     },
                     "h": 73,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 31,
                     "x": 228,
@@ -7015,7 +9161,7 @@
                         "label_id": 2
                     },
                     "h": 117,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.99609375,
@@ -7053,7 +9199,7 @@
                         "label_id": 1
                     },
                     "h": 69,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 32,
                     "x": 230,
@@ -7080,7 +9226,7 @@
                         "label_id": 2
                     },
                     "h": 126,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -7118,7 +9264,7 @@
                         "label_id": 1
                     },
                     "h": 67,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 34,
                     "x": 233,
@@ -7145,7 +9291,7 @@
                         "label_id": 2
                     },
                     "h": 139,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.98828125,
@@ -7183,7 +9329,7 @@
                         "label_id": 1
                     },
                     "h": 65,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 28,
                     "x": 237,
@@ -7210,7 +9356,7 @@
                         "label_id": 2
                     },
                     "h": 150,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97607421875,
@@ -7248,7 +9394,7 @@
                         "label_id": 1
                     },
                     "h": 63,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 25,
                     "x": 243,
@@ -7275,7 +9421,7 @@
                         "label_id": 2
                     },
                     "h": 157,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.986328125,
@@ -7313,7 +9459,7 @@
                         "label_id": 1
                     },
                     "h": 64,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 25,
                     "x": 246,
@@ -7340,7 +9486,7 @@
                         "label_id": 2
                     },
                     "h": 165,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9892578125,
@@ -7378,7 +9524,7 @@
                         "label_id": 1
                     },
                     "h": 62,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 26,
                     "x": 249,
@@ -7405,7 +9551,7 @@
                         "label_id": 2
                     },
                     "h": 174,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.96435546875,
@@ -7443,7 +9589,7 @@
                         "label_id": 1
                     },
                     "h": 61,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 25,
                     "x": 253,
@@ -7470,7 +9616,7 @@
                         "label_id": 2
                     },
                     "h": 184,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.98388671875,
@@ -7508,7 +9654,7 @@
                         "label_id": 1
                     },
                     "h": 62,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 25,
                     "x": 255,
@@ -7535,7 +9681,7 @@
                         "label_id": 2
                     },
                     "h": 194,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9951171875,
@@ -7573,7 +9719,7 @@
                         "label_id": 1
                     },
                     "h": 56,
-                    "id": 12,
+                    "id": 9,
                     "roi_type": "person",
                     "w": 26,
                     "x": 257,
@@ -7600,7 +9746,7 @@
                         "label_id": 2
                     },
                     "h": 201,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.97802734375,
@@ -7646,7 +9792,7 @@
                         "label_id": 2
                     },
                     "h": 208,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9931640625,
@@ -7659,6 +9805,25 @@
                     "w": 191,
                     "x": 90,
                     "y": 224
+                },
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.37109375,
+                            "x_min": 0.3385416666666667,
+                            "y_max": 0.12731481481481483,
+                            "y_min": 0.0
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 55,
+                    "id": 9,
+                    "roi_type": "person",
+                    "w": 25,
+                    "x": 260,
+                    "y": 0
                 }
             ],
             "resolution": {
@@ -7692,7 +9857,7 @@
                         "label_id": 2
                     },
                     "h": 213,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -7705,6 +9870,25 @@
                     "w": 186,
                     "x": 91,
                     "y": 219
+                },
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3763020833333333,
+                            "x_min": 0.34375,
+                            "y_max": 0.12037037037037036,
+                            "y_min": 0.0
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 52,
+                    "id": 9,
+                    "roi_type": "person",
+                    "w": 25,
+                    "x": 264,
+                    "y": 0
                 }
             ],
             "resolution": {
@@ -7738,7 +9922,7 @@
                         "label_id": 2
                     },
                     "h": 221,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -7751,6 +9935,25 @@
                     "w": 179,
                     "x": 97,
                     "y": 211
+                },
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.38151041666666663,
+                            "x_min": 0.3489583333333333,
+                            "y_max": 0.11805555555555555,
+                            "y_min": 0.0
+                        },
+                        "confidence": 1.0,
+                        "label": "person",
+                        "label_id": 1
+                    },
+                    "h": 51,
+                    "id": 9,
+                    "roi_type": "person",
+                    "w": 25,
+                    "x": 268,
+                    "y": 0
                 }
             ],
             "resolution": {
@@ -7784,7 +9987,7 @@
                         "label_id": 2
                     },
                     "h": 228,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.939453125,
@@ -7830,7 +10033,7 @@
                         "label_id": 2
                     },
                     "h": 229,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.95166015625,
@@ -7876,7 +10079,7 @@
                         "label_id": 2
                     },
                     "h": 222,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.7802734375,
@@ -7922,7 +10125,7 @@
                         "label_id": 2
                     },
                     "h": 224,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.8037109375,
@@ -7968,7 +10171,7 @@
                         "label_id": 2
                     },
                     "h": 218,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.580078125,
@@ -8014,7 +10217,7 @@
                         "label_id": 2
                     },
                     "h": 214,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.5400390625,
@@ -8060,7 +10263,7 @@
                         "label_id": 2
                     },
                     "h": 212,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.489013671875,
@@ -8106,7 +10309,7 @@
                         "label_id": 2
                     },
                     "h": 207,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.7431640625,
@@ -8152,7 +10355,7 @@
                         "label_id": 2
                     },
                     "h": 202,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.72216796875,
@@ -8198,7 +10401,7 @@
                         "label_id": 2
                     },
                     "h": 196,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.66845703125,
@@ -8244,7 +10447,7 @@
                         "label_id": 2
                     },
                     "h": 193,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.72412109375,
@@ -8290,7 +10493,7 @@
                         "label_id": 2
                     },
                     "h": 191,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.90869140625,
@@ -8336,7 +10539,7 @@
                         "label_id": 2
                     },
                     "h": 187,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.8173828125,
@@ -8382,7 +10585,7 @@
                         "label_id": 2
                     },
                     "h": 172,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.64306640625,
@@ -8428,7 +10631,7 @@
                         "label_id": 2
                     },
                     "h": 172,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.41064453125,
@@ -8474,7 +10677,7 @@
                         "label_id": 2
                     },
                     "h": 176,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.544921875,
@@ -8520,7 +10723,7 @@
                         "label_id": 2
                     },
                     "h": 170,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.5185546875,
@@ -8566,7 +10769,7 @@
                         "label_id": 2
                     },
                     "h": 168,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.61083984375,
@@ -8612,7 +10815,7 @@
                         "label_id": 2
                     },
                     "h": 169,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.76171875,
@@ -8658,7 +10861,7 @@
                         "label_id": 2
                     },
                     "h": 161,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9892578125,
@@ -8704,7 +10907,7 @@
                         "label_id": 2
                     },
                     "h": 154,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.90234375,
@@ -8750,7 +10953,7 @@
                         "label_id": 2
                     },
                     "h": 149,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.986328125,
@@ -8796,7 +10999,7 @@
                         "label_id": 2
                     },
                     "h": 144,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.98291015625,
@@ -8842,7 +11045,7 @@
                         "label_id": 2
                     },
                     "h": 140,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.8974609375,
@@ -8888,7 +11091,7 @@
                         "label_id": 2
                     },
                     "h": 138,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.6533203125,
@@ -8934,7 +11137,7 @@
                         "label_id": 2
                     },
                     "h": 132,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.857421875,
@@ -8980,7 +11183,7 @@
                         "label_id": 2
                     },
                     "h": 125,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.955078125,
@@ -9026,7 +11229,7 @@
                         "label_id": 2
                     },
                     "h": 121,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9384765625,
@@ -9072,7 +11275,7 @@
                         "label_id": 2
                     },
                     "h": 118,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.94189453125,
@@ -9118,7 +11321,7 @@
                         "label_id": 2
                     },
                     "h": 117,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.88818359375,
@@ -9164,7 +11367,7 @@
                         "label_id": 2
                     },
                     "h": 117,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.72607421875,
@@ -9210,7 +11413,7 @@
                         "label_id": 2
                     },
                     "h": 115,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.94970703125,
@@ -9256,7 +11459,7 @@
                         "label_id": 2
                     },
                     "h": 112,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.96435546875,
@@ -9302,7 +11505,7 @@
                         "label_id": 2
                     },
                     "h": 111,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9348,7 +11551,7 @@
                         "label_id": 2
                     },
                     "h": 108,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9394,7 +11597,7 @@
                         "label_id": 2
                     },
                     "h": 106,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9440,7 +11643,7 @@
                         "label_id": 2
                     },
                     "h": 106,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9486,7 +11689,7 @@
                         "label_id": 2
                     },
                     "h": 103,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9532,7 +11735,7 @@
                         "label_id": 2
                     },
                     "h": 102,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9578,7 +11781,7 @@
                         "label_id": 2
                     },
                     "h": 101,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 1.0,
@@ -9614,6 +11817,52 @@
                     },
                     "detection": {
                         "bounding_box": {
+                            "x_max": 0.12369791666666667,
+                            "x_min": 0.0,
+                            "y_max": 0.35185185185185186,
+                            "y_min": 0.11805555555555555
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 101,
+                    "id": 10,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 1.0,
+                        "label": "car",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 95,
+                    "x": 0,
+                    "y": 51
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48750000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.998046875,
+                        "label": "white",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
                             "x_max": 0.11241176351904869,
                             "x_min": 0.0019334815442562103,
                             "y_max": 0.3555787205696106,
@@ -9624,7 +11873,7 @@
                         "label_id": 2
                     },
                     "h": 99,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9912109375,
@@ -9670,7 +11919,7 @@
                         "label_id": 2
                     },
                     "h": 100,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9892578125,
@@ -9716,7 +11965,7 @@
                         "label_id": 2
                     },
                     "h": 101,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.9375,
@@ -9762,7 +12011,7 @@
                         "label_id": 2
                     },
                     "h": 89,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.73193359375,
@@ -9808,7 +12057,7 @@
                         "label_id": 2
                     },
                     "h": 89,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.82568359375,
@@ -9854,7 +12103,7 @@
                         "label_id": 2
                     },
                     "h": 86,
-                    "id": 13,
+                    "id": 10,
                     "roi_type": "vehicle",
                     "type": {
                         "confidence": 0.91650390625,
@@ -9876,6 +12125,98 @@
             "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 49250000000
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.6025390625,
+                        "label": "green",
+                        "label_id": 4,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.040364583333333336,
+                            "x_min": 0.0,
+                            "y_max": 0.3449074074074074,
+                            "y_min": 0.1412037037037037
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 88,
+                    "id": 10,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.388427734375,
+                        "label": "car",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 31,
+                    "x": 0,
+                    "y": 61
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 49333333333
+        },
+        {
+            "objects": [
+                {
+                    "color": {
+                        "confidence": 0.86279296875,
+                        "label": "blue",
+                        "label_id": 5,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.026041666666666668,
+                            "x_min": 0.0,
+                            "y_max": 0.3472222222222222,
+                            "y_min": 0.14351851851851852
+                        },
+                        "confidence": 1.0,
+                        "label": "vehicle",
+                        "label_id": 2
+                    },
+                    "h": 88,
+                    "id": 10,
+                    "roi_type": "vehicle",
+                    "type": {
+                        "confidence": 0.47705078125,
+                        "label": "car",
+                        "label_id": 0,
+                        "model": {
+                            "name": "vehicle-attributes-recognition-barrier-0039"
+                        }
+                    },
+                    "w": 20,
+                    "x": 0,
+                    "y": 62
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 49416666666
         }
     ]
 }
