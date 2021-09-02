@@ -44,7 +44,7 @@ Run the docker image build script.
 ```
 $ ./docker/build.sh
 ```
-Resulting image name is `video-analytics-serving:0.6.0-dlstreamer-edge-ai-extension`
+Resulting image name is `video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension`
 
 ## Running the Edge AI Extension Module
 
@@ -242,7 +242,7 @@ $ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version per
 ### Logging
 Run the following command to monitor the logs from the docker container
 ```bash
-$ docker logs video-analytics-serving_0.6.0-dlstreamer-edge-ai-extension -f
+$ docker logs video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension -f
 ```
 
 ### Developer Mode
@@ -404,7 +404,7 @@ models
 Check that expected model and pipeline are present in the built image:
 
 ```bash
-$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.6.0-dlstreamer-edge-ai-extension
+$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension
 vaserving@82dd59743ca3:~$ ls models
 person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
 vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
@@ -416,7 +416,7 @@ debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ### Restart service
 Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
 ```
-$ docker stop video-analytics-serving_0.6.0-dlstreamer-edge-ai-extension
+$ docker stop video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension
 $ docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
 ```
 ### Run the client

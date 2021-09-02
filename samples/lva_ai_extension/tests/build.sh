@@ -2,7 +2,7 @@
 WORK_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(readlink -f "$WORK_DIR/../../..")
 LVA_DIR=$(dirname $WORK_DIR)
-EXTENSION_IMAGE_TAG="video-analytics-serving:0.6.0-dlstreamer-edge-ai-extension"
+EXTENSION_IMAGE_TAG="video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension"
 TEST_IMAGE_TAG="video-analytics-serving-lva-tests"
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 
