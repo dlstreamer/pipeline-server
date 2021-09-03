@@ -2,12 +2,14 @@
 The object line crossing spatial analytics extension is used in tandem with gvatrack to determine when tracked objects cross virtually defined lines supplied to the extension.
 
 ## Parameters
-The extension takes the following parameters. The `lines` parameter is required, all others are optional.
+The extension takes the following parameters. All parameters are optional for the pipeline to run.
 
 ### lines
 A list of line definitions, which are objects containing the following fields:
 * `name` the name of the line for use in event reporting.
 * `line` a tuple of (x,y) coordinates defining the start and end of the directional line segment.
+
+**If this parameter is not set, the extension defaults to an empty list and will not check for line crossings.**
 
 ```json
 "lines": [

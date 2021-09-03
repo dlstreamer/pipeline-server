@@ -26,12 +26,14 @@ def count_events(results, event_type, valid_event_names):
     return num_events, total_zone_count
 
 def get_event_names(client_params):
+    event_names = []
     event_parameter_key = client_params["event_parameter"]
+    if not event_parameter_key in client_params["pipeline"]["parameters"]:
+        return event_names
     pipeline_parameter = client_params["pipeline"]["parameters"][event_parameter_key]
     key = event_parameter_key.split('-')
     event_parameter_child = key[1] + 's'
-    event_parameters = pipeline_parameter[event_parameter_child]
-    event_names = []
+    event_parameters = pipeline_parameter.get(event_parameter_child, [])
     for parameter in event_parameters:
         event_names.append(parameter["name"])
     return event_names
