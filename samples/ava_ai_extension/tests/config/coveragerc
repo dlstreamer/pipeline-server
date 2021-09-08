@@ -1,0 +1,7 @@
+[run]
+data_file = /home/video-analytics-serving/samples/ava_ai_extension/tests/results/.coverage
+concurrency = multiprocessing
+
+[report]
+include = server/*, client/*, common/*
+omit = common/grpc_autogen/*

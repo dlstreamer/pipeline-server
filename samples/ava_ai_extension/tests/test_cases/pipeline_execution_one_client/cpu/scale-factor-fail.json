@@ -1,0 +1,25 @@
+{
+    "server_params": {
+        "sleep_period":0.25,
+        "port":5001
+    },
+    "client":
+        {
+            "params": {
+                "pipeline": {
+                    "name":"object_detection",
+                    "version":"person_vehicle_bike_detection"
+                },
+                "wait_to_complete": true,
+                "source":"/home/video-analytics-serving/samples/ava_ai_extension/sampleframes/sample01.png",
+                "output_location":"",
+                "shared_memory":false,
+                "loop_count":1,
+                "scale_factor":2.0,
+                "sleep_period":5,
+                "port":5001,
+                "timeout":300,
+                "expected_return_code": 1
+            }
+        }
+}

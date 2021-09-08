@@ -24,9 +24,9 @@ ignore=CVS
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
-ignore-paths=^/home/video-analytics-serving/samples/lva_ai_extension/common/grpc_autogen/.*$,
+ignore-paths=^/home/video-analytics-serving/samples/ava_ai_extension/common/grpc_autogen/.*$,
              ^/home/video-analytics-serving/tests/.*$,
-             ^/home/video-analytics-serving/samples/lva_ai_extension/tests/.*$,
+             ^/home/video-analytics-serving/samples/ava_ai_extension/tests/.*$,
              ^/home/video-analytics-serving/samples/edgex_bridge/edgex/.*$
 
 # Files or directories matching the regex patterns are skipped. The regex

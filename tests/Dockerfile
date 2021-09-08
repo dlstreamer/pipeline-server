@@ -15,9 +15,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 
 # Dependencies installed via pip
-COPY ./samples/lva_ai_extension/requirements.txt /home/video-analytics-serving/requirements.lva.txt
-RUN if [ "$FRAMEWORK" = "gstreamer" ]; then pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.lva.txt; fi
-RUN rm -f /home/video-analytics-serving/requirements.lva.txt
+COPY ./samples/ava_ai_extension/requirements.txt /home/video-analytics-serving/requirements.ava.txt
+RUN if [ "$FRAMEWORK" = "gstreamer" ]; then pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.ava.txt; fi
+RUN rm -f /home/video-analytics-serving/requirements.ava.txt
 COPY ./tests/requirements.tests.txt /home/video-analytics-serving
 RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.tests.txt
 RUN rm -f /home/video-analytics-serving/requirements.tests.txt
