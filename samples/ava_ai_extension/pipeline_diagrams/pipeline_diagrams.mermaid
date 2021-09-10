@@ -1,4 +1,4 @@
-## LVA Pipeline Diagrams
+## AVA Pipeline Diagrams
 ### Object Detection
 ```mermaid
 graph LR
@@ -42,6 +42,31 @@ graph LR
     subgraph "Action Recognition"
     appsrc-->gvaactionrecognitionbin
     gvaactionrecognitionbin-->appsink
+    end
+    appsink-->meta_data
+```
+
+### Line Crossing
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Line Crossing (gvapython element generates line crossing events)"
+    appsrc-->gvadetect
+    gvadetect-->gvatrack
+    gvatrack-->gvaclassify
+    gvaclassify-->gvapython
+    gvapython-->appsink
+    end
+    appsink-->meta_data```
+
+### Zone Event
+```mermaid
+graph LR
+    frame-->appsrc
+    subgraph "Zone Event (gvapython element generates 'in zone' detection events)"
+    appsrc-->gvadetect
+    gvadetect-->gvapython
+    gvapython-->appsink
     end
     appsink-->meta_data
 ```
