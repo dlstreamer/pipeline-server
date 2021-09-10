@@ -1,5 +1,5 @@
 # Running Video Analytics Serving
-| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
+| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Real Time Streaming Protocol (RTSP) Re-streaming](#real-time-streaming-protocol-rtsp-re-streaming) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
 
 Video Analytics Serving docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
@@ -114,9 +114,11 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
     "type": "uri"
   },
   "destination": {
-    "type": "file",
-    "path": "/tmp/results.txt",
-    "format": "json-lines"
+    "metadata": {
+      "type": "file",
+      "path": "/tmp/results.txt",
+      "format": "json-lines"
+    }
   }
 }'
 $ tail -f /tmp/results.txt
