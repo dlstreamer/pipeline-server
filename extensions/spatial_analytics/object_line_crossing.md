@@ -36,7 +36,7 @@ The [logging level](https://docs.python.org/3.8/library/logging.html#logging-lev
 ## Event Output
 If a tracked object crosses any of the lines, an event of type `object-line-crossing` will be created with the following fields.
 * `line-name`: name of the associated line
-* `related-detections`: array containing indexes of the detected objects that crossed the line
+* `related-objects`: array containing indexes of the detected objects that crossed the line
 * `directions` : array containing directions which can be `clockwise`, `counterclockwise`, or `parallel`. The orientation is determined from from line-start to line-end.
 * `clockwise-total` : total number of clockwise crossings
 * `counterclockwise-total` : total number of counter clockwise crossings
