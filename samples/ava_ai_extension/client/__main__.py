@@ -213,9 +213,9 @@ def create_extension_config(args):
 def main():
     msp = None
     frame_source = None
+    args = parse_args()
+    _log_options(args)
     try:
-        args = parse_args()
-        _log_options(args)
         frame_delay = 1 / args.frame_rate if args.frame_rate > 0 else 0
         frame_queue = queue.Queue(args.frame_queue_size)
         result_queue = queue.Queue()
