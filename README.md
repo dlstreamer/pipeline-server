@@ -156,6 +156,8 @@ The file path is specified in the `destination` section of the REST request and 
 ### Queued, Running and Completed
 The vaclient `run` command starts the pipeline. The underlying REST request returns a `pipeline instance` which is used to query the state of the pipeline.
 All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the vaclient `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` which is used by the `status` command to view pipeline state.
+> **NOTE:** The pipeline instance value depends on the number of pipelines started while the server is running so may differ from the value shown in the following examples.
+
 ```
 $ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 <snip>
