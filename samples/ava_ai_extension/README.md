@@ -1,6 +1,6 @@
 # OpenVINO™ DL Streamer – Edge AI Extension Module
 
-| [Getting Started](#getting-started) | [Edge AI Extension Module Options](#edge-ai-extension-module-options) | [Additional Examples](#additional-standalone-edge-ai-extension-examples) | [Spatial Analytics](#spatial-analytics)| [Test Client](#test-client) |
+| [Getting Started](#getting-started) | [Edge AI Extension Module Options](#edge-ai-extension-module-options) | [Additional Examples](#additional-standalone-edge-ai-extension-examples) | [Spatial Analytics](#spatial-analytics-pipelines)| [Test Client](#test-client) |
 [Changing Models](#updating-or-changing-detection-and-classification-models)
 
 The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes gRPC APIs that are compatible with [Azure Video Analyzer](https://azure.microsoft.com/en-us/products/video-analyzer/) (AVA). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
@@ -182,7 +182,7 @@ Example extension_configuration
 {
     "pipeline": {
         "name": "object_detection",
-        "version": "person_vehicle_bike_detection"
+        "version": "person_vehicle_bike_detection",
         "parameters": { "detection-device": "GPU"}
     }
 }
@@ -212,7 +212,7 @@ $ ./docker/run_server.sh --enable-rtsp
 ```
 * Run client with frame destination set. For demonstration, path set as `person-detection` in example request below.
 ```
-$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}' --loop-count 1000
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}'
 ```
 * Connect and visualize: Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
 
@@ -221,7 +221,7 @@ $ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version per
 {
     "pipeline": {
         "name": "object_detection",
-        "version": "person_vehicle_bike_detection"
+        "version": "person_vehicle_bike_detection",
         "frame-destination": { "type":"rtsp", "path":"person-detection"}
     }
 }
@@ -281,7 +281,7 @@ The [object_detection/object_zone_count](./pipelines/object_detection/object_zon
 2. Run client with example extension configuration. The `object_zone_count.json` extension configuration contains zone definitions to generate `object-zone-count` events for a media stream. Look for the below events in client output:
 
    ```
-   $ ./samples/ava_ai_extension/docker/run_client.sh \
+   $ ./docker/run_client.sh \
      --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_zone_count.json
    ```
    ```
@@ -309,7 +309,7 @@ To get a visual of `object_zone_count` extension, run with `object_zone_count_re
 2. Run client with example extension configuration, with rendering support:
 
    ```
-   $ ./samples/ava_ai_extension/docker/run_client.sh \
+   $ ./docker/run_client.sh \
      --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_zone_count_rendered.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
    ```
@@ -325,7 +325,7 @@ The [object_tracking/object_line_crossing](./pipelines/object_tracking/object_li
 2. Run client with example extension configuration. The `line_cross_tracking_config.json` extension configuration contains example line definitions needed to generate`object_line_crossing` events for a media stream. Look for the below events in client output:
 
    ```
-   $ ./samples/ava_ai_extension/docker/run_client.sh \
+   $ ./docker/run_client.sh \
      --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_line_crossing.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
    ```
@@ -352,7 +352,7 @@ To get a visual of `object_line_crossing` extension, run with `object_line_cross
 2. Run client with example extension configuration, with rendering support:
 
    ```
-   $ ./samples/ava_ai_extension/docker/run_client.sh \
+   $ ./docker/run_client.sh \
      --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_line_crossing_rendered.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
    ```
@@ -442,7 +442,7 @@ $ ./docker/run_client.sh --pipeline-name object_classification --pipeline-versio
 
 ## Send a request to the server to run a different pipeline on the GPU
 ```
-$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{"detection-device":"GPU"}'
+$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{\"detection-device\":\"GPU\"}'
 ```
 
 ## Add New Model to Models List
