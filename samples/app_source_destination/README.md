@@ -37,15 +37,15 @@ The destination part of the request object would look like this:
 destination = {
     "type": "application",
     "class": "GStreamerAppDestination",
-    "output": dst_queue
+    "output": dst_queue,
     "mode": "frames"
 }
 ```
-The destination will signal and of stream (EOS) by sending a null result.
+The destination will signal end of stream (EOS) by sending a null result.
 
 
 ## Pipeline
-Here is a sample pipeline. To be ready for for `application` source and destination the template must define source to be `appsrc` and sink to be `appsink`.
+Here is a sample pipeline. To be ready for `application` source and destination the template must define source to be `appsrc` and sink to be `appsink`.
 ```json
 {
     "type": "GStreamer",
