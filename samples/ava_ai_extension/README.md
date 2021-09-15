@@ -3,13 +3,13 @@
 | [Getting Started](#getting-started) | [Edge AI Extension Module Options](#edge-ai-extension-module-options) | [Additional Examples](#additional-standalone-edge-ai-extension-examples) | [Spatial Analytics](#spatial-analytics-pipelines)| [Test Client](#test-client) |
 [Changing Models](#updating-or-changing-detection-and-classification-models)
 
-The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes gRPC APIs that are compatible with [Azure Video Analyzer](https://azure.microsoft.com/en-us/products/video-analyzer/) (AVA). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
+The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes [gRPC APIs](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/grpc-extension-protocol) that are compatible with [Azure Video Analyzer](https://azure.microsoft.com/en-us/products/video-analyzer/) (AVA). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
 
 ## Highlights
 
+- Spatial analytics features: [Object Line Crossing](#object-line-crossing) and [Object Zone Count](#object-zone-count) similar to [Azure Video Analyzer Spatial Analysis](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/computer-vision-for-spatial-analysis?tabs=azure-stack-edge) 
 - Scalable, high-performance solution for serving video analytics pipelines on Intel® architectures
 - gRPC API enabling fast data transfer rate and low latency
-- Validated support for [Azure Video Analyzer Spatial Analysis](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/computer-vision-for-spatial-analysis?tabs=azure-stack-edge).
 - Supported Configuration: Pre-built Ubuntu Linux container for CPU and iGPU
 - Pre-loaded Object Detection, Object Classification, Object Tracking and Action Recognition pipelines to get started quickly
 - Pre-loaded models - see table below.
@@ -32,7 +32,7 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 # Getting Started
 
-The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Azure Video Analyzer graph. For more information on deploying the module as part of a Azure Video Analyzer graph please see [Configuring the AI Extension Module for Azure Video Analyzer](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Azure Video Analyzer documentation](https://azure.microsoft.com/en-us/products/video-analyzer/#overview). The following instructions demonstrate building and running the microservice and test client outside of Azure Video Analyzer.
+The OpenVINO™ DL Streamer - Edge AI Extension module can run as a standalone microservice or as a module within an Azure Video Analyzer graph. For more information on deploying the module as part of a Azure Video Analyzer graph please see [Configuring the AI Extension Module for Azure Video Analyzer](#configuring-the-ai-extension-module-for-live-video-analytics) and refer to the [Azure Video Analyzer documentation](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/overview). The following instructions demonstrate building and running the microservice and test client outside of Azure Video Analyzer.
 
 ## Building the Edge AI Extension Module Image
 
@@ -142,11 +142,6 @@ There are three versions of the object zone count pipeline. They are all based o
 | object_zone_count_person| [person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/blob/2021.4/models/intel/person-detection-retail-0013/README.md)|
 | object_zone_count_vehicle| [vehicle-detection-0202](https://github.com/openvinotoolkit/open_model_zoo/blob/2021.4/models/intel/vehicle-detection-0202/README.md)|
 
-## Configuring the AI Extension Module for Azure Video Analyzer
-
-Deployment manifests, topologies or operations files are no longer provided in this AVA AI Extension but can be found in the AVA reference implementation.
-Follow instructions from the tutorial [Analyze live video with Intel OpenVINO™ DL Streamer – Edge AI Extension](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/use-intel-grpc-video-analytics-serving-tutorial)
-
 
 ## Extension Configuration
 
@@ -187,6 +182,10 @@ Example extension_configuration
     }
 }
 ```
+## Configuring the AI Extension Module for Azure Video Analyzer
+
+Please refer to the [Analyze live video with Intel OpenVINO™ DL Streamer – Edge AI Extension](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/use-intel-grpc-video-analytics-serving-tutorial) tutorial for deployment manifests, topologies or operations files and other details. 
+
 
 # Additional Standalone Edge AI Extension Examples
 
