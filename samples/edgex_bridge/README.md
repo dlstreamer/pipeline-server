@@ -1,6 +1,6 @@
 # Video Analytics Serving EdgeX Bridge
 
-This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Video Analytics Serving and [DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/mobilenet-ssd/mobilenet-ssd.md) model for detection but can be customized to use any detection or recognition model.
+This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Video Analytics Serving and [DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
 
 | [Overview](#overview) | [Prerequisites](#prerequisites) | [Tutorial](#tutorial) | [Script Arguments](#script-arguments) |
 
@@ -27,26 +27,9 @@ The EdgeX Bridge sample uses a DL Streamer based pipeline definition with a vers
 The reference pipeline makes use of an object detection model to detect and label regions of interest. Any objects detected within the region are reported with a label and confidence value, along with location details and other contextually relevant metadata. Multiple objects may be reported in a media frame or image, and behavior may be refined further by assigning a confidence `threshold` property of the [gvadetect](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvadetect) element.
 
 The list of objects that this network can detect are:
-- aeroplane
-- bicycle
-- bird
-- boat
-- bottle
-- bus
-- car
-- cat
-- chair
-- cow
-- diningtable
-- dog
-- horse
-- motorbike
 - person
-- pottedplant
-- sheep
-- sofa
-- train
-- tvmonitor
+- vehicle
+- bike
 
 # Tutorial
 
@@ -132,30 +115,12 @@ The `edgex-video-analytics-serving` image may be extended by updating sources on
 1. You may customize the pipeline to use other models.
 For example, you may wish to remove the visual output by updating the last line of the pipeline template to replace with the following:
 
-```suggestion:-0+0
--" ! queue ! gvawatermark ! videoconvert ! fpsdisplaysink video-sink=ximagesink"
-+" ! appsink name=appsink"
-```
+   ```suggestion:-0+0
+   -" ! queue ! gvawatermark ! videoconvert ! fpsdisplaysink video-sink=ximagesink"
+   +" ! appsink name=appsink"
+   ```
 
-Refer to [Changing Object Detection Models](/docs/changing_object_detection_models.md) for creative guidance. For example, apply the mobilenet-ssd model to detect bottles instead of vehicles.
-
-1. Add a second pipeline at ./samples/edgex_bridge/pipelines/object_detection/ssd/pipeline.json. Modify the attributes assigned for the gvadetect element's model attribute:
-
-```
-...
-! gvadetect model={models[object_detection][ssd][network]} name=detection",
-...
-```
-
-1. Extend the ./samples/models_list/models.list.yml to append:
-```
-- model: mobilenet-ssd
-  alias: object_detection
-  version: ssd
-  precision: [FP32]
-```
-
-This will allow OpenVINO to resolve the `ssd` object_detection model we described for the pipeline in the previous step.  You will either optionally pass a --pipeline parameter or update the default to start your new bottle detection pipeline (we named `object_detection/ssd` in the previous step).
+   Refer to [Changing Object Detection Models](/docs/changing_object_detection_models.md) for creative guidance.
 
 1. Pass in a new source, representing a camera watching bottles being added or removed, such as "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true"
 

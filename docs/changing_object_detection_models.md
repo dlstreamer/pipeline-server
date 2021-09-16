@@ -52,7 +52,6 @@ Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detec
 ```
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment
@@ -214,7 +213,6 @@ The `list-models` command now shows 9 models, including `object_detection/yolo-v
 ```bash
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
@@ -274,7 +272,6 @@ Once started you can verify that the new model has been loaded.
 ```bash
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes

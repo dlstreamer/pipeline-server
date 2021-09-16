@@ -2,14 +2,12 @@
 MODEL_NAMES=(person-vehicle-bike-detection-crossroad-0078)
 MODEL_NAMES+=(vehicle-attributes-recognition-barrier-0039)
 MODEL_NAMES+=(aclnet)
-MODEL_NAMES+=(mobilenet-ssd)
 MODEL_NAMES+=(emotions-recognition-retail-0003)
 MODEL_NAMES+=(face-detection-retail-0004)
 
 ALIAS_NAMES=(object_detection/person_vehicle_bike)
 ALIAS_NAMES+=(object_classification/vehicle_attributes)
 ALIAS_NAMES+=(audio_detection/environment)
-ALIAS_NAMES+=(object_detection/1)
 ALIAS_NAMES+=(emotion_recognition/1)
 ALIAS_NAMES+=(face_detection_retail/1)
 

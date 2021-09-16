@@ -10,10 +10,6 @@
   alias: audio_detection
   version: environment
   precision: [FP16,FP32]
-- model: mobilenet-ssd
-  alias: object_detection
-  version: 1
-  precision: [FP16,FP32]
 - model: emotions-recognition-retail-0003
   alias: emotion_recognition
   version: 1

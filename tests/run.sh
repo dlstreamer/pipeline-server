@@ -59,10 +59,19 @@ while [[ "$#" -gt 0 ]]; do
       ;;
     --pytest-gstreamer)
       ;;
+    --pytest-ffmpeg-generate)
+      FRAMEWORK=ffmpeg
+      ENTRYPOINT_ARGS+="--entrypoint-args --generate "
+      VOLUME_MOUNT+="-v $TESTS_DIR/test_cases:$DOCKER_TESTS_DIR/test_cases "
+      OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"
+      SELECTED="$1"
+      PREPARE_GROUND_TRUTH=${PREPARE_GROUND_TRUTH:-true}
+      ;;
     --pytest-gstreamer-generate)
       ENTRYPOINT_ARGS+="--entrypoint-args --generate "
       VOLUME_MOUNT+="-v $TESTS_DIR/test_cases:$DOCKER_TESTS_DIR/test_cases "
       PREPARE_GROUND_TRUTH=${PREPARE_GROUND_TRUTH:-true}
+      SELECTED="$1"
       ;;
     --pytest-ffmpeg)
       OUTPUT_DIR="$PYTEST_FFMPEG_RESULTS_DIR"

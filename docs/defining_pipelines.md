@@ -189,8 +189,8 @@ with DL Streamer please see the DL Streamer [tutorial](https://github.com/opencv
 ```
 "template": [
 	"-i \"{source[uri]}\" ",
-	"-vf \"detect=model={models[object_detection][1][network]}",
-	":model_proc=\"{models[object_detection][1][proc]}\":interval={parameters[inference-interval]}\",",
+	"-vf \"detect=model={models[object_detection][person_vehicle_bike][network]}",
+	":model_proc=\"{models[object_detection][person_vehicle_bike][proc]}\":interval={parameters[inference-interval]}\",",
 	"metaconvert",
 	" -an -y -f metapublish"
     ]

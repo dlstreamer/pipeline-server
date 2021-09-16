@@ -18,6 +18,32 @@
             "version": "vehicle_attributes"
         },
         {
+            "description": "action_recognition",
+            "name": "action_recognition",
+            "networks": {
+                "model-proc": null,
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
+                    "FP32": "/home/video-analytics-serving/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "encoder"
+        },
+        {
+            "description": "action_recognition",
+            "name": "action_recognition",
+            "networks": {
+                "model-proc": "/home/video-analytics-serving/models/action_recognition/decoder/action-recognition-0001.json",
+                "networks": {
+                    "FP16": "/home/video-analytics-serving/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
+                    "FP32": "/home/video-analytics-serving/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "decoder"
+        },
+        {
             "description": "emotion_recognition",
             "name": "emotion_recognition",
             "networks": {
@@ -47,19 +73,6 @@
             "description": "object_detection",
             "name": "object_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_detection/1/mobilenet-ssd.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_detection/1/FP16/mobilenet-ssd.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_detection/1/FP32/mobilenet-ssd.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": 1
-        },
-        {
-            "description": "object_detection",
-            "name": "object_detection",
-            "networks": {
                 "model-proc": "/home/video-analytics-serving/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json",
                 "networks": {
                     "FP16": "/home/video-analytics-serving/models/object_detection/person_vehicle_bike/FP16/person-vehicle-bike-detection-crossroad-0078.xml",
@@ -81,32 +94,6 @@
             },
             "type": "IntelDLDT",
             "version": 1
-        },
-        {
-            "description": "action_recognition",
-            "name": "action_recognition",
-            "networks": {
-                "model-proc": "/home/video-analytics-serving/models/action_recognition/decoder/action-recognition-0001.json",
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
-                    "FP32": "/home/video-analytics-serving/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "decoder"
-        },
-        {
-            "description": "action_recognition",
-            "name": "action_recognition",
-            "networks": {
-                "model-proc": null,
-                "networks": {
-                    "FP16": "/home/video-analytics-serving/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
-                    "FP32": "/home/video-analytics-serving/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "encoder"
         }
     ],
     "status_code": 200,

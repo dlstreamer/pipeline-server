@@ -1,7 +1,7 @@
 {
 	"type": "GStreamer",
 	"template": ["urisourcebin name=source ! tee name=t ! queue ! decodebin ! video/x-raw ! videoconvert name=videoconvert",
-                                " ! gvadetect model={models[object_detection][1][network]} name=detection",
+                                " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
                                 " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
                                 " ! appsink name=appsink",
                                 " t. ! queue ! qtdemux ! splitmuxsink name=splitmuxsink"
