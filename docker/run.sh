@@ -86,9 +86,9 @@ enable_hardware_access() {
         USER_GROUPS+="--group-add $(stat -c '%g' /dev/dri/render*) "
     fi
 
-    # NCS2
+    # Intel(R) NCS2
     if [ -d /dev/bus/usb ]; then
-        echo "Found /dev/bus/usb - enabling for NCS2"
+        echo "Found /dev/bus/usb - enabling for Intel(R) NCS2"
         DEVICE_CGROUP_RULE=--device-cgroup-rule=\'c\ 189:*\ rmw\'
         VOLUME_MOUNT+="-v /dev/bus/usb:/dev/bus/usb "
     fi
