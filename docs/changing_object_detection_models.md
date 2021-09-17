@@ -52,7 +52,6 @@ Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detec
 ```
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment
@@ -129,13 +128,12 @@ Expected output (abbreviated):
 
 ```
 [ SUCCESS ] Generated IR version 10 model.
-[ SUCCESS ] XML file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
-[ SUCCESS ] BIN file: /tmp/tmp8mq6f1ti/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
-[ SUCCESS ] Total execution time: 5.75 seconds.
-[ SUCCESS ] Memory consumed: 533 MB.
-It's been a while, check for a new version of Intel(R) Distribution of OpenVINO(TM) toolkit here https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/choose-download.html?cid=other&source=Prod&campid=ww_2020_bu_IOTG_OpenVINO-2021-1&content=upg_pro&medium=organic_uid_agjj or on the GitHub*
+[ SUCCESS ] XML file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
+[ SUCCESS ] BIN file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
+[ SUCCESS ] Total execution time: 9.70 seconds.
+[ SUCCESS ] Memory consumed: 584 MB.
 
-Downloaded yolo-v2-tiny-tf model-proc file from gst-video-analytics repo
+Copied model_proc to: /output/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json
 ```
 
 The model will now be in `models` folder in the root of the project:
@@ -195,7 +193,7 @@ Edited pipeline template:
 
 ```
 "template": ["uridecodebin name=source",
-            " ! gvadetect model={models[person_vehicle_bike_detection][yolo-v2-tiny-tf][network]} name=detection",
+            " ! gvadetect model={models[object_detection][yolo-v2-tiny-tf][network]} name=detection",
             " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
             " ! appsink name=appsink"
             ]
@@ -215,7 +213,6 @@ The `list-models` command now shows 9 models, including `object_detection/yolo-v
 ```bash
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
@@ -275,7 +272,6 @@ Once started you can verify that the new model has been loaded.
 ```bash
 $ ./vaclient/vaclient.sh list-models
  - emotion_recognition/1
- - object_detection/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes

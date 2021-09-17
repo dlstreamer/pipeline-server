@@ -24,7 +24,7 @@ logger = logging.get_logger('object_line_crossing', is_static=True)
 
 class ObjectLineCrossing: # pylint: disable=too-few-public-methods
 
-    def __init__(self, lines, enable_watermark=False, log_level="INFO"):
+    def __init__(self, lines=[], enable_watermark=False, log_level="INFO"):
         self._detected_objects = {}
         self._lines = []
         self._enable_watermark = enable_watermark
@@ -38,6 +38,8 @@ class ObjectLineCrossing: # pylint: disable=too-few-public-methods
             except Exception as error:
                 logger.error(error)
                 logger.error("Exception creating SpatialAnalysisCrossingLine: {}".format(line))
+        if not self._lines:
+            logger.warn("Empty line configuration. No lines to check against.")
 
     def process_frame(self, frame):
         try:
@@ -83,7 +85,7 @@ class ObjectLineCrossing: # pylint: disable=too-few-public-methods
     def _add_point(self, frame, point, label):
         region = frame.add_region(point.x, point.y, 0, 0, label=label, normalized=True)
         for tensor in region.tensors():
-            tensor.set_name("line_crossing")
+            tensor.set_name("watermark_region")
 
     def _add_watermark(self, frame):
         for index in range(0, len(self._lines)):

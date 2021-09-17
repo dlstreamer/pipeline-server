@@ -14,7 +14,6 @@ Fist models:
 ~/video-analytics-serving$ ./vaclient/vaclient.sh list-models
 <snip>
  - emotion_recognition/1
- - object_detection/1
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment

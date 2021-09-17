@@ -2,12 +2,14 @@
 The Zone Event Detection AI Skill is used to determine if detected objects reside in polygons that this Skill takes as inputs.
 
 ## Parameters
-The extension takes the following parameters. The `zones` parameter is required, all others are optional.
+The extension takes the following parameters. All parameters are optional for the pipeline to run.
 
 ### zones
 A list of zone definitions which are objects containing the following fields.
 * `name` : the name of the zone for use in event reporting.
 * `polygon` : A list of four vertices (a tuple of x,y coordinates) which make up the bounds of the polygon.
+
+**If this parameter is not set, the extension defaults to an empty list and will not check for zone detections.**
 
 ```json
 "zones": [

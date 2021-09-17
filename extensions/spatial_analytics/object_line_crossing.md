@@ -2,12 +2,14 @@
 The object line crossing spatial analytics extension is used in tandem with gvatrack to determine when tracked objects cross virtually defined lines supplied to the extension.
 
 ## Parameters
-The extension takes the following parameters. The `lines` parameter is required, all others are optional.
+The extension takes the following parameters. All parameters are optional for the pipeline to run.
 
 ### lines
 A list of line definitions, which are objects containing the following fields:
 * `name` the name of the line for use in event reporting.
 * `line` a tuple of (x,y) coordinates defining the start and end of the directional line segment.
+
+**If this parameter is not set, the extension defaults to an empty list and will not check for line crossings.**
 
 ```json
 "lines": [
@@ -34,7 +36,7 @@ The [logging level](https://docs.python.org/3.8/library/logging.html#logging-lev
 ## Event Output
 If a tracked object crosses any of the lines, an event of type `object-line-crossing` will be created with the following fields.
 * `line-name`: name of the associated line
-* `related-detections`: array containing indexes of the detected objects that crossed the line
+* `related-objects`: array containing indexes of the detected objects that crossed the line
 * `directions` : array containing directions which can be `clockwise`, `counterclockwise`, or `parallel`. The orientation is determined from from line-start to line-end.
 * `clockwise-total` : total number of clockwise crossings
 * `counterclockwise-total` : total number of counter clockwise crossings

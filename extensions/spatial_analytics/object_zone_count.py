@@ -20,13 +20,14 @@ class ObjectZoneCount:
     DEFAULT_DETECTION_CONFIDENCE_THRESHOLD = 0.0
 
     # Caller supplies one or more zones via request parameter
-    def __init__(self, zones, enable_watermark=False, log_level="INFO"):
+    def __init__(self, zones=[], enable_watermark=False, log_level="INFO"):
         self._zones = []
         self._logger = logger
         self._logger.log_level = log_level
         self._enable_watermark = enable_watermark
-        self._assign_tensor_name = not self._enable_watermark
         self._zones = self._assign_defaults(zones)
+        if not self._zones:
+            logger.warn("Empty zone configuration. No zones to check against.")
 
     # Note that the pipeline already applies a pipeline-specific threshold value, but
     # this method serves as an example for handling optional zone-specific parameters.
@@ -43,22 +44,29 @@ class ObjectZoneCount:
                 statuses = []
                 related_objects = []
                 for object_index, detected_object in enumerate(frame.regions()):
-                    zone_status = self._detect_zone_count(frame, detected_object, zone)
-                    if zone_status:
-                        statuses.append(zone_status)
-                        related_objects.append(object_index)
+                    if not self._is_watermark_region(detected_object):
+                        zone_status = self._detect_zone_count(frame, detected_object, zone)
+                        if zone_status:
+                            statuses.append(zone_status)
+                            related_objects.append(object_index)
                 if related_objects:
                     gva_event_meta.add_event(frame,
-                                                       event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
-                                                       attributes={'zone-name':zone['name'],
-                                                                   'related-objects':related_objects,
-                                                                   'status':statuses,
-                                                                   'zone-count': len(related_objects)})
+                                             event_type=ObjectZoneCount.DEFAULT_EVENT_TYPE,
+                                             attributes={'zone-name':zone['name'],
+                                                         'related-objects':related_objects,
+                                                         'status':statuses,
+                                                         'zone-count': len(related_objects)})
             if self._enable_watermark:
                 self._add_watermark_regions(frame)
         except Exception:
             print_message("Error processing frame: {}".format(traceback.format_exc()))
         return True
+
+    def _is_watermark_region(self, region):
+        for tensor in region.tensors():
+            if tensor.name() == "watermark_region":
+                return True
+        return False
 
     def _add_watermark_regions(self, frame):
         for zone in self._zones:
@@ -82,8 +90,7 @@ class ObjectZoneCount:
                     # Rendering color is currently assigned using position of zone, within extension configuration
                     # list, for simplicity.
                     tensor['label_id'] = self._zones.index(zone)
-                    if self._assign_tensor_name:
-                        tensor.set_name(zone["name"])
+                    tensor.set_name("watermark_region")
                 if draw_label:
                     break
 

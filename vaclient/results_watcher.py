@@ -49,12 +49,10 @@ class ResultsWatcher:
     # Print Functions
     @classmethod
     def print_results(cls, results):
-        """Output as JSON formatted data"""
-        if "timestamp" in results:
-            print("Timestamp {}".format(results["timestamp"]))
-        for index, detected_object in enumerate(results.get("objects", [])):
+        object_output = []
+        for detected_object in results.get("objects", []):
             meta = {}
-            results_output = []
+            current_object = []
             for key in detected_object:
                 if key == "detection":
                     confidence = detected_object[key]["confidence"]
@@ -63,9 +61,9 @@ class ResultsWatcher:
                     y_min = detected_object[key]["bounding_box"]["y_min"]
                     x_max = detected_object[key]["bounding_box"]["x_max"]
                     y_max = detected_object[key]["bounding_box"]["y_max"]
-                    results_output.append(label)
-                    results_output.append("({:.2f})".format(confidence))
-                    results_output.append("[{:.2f}, {:.2f}, {:.2f}, {:.2f}]".format(x_min,
+                    current_object.append(label)
+                    current_object.append("({:.2f})".format(confidence))
+                    current_object.append("[{:.2f}, {:.2f}, {:.2f}, {:.2f}]".format(x_min,
                                                                                     y_min,
                                                                                     x_max,
                                                                                     y_max))
@@ -78,15 +76,22 @@ class ResultsWatcher:
                         if "name" in tensor and tensor["name"] == "action":
                             confidence = tensor["confidence"]
                             label = tensor["label"]
-                            results_output.append(label)
-                            results_output.append("({:.2f})".format(confidence))
+                            current_object.append(label)
+                            current_object.append("({:.2f})".format(confidence))
             if meta:
-                results_output.append(str(meta))
-            print("- {}".format(" ".join(results_output)))
-            
+                current_object.append(str(meta))
+            if current_object:
+                object_output.append("- {}".format(" ".join(current_object)))
+        event_output = []
         for event in results.get("events", []):
-            event_str = "Event: "
+            current_event = []
             for key in event:
-                event_str += "{}: {}, ".format(key, event[key])
-            print(event_str.rstrip(', '))              
-            
+                current_event.append("{}: {}".format(key, event[key]))
+            if current_event:
+                event_output.append("Event: {}".format(", ".join(current_event)))
+        if "timestamp" in results and (object_output or event_output):
+            print("Timestamp {}".format(results["timestamp"]))
+        if object_output:
+            print("{}".format("\n".join(object_output)))
+        if event_output:
+            print("{}".format("\n".join(event_output)))
