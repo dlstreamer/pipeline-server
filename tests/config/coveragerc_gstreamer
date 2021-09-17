@@ -1,6 +1,0 @@
-[run]
-omit = *ffmpeg*
-data_file = /home/video-analytics-serving/tests/results/pytest/gstreamer/.coverage
-
-[report]
-omit = *ffmpeg*
