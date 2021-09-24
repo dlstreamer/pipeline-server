@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-#pylint: disable=R0801
 
 tags = {
     "type": "object",

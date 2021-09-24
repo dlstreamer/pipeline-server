@@ -37,11 +37,11 @@ import cv2
 import jsonschema
 
 from google.protobuf.json_format import MessageToDict
-import samples.ava_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
-from samples.ava_ai_extension.common.exception_handler import log_exception
-import samples.ava_ai_extension.common.extension_schema as extension_schema
 from arguments import parse_args
 from media_stream_processor import MediaStreamProcessor
+from samples.ava_ai_extension.common.grpc_autogen import inferencing_pb2
+from samples.ava_ai_extension.common.exception_handler import log_exception
+from samples.ava_ai_extension.common import extension_schema
 
 
 class VideoSource:
@@ -179,8 +179,9 @@ def validate_extension_config(extension_config):
         validator = jsonschema.Draft4Validator(schema=extension_schema.extension_config,
                                                format_checker=jsonschema.draft4_format_checker)
         validator.validate(extension_config)
-    except jsonschema.exceptions.ValidationError as err:
-        raise Exception("Error validating pipeline request: {},: error: {}".format(extension_config, err.message))
+    except jsonschema.exceptions.ValidationError as error:
+        raise Exception("Error validating pipeline request: {},: error: {}"
+                        .format(extension_config, error.message)) from error
 
 def create_extension_config(args):
     extension_config = {}
@@ -192,18 +193,18 @@ def create_extension_config(args):
     if args.pipeline_parameters:
         try:
             pipeline_config["parameters"] = json.loads(args.pipeline_parameters)
-        except ValueError:
-            raise Exception("Issue loading pipeline parameters: {}".format(args.pipeline_parameters))
+        except ValueError as error:
+            raise Exception("Issue loading pipeline parameters: {}".format(args.pipeline_parameters)) from error
     if args.frame_destination:
         try:
             pipeline_config["frame-destination"] = json.loads(args.frame_destination)
-        except ValueError:
-            raise Exception("Issue loading frame destination: {}".format(args.frame_destination))
+        except ValueError as error:
+            raise Exception("Issue loading frame destination: {}".format(args.frame_destination)) from error
     if args.pipeline_extensions:
         try:
             pipeline_config["pipeline_extensions"] = json.loads(args.pipeline_extensions)
-        except ValueError:
-            raise Exception("Issue loading pipeline extensions: {}".format(args.pipeline_extensions))
+        except ValueError as error:
+            raise Exception("Issue loading pipeline extensions: {}".format(args.pipeline_extensions)) from error
 
     if len(pipeline_config) > 0:
         extension_config.setdefault("pipeline", pipeline_config)

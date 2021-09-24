@@ -34,10 +34,9 @@ import threading
 import grpc
 from samples.ava_ai_extension.common.exception_handler import log_exception
 from samples.ava_ai_extension.common.shared_memory import SharedMemoryManager
-import samples.ava_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
-import samples.ava_ai_extension.common.grpc_autogen.extension_pb2 as extension_pb2
-import samples.ava_ai_extension.common.grpc_autogen.extension_pb2_grpc as extension_pb2_grpc
-
+from samples.ava_ai_extension.common.grpc_autogen import media_pb2
+from samples.ava_ai_extension.common.grpc_autogen import extension_pb2
+from samples.ava_ai_extension.common.grpc_autogen import extension_pb2_grpc
 
 class MediaStreamProcessor:
     class RequestGenerator:
@@ -166,9 +165,6 @@ class MediaStreamProcessor:
                 extension_configuration=extension_config,
                 media_descriptor=media_pb2.MediaDescriptor(
                     timescale=90000,
-                    # pylint: disable=no-member
-                    # E1101: Class 'VideoFrameSampleFormat' has no 'Encoding' member (no-member)
-                    # E1101: Class 'VideoFrameSampleFormat' has no 'PixelFormat' member (no-member)
                     video_frame_sample_format=media_pb2.VideoFrameSampleFormat(
                         encoding=media_pb2.VideoFrameSampleFormat.Encoding.Value("RAW"),
                         pixel_format=media_pb2.VideoFrameSampleFormat.PixelFormat.Value(

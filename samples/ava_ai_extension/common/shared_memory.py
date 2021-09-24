@@ -50,6 +50,9 @@ class SharedMemoryManager:
 
             # See the NOTE section here: https://docs.python.org/2/library/os.html#os.open
             # for details on shmFlags
+
+            # SharedMemoryManager handles the lifetime of resources such as _shm_file
+            # pylint: disable=consider-using-with
             if self._shm_flags is None:
                 self._shm_file = open(self._shm_file_full_path, 'r+b')
                 self._shm = mmap.mmap(self._shm_file.fileno(), self.shm_file_size)
@@ -111,8 +114,7 @@ class SharedMemoryManager:
             else:
                 address = None
         else:
-            self._mem_slots = {k: v for k, v in sorted(
-                self._mem_slots.items(), key=lambda item: item[1])}
+            self._mem_slots = dict(sorted(self._mem_slots.items(), key=lambda item: item[1]))
 
             # find an available memory gap = sizeNeeded
             prev_slot_end = 0

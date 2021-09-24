@@ -12,6 +12,6 @@ LOG_ATTRS = ['levelname', 'asctime', 'message', 'module']
 
 
 def set_log_level(level):
-    # pylint: disable=W0603
+    # pylint: disable=global-statement
     global LOG_LEVEL
     LOG_LEVEL = level

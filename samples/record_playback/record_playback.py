@@ -6,7 +6,6 @@
 '''
 
 import argparse
-import json
 import os
 import re
 import sys
@@ -63,8 +62,8 @@ def gst_record(options):
 
     # Check if have write permissions for metadata file location
     try:
-        file_handler = open(options_metadata_file, 'w')
-        file_handler.close()
+        with open(options_metadata_file, 'w') as _:
+            pass
     except IOError:
         print("No write permissions for metadata file location")
         return -1
@@ -80,8 +79,8 @@ def gst_record(options):
     # Check if directory has write permissions
     try:
         file_check_write_permissions = os.path.join(options.output_video_folder, "checkDirWritable.txt")
-        file_handler = open(file_check_write_permissions, 'w')
-        file_handler.close()
+        with open(file_check_write_permissions, 'w') as _:
+            pass
         os.remove(file_check_write_permissions)
     except IOError:
         print("No write permissions for video output directory")

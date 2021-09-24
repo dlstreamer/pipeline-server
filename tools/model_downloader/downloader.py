@@ -14,7 +14,7 @@ from glob import glob
 import requests
 import yaml
 from jsonschema import Draft7Validator, FormatChecker
-from schema import model_list_schema
+from mdt_schema import model_list_schema
 
 MODEL_OPTIMIZER_ROOT = (
     "/opt/intel/dldt"
@@ -45,9 +45,9 @@ def _validate_schema(model_list):
     try:
         validator = Draft7Validator(model_list_schema, format_checker=FormatChecker())
         validator.validate(model_list)
-    except Exception as err:
+    except Exception as error:
         print("Yaml input schema validation error.")
-        print(err)
+        print(error)
         sys.exit(1)
 
 
@@ -104,29 +104,30 @@ def _download_model_proc(target_dir, model_name, dl_streamer_version):
             for filepath in files:
                 if os.path.splitext(filepath)[0] == model_name:
                     model_proc = os.path.join(root, filepath)
+    if model_proc:
+        shutil.move(model_proc, os.path.join(target_dir, "{}.json".format(model_name)))
     else:
         url = "{0}/{1}/samples/model_proc/{2}.json".format(
             DL_STREAMER_REPO_ROOT, dl_streamer_version, model_name
         )
         response = requests.get(url)
-        temp_dir = tempfile.TemporaryDirectory()
-        if response.status_code == 200:
-            with open(
-                    "{0}/{1}.json".format(temp_dir.name, model_name), "wb"
-            ) as out_file:
-                out_file.write(response.content)
-            print(
-                "Downloaded {0} model-proc file from gst-video-analytics repo".format(
-                    model_name
+        with tempfile.TemporaryDirectory() as temp_dir:
+            if response.status_code == 200:
+                with open(
+                        "{0}/{1}.json".format(temp_dir, model_name), "wb"
+                ) as out_file:
+                    out_file.write(response.content)
+                print(
+                    "Downloaded {0} model-proc file from gst-video-analytics repo".format(
+                        model_name
+                    )
                 )
-            )
-            model_proc = os.path.abspath(
-                "{0}/{1}.json".format(temp_dir.name, model_name)
-            )
-        else:
-            print("WARNING: model-proc not found in gst-video-analytics repo!")
-    if model_proc:
-        shutil.move(model_proc, os.path.join(target_dir, "{}.json".format(model_name)))
+                model_proc = os.path.abspath(
+                    "{0}/{1}.json".format(temp_dir, model_name)
+                )
+                shutil.move(model_proc, os.path.join(target_dir, "{}.json".format(model_name)))
+            else:
+                print("WARNING: model-proc not found in gst-video-analytics repo!")
 
 
 def _create_convert_command(model_name, output_dir, precisions):

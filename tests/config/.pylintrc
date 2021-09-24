@@ -35,7 +35,7 @@ ignore-patterns=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-#init-hook=
+init-hook='import sys; sys.path.append("/home/video-analytics-serving/samples/ava_ai_extension/server/")'
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
@@ -77,7 +77,8 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=missing-class-docstring,
+disable=missing-module-docstring,
+        missing-class-docstring,
         missing-function-docstring,
         superfluous-parens,
         import-outside-toplevel,
@@ -426,8 +427,7 @@ contextmanager-decorators=contextlib.contextmanager
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E1101 when accessed. Python regular
 # expressions are accepted.
-generated-members=
-
+generated-members=cv2.*
 # Tells whether missing members accessed in mixin class should be ignored. A
 # mixin class is detected if its name ends with "mixin" (case insensitive).
 ignore-mixin-members=yes
@@ -447,7 +447,10 @@ ignore-on-opaque-inference=yes
 # List of class names for which member attributes should not be checked (useful
 # for classes with dynamically set attributes). This supports the use of
 # qualified names.
-ignored-classes=optparse.Values,thread._local,_thread._local,extension__pb2.MediaStreamMessage,MediaStreamMessage
+ignored-classes=optparse.Values,thread._local,_thread._local,
+                extension__pb2.MediaStreamMessage,MediaStreamMessage,
+                VideoFrameSampleFormat,Entity
+
 
 # List of module names for which member attributes should not be checked
 # (useful for modules/projects where namespaces are manipulated during runtime

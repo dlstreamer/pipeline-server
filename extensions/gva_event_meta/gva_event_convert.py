@@ -14,8 +14,8 @@ def process_frame(frame):
     try:
         add_events_message(frame)
     except Exception as error:
-            logger.error(error)
-            return False
+        logger.error(error)
+        return False
     return True
 
 def add_events_message(frame):

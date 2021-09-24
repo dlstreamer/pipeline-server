@@ -34,9 +34,9 @@ import sys
 from concurrent import futures
 import grpc
 import extension_pb2_grpc  # pylint: disable=import-error
+from media_graph_extension import MediaGraphExtension
 from vaserving.vaserving import VAServing
 from vaserving.common.utils.logging import get_logger
-from media_graph_extension import MediaGraphExtension
 from samples.ava_ai_extension.common.exception_handler import log_exception
 
 PROGRAM_NAME = "DL Streamer Edge AI Extension"
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
         # create gRPC server and start running
         server = grpc.server(
-            futures.ThreadPoolExecutor(max_workers=args.max_running_pipelines)
+            futures.ThreadPoolExecutor(max_workers=args.max_running_pipelines) # pylint: disable=consider-using-with
         )
         extension_pb2_grpc.add_MediaGraphExtensionServicer_to_server(
             MediaGraphExtension(

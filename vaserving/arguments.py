@@ -6,8 +6,7 @@
 import os
 import argparse
 import json
-import distutils.util as util
-
+from distutils import util
 
 def parse_options(args=None):
 

@@ -73,5 +73,5 @@ class AppDestination(metaclass=abc.ABCMeta):
                 raise Exception("Error Creating App Destination: {},"
                                 "Exception: {} {}".format(requested_destination_class,
                                                           type(error),
-                                                          error))
+                                                          error)) from error
         return None

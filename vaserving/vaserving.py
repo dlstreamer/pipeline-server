@@ -13,7 +13,8 @@ from vaserving.model_manager import ModelManager
 from vaserving.common.utils import logging
 from vaserving.common import settings
 
-#pylint: disable=C0103
+# Allow non-PascalCase class name for __VAServing
+#pylint: disable=invalid-name
 
 class __VAServing:
 

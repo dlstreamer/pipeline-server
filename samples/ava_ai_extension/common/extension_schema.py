@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-#pylint: disable=R0801
 
 extension_config = {
     "$schema":"https://json-schema.org/draft/2019-09/schema",

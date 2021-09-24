@@ -182,9 +182,6 @@ class GStreamerPipeline(Pipeline):
         return self.status()
 
     def params(self):
-        # TODO: refactor
-        # pylint: disable=R0801
-
         request = copy.deepcopy(self.request)
         if "models" in request:
             del request["models"]
@@ -247,7 +244,7 @@ class GStreamerPipeline(Pipeline):
 
     def _set_section_properties(self, request_section, config_section):
         # TODO: refactor
-        # pylint: disable=R1702
+        # pylint: disable=too-many-nested-blocks
         request, config = Pipeline.get_section_and_config(
             self.request, self.config, request_section, config_section)
 

@@ -32,20 +32,19 @@ import os
 import json
 from queue import Queue
 import tempfile
-import time
 import datetime
 import uuid
 from enum import Enum
 import jsonschema
 
-import samples.ava_ai_extension.common.grpc_autogen.inferencing_pb2 as inferencing_pb2
-import samples.ava_ai_extension.common.grpc_autogen.media_pb2 as media_pb2
-import samples.ava_ai_extension.common.grpc_autogen.extension_pb2 as extension_pb2
-import samples.ava_ai_extension.common.grpc_autogen.extension_pb2_grpc as extension_pb2_grpc
+from samples.ava_ai_extension.common.grpc_autogen import inferencing_pb2
+from samples.ava_ai_extension.common.grpc_autogen import media_pb2
+from samples.ava_ai_extension.common.grpc_autogen import extension_pb2
+from samples.ava_ai_extension.common.grpc_autogen import extension_pb2_grpc
 
 from samples.ava_ai_extension.common.shared_memory import SharedMemoryManager
 from samples.ava_ai_extension.common.exception_handler import log_exception
-import samples.ava_ai_extension.common.extension_schema as extension_schema
+from samples.ava_ai_extension.common import extension_schema
 
 from vaserving.vaserving import VAServing
 from vaserving.pipeline import Pipeline
@@ -332,8 +331,8 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
     def _validate_ext_config_against_schema(self, extension_config):
         try:
             self._extension_config_validator.validate(extension_config)
-        except jsonschema.exceptions.ValidationError as err:
-            self._logger.error("Error occured during validation: {}".format(err.message))
+        except jsonschema.exceptions.ValidationError as error:
+            self._logger.error("Error occured during validation: {}".format(error.message))
             raise
 
     def _set_debug_properties(self, pipeline_config):
@@ -390,11 +389,11 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
 
     # gRPC stubbed function
     # client/gRPC will call this function to send frames/descriptions
-    def ProcessMediaStream(self, requestIterator, context):
+    def ProcessMediaStream(self, request_iterator, context):
         requests_received = 0
         responses_sent = 0
         # First message from the client is (must be) MediaStreamDescriptor
-        request = next(requestIterator)
+        request = next(request_iterator)
         requests_received += 1
         # Extract message IDs
         request_seq_num = request.sequence_number
@@ -465,7 +464,7 @@ class MediaGraphExtension(extension_pb2_grpc.MediaGraphExtensionServicer):
         )
 
         # Process rest of the MediaStream message sequence
-        for request in requestIterator:
+        for request in request_iterator:
             try:
                 if requests_received - responses_sent >= self._input_queue_size:
                     queued_output = self._get_queued_samples(detect_output, block=True)

@@ -28,12 +28,12 @@ class FrameInfo:
 
     def load_file(self, file_name):
         if path.exists(file_name):
-            json_file = open(file_name, "r")
-            lines = json_file.readlines()
-            lines = lines[:-1]
-            for line in lines:
-                data = json.loads(line)
-                self.json_objects.append(data)
+            with open(file_name, "r") as json_file:
+                lines = json_file.readlines()
+                lines = lines[:-1]
+                for line in lines:
+                    data = json.loads(line)
+                    self.json_objects.append(data)
 
     def process_frame(self, frame: VideoFrame, _: float = DETECT_THRESHOLD) -> bool:
         while self.json_objects:

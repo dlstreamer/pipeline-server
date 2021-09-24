@@ -141,8 +141,8 @@ def start_pipeline(request,
         pass
     except FileNotFoundError:
         pass
-    except OSError:
-        raise OSError("Unable to delete destination metadata file {}".format(output_file))
+    except OSError as error:
+        raise OSError("Unable to delete destination metadata file {}".format(output_file)) from error
     if verbose and not show_request:
         print("Starting pipeline...")
 
@@ -212,8 +212,8 @@ def post(url, body, show_request=False):
             return instance_id
         print("Got unsuccessful status code: {}".format(launch_response.status_code))
         print(launch_response.text)
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def get(url, show_request=False):
@@ -226,8 +226,8 @@ def get(url, show_request=False):
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
         print(status_response.text)
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def delete(url, show_request=False):
@@ -239,8 +239,8 @@ def delete(url, show_request=False):
         if stop_response.status_code != RESPONSE_SUCCESS:
             print("Unsuccessful status code {} - {}".format(stop_response.status_code, stop_response.text))
         return stop_response.status_code
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def print_fps(status):
