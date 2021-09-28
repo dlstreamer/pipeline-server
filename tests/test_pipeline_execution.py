@@ -84,6 +84,19 @@ def get_results_app(test_case, results):
     thread.start()
     return thread
 
+def wait_for_pipeline_completion(pipeline, VAServing):
+    status = pipeline.status()
+    transitions = [status]
+    while (not status.state.stopped()):
+        if (status.state != transitions[-1].state):
+            transitions.append(status)
+        time.sleep(PAUSE)
+        status = pipeline.status()
+    transitions.append(status)
+    assert transitions[0].state == Pipeline.State.QUEUED
+    assert transitions[-1].state == Pipeline.State.COMPLETED
+    VAServing.stop()
+
 def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance):
     _test_case = copy.deepcopy(test_case)
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
@@ -102,6 +115,19 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     VAServing.start(_test_case["options"])
     pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
                                   _test_case["pipeline"]["version"])
+    assert pipeline is not None, "Failed to Load Pipeline!"
+
+    if _test_case.get("check_second_pipeline_queued", None):
+        pipeline.start(_test_case["request"])
+        pipeline1 = VAServing.pipeline(_test_case["pipeline"]["name"],
+                                       _test_case["pipeline"]["version"])
+        pipeline1.start(_test_case["request"])
+        assert pipeline1 is not None, "Failed to Load second Pipeline!"
+        while not pipeline.status().state.stopped():
+            assert pipeline1.status().state == Pipeline.State.QUEUED, \
+                "Concurrent pipeline execution detected when max_running_pipelines set to 1"
+        wait_for_pipeline_completion(pipeline1, VAServing)
+        return
     results_processing.clear_results(_test_case)
     results = []
     src_type = _test_case["request"]["source"]["type"]
@@ -112,23 +138,13 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         _test_case["request"]["source"]["input"] = Queue()
         _test_case["request"]["destination"]["output"] = Queue()
         thread = get_results_app(_test_case, results)
-    assert pipeline is not None, "Failed to Load Pipeline!"
+
     pipeline.start(_test_case["request"])
-    status = pipeline.status()
-    transitions = [status]
-    while (not status.state.stopped()):
-        if (status.state != transitions[-1].state):
-            transitions.append(status)
-        time.sleep(PAUSE)
-        status = pipeline.status()
-    transitions.append(status)
-    assert transitions[0].state == Pipeline.State.QUEUED
-    assert transitions[-1].state == Pipeline.State.COMPLETED
+    wait_for_pipeline_completion(pipeline, VAServing)
     if (thread):
         thread.join()
     else:
         results_processing.get_results_file(_test_case, results)
-    VAServing.stop()
     if generate:
         test_case["result"] = results
         with open(test_filename+'.generated', "w") as test_output:

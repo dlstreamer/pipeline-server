@@ -26,7 +26,7 @@ def parse_options(args=None):
                         type=str, default=os.getenv('NETWORK_PREFERENCE', '{}'))
     parser.add_argument("--max_running_pipelines", action="store",
                         dest="max_running_pipelines",
-                        type=int, default=int(os.getenv('MAX_RUNNING_PIPELINES', '1')))
+                        type=int, default=int(os.getenv('MAX_RUNNING_PIPELINES', '-1')))
     parser.add_argument("--log_level", action="store",
                         dest="log_level",
                         choices=['INFO', 'DEBUG'], default=os.getenv('LOG_LEVEL', 'INFO'))

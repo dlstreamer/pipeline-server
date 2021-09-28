@@ -143,6 +143,7 @@ class __VAServing:
                 self.model_manager,
                 os.path.abspath(os.path.join(self.options.config_path,
                                              self.options.pipeline_dir)),
+                max_running_pipelines=self.options.max_running_pipelines,
                 ignore_init_errors=self.options.ignore_init_errors)
             self._stopped = False
 

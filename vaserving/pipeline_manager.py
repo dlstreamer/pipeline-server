@@ -17,7 +17,7 @@ from vaserving import schema
 
 class PipelineManager:
 
-    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1,
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines,
                  ignore_init_errors=False):
         self.max_running_pipelines = max_running_pipelines
         self.model_manager = model_manager
