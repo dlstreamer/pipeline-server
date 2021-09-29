@@ -196,11 +196,12 @@ The following are available properties:
 - host (required) expects a format of host:port
 - topic (required) MQTT topic on which broker messages are sent
 - timeout (optional) Broker timeout
+- mqtt-client-id (optional) Unique identifier for the MQTT client
 
 Steps to run MQTT:
   1. Start the MQTT broker, here we use [Eclipse Mosquitto](https://hub.docker.com/_/eclipse-mosquitto/), an open source message broker.
   ```bash
-  docker run --network=host -d eclipse-mosquitto:1.6
+  docker run --network=host eclipse-mosquitto:1.6
   ```
   2. Start VA Serving with host network enabled
   ```bash
@@ -219,14 +220,15 @@ Steps to run MQTT:
         "metadata": {
             "type": "mqtt",
             "host": "localhost:1883",
-            "topic": "vaserving"
+            "topic": "vaserving",
+            "mqtt-client-id": "gva-meta-publish"
         }
     }
   }'
   ```
   4. Connect to MQTT broker to view inference results
   ```bash
-  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic vaserving
+  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic vaserving --id mosquitto-sub
   ```
 
   ```bash
@@ -234,7 +236,15 @@ Steps to run MQTT:
   {"objects":[{"detection":{"bounding_box":{"x_max":0.3472719192504883,"x_min":0.12164716422557831,"y_max":1.0,"y_min":0.839308500289917},"confidence":0.6197869777679443,"label":"vehicle","label_id":2},"h":69,"roi_type":"vehicle","w":173,"x":93,"y":363}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":14333333333}
   {"objects":[{"detection":{"bounding_box":{"x_max":0.3529694750905037,"x_min":0.12145502120256424,"y_max":1.0,"y_min":0.8094810247421265},"confidence":0.7172137498855591,"label":"vehicle","label_id":2},"h":82,"roi_type":"vehicle","w":178,"x":93,"y":350}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":14416666666}
   ```
-
+  5. In the MQTT broker terminal, you should see the connection from client with specified `mqtt-client-id`
+  ```
+  <snip>
+  1632949258: New connection from 127.0.0.1 on port 1883.
+  1632949258: New client connected from 127.0.0.1 as gva-meta-publish (p2, c1, k20).
+  1632949271: New connection from 127.0.0.1 on port 1883.
+  1632949271: New client connected from 127.0.0.1 as mosquitto-sub (p2, c1, k60).
+  1632949274: Client gva-meta-publish disconnected.
+  ```
 ### Frame
 Frame is another aspect of destination and it can be set to RTSP.
 

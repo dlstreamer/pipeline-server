@@ -177,7 +177,7 @@ destination = {
                     "type": "string",
                     "element": "destination"
                 },
-                "clientId": {
+                "mqtt-client-id": {
                     "type": "string",
                     "element": "destination"
                 },
