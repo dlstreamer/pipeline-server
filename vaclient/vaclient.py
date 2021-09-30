@@ -54,10 +54,11 @@ def run(args):
         if started_instance_id is None:
             sys.exit(1)
         try:
-            if request['destination']['metadata']['type'] == 'file'and \
-                os.path.exists(request['destination']['metadata']['path']):
-                watcher = ResultsWatcher(request['destination']['metadata']['path'])
-                watcher.watch()
+            if request['destination']['metadata']['type'] == 'file':
+                watcher = launch_results_watcher(request,
+                                                 args.pipeline,
+                                                 started_instance_id,
+                                                 verbose=args.verbose)
         except KeyError:
             pass
         print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
@@ -143,15 +144,13 @@ def start_pipeline(request,
         pass
     except OSError as error:
         raise OSError("Unable to delete destination metadata file {}".format(output_file)) from error
-    if verbose and not show_request:
-        print("Starting pipeline...")
 
     pipeline_url = urljoin(SERVER_ADDRESS,
                            "pipelines/" + pipeline)
     instance_id = post(pipeline_url, request, show_request)
     if instance_id:
         if verbose:
-            print("Pipeline running: {}, instance = {}".format(pipeline, instance_id))
+            print("Pipeline instance = {}".format(instance_id))
         else:
             print(instance_id)
         return instance_id
@@ -173,6 +172,24 @@ def stop_pipeline(pipeline, instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
+def wait_for_pipeline_running(pipeline,
+                              instance_id,
+                              timeout_sec = 30):
+    status = {"state" : "QUEUED"}
+    timeout_count = 0
+    while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
+        status = get_pipeline_status(pipeline,
+                                     instance_id)
+        if status and status["state"] == "ERROR":
+            raise ValueError("Error in pipeline, please check vaserving log messages")
+        time.sleep(SLEEP_FOR_STATUS)
+        timeout_count += 1
+        if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
+            print("Timed out waiting for RUNNING status")
+            break
+
+    return status
+
 def wait_for_pipeline_completion(pipeline,
                                  instance_id):
     status = {"state" : "RUNNING"}
@@ -192,6 +209,19 @@ def get_pipeline_status(pipeline, instance_id, show_request=False):
                                    str(instance_id),
                                    "status"]))
     return get(status_url, show_request)
+
+def launch_results_watcher(request, pipeline, pipeline_instance_id, verbose=True):
+    status = wait_for_pipeline_running(pipeline, pipeline_instance_id)
+    if Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
+        if verbose:
+            print("Pipeline running")
+        if os.path.exists(request['destination']['metadata']['path']):
+            watcher = ResultsWatcher(request['destination']['metadata']['path'])
+            watcher.watch()
+        else:
+            print("Can not find results file {}. Are you missing a volume mount?"\
+                .format(request['destination']['metadata']['path']))
+    return watcher
 
 def _list(list_name, show_request=False):
     url = urljoin(SERVER_ADDRESS, list_name)
