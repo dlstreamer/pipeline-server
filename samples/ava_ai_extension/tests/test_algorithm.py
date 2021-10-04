@@ -46,6 +46,8 @@ def test_algorithm(helpers, test_case, test_filename, generate):
     output_file = None
     client_params = test_case["client"]["params"]
     output_file = client_params["output_location"]
+    numerical_tolerance = _test_case.get("numerical_tolerance", 0)
+
     if not output_file:
         workdir_path = tempfile.TemporaryDirectory()
         output_file = os.path.join(workdir_path.name, "algo.jsonl")
@@ -72,5 +74,14 @@ def test_algorithm(helpers, test_case, test_filename, generate):
             client_params["output_location"] = ""
             json.dump(test_case, test_output, indent=4)
     else:
-        assert event_count == test_case["expected_event_count"], "Incorrect number of events detected"
-        assert total_count == test_case.get("expected_total_count", 0), "Incorrect total count detected"
+        expected_event_count = _test_case.get("expected_event_count", 0)
+        expected_total_count = _test_case.get("expected_total_count", 0)
+
+        if expected_event_count == 0:
+            assert event_count == expected_event_count, "Incorrect number of events detected"
+        else:
+            assert (abs(event_count - expected_event_count) / expected_event_count <= numerical_tolerance), "Incorrect number of events detected"
+        if expected_total_count == 0:
+            assert total_count == expected_total_count, "Incorrect total count detected"
+        else:
+            assert (abs(total_count - expected_total_count) / expected_total_count <= numerical_tolerance), "Incorrect total count detected"

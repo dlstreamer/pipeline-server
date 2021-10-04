@@ -66,5 +66,6 @@
     },
     "expected_return_code": 0,
     "expected_event_count": 17,
-    "expected_total_count": 0
+    "expected_total_count": 0,
+    "numerical_tolerance": 0.02
 }

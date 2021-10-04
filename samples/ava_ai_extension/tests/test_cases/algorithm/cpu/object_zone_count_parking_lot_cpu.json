@@ -49,5 +49,6 @@
     },
     "expected_return_code": 0,
     "expected_event_count": 100,
-    "expected_total_count": 1083
+    "expected_total_count": 1083,
+    "numerical_tolerance": 0.02
 }
