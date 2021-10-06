@@ -212,6 +212,7 @@ def get_pipeline_status(pipeline, instance_id, show_request=False):
 
 def launch_results_watcher(request, pipeline, pipeline_instance_id, verbose=True):
     status = wait_for_pipeline_running(pipeline, pipeline_instance_id)
+    watcher = None
     if Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
         if verbose:
             print("Pipeline running")
