@@ -1,0 +1,11 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection",
+        "parameters" : {
+            "detection-device": "GPU",
+            "detection-model-instance-id": "gpu-fp16",
+            "inference-interval": 4
+        }
+    }
+}

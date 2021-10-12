@@ -1,0 +1,6 @@
+{
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike_detection"
+    }
+}
