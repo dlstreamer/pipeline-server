@@ -1,5 +1,4 @@
-# Measuring Stream Density
-Show how to measure stream density with CPU inference, GPU inference, and GPU inference combined with DL Streamer's tracking feature.
+# Measuring Stream Density with DL Streamer AI Extension
 
 ## Server Configuration
 If host is Ubuntu 20 get the platform specific render group id required for GPU access.
