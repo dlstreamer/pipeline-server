@@ -29,7 +29,7 @@ Fps is reported by the server at end of stream so can be determined by analyzing
 The [monitor_stream_density.sh](monitor_stream_density.sh) does this for you.
 It assumes docker image name is `dlstreamer-edge-ai-extension`. It is different, simply edit script and re-run.
 
-Start container then run script in it's own terminal window and output will look like this for a test with four streams. 
+Start container then run script in it's own terminal window and output will look like this for a test with four streams.
 If all stream pass, a stream density of 4 has been achieved. You can run more tests without having to re-start script.
 
 Here's an example of running 4 streams.
@@ -77,9 +77,11 @@ Waiting for stream to start...
 ## Example Extension Configurations
 * CPU Inference: [detect-cpu.json](detect-cpu.json)
 * GPU Inference: [detect-gpu.json](detect-gpu.json)
-* GPU Inference + Tracking: [detect-gpu-tracking.json](detect-gpu-tracking.json) 
+* GPU Inference + Tracking: [detect-gpu-tracking.json](detect-gpu-tracking.json)
 
 ## AVA Configuration
+See sample [deployment](./deployment) and [operations](./operations) files are included.
+
 
 ### Topology
 Make sure shared memory is enabled.
@@ -90,6 +92,7 @@ Make sure shared memory is enabled.
               "SharedMemorySizeMiB": "64"
         },
 ```
+
 
 ### Extension Configuration
 We define pipeline request using the AVA extension configuration options. The standalone client uses JSON files mounted by the client through use of `--dev` mode.
