@@ -430,7 +430,7 @@ for ENVIRONMENT_FILE in ${ENVIRONMENT_FILES[@]}; do
 done
 
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
-    cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
+    cat $ENVIRONMENT_FILE_LIST | grep -E '=' | sed -e 's/,\s\+/,/g' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
     echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
     printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/video-analytics-serving\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKERFILE_DIR/Dockerfile.env
