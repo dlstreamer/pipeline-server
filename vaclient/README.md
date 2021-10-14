@@ -2,14 +2,14 @@
 vaclient is a python app intended to be a reference for using VA Serving REST API. vaclient is included in the main container and can be easily launched using the accompanying run script, `vaclient.sh`.
 
 >**Note:**
-This document assumes you are familiar with vaserving. See the main [README](../README.md) for details on building and running the service.
+This document assumes you are familiar with VA Serving. See the main [README](../README.md) for details on building and running the service.
 
 ## Basic Usage
 ### Listing Supported Pipelines and Models
 To see which models and pipelines are loaded by the service run the following commands. Both models and pipelines are displayed in the tuplet form of name/version.
 > **Note:** Results will vary depending on your service configuration
 
-Fist models:
+First models:
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh list-models
 <snip>
@@ -37,9 +37,13 @@ vaclient can be used to send pipeline start requests using the `run` command. Wi
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
-As the pipeline runs, the output file is processed by vaclient and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, vaclient will output the average fps. More on `stop` below
+If the pipeline request is successful, an instance id is created and vaclient will print the instance. More on `instance_id` below.
+Once pre-roll is completed and pipeline begins running, the output file is processed by vaclient and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, vaclient will output the average fps. More on `stop` below
 
 ```
+Pipeline instance = 1
+Pipeline running
+<snip>
 Timestamp 48583333333
 - vehicle (0.95) [0.00, 0.12, 0.15, 0.36] {}
 Timestamp 48666666666
@@ -58,13 +62,35 @@ Timestamp 49250000000
 - vehicle (0.64) [0.00, 0.14, 0.05, 0.34] {}
 avg_fps: 39.66
 ```
+However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, vaclient will terminate with an error message
+```
+Pipeline instance = 2
+Error in pipeline, please check vaserving log messages
+```
+
 ### Starting Pipelines
 The `run` command is helpful for quickly showing inference results but `run` blocks until completion. If you want to do your own processing and only want to kickoff a pipeline, this can be done with the `start` command. `start` arguments are the same as `run`, you'll need to provide the `pipeline` and `uri`. Run the following command:
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
+Similar to `run`, if the pipeline request is successful, an instance id is created and vaclient will print the instance. More on `instance_id` below.
+```
+Pipeline instance = 1
+```
+Errors during pipeline execution are not flagged as vaclient exits after receiving instance id for a successful request. However, both `start` and `run` will flag invalid requests, for example:
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bke https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+```
+The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
+```
+Got unsuccessful status code: 400
+"Invalid Pipeline or Version"
+
+Pipeline failed to start
+```
+
 #### Instance ID
-On a successful start of a pipeline, vaserving assigns a pipeline `instance_id` which is a unique number which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `1`
+On a successful start of a pipeline, VA Serving assigns a pipeline `instance_id` which is a unique number which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `1`
 ```
 Starting pipeline...
 Pipeline running: object_detection/person_vehicle_bike, instance = 1
@@ -85,61 +111,144 @@ Querying the current state of the pipeline is done using the `status` command al
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 1
 ```
-vaclient will print the status of either `QUEUED`, `RUNNING`, `ABORTED`, or `COMPLETED`
+vaclient will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` like so
+```
+<snip>
+RUNNING
+```
 
 ### Waiting for a pipeline to finish
 If you wish to wait for a pipeline to finish running you can use the `wait` command along with the `pipeline` and `instance id`:
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 1
 ```
-The client will print the inital status of the pipeline. Then wait for completion and print the average fps.
+The client will print the initial status of the pipeline. Then wait for completion and print the average fps.
 
+## Command Line Arguments
+See [customizing pipeline requests](../docs/customizing_pipeline_requests.md) to further understand how pipeline request options can be customized.
 
-## Command Options
-As described in [customizing pipeline requests](../docs/customizing_pipeline_requests.md), pipeline request options can be customized. This section describes ways to customize vaclient `run` and `start` commands.
+### --quiet
+This optional argument is meant to handle logging verbosity common across all commands to vaclient.
+> **Note**: If specified, --quiet needs to be placed ahead of the specific command i.e start, run etc.
 
-### --destination
+#### Start
+vaclient output will just be the pipeline instance.
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh --quiet start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+<snip>
+2
+```
+#### Run
+vaclient output will be the pipeline instance followed by inference results.
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh --quiet run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+<snip>
+1
+Timestamp 1500000000
+- person (0.54) [0.67, 0.88, 0.74, 1.00]
+Timestamp 1666666666
+- person (0.55) [0.68, 0.83, 0.74, 1.00]
+```
+
+### Run/Start Arguments
+This section summarizes all the arguments for vaclient `run` and `start` commands.
+
+#### pipeline (required)
+Positional argument (first) that specifies the pipeline to be launched in the form of `pipeline name/pipeline version`.
+
+#### uri (required)
+Positional argument (second) that specifies the location of the content to play/analyze.
+
+#### --destination
 By default, vaclient uses a generic template for destination:
 ```json
 {
 "destination": {
-	"metadata": {
-		"type": "file",
-		"path": "/tmp/results.jsonl",
-		"format": "json-lines"
-	}
+    "metadata": {
+        "type": "file",
+        "path": "/tmp/results.jsonl",
+        "format": "json-lines"
+    }
 }}
 ```
-Destination configuration can be updated with `--destination`. For example, passing in `--destination path /new/filepath/results.jsonl` will update filepath for results saving (Note you may need to volume mount this new location when running vaserving.)
+Destination configuration can be updated with `--destination`. This argument affects only metadata part of the destination.
+In the following example, passing in `--destination path /tmp/newfile.jsonl` will update the filepath for saving inference result.
+> **Note**: You may need to volume mount this new location when running VA Serving.
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl
+```
 
-### --parameter
-By default, vaclient relies on pipeline parameter defaults. This can be updated with `--parameter` option. For exmaple add `--parameter detection-device GPU`
-
-### --rtsp-path
-If you are utiziling RTSP restreaming, `--rtsp-path` can be used to update the `server_url` path.
+#### --rtsp-path
+If you are utilizing RTSP restreaming, `--rtsp-path` can be used to update the `server_url` path. This updates the frame part of destination under the hood.
 For example, adding `--rtsp-path new_path` will able you to view the stream at `rtsp://<ip_address>:<port>/new_path`. More details on RTSP restreaming in [running_video_analytics_serving](../docs/running_video_analytics_serving.md) documentation.
 
-### --show-request
-All vaclient commands can be used with the `--show-request` option which will print out the HTTP request but will not send. Here are some examples:
-
-#### Run:
+#### --parameter
+By default, vaclient relies on pipeline parameter defaults. This can be updated with `--parameter` option. See [Defining Pipelines](../docs/defining_pipelines.md) to know how parameters are defined. The following example adds `--parameter detection-device GPU`
 ```
-~/video-analytics-serving$ ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --show-request
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter detection-device GPU
+```
+
+#### --parameter-file
+Specifies a JSON file that contains parameters in key, value pairs. Parameters from this file take precedence over those set by `--parameter`.
+> **Note**: You may need to volume mount the location of the parameter file when running VA Serving.
+
+A sample parameter file can look like
+```json
+{
+    "parameters": {
+        "detection-device": "GPU"
+    }
+}
+```
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+```
+
+#### --tag
+Specifies a key, value pair to update request with. This information is added to each frame's metadata.
+This example adds tags for direction and location of video capture
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
+```
+
+#### --show-request
+All vaclient commands can be used with the `--show-request` option which will print out the HTTP request and exit i.e it will not be sent to VA Serving.
+This example shows the result of `--show-request` when the pipeline is started with options passed in
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl --parameter detection-device GPU --tag direction east --tag camera_location parking_lot --show-request
 <snip>
 POST http://localhost:8080/pipelines/object_detection/person_vehicle_bike
-Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/results.jsonl', 'format': 'json-lines'}}}
+Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/newfile.jsonl', 'format': 'json-lines'}}, 'parameters': {'detection-device': 'GPU'}, 'tags': {'direction': 'east', 'camera_location': 'parking_lot'}}
 ```
+See [View REST request](../README.md#view-rest-request) to see how the output from `--show-request` can be mapped to a curl command.
 
-#### Stop:
-```
-~/video-analytics-serving$ ./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 1 --show-request
-<snip>
-DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1
-```
+### Status/Wait/Stop Arguments
+This section summarizes all the arguments for vaclient `status`, `wait` and `stop` commands.
 
-#### Status:
+#### pipeline (required)
+Positional argument (first) that specifies the pipeline to wait on/query status of/stop as indicated in the form of `pipeline name/pipeline version`
+
+#### instance (required)
+Positional argument (second) that specifies pipeline instance id to wait on/query status of/stop based on the command.
+
+#### --show-request
+As mentioned before, `--show-request` option which will print out the HTTP request and exit.
+
+##### Status
 ```
 ~/video-analytics-serving$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 1 --show-request
 <snip>
 GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1/status
+```
+##### Wait
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 1 --show-request
+<snip>
+GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1/status
+```
+##### Stop
+```
+~/video-analytics-serving$ ./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 1 --show-request
+<snip>
+DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1
 ```
