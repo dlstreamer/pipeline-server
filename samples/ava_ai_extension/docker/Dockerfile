@@ -1,4 +1,4 @@
-ARG BASE=video-analytics-serving-gstreamer
+ARG BASE=video-analytics-serving-runtime
 FROM $BASE
 
 USER root
@@ -15,6 +15,9 @@ COPY ./models       /home/video-analytics-serving/samples/ava_ai_extension/model
 COPY ./pipelines    /home/video-analytics-serving/samples/ava_ai_extension/pipelines
 COPY ./sampleframes /home/video-analytics-serving/samples/ava_ai_extension/sampleframes
 COPY ./server       /home/video-analytics-serving/samples/ava_ai_extension/server
+
+ENV MODEL_DIR=/home/video-analytics-serving/samples/ava_ai_extension/models
+ENV PIPELINE_DIR=/home/video-analytics-serving/samples/ava_ai_extension/pipelines
 
 ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
 ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving/samples/ava_ai_extension/common/grpc_autogen

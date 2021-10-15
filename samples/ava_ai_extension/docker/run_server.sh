@@ -28,10 +28,9 @@ function show_help {
   if [ "${MODE}" == "DEV" ]; then
       VOLUME_MOUNT+="-v $AVA_DIR:$AVA_ROOT "
       VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
-      PIPELINES="--pipelines $AVA_DIR/pipelines "
   fi
   ENTRYPOINT_ARGS+="--entrypoint-args --help "
-  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS $PIPELINES
+  "$ROOT_DIR/docker/run.sh" -p $PORT:$PORT --image $IMAGE $VOLUME_MOUNT $ENTRYPOINT_ARGS
 }
 
 function error {
@@ -54,11 +53,10 @@ while [[ "$#" -gt 0 ]]; do
       fi
       ;;
     --dev)
-	PIPELINES="--pipelines $AVA_DIR/pipelines "
-	MODE="DEV"
+      MODE="DEV"
       ;;
     --enable-rtsp)
-  RTSP_ARGS="--enable-rtsp"
+      RTSP_ARGS="--enable-rtsp"
       ;;
     *)
       ENTRYPOINT_ARGS+="--entrypoint-args '$1' "
@@ -94,4 +92,4 @@ if [ "${MODE}" == "DEV" ]; then
     VOLUME_MOUNT+="-v $ROOT_DIR:$VASERVING_ROOT "
 fi
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $RTSP_ARGS $ENTRYPOINT_ARGS $PIPELINES $ENV
+"$ROOT_DIR/docker/run.sh" --image $IMAGE $VOLUME_MOUNT -p $PORT:$PORT $RTSP_ARGS $ENTRYPOINT_ARGS $ENV

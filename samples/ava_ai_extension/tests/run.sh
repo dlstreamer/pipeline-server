@@ -37,8 +37,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 "$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm \
-  -v "$AVA_DIR/tests/test_cases:/home/video-analytics-serving/samples/ava_ai_extension/tests/test_cases" \
-  $RESULTS_VOLUME_MOUNT --pipelines "$AVA_DIR/pipelines" -p 5001:5001 \
+  $RESULTS_VOLUME_MOUNT -p 5001:5001 \
   $ENTRYPOINT_ARGS "$@"
 
 if [ $PREPARE_AVA_GROUND_TRUTH == true ]; then

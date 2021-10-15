@@ -1,10 +1,13 @@
 #!/bin/bash -e
 
-WORK_DIR=$(dirname $(readlink -f "$0"))
-SAMPLE_DIR=$(dirname $WORK_DIR)
+CURRENT_DIR=$(dirname $(readlink -f "$0"))
+VAS_DIR=$(readlink -f "$CURRENT_DIR/../../..")
+AVA_DIR=$(dirname $CURRENT_DIR)
 SAMPLE_BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
-MODELS="models/models.list.yml"
+MODELS="$AVA_DIR/models_list/models.list.yml"
 TAG="video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension"
+FORCE_MODEL_DOWNLOAD=
+VAS_BASE="video-analytics-serving-runtime:latest"
 
 #Get options passed into script
 function get_options {
@@ -22,6 +25,9 @@ function get_options {
           error 'ERROR: "--models" requires an argument.'
         fi
         ;;
+      --force-model-download)
+        FORCE_MODEL_DOWNLOAD="--force"
+        ;;
       *)
         break
         ;;
@@ -33,6 +39,7 @@ function get_options {
 function show_help {
   echo "usage: ./build.sh"
   echo "  [ --models : Model list, must be a relative path ] "
+  echo " [--force-model-download : force the download of models even if models exists] "
 }
 
 function launch { echo $@
@@ -48,8 +55,13 @@ function launch { echo $@
 get_options "$@"
 
 # Build VA Serving
-launch "$SAMPLE_DIR/../../docker/build.sh --framework gstreamer --create-service false --pipelines samples/ava_ai_extension/pipelines --models $SAMPLE_DIR/$MODELS"
+launch "$VAS_DIR/docker/build.sh --framework gstreamer --create-service false \
+          --pipelines NONE --models NONE --tag $VAS_BASE"
+
+# Downloading models
+$VAS_DIR/tools/model_downloader/model_downloader.sh --model-list "$MODELS" \
+          --output "$AVA_DIR" $FORCE_MODEL_DOWNLOAD
 
 # Build AI Extention
-echo $SAMPLE_DIR/..
-launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t $TAG $SAMPLE_DIR"
+echo $AVA_DIR/..
+launch "docker build -f $CURRENT_DIR/Dockerfile $SAMPLE_BUILD_ARGS -t $TAG $AVA_DIR"

@@ -7,7 +7,7 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 ## Highlights
 
-- Spatial analytics features: [Object Line Crossing](#object-line-crossing) and [Object Zone Count](#object-zone-count) similar to [Azure Video Analyzer Spatial Analysis](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/computer-vision-for-spatial-analysis?tabs=azure-stack-edge) 
+- Spatial analytics features: [Object Line Crossing](#object-line-crossing) and [Object Zone Count](#object-zone-count) similar to [Azure Video Analyzer Spatial Analysis](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/computer-vision-for-spatial-analysis?tabs=azure-stack-edge)
 - Scalable, high-performance solution for serving video analytics pipelines on Intel® architectures
 - gRPC API enabling fast data transfer rate and low latency
 - Supported Configuration: Pre-built Ubuntu Linux container for CPU and iGPU
@@ -26,7 +26,7 @@ The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based o
 
 ## What's New
 
-- Action Recognition pipeline (preview feature). 
+- Action Recognition pipeline (preview feature).
 - Deployment manifest, topology and operations file are now provided by the [Intel OpenVINO™ DL Streamer – Edge AI Extension Tutorial](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/use-intel-grpc-video-analytics-serving-tutorial).
 
 
@@ -184,7 +184,7 @@ Example extension_configuration
 ```
 ## Configuring the AI Extension Module for Azure Video Analyzer
 
-Please refer to the [Analyze live video with Intel OpenVINO™ DL Streamer – Edge AI Extension](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/use-intel-grpc-video-analytics-serving-tutorial) tutorial for deployment manifests, topologies or operations files and other details. 
+Please refer to the [Analyze live video with Intel OpenVINO™ DL Streamer – Edge AI Extension](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/use-intel-grpc-video-analytics-serving-tutorial) tutorial for deployment manifests, topologies or operations files and other details.
 
 
 # Additional Standalone Edge AI Extension Examples
@@ -446,7 +446,7 @@ $ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version per
 
 ## Add New Model to Models List
 
-Copy the existing model list `models/models.list.yml` to `models/yolo-models.list.yml` then add the following entry:
+Copy the existing model list `models_list/models.list.yml` to `models_list/yolo-models.list.yml` then add the following entry:
 
 ```yml
 - model: yolo-v2-tiny-tf
@@ -467,10 +467,10 @@ $ sed -i -e s/person_vehicle_bike_detection/yolo/g pipelines/object_detection/yo
 ## Rebuild Edge AI Extension with new Model and Pipeline
 
 ```
-$ ./docker/build.sh --models models/yolo-models.list.yml
+$ ./docker/build.sh --models models_list/yolo-models.list.yml
 ```
 
-The model will now be in `models` folder in the root of the project:
+The model will now be in `models` folder in `ava_ai_extension` directory :
 
 ```
 models
@@ -491,9 +491,9 @@ Check that expected model and pipeline are present in the built image:
 
 ```bash
 $ docker run -it --entrypoint /bin/bash video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension
-vaserving@82dd59743ca3:~$ ls models
+vaserving@82dd59743ca3:~$ ls samples/ava_ai_extension/models
 person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
-vaserving@82dd59743ca3:~$  ls pipelines/object_detection/
+vaserving@82dd59743ca3:~$ ls samples/ava_ai_extension/pipelines/object_detection/person_vehicle_bike_detection
 debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ```
 

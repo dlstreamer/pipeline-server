@@ -1,0 +1,6 @@
+__pycache__/
+.cache/
+.vscode/
+.bash_history
+*.generated
+models
