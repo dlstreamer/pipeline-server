@@ -17,7 +17,7 @@
                         "video-name": "person_vehicle_bike_detection"
                     }
                 },
-                "source": "/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+                "source": "/home/edge-ai-extension/person-bicycle-car-detection.mp4",
                 "output_location": "",
                 "shared_memory": true,
                 "loop_count": 1,

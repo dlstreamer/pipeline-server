@@ -13,7 +13,7 @@
                 }
             },
             "run": true,
-            "source": "/home/video-analytics-serving/person-bicycle-car-detection.mp4",
+            "source": "/home/edge-ai-extension/person-bicycle-car-detection.mp4",
             "output_location": "",
             "shared_memory": true,
             "port": 5001,

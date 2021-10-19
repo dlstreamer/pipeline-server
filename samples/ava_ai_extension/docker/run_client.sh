@@ -2,18 +2,32 @@
 
 SERVER_IP=127.0.0.1
 SERVER_PORT=5001
-AVA_ROOT=/home/video-analytics-serving/samples/ava_ai_extension
+DOCKER_DIR=/home/edge-ai-extension
 OUTPUT_FILE_PATH=/tmp/result
 INTERACTIVE=
 IMAGE=video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension
 NAME=${IMAGE//[\:]/_}"_client"
 NUMBER_OF_STREAMS=1
-SCRIPT_DIR=$(dirname $(readlink -f "$0"))
-SAMPLE_DIR=$(dirname $SCRIPT_DIR)
-ROOT_DIR=$(readlink -f "$SCRIPT_DIR/../../..")
+CURRENT_DIR=$(dirname $(readlink -f "$0"))
+ROOT_DIR=$(dirname $CURRENT_DIR)
 MODE=
 VOLUME_MOUNT=
 ENTRYPOINT_ARGS=
+ENTRYPOINT="--entrypoint /bin/bash"
+NETWORK="--network host"
+RUN_COMMAND=
+USER=
+
+function run {
+  if [ "${MODE}" == "DEV" ]; then
+    VOLUME_MOUNT+="-v $ROOT_DIR:$DOCKER_DIR "
+  fi
+
+  if [ ! -z "$VOLUME_MOUNT" ]; then
+    USER="--user $UID"
+  fi
+  eval "docker run $INTERACTIVE --rm $VOLUME_MOUNT $NETWORK $ENTRYPOINT --name ${NAME} ${USER} $IMAGE -c $RUN_COMMAND"
+}
 
 function show_help {
   echo ""
@@ -27,11 +41,8 @@ function show_help {
   echo ""
   echo "**Application**"
   echo ""
-  if [ "${MODE}" == "DEV" ]; then
-    VOLUME_MOUNT+="-v $SAMPLE_DIR:$AVA_ROOT "
-  fi
-  RUN_COMMAND="'python3 ${AVA_ROOT}/client --help'"
-  "$ROOT_DIR/docker/run.sh" --name $NAME --image $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND"
+  RUN_COMMAND="'python3 client --help'"
+  run
   }
 
 function error {
@@ -80,9 +91,6 @@ VOLUME_MOUNT+="-v /dev/shm:/dev/shm "
 PIDS=
 CONTAINERS=
 
-if [ "${MODE}" == "DEV" ]; then
-    VOLUME_MOUNT+="-v $SAMPLE_DIR:$AVA_ROOT "
-fi
 
 function clean_up {
     kill -9 $PIDS
@@ -90,13 +98,14 @@ function clean_up {
     exit
 }
 
+
 if [ "$NUMBER_OF_STREAMS" -gt "1" ]; then
     trap clean_up SIGHUP SIGINT SIGTERM
     for i in $(seq "$NUMBER_OF_STREAMS")
     do
       echo "Starting Client $i Results to ${OUTPUT_FILE_PATH}_client_$i.jsonl, Output to: client_${i}.stdout.txt"
-      RUN_COMMAND='"'" python3 $AVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl "'"'
-      "$ROOT_DIR/docker/run.sh" --non-interactive --name "${NAME}_${i}" --network host --image $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND" >client_${i}.stdout.txt 2>&1 &
+      RUN_COMMAND='"'" python3 client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}_client_$i.jsonl "'"'
+      run >client_${i}.stdout.txt 2>&1 &
       PIDS+=" $!"
       CONTAINERS+=" ${NAME}_${i}"
       sleep 1
@@ -104,6 +113,6 @@ if [ "$NUMBER_OF_STREAMS" -gt "1" ]; then
     echo "waiting for clients to finish"
     wait
 else
-    RUN_COMMAND='"'" python3 $AVA_ROOT/client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl "'"'
-    "$ROOT_DIR/docker/run.sh" --name $NAME --network host --image  $IMAGE $VOLUME_MOUNT --entrypoint "/bin/bash" --entrypoint-args "-c" --entrypoint-args "$RUN_COMMAND"
+    RUN_COMMAND='"'" python3 client $ENTRYPOINT_ARGS -o ${OUTPUT_FILE_PATH}.jsonl "'"'
+    run
 fi

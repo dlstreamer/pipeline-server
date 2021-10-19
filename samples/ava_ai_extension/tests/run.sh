@@ -1,20 +1,19 @@
 #!/bin/bash
 IMAGE=video-analytics-serving-ava-tests
 CURRENT_DIR=$(dirname $(readlink -f "$0"))
-ROOT_DIR=$(readlink -f "$CURRENT_DIR/../../..")
-AVA_DIR=$(dirname $CURRENT_DIR)
-TESTS_DIR="$AVA_DIR/tests"
+ROOT_DIR=$(dirname $CURRENT_DIR)
+TESTS_DIR="$ROOT_DIR/tests"
 docker stop $IMAGE
 LOCAL_RESULTS_DIR="$CURRENT_DIR/results"
-DOCKER_RESULTS_DIR="/home/video-analytics-serving/samples/ava_ai_extension/tests/results"
+DOCKER_RESULTS_DIR="/home/edge-ai-extension/tests/results"
 mkdir -p "$LOCAL_RESULTS_DIR"
 RESULTS_VOLUME_MOUNT="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
-PREPARE_AVA_GROUND_TRUTH=false
+PREPARE_GROUND_TRUTH=false
 ENTRYPOINT_ARGS=
 
 function show_help {
   echo "usage: run.sh (options are exclusive)"
-  echo "  [ --pytest-ava-generate : Generate new AVA ground truth ]"
+  echo "  [ --pytest-generate : Generate new ground truth ]"
 }
 
 ARGS=$@
@@ -24,10 +23,10 @@ while [[ "$#" -gt 0 ]]; do
       show_help
       exit
       ;;
-    --pytest-ava-generate)
+    --pytest-generate)
       ENTRYPOINT_ARGS+="--entrypoint-args --generate "
       VOLUME_MOUNT+="-v $TESTS_DIR/test_cases:$DOCKER_TESTS_DIR/test_cases "
-      PREPARE_AVA_GROUND_TRUTH=true
+      PREPARE_GROUND_TRUTH=true
       ;;
     *)
       break
@@ -36,11 +35,11 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-"$ROOT_DIR/docker/run.sh" --image $IMAGE -v /dev/shm:/dev/shm \
+"$ROOT_DIR/docker/run_server.sh" --image $IMAGE -v /dev/shm:/dev/shm \
   $RESULTS_VOLUME_MOUNT -p 5001:5001 \
   $ENTRYPOINT_ARGS "$@"
 
-if [ $PREPARE_AVA_GROUND_TRUTH == true ]; then
+if [ $PREPARE_GROUND_TRUTH == true ]; then
   echo "Renaming .json.generated files to .json in preparation to update ground truth."
   find $TESTS_DIR/test_cases -depth -name "*.json.generated" -exec sh -c 'mv "$1" "${1%.json.generated}.json"' _ {} \;
 fi

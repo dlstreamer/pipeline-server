@@ -3,7 +3,7 @@
 | [Getting Started](#getting-started) | [Edge AI Extension Module Options](#edge-ai-extension-module-options) | [Additional Examples](#additional-standalone-edge-ai-extension-examples) | [Spatial Analytics](#spatial-analytics-pipelines)| [Test Client](#test-client) |
 [Changing Models](#updating-or-changing-detection-and-classification-models)
 
-The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](/README.md) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes [gRPC APIs](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/grpc-extension-protocol) that are compatible with [Azure Video Analyzer](https://azure.microsoft.com/en-us/products/video-analyzer/) (AVA). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
+The OpenVINO™ DL Streamer - Edge AI Extension module is a microservice based on [Video Analytics Serving](https://github.com/intel/video-analytics-serving) that provides video analytics pipelines built with OpenVINO™ DL Streamer. Developers can send decoded video frames to the AI Extension module which performs detection, classification, or tracking and returns the results. The AI Extension module exposes [gRPC APIs](https://docs.microsoft.com/en-us/azure/azure-video-analyzer/video-analyzer-docs/grpc-extension-protocol) that are compatible with [Azure Video Analyzer](https://azure.microsoft.com/en-us/products/video-analyzer/) (AVA). Powered by OpenVINO™ toolkit, the AI Extension module enables developers to build, optimize and deploy deep learning inference workloads for maximum performance across Intel® architectures.
 
 ## Highlights
 
@@ -42,13 +42,13 @@ Building the image requires a modern Linux distro with the following packages in
 | |                  |
 |---------------------------------------------|------------------|
 | **Docker** | Video Analytics Serving requires Docker for it's build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
-| **bash** | Video Analytics Serving's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](/docs/installing_bash_macos.md). |
+| **bash** | Video Analytics Serving's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](https://github.com/intel/video-analytics-serving/blob/master/docs/installing_bash_macos.md). |
 
 ### Building the Image
 
 Run the docker image build script.
 ```
-$ ./docker/build.sh
+./docker/build.sh
 ```
 Resulting image name is `video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension`
 
@@ -57,7 +57,9 @@ Resulting image name is `video-analytics-serving:0.6.1-dlstreamer-edge-ai-extens
 To run the module as a standalone microservice with an `object_detection` pipeline use the `run_server.sh` script with default options. For examples of additional options see [Additional Standalone Edge AI Extension Examples](#additional-standalone-edge-ai-extension-examples).
 
 ```bash
-$ ./docker/run_server.sh
+./docker/run_server.sh
+```
+```
 <snip>
 {"levelname": "INFO", "asctime": "2021-01-22 15:27:00,009", "message": "Starting DL Streamer Edge AI Extension on port: 5001", "module": "__main__"}
 ```
@@ -67,7 +69,9 @@ $ ./docker/run_server.sh
 To send a test frame to the microservice and receive `object_detection` results use the `run_client.sh` script.
 
 ```bash
-$ ./docker/run_client.sh
+./docker/run_client.sh
+```
+```
 [AIXC] [2021-01-22 15:28:06,956] [MainThread  ] [INFO]: =======================
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: Options for __main__.py
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: =======================
@@ -77,7 +81,7 @@ $ ./docker/run_client.sh
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: =======================
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: grpc_server_port == 5001
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: =======================
-[AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: sample_file == /home/video-analytics-serving/samples/ava_ai_extension/sampleframes/sample01.png
+[AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: sample_file == /home/edge-ai-extension/sampleframes/sample01.png
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: =======================
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: loop_count == 0
 [AIXC] [2021-01-22 15:28:06,957] [MainThread  ] [INFO]: =======================
@@ -127,12 +131,12 @@ The following pipelines are included in the AI Extension:
 
 | Name          | Version       | Definition      | Diagram |
 | ------------- | ------------- | --------------- | ------- |
-| object_detection | person_vehicle_bike_detection  | [definition](/samples/ava_ai_extension/pipelines/object_detection/person_vehicle_bike_detection/pipeline.json)|![diagram](pipeline_diagrams/object-detection.png)|
-| object_detection | object_zone_count | [definition](/samples/ava_ai_extension/pipelines/object_detection/object_zone_count/pipeline.json)|![diagram](pipeline_diagrams/zone-detection.png)|
-| object_classification  | vehicle_attributes_recognition  | [definition](/samples/ava_ai_extension/pipelines/object_classification/vehicle_attributes_recognition/pipeline.json)|![diagram](pipeline_diagrams/object-classification.png)|
-| object_tracking  | person_vehicle_bike_tracking  | [definition](/samples/ava_ai_extension/pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)|![diagram](pipeline_diagrams/object-tracking.png)|
-| object_tracking  | object_line_crossing  | [definition](/samples/ava_ai_extension/pipelines/object_tracking/object_line_crossing/pipeline.json)|![diagram](pipeline_diagrams/line-crossing.png)|
-| action_recognition | general  | [definition](/samples/ava_ai_extension/pipelines/action_recognition/general/pipeline.json)|![diagram](pipeline_diagrams/action-recognition.png)|
+| object_detection | person_vehicle_bike_detection  | [definition](pipelines/object_detection/person_vehicle_bike_detection/pipeline.json)|![diagram](pipeline_diagrams/object-detection.png)|
+| object_detection | object_zone_count | [definition](pipelines/object_detection/object_zone_count/pipeline.json)|![diagram](pipeline_diagrams/zone-detection.png)|
+| object_classification  | vehicle_attributes_recognition  | [definition](pipelines/object_classification/vehicle_attributes_recognition/pipeline.json)|![diagram](pipeline_diagrams/object-classification.png)|
+| object_tracking  | person_vehicle_bike_tracking  | [definition](pipelines/object_tracking/person_vehicle_bike_tracking/pipeline.json)|![diagram](pipeline_diagrams/object-tracking.png)|
+| object_tracking  | object_line_crossing  | [definition](pipelines/object_tracking/object_line_crossing/pipeline.json)|![diagram](pipeline_diagrams/line-crossing.png)|
+| action_recognition | general  | [definition](pipelines/action_recognition/general/pipeline.json)|![diagram](pipeline_diagrams/action-recognition.png)|
 
 There are three versions of the object zone count pipeline. They are all based on the same pipeline design but use different detection models.
 
@@ -164,7 +168,7 @@ This is a two step process:
 1. Give docker access to the accelerator's resources
 2. Set the inference accelerator device name when starting the pipeline
 
-See [Enabling Hardware Accelerators](/docs/running_video_analytics_serving.md#enabling-hardware-accelerators)
+See [Enabling Hardware Accelerators](https://github.com/intel/video-analytics-serving/blob/master/docs/running_video_analytics_serving.md#enabling-hardware-accelerators)
 for details on docker resources and inference device name for supported accelerators.
 This will allow you to customize the deployment manifest for a given accelerator.
 
@@ -207,11 +211,11 @@ Pipelines can be configured to connect and visualize input video with superimpos
 
 * Enable RTSP at Server start
 ```
-$ ./docker/run_server.sh --enable-rtsp
+./docker/run_server.sh --enable-rtsp
 ```
 * Run client with frame destination set. For demonstration, path set as `person-detection` in example request below.
 ```
-$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}'
+./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --frame-destination '{\"type\":\"rtsp\",\"path\":\"person-detection\"}'
 ```
 * Connect and visualize: Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
 
@@ -229,14 +233,14 @@ $ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version per
 ### Logging
 Run the following command to monitor the logs from the docker container
 ```bash
-$ docker logs video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension -f
+docker logs video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension -f
 ```
 
 ### Developer Mode
 The server run script includes a `--dev` flag which starts the container in "developer" mode.
 This mode runs with files from the host, not the container, which is useful for quick iteration and development.
 ```bash
-$ ./docker/run_server.sh --dev
+./docker/run_server.sh --dev
 ```
 
 ### Selecting Pipelines
@@ -245,14 +249,14 @@ $ ./docker/run_server.sh --dev
 Specify the default pipeline via command line and run the server
 
 ```bash
-$ ./docker/run_server.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+./docker/run_server.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
 ```
 
 Specify the default pipeline via environment variables and run the server
 ```
-$ export PIPELINE_NAME=object_classification
-$ export PIPELINE_VERSION=vehicle_attributes_recognition
-$ ./docker/run_server.sh
+export PIPELINE_NAME=object_classification
+export PIPELINE_VERSION=vehicle_attributes_recognition
+./docker/run_server.sh
 ```
 
 Notes:
@@ -266,12 +270,12 @@ Debug pipelines can be selected using the `--debug` command line parameter or se
 
 Run default pipeline in debug mode
 ```bash
-$ ./docker/run_server.sh --debug
+./docker/run_server.sh --debug
 ```
 
 # Spatial Analytics Pipelines
 ## Object Zone Count
-The [object_detection/object_zone_count](./pipelines/object_detection/object_zone_count/pipeline.json) pipeline generates events containing objects detected in zones defined by the AVA extension configuration. For more information on the underlying zone event operation, see object_zone_count [README](../../extensions/spatial_analytics/object_zone_count.md).
+The [object_detection/object_zone_count](./pipelines/object_detection/object_zone_count/pipeline.json) pipeline generates events containing objects detected in zones defined by the AVA extension configuration. For more information on the underlying zone event operation, see object_zone_count [README](https://github.com/intel/video-analytics-serving/blob/master/extensions/spatial_analytics/object_zone_count.md).
 
 ### Build and Run
 
@@ -280,8 +284,8 @@ The [object_detection/object_zone_count](./pipelines/object_detection/object_zon
 2. Run client with example extension configuration. The `object_zone_count.json` extension configuration contains zone definitions to generate `object-zone-count` events for a media stream. Look for the below events in client output:
 
    ```
-   $ ./docker/run_client.sh \
-     --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_zone_count.json
+   ./docker/run_client.sh \
+     --extension-config /home/edge-ai-extension/client/extension-config/object_zone_count.json
    ```
    ```
    <snip>
@@ -308,14 +312,14 @@ To get a visual of `object_zone_count` extension, run with `object_zone_count_re
 2. Run client with example extension configuration, with rendering support:
 
    ```
-   $ ./docker/run_client.sh \
-     --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_zone_count_rendered.json \
+     ./docker/run_client.sh \
+     --extension-config /home/edge-ai-extension/client/extension-config/object_zone_count_rendered.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
    ```
 3. Connect and visualize: Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/zone-events`.
 
 ## Object Line Crossing
-The [object_tracking/object_line_crossing](./pipelines/object_tracking/object_line_crossing/pipeline.json) pipeline generates events containing objects which crossed lines defined by the AVA extension configuration. For more information on the underlying line crossing operation, see object_line_crossing [README](../../extensions/spatial_analytics/object_line_crossing.md).
+The [object_tracking/object_line_crossing](./pipelines/object_tracking/object_line_crossing/pipeline.json) pipeline generates events containing objects which crossed lines defined by the AVA extension configuration. For more information on the underlying line crossing operation, see object_line_crossing [README](https://github.com/intel/video-analytics-serving/blob/master/extensions/spatial_analytics/object_line_crossing.md).
 
 ### Build and Run
 
@@ -324,8 +328,8 @@ The [object_tracking/object_line_crossing](./pipelines/object_tracking/object_li
 2. Run client with example extension configuration. The `line_cross_tracking_config.json` extension configuration contains example line definitions needed to generate`object_line_crossing` events for a media stream. Look for the below events in client output:
 
    ```
-   $ ./docker/run_client.sh \
-     --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_line_crossing.json \
+     ./docker/run_client.sh \
+     --extension-config /home/edge-ai-extension/client/extension-config/object_line_crossing.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
    ```
    ```
@@ -351,8 +355,8 @@ To get a visual of `object_line_crossing` extension, run with `object_line_cross
 2. Run client with example extension configuration, with rendering support:
 
    ```
-   $ ./docker/run_client.sh \
-     --extension-config /home/video-analytics-serving/samples/ava_ai_extension/client/extension-config/object_line_crossing_rendered.json \
+     ./docker/run_client.sh \
+     --extension-config /home/edge-ai-extension/client/extension-config/object_line_crossing_rendered.json \
      --sample-file-path https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
    ```
 
@@ -364,12 +368,14 @@ The test client script `run_client.sh` sends frames(s) to the extension module a
 Use the --help option to see how to use the script. All arguments are optional.
 
 ```
-$ ./docker/run_client.sh
+./docker/run_client.sh --help
+```
+```
 All arguments are optional, usage is as follows
   [ -s : gRPC server address, defaults to None]
   [ --server-ip : Specify the server ip to connect to ] (defaults to 127.0.0.1)
   [ --server-port : Specify the server port to connect to ] (defaults to 5001)
-  [ --sample-file-path : Specify the sample file path to run] (defaults to samples/ava_ai_extension/sampleframes/sample01.png)
+  [ --sample-file-path : Specify the sample file path to run] (defaults to sampleframes/sample01.png)
   [ --loop-count : How many times to loop the source after it finishes ]
   [ --number-of-streams : Specify number of streams (one client process per stream)]
   [ --fps-interval FPS_INTERVAL] (interval between frames in seconds, defaults to 0)
@@ -399,8 +405,8 @@ Notes:
 
 # Updating or Changing Detection and Classification Models
 Before updating the models used by a pipeline please see the format of
-[pipeline definition files](/docs/defining_pipelines.md) and read the
-tutorial on [changing object detection models](/docs/changing_object_detection_models.md).
+[pipeline definition files](https://github.com/intel/video-analytics-serving/blob/master/docs/defining_pipelines.md) and read the
+tutorial on [changing object detection models](https://github.com/intel/video-analytics-serving/blob/master/docs/changing_object_detection_models.md).
 
 Most of the steps to changes models used by AVA extension are the same as for the above tutorial, but it assumes you are working with the REST service and not the AI
 Extension module. The AVA specific steps are called out in the following sections.
@@ -409,7 +415,9 @@ Extension module. The AVA specific steps are called out in the following section
 Get baseline results for existing object_detection model `person-vehicle-bike-detection-crossroad-0078`
 
 ```
-$./docker/run_server.sh
+./docker/run_server.sh
+```
+```
 <snip>
 /object_classification/vehicle_attributes_recognition/pipeline.json", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-01-21 12:10:10,288", "message": "===========================", "module": "pipeline_manager"}
@@ -421,7 +429,9 @@ $./docker/run_server.sh
 In a separate terminal:
 
 ```
-$ ./docker/run_client.sh
+./docker/run_client.sh
+```
+```
 <snip>
 [AIXC] [2020-11-20 23:29:11,417] [MainThread  ] [INFO]: - person (1.00) [0.30, 0.47, 0.09, 0.39]
 [AIXC] [2020-11-20 23:29:11,417] [MainThread  ] [INFO]: - person (0.97) [0.36, 0.40, 0.05, 0.24]
@@ -436,12 +446,12 @@ $ ./docker/run_client.sh
 
 ## Send a request to the server to run a different pipeline
 ```
-$ ./docker/run_client.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
+./docker/run_client.sh --pipeline-name object_classification --pipeline-version vehicle_attributes_recognition
 ```
 
 ## Send a request to the server to run a different pipeline on the GPU
 ```
-$ ./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{\"detection-device\":\"GPU\"}'
+./docker/run_client.sh --pipeline-name object_detection --pipeline-version person_vehicle_bike_detection --pipeline-parameters '{\"detection-device\":\"GPU\"}'
 ```
 
 ## Add New Model to Models List
@@ -460,17 +470,17 @@ Copy the existing model list `models_list/models.list.yml` to `models_list/yolo-
 Copy, rename and update the existing object detection pipeline to reference `yolo-v2-tiny-tf` model:
 
 ```bash
-$ cp -r pipelines/object_detection/person_vehicle_bike_detection pipelines/object_detection/yolo
-$ sed -i -e s/person_vehicle_bike_detection/yolo/g pipelines/object_detection/yolo/pipeline.json
+cp -r pipelines/object_detection/person_vehicle_bike_detection pipelines/object_detection/yolo
+sed -i -e s/person_vehicle_bike_detection/yolo/g pipelines/object_detection/yolo/pipeline.json
 ```
 
 ## Rebuild Edge AI Extension with new Model and Pipeline
 
 ```
-$ ./docker/build.sh --models models_list/yolo-models.list.yml
+./docker/build.sh --models models_list/yolo-models.list.yml
 ```
 
-The model will now be in `models` folder in `ava_ai_extension` directory :
+The model will now be in `models` folder in the root of the project:
 
 ```
 models
@@ -490,10 +500,12 @@ models
 Check that expected model and pipeline are present in the built image:
 
 ```bash
-$ docker run -it --entrypoint /bin/bash video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension
-vaserving@82dd59743ca3:~$ ls samples/ava_ai_extension/models
+docker run -it --entrypoint /bin/bash video-analytics-serving:0.6.1-dlstreamer-edge-ai-extension
+```
+```
+vaserving@82dd59743ca3:~$ ls models
 person_vehicle_bike_detection  vehicle_attributes_recognition  yolo
-vaserving@82dd59743ca3:~$ ls samples/ava_ai_extension/pipelines/object_detection/person_vehicle_bike_detection
+vaserving@82dd59743ca3:~$ ls pipelines/object_detection/person_vehicle_bike_detection
 debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ```
 
@@ -502,13 +514,15 @@ debug_person_vehicle_bike_detection  person_vehicle_bike_detection  yolo
 ### Restart service
 Restart the service to ensure we are using the image with the yolo-v2-tiny-tf model
 ```
-$ docker stop video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension
-$ docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
+docker stop video-analytics-serving_0.6.1-dlstreamer-edge-ai-extension
+docker/run_server.sh --pipeline-name object_detection --pipeline-version yolo
 ```
 ### Run the client
 Note different results due to different model
 ```
-$ docker/run_client.sh
+docker/run_client.sh
+```
+```
 <snip>
 [AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.82) [0.63, 0.36, 0.06, 0.24] []
 [AIXC] [2021-01-07 06:51:13,081] [MainThread  ] [INFO]: - person (0.78) [0.56, 0.37, 0.06, 0.23] []

@@ -6,7 +6,7 @@
 
 def test_ava_nonexistant_source(helpers, sleep_period=0.25, port=5001):
     client_params = {
-        "source": "/home/video-analytics-serving/samples/ava_ai_extension/sampleframes/nonexistantimage.png",
+        "source": "/home/edge-ai-extension/sampleframes/nonexistantimage.png",
         "sleep_period": sleep_period,
         "port": port,
         "shared_memory": False,

@@ -65,7 +65,7 @@ def parse_args(args=None, program_name="DL Streamer Edge AI Extension Client"):
         metavar=("sample_file"),
         dest="sample_file",
         help="Name of the sample video frame.",
-        default="/home/video-analytics-serving/samples/ava_ai_extension/sampleframes/sample01.png",
+        default="/home/edge-ai-extension/sampleframes/sample01.png",
     )
     parser.add_argument(
         "--max-frames",

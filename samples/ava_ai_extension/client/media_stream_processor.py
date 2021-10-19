@@ -32,11 +32,11 @@ import os
 import time
 import threading
 import grpc
-from samples.ava_ai_extension.common.exception_handler import log_exception
-from samples.ava_ai_extension.common.shared_memory import SharedMemoryManager
-from samples.ava_ai_extension.common.grpc_autogen import media_pb2
-from samples.ava_ai_extension.common.grpc_autogen import extension_pb2
-from samples.ava_ai_extension.common.grpc_autogen import extension_pb2_grpc
+from common.exception_handler import log_exception
+from common.shared_memory import SharedMemoryManager
+from common.grpc_autogen import media_pb2
+from common.grpc_autogen import extension_pb2
+from common.grpc_autogen import extension_pb2_grpc
 
 class MediaStreamProcessor:
     class RequestGenerator:

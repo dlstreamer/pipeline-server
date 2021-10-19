@@ -56,7 +56,7 @@
                 }
             },
             "run": true,
-            "source": "/home/video-analytics-serving/people-detection.mp4",
+            "source": "/home/edge-ai-extension/people-detection.mp4",
             "output_location": "",
             "shared_memory": true,
             "port": 5001,

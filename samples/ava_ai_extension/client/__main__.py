@@ -39,9 +39,9 @@ import jsonschema
 from google.protobuf.json_format import MessageToDict
 from arguments import parse_args
 from media_stream_processor import MediaStreamProcessor
-from samples.ava_ai_extension.common.grpc_autogen import inferencing_pb2
-from samples.ava_ai_extension.common.exception_handler import log_exception
-from samples.ava_ai_extension.common import extension_schema
+from common.grpc_autogen import inferencing_pb2
+from common.exception_handler import log_exception
+from common import extension_schema
 
 
 class VideoSource:

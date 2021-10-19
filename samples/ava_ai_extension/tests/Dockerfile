@@ -13,23 +13,21 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 
 # Dependencies installed via pip
-COPY ./requirements.tests.txt /home/video-analytics-serving
-RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.tests.txt
-RUN rm -f /home/video-analytics-serving/requirements.tests.txt
+COPY ./requirements.tests.txt $HOME
+RUN pip3 install  --no-cache-dir -r $HOME/requirements.tests.txt
+RUN rm -f $HOME/requirements.tests.txt
 
-COPY . /home/video-analytics-serving/samples/ava_ai_extension/tests
+COPY . $HOME/tests
 
 RUN wget -O classroom.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true
 RUN wget -O person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 RUN wget -O people-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=True
 RUN wget --no-proxy -O person-bicycle-car-detection_1920_1080_2min.mp4 https://gitlab.devtools.intel.com/media-analytics-pipeline-zoo/media/-/raw/main/video/person-bicycle-car-detection/person-bicycle-car-detection_1920_1080_2min.mp4?inline=false
 
-ENV COVERAGE_RCFILE=/home/video-analytics-serving/samples/ava_ai_extension/tests/config/coveragerc
+ENV COVERAGE_RCFILE=$HOME/tests/config/coveragerc
 
 ARG USER=vaserving
-
+RUN chown ${USER} -R $HOME/tests
 USER ${USER}
-
-WORKDIR /home/video-analytics-serving/samples/ava_ai_extension
 
 ENTRYPOINT [ "./tests/entrypoint/pytest.sh" ]

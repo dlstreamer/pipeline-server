@@ -4,3 +4,4 @@ __pycache__/
 .bash_history
 *.generated
 models
+docker/.video-analytics-serving/*

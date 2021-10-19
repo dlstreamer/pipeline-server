@@ -14,7 +14,7 @@
                         "detection-device":"NONEXISTANTDEVICE"
                     }
                 },
-                "source":"/home/video-analytics-serving/samples/ava_ai_extension/sampleframes/sample01.png",
+                "source":"/home/edge-ai-extension/sampleframes/sample01.png",
                 "output_location":"",
                 "shared_memory":true,
                 "loop_count":1,

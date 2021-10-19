@@ -11,7 +11,7 @@
                     "version":"person_vehicle_bike_detection"
                 },
                 "wait_to_complete": true,
-                "source":"/home/video-analytics-serving/samples/ava_ai_extension/sampleframes/sample01.png",
+                "source":"/home/edge-ai-extension/sampleframes/sample01.png",
                 "output_location":"",
                 "shared_memory":false,
                 "loop_count":1,

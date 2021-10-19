@@ -18,7 +18,7 @@ class Helpers:
         self.start_time = time.time()
 
     def run_server(self, params, capture_log = False):
-        server_args = ["python3", "/home/video-analytics-serving/samples/ava_ai_extension/server", "-p", str(params["port"])]
+        server_args = ["python3", "server", "-p", str(params["port"])]
         if params.get("pipeline"):
             pipeline = params["pipeline"]
             if pipeline.get("name"):
@@ -64,7 +64,7 @@ class Helpers:
         return lines
 
     def run_client(self, params, asynchronous=False):
-        client_args = ["python3", "/home/video-analytics-serving/samples/ava_ai_extension/client",
+        client_args = ["python3", "client",
                     "-s", "127.0.0.1:" + str(params["port"]),
                     "-l", str(params.get("loop_count", 1)),
                     "-f", params["source"]]
