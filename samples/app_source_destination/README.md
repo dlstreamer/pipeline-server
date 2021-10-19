@@ -65,11 +65,15 @@ whose contents are displayed.
 
 To run, do the following:
 ```
-$ docker/build.sh
-<snip>
-$ docker/run.sh --dev
-<snip>
+docker/build.sh
+```
+```
+docker/run.sh --dev
+```
+```
 openvino@host:~$ python3 samples/app_source_destination/app_source_destination.py
+```
+```
 {"levelname": "INFO", "asctime": "2021-04-09 05:24:43,626", "message": "Creating Instance of Pipeline object_detection/app_src_dst", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-09 05:24:43,628", "message": "Creating Instance of Pipeline video_decode/app_dst", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-09 05:24:43,908", "message": "Setting Pipeline 2 State to RUNNING", "module": "gstreamer_pipeline"}

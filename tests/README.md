@@ -3,11 +3,13 @@
 ## Tests Run Script Reference
 The `run.sh` can be used to run tests or scans with option to select only one at a time, default selected as --pytest-gstreamer. It uses [docker/run.sh](../docker/run.sh) to pass common options to the underlying docker run command [Reference Doc](../docs/run_script_reference.md).
 ```
-$ tests/run.sh --help
+tests/run.sh --help
+```
+```
 usage: run.sh
   [ --pytest-gstreamer : Run gstreamer tests ]
-  [ --pytest-ffmpeg: Run ffmpeg tests ] 
-  [ --pylint : Run pylint scan ] 
+  [ --pytest-ffmpeg: Run ffmpeg tests ]
+  [ --pylint : Run pylint scan ]
   [ --pybandit: Run pybandit scan ]
   [ --clamav : Run antivirus scan ]
 ```

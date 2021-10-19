@@ -116,7 +116,9 @@ VA Serving includes a sample client [vaclient](./vaclient/README.md) that can co
 Before running a pipeline, we need to know what pipelines are available. We do this using vaclient's `list-pipeline` command.
 In new shell run the following command:
 ```bash
-$ ./vaclient/vaclient.sh list-pipelines
+./vaclient/vaclient.sh list-pipelines
+ ```
+ ```
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment
@@ -130,7 +132,9 @@ vaclient offers a `run` command that takes two additional arguments the `pipelin
 
 Inference result bounding boxes are displayed in the format `label (confidence) [top left width height] {meta-data}` provided applicable data is present. At the end of the pipeline run, the average fps is shown.
 ```
-$ ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+```
+```
 Timestamp 48583333333
 - vehicle (0.95) [0.00, 0.12, 0.15, 0.36]
 Timestamp 48666666666
@@ -159,20 +163,26 @@ All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate
 > **NOTE:** The pipeline instance value depends on the number of pipelines started while the server is running so may differ from the value shown in the following examples.
 
 ```
-$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+```
+```
 <snip>
 Starting pipeline...
 Pipeline running: object_detection/person_vehicle_bike, instance = 2
 ```
 You will need both the pipeline tuple and `instance` id for the status command. This command will display pipeline state:
 ```
-$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+```
+```
 <snip>
 RUNNING
 ```
 Then wait for a minute or so and try again. Pipeline will be completed.
 ```
-$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+```
+```
 <snip>
 COMPLETED
 ```
@@ -180,26 +190,42 @@ COMPLETED
 If a pipeline is stopped, rather than allowed to complete, it goes into the ABORTED state.
 Start the pipeline again, this time we'll stop it.
 ```
-$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+```
+```
 <snip>
 Starting pipeline...
 Pipeline running: object_detection/person_vehicle_bike, instance = 3
-$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+```
+```
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+```
+```
 <snip>
 RUNNING
-$ ./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 3
+```
+```
+./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 3
+```
+```
 <snip>
 Stopping Pipeline...
 Pipeline stopped
 avg_fps: 24.33
-$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+```
+```
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+```
+```
 <snip>
 ABORTED
 ```
 ### Error
 The error state covers a number of outcomes such as the request could not be satisfied, a pipeline dependency was missing or an initialization problem. We can create an error condition by supplying a valid but unreachable uri.
 ```
-$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike http://bad-uri
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike http://bad-uri
+```
+```
 <snip>
 Starting pipeline...
 Pipeline running: object_detection/person_vehicle_bike, instance = 4
@@ -207,7 +233,9 @@ Pipeline running: object_detection/person_vehicle_bike, instance = 4
 Note that VA Serving does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
 Checking on state a few seconds later will show the error.
 ```
-$ ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 4
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 4
+```
+```
 <snip>
 ERROR
 ```
@@ -217,11 +245,11 @@ RTSP allows you to connect to a server and display a video stream. VA Serving in
 
 First start VA Serving with RTSP enabled. By default, the RTSP stream will use port 8554.
 ```
-$ docker/run.sh --enable-rtsp -v /tmp:/tmp
+docker/run.sh --enable-rtsp -v /tmp:/tmp
 ```
 Then start a pipeline specifying the RTSP server endpoint path `vaserving`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
 ```
-$ ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
 ```
 If you see the error
 ```
@@ -240,7 +268,9 @@ Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL 
 ## Change Pipeline and Source Media
 With vaclient it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the Iot Devkit video `car-detection.mp4`. Note how vaclient now displays classification metadata including type and color of vehicle.
 ```
- $ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+```
+```
 Starting pipeline...
 Pipeline running: object_classification/vehicle_attributes, instance = 1
 <snip>
@@ -271,7 +301,9 @@ If you look at video you can see that there are some errors in classification - 
 Inference accelerator devices can be easily selected using the device parameter. Here we run the car classification pipeline again,
 but this time use the integrated GPU for detection inference by setting the `detection-device` parameter.
 ```
-$ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
+./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
+```
+```
 Starting pipeline...
 Pipeline running: object_classification/vehicle_attributes, instance = 2
 ```
@@ -286,7 +318,9 @@ As the previous example has shown, the vaclient application works by converting 
 The `--show-request` option displays the REST verb, uri and body in the request.
 Let's repeat the previous GPU inference example, adding RTSP output and show the underlying request.
 ```
-$ ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path vaserving --show-request
+./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path vaserving --show-request
+```
+```
 <snip>
 POST http://localhost:8080/pipelines/object_classification/vehicle_attributes
 Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/results.jsonl', 'format': 'json-lines'}, 'frame': {'type': 'rtsp', 'path': 'vaserving'}}, 'parameters': {'detection-device': 'GPU'}}
@@ -332,11 +366,11 @@ They are easier to understand when the json is pretty-printed
 
 The `--show-request` output can be easily converted int a curl command.
 ```
-$ curl <URI> -X <VERB> -H "Content-Type: application/json' -d <BODY>
+curl <URI> -X <VERB> -H "Content-Type: application/json' -d <BODY>
 ```
 So the above request would be as below. Note the pipeline instance `1` returned by the request.
 ```bash
-$ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -H \
+curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {
@@ -358,6 +392,8 @@ $ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST
     "detection-device": "GPU"
   }
 }'
+```
+```
 1
 ```
 # Changing Pipeline Model

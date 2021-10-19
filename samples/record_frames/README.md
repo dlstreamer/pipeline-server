@@ -116,7 +116,7 @@ Start the pipeline
 * Specify the frame store file specifier (via the file-location parameter).
 * Request would look like this in curl format assume pipeline is `object_detection/record_frames`
 ```
-$ curl localhost:8080/pipelines/object_detection/record_frames -X POST -H \
+curl localhost:8080/pipelines/object_detection/record_frames -X POST -H \
 'Content-Type: application/json' -d \
 '{
   "source": {
@@ -185,11 +185,11 @@ The sample includes the following to show frame saving and retrieval in action
 
 For the frame store path we'll keep with /path/to/samples/record_frames/frame_store. Server run script is invoked as follows:
 ```
-$ samples/record_frames/run_server.sh --frame-store samples/record_frames/frame_store
+samples/record_frames/run_server.sh --frame-store samples/record_frames/frame_store
 ```
 In a different terminal start the mqtt broker
 ```
-$ docker run --network=host -d eclipse-mosquitto:1.6
+docker run --network=host -d eclipse-mosquitto:1.6
 ```
 The run_client script does the following
 * Uses the `frame-store` argument to specify frame store directory.
@@ -205,7 +205,9 @@ The run_client script does the following
 
 Run the script as follows
 ```
-$ samples/record_frames/run_client.sh --frame-store samples/record_frames/frame_store
+samples/record_frames/run_client.sh --frame-store samples/record_frames/frame_store
+```
+```
 <snip>
 Starting pipeline...
 Pipeline running: object_detection/record_frames, instance = 1

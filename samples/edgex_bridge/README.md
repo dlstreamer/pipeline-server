@@ -40,23 +40,24 @@ This self-contained tutorial walks through a working example to fetch and prepar
 1. Clone this repository and prepare EdgeX integration:
 
    ```
-   $ git clone https://github.com/intel/video-analytics-serving.git vasEdge
-   $ cd vasEdge
+   git clone https://github.com/intel/video-analytics-serving.git vasEdge
+   cd vasEdge
    ```
 
 1. Run this command to automatically fetch the EdgeX developer scripts repository. These contain the Hanoi release of [EdgeX docker compose files](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/hanoi/compose-files/README.md) we will use to bootstrap our launch of the EdgeX Framework. This script also pulls the base configuration from the device-mqtt container. When it completes you will find a  `./edgex` subfolder is created with these contents.
 
    ```
-   $ ./samples/edgex_bridge/fetch_edgex.sh
-
-   $ ls ./samples/edgex_bridge/edgex
+   ./samples/edgex_bridge/fetch_edgex.sh
+   ls ./samples/edgex_bridge/edgex
+   ```
+   ```
      developer-scripts  docker-compose.yml  res
    ```
 
 1. Build the sample edgex-video-analytics-serving image.
 
    ```
-   $ ./samples/edgex_bridge/docker/build.sh
+   ./samples/edgex_bridge/docker/build.sh
    ```
 
    This also generates the needed EdgeX resources to augment the `./edgex` project subfolder located on your host (created in step 2). To do this the build script has invoked the [edgex_bridge.py](./edgex_bridge.md) entrypoint, passing in the `--generate` parameter. In this way, the sample will inform EdgeX to listen for VA Serving events as they are emitted to the MQTT broker.
@@ -67,10 +68,10 @@ This self-contained tutorial walks through a working example to fetch and prepar
 
 1. Now that we have the docker-compose and override configuration for device-mqtt prepared, we are ready to launch the EdgeX platform which will now include our built image. In the host terminal session, launch EdgeX platform.
 > **Note:**  This sample can only run with Display.
-   ```
-   $ xhost local:root
-   $ export DISPLAY=<X display you want to render to>
-   $ ./samples/edgex_bridge/start_edgex.sh
+   ```bash
+   xhost local:root
+   export DISPLAY=<X display you want to render to>
+   ./samples/edgex_bridge/start_edgex.sh
    ```
 
 NOTE: The first time this runs, each of the EdgeX microservice images will download to your host. Subsequent runs will make use of these as containers get started.
@@ -78,7 +79,9 @@ NOTE: The first time this runs, each of the EdgeX microservice images will downl
 1. You will find that EdgeX Core Data has received inference events for vehicles detected on frames within the source video input. With this out-of-the-box configuration there are no other events being transmitted to EdgeX, so you can inspect the count of events received using this command:
 
    ```
-   $ curl -i --get http://localhost:48080/api/v1/event/count
+   curl -i --get http://localhost:48080/api/v1/event/count
+   ```
+   ```
    HTTP/1.1 200 OK
    Date: Mon, 29 Mar 2021 03:19:18 GMT
    Content-Length: 3
@@ -91,7 +94,9 @@ NOTE: The first time this runs, each of the EdgeX microservice images will downl
 1. You are able to explore the event data within EdgeX, by issuing this command. For example, filtering to retrieve three (3) vehicle detection events by the registered `videoAnalytics-mqtt` device:
 
    ```
-   $ curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/3
+   curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/3
+   ```
+   ```
    HTTP/1.1 200 OK
    Content-Type: application/json
    Date: Mon, 05 Apr 2021 04:40:42 GMT
@@ -127,9 +132,9 @@ For example, you may wish to remove the visual output by updating the last line 
 After you launch build.sh and start_edgex.sh, you will find these events emitted:
 
    ```
-   $ curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/2
-
-
+   curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/2
+   ```
+   ```
    HTTP/1.1 200 OK
    Content-Type: application/json
    Date: Mon, 29 Mar 2021 03:22:11 GMT
@@ -144,9 +149,9 @@ After you launch build.sh and start_edgex.sh, you will find these events emitted
 > TIP: You can also monitor the MQTT broker when troubleshooting connectivity by subscribing with a client right on your host.
 
    ```
-   $ sudo apt-get update && sudo apt-get install mosquitto-clients
+   sudo apt-get update && sudo apt-get install mosquitto-clients
 
-   $ mosquitto_sub -t edgex_bridge/objects_detected
+   mosquitto_sub -t edgex_bridge/objects_detected
    ```
 
    This will reveal events received by the EdgeX MQTT Broker as they scroll by.
@@ -163,8 +168,9 @@ After you launch build.sh and start_edgex.sh, you will find these events emitted
 
 1. When finished remember to stop the EdgeX stack.
    ```
-   $ ./samples/edgex_bridge/stop_edgex.sh
-
+   ./samples/edgex_bridge/stop_edgex.sh
+   ```
+   ```
    /vasEdge/samples/edgex_bridge$ ./stop_edgex.sh
    Stopping edgex-kuiper                         ... done
    Stopping edgex-app-service-configurable-rules ... done
@@ -198,24 +204,29 @@ After you launch build.sh and start_edgex.sh, you will find these events emitted
 1. To remove all data persisted in EdgeX docker volumes and quickly re-run this exercise from scratch:
 
    ```
-   $ ./samples/edgex_bridge/clear_edgex.sh
+   ./samples/edgex_bridge/clear_edgex.sh
 
-   $ ./samples/edgex_bridge/docker/build.sh
+   ./samples/edgex_bridge/docker/build.sh
 
-   $ ./samples/edgex_bridge/start_edgex.sh
+   ./samples/edgex_bridge/start_edgex.sh
    ```
 
 1. If you are in creative mode and want to more quickly update to try new things, you may directly modify the docker-compose-override.yml to alter `command:` parameters, update `environment:` variables and so on. With new input, Docker compose will automatically launch the container with the new parameters.
 
    ```
-   $ nano ./samples/edgex_bridge/edgex/docker-compose-override.yml
+   nano ./samples/edgex_bridge/edgex/docker-compose-override.yml
+   ```
+   ```
    ...
    image: edgex-video-analytics-serving:0.5.0
    ...
    command: "--source=https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --topic=vehicles_detected"
    ...
-
-   $ ./samples/edgex_bridge/start_edgex.sh
+   ```
+   ```
+   ./samples/edgex_bridge/start_edgex.sh
+   ```
+   ```
    edgex-core-data is up-to-date
    edgex-core-command is up-to-date
    edgex-app-service-configurable-rules is up-to-date
@@ -223,11 +234,10 @@ After you launch build.sh and start_edgex.sh, you will find these events emitted
    edgex-sys-mgmt-agent is up-to-date
    Recreating edgex-video-analytics-serving ...
    Recreating edgex-video-analytics-serving ... done
-
    ```
 
 > TIP: Use an environment variable to dynamically adjust runtime parameters.
-     ```
+   ```
    ...
        command: $ENTRYPOINT_ARGS
    ...
@@ -246,8 +256,9 @@ https://github.com/edgexfoundry/edgex-go/blob/master/README.md#running-edgex-wit
 To independently run edgex-video-analytics-serving in DEV mode, issue this command:
 
    ```
-   $ ./samples/edgex_bridge/docker/run.sh --dev
-
+   ./samples/edgex_bridge/docker/run.sh --dev
+   ```
+   ```
    vaserving@your-hostname:~$ _
 
    ```

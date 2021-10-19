@@ -64,14 +64,14 @@ provided utility script.
 ### DL Streamer based Microservice
 **Example:**
 ```bash
-$ docker/run.sh -v /tmp:/tmp
+docker/run.sh -v /tmp:/tmp
 ```
 
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 
 ```bash
-$ docker/run.sh --framework ffmpeg -v /tmp:/tmp
+docker/run.sh --framework ffmpeg -v /tmp:/tmp
 ```
 
 ## Issuing Requests
@@ -83,7 +83,9 @@ microservice.
 **Example:**
 > **Note:** In this example we assume you are running FFmpeg Video Analytics based Microservice
 ```bash
-$ curl localhost:8080/pipelines
+curl localhost:8080/pipelines
+```
+```
 [
   {
     "description": "Object Detection Pipeline",
@@ -121,7 +123,11 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
     }
   }
 }'
-$ tail -f /tmp/results.txt
+```
+```
+tail -f /tmp/results.txt
+```
+```
 {"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
 ```
 
@@ -137,13 +143,13 @@ kill` commands with the name of the running container.
 **Example:**
 
 ```bash
-$ docker stop video-analytics-serving-gstreamer
+docker stop video-analytics-serving-gstreamer
 ```
 
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 ```bash
-$ docker stop video-analytics-serving-ffmpeg
+docker stop video-analytics-serving-ffmpeg
 ```
 
 # Real Time Streaming Protocol (RTSP) Re-streaming
@@ -153,7 +159,7 @@ VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_
 
 ### Enable RTSP in service
 ```bash
-$ docker/run.sh --enable-rtsp
+docker/run.sh --enable-rtsp
 ```
 > **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
 
@@ -210,7 +216,7 @@ appropriate directories when starting the container.
 **Example:**
 
 ```bash
-$ ./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
+./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
 ```
 
 # Enabling Hardware Accelerators
@@ -244,11 +250,9 @@ The following the table shows docker configuration and inference device name for
 NCS2 accelerators require users to have special permissions for hardware access. To configure your system please follow the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
 
 > **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
->
-> ```bash
-> ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
-> ```
->
+```bash
+./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
+```
 > Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO documentation to copy it to the correct location.
 
 ### Limitations
@@ -280,7 +284,9 @@ Developer mode:
 **Example:**
 
 ```bash
-$ docker/run.sh --dev
+docker/run.sh --dev
+```
+```
 vaserving@my-host:~$ python3 -m vaserving
 ```
 

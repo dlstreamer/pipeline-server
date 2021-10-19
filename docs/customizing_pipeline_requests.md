@@ -43,6 +43,8 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         "threshold": 0.90
    }
 }'
+```
+```
 2
 ```
 
@@ -50,7 +52,9 @@ The number returned on the console is the pipeline instance id (e.g. 2).
 As the video is being analyzed and as objects are detected, results are added to the `destination` file which can be viewed using:
 
 ```bash
-$ tail -f /tmp/results.jsonl
+tail -f /tmp/results.jsonl
+```
+```
 {"objects":[{"detection":{"bounding_box":{"x_max":0.7503407597541809,"x_min":0.6836109757423401,"y_max":0.9968345165252686,"y_min":0.7712376117706299},"confidence":0.93408203125,"label":"person","label_id":1},"h":97,"roi_type":"person","w":51,"x":525,"y":333}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1916666666}
 {"objects":[{"detection":{"bounding_box":{"x_max":0.7554543018341064,"x_min":0.6827328205108643,"y_max":0.9928492903709412,"y_min":0.7551988959312439},"confidence":0.92578125,"label":"person","label_id":1},"h":103,"roi_type":"person","w":56,"x":524,"y":326}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":2000000000}
 <snip>

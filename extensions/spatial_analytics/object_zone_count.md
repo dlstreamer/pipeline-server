@@ -87,7 +87,7 @@ VA Serving comes with an [example configuration](../../vaclient/parameter_files/
     ```
 2. Rebuild and Run VA Serving with additional flag `--enable-rtsp`
     ```
-    $ ./docker/run.sh -v /tmp:/tmp --enable-rtsp
+    ./docker/run.sh -v /tmp:/tmp --enable-rtsp
 
 3. Run object-zone-count pipeline with vaclient using example parameter file with additional parameter `rtsp-path`. Note that `rtsp-path` is set to `vaserving`, this path is    what will be used to view the rtsp stream:
     ```

@@ -4,7 +4,9 @@ The `run.sh` script passes common options to the underlying `docker run` command
 Use the --help option to see how to use the script. All arguments are optional.
 
 ```
-$ docker/run.sh --help
+docker/run.sh --help
+```
+```
 usage: run.sh
   [--image image]
   [--framework ffmpeg || gstreamer]
@@ -82,6 +84,6 @@ The following parameters simply map to docker run arguments:
   [--network additional network]
   [--user to pass to docker run]
   [--group-add to pass to docker run]
-  [--name to pass to docker run]  
-  [--device to pass to docker run] 
+  [--name to pass to docker run]
+  [--device to pass to docker run]
 ```
