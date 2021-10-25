@@ -1,7 +1,0 @@
-[run]
-data_file = /home/edge-ai-extension/tests/results/.coverage
-concurrency = multiprocessing
-
-[report]
-include = server/*, client/*, common/*
-omit = common/grpc_autogen/*

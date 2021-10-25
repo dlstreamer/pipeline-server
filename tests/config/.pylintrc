@@ -24,9 +24,7 @@ ignore=CVS
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
-ignore-paths=^/home/video-analytics-serving/samples/ava_ai_extension/common/grpc_autogen/.*$,
-             ^/home/video-analytics-serving/tests/.*$,
-             ^/home/video-analytics-serving/samples/ava_ai_extension/tests/.*$,
+ignore-paths=^/home/video-analytics-serving/tests/.*$,
              ^/home/video-analytics-serving/samples/edgex_bridge/edgex/.*$
 
 # Files or directories matching the regex patterns are skipped. The regex
@@ -35,7 +33,7 @@ ignore-patterns=
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-init-hook='import sys; sys.path.append("/home/video-analytics-serving/samples/ava_ai_extension/server/")'
+init-hook=
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
