@@ -79,6 +79,11 @@ Waiting for stream to start...
 * GPU Inference: [detect-gpu.json](detect-gpu.json)
 * GPU Inference + Tracking: [detect-gpu-tracking.json](detect-gpu-tracking.json)
 
+Standalone client invocation will look like this. In this example we're using extension configuration `detect-gpu-tracking.json` with 4 streams.
+```
+samples/ava_ai_extension/docker/run_client.sh --dev --extension-config /home/video-analytics-serving/samples/ava_ai_extension/stream_density/detect-gpu-tracking.json --shared-memory -f file:///home/video-analytics-serving/samples/ava_ai_extension/stream_density/people-detection.mp4 --number-of-streams 4
+```
+
 ## AVA Configuration
 See sample [deployment](./deployment) and [operations](./operations) files are included.
 
