@@ -1,0 +1,202 @@
+{
+    "apiVersion": "1.0",
+    "operations": [
+        {
+            "opName": "pipelineTopologyList",
+            "opParams": {}
+        },
+        {
+            "opName": "WaitForInput",
+            "opParams": {
+                "message": "Press Enter to continue."
+            }
+        },
+        {
+            "opName": "livePipelineList",
+            "opParams": {}
+        },
+        {
+            "opName": "WaitForInput",
+            "opParams": {
+                "message": "Press Enter to continue. This is start the activating steps."
+            }
+        },
+        {
+            "opName": "pipelineTopologySet",
+            "opParams": {
+                "pipelineTopologyFile": "/home/ubuntu/Downloads/video-analyzer-iot-edge-csharp-main/src/cloud-to-device-console-app/topology.json"
+            }
+        },
+        {
+            "opName": "livePipelineSet",
+            "opParams": {
+                "name": "Sample-Pipeline-1",
+                "properties": {
+                    "topologyName": "InferencingWithOpenVINOgRPC",
+                    "description": "Sample pipeline description",
+                    "parameters": [
+                        {
+                            "name": "rtspUrl",
+                            "value": "rtsp://rtspsim:554/media/lots_015.mkv"
+                        },
+                        {
+                            "name": "rtspUserName",
+                            "value": "testuser"
+                        },
+                        {
+                            "name": "rtspPassword",
+                            "value": "testpassword"
+                        },
+						{
+                            "name": "videoOutput",
+                            "value": "video-output-1"
+                        },
+                        {
+                          "name": "extensionConfiguration",
+                          "value": "{\"pipeline\":{\"name\":\"object_detection\",\"version\":\"object_zone_count_vehicle\"}}"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "opName": "livePipelineSet",
+            "opParams": {
+                "name": "Sample-Pipeline-2",
+                "properties": {
+                    "topologyName": "InferencingWithOpenVINOgRPC",
+                    "description": "Sample pipeline description",
+                    "parameters": [
+                        {
+                            "name": "rtspUrl",
+                            "value": "rtsp://rtspsim:554/media/lots_015.mkv"
+                        },
+                        {
+                            "name": "rtspUserName",
+                            "value": "testuser"
+                        },
+                        {
+                            "name": "rtspPassword",
+                            "value": "testpassword"
+                        },
+						{
+                            "name": "videoOutput",
+                            "value": "video-output-2"
+                        },
+                        {
+                          "name": "extensionConfiguration",
+                          "value": "{\"pipeline\":{\"name\":\"object_classification\",\"version\":\"vehicle_attributes_recognition\",\"parameters\":{\"detection-device\":\"MYRIAD\",\"detection-model-instance-id\":\"ncs2-fp16\"}}}"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "opName": "livePipelineSet",
+            "opParams": {
+                "name": "Sample-Pipeline-3",
+                "properties": {
+                    "topologyName": "InferencingWithOpenVINOgRPC",
+                    "description": "Sample pipeline description",
+                    "parameters": [
+                        {
+                            "name": "rtspUrl",
+                            "value": "rtsp://rtspsim:554/media/2018-03-05.10-05-01.10-10-01.bus.G331.mkv"
+                        },
+                        {
+                            "name": "rtspUserName",
+                            "value": "testuser"
+                        },
+                        {
+                            "name": "rtspPassword",
+                            "value": "testpassword"
+                        },
+						{
+                            "name": "videoOutput",
+                            "value": "video-output-3"
+                        },
+                        {
+                          "name": "extensionConfiguration",
+                          "value": "{\"pipeline\":{\"name\":\"object_tracking\",\"version\":\"person_vehicle_bike_tracking\",\"parameters\":{\"detection-device\":\"GPU\",\"detection-model-instance-id\":\"gpu-fp16\"}}}"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "opName": "livePipelineActivate",
+            "opParams": {
+                "name": "Sample-Pipeline-1"
+            }
+        },
+        {
+            "opName": "livePipelineActivate",
+            "opParams": {
+                "name": "Sample-Pipeline-2"
+            }
+        },
+        {
+            "opName": "livePipelineActivate",
+            "opParams": {
+                "name": "Sample-Pipeline-3"
+            }
+        },
+        {
+            "opName": "WaitForInput",
+            "opParams": {
+                "message": "Press Enter to continue. This is start the deactivating steps."
+            }
+        },
+        {
+            "opName": "livePipelineDeactivate",
+            "opParams": {
+                "name": "Sample-Pipeline-1"
+            }
+        },
+        {
+            "opName": "livePipelineDeactivate",
+            "opParams": {
+                "name": "Sample-Pipeline-2"
+            }
+        },
+        {
+            "opName": "livePipelineDeactivate",
+            "opParams": {
+                "name": "Sample-Pipeline-3"
+            }
+        },
+        {
+            "opName": "livePipelineDelete",
+            "opParams": {
+                "name": "Sample-Pipeline-1"
+            }
+        },
+        {
+            "opName": "livePipelineDelete",
+            "opParams": {
+                "name": "Sample-Pipeline-2"
+            }
+        },
+        {
+            "opName": "livePipelineDelete",
+            "opParams": {
+                "name": "Sample-Pipeline-3"
+            }
+        },
+        
+        {
+            "opName": "livePipelineList",
+            "opParams": {}
+        },
+        {
+            "opName": "pipelineTopologyDelete",
+            "opParams": {
+                "name": "InferencingWithOpenVINOgRPC"
+            }
+        },
+        {
+            "opName": "pipelineTopologyList",
+            "opParams": {}
+        }
+    ]
+  }
