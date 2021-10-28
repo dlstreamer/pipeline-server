@@ -28,7 +28,7 @@ Operations file [operations-DetectionCPU-DetectioniGPU-TrackingVPU--Option3.json
 |-|-----------------|-----------------------------|------|-----|
 |1|object_detection |object_zone_count_vehicle    |CPU   |[Parking Lot 2](https://lvamedia.blob.core.windows.net/public/lots_015.mkv)|
 |2|object_detection |object_zone_count_person    |GPU   |[People in waiting room 2](https://lvamedia.blob.core.windows.net/public/2018-03-05.10-05-01.10-10-01.bus.G331.mkv)|
-|3|object_classification |person_vehicle_bike_tracking|NCS2  |[Home 1](https://lvamedia.blob.core.windows.net/public/homes_00425.mkv)|
+|3|object_classification |vehicle_attributes_recognition|NCS2  |[Home 1](https://lvamedia.blob.core.windows.net/public/homes_00425.mkv)|
 
 
 
