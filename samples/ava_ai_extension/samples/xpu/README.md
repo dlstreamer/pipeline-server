@@ -22,7 +22,7 @@ Operations file [operations-DetectionCPU-DetectioniGPU-TrackingVPU--Option2.json
 |3|object_tracking |person_vehicle_bike_tracking  |NCS2  |[People in waiting room 2](https://lvamedia.blob.core.windows.net/public/2018-03-05.10-05-01.10-10-01.bus.G331.mkv)|
 
 ## Option 3 - highlight detection accuracy
-Operations file [operations-DetectionCPU-DetectioniGPU-TrackingVPU--Option3.json](operations-DetectionCPU-DetectioniGPU-ClassificationVPU--Option3.json)
+Operations file [operations-DetectionCPU-DetectioniGPU-ClassificationVPU--Option3.json](operations-DetectionCPU-DetectioniGPU-ClassificationVPU--Option3.json)
 
 |#|Pipeline Name    |Pipeline Version             |Device|Media|
 |-|-----------------|-----------------------------|------|-----|
