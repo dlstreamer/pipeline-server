@@ -298,15 +298,18 @@ if [ "${MODE}" == "DEV" ]; then
         PIPELINES=$SOURCE_DIR/pipelines/$FRAMEWORK
     fi
     PRIVILEGED="--privileged "
+elif [ ! -z "$ENTRYPOINT" ]; then
+    MODE=CUSTOM_ENTRYPOINT
 elif [ "${MODE}" == "SERVICE" ]; then
     if [ -z "$PORTS" ]; then
         PORTS+="-p 8080:8080 "
     fi
-    enable_hardware_access
 else
     echo "Invalid Mode"
     show_help
 fi
+
+enable_hardware_access
 
 if [ ! -z "$ENABLE_RTSP" ]; then
     ENVIRONMENT+="-e ENABLE_RTSP=true -e RTSP_PORT=$RTSP_PORT "
