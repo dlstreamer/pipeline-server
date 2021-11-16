@@ -1,0 +1,33 @@
+#!/bin/bash
+
+EXPECTED="POST http://localhost:8080/pipelines/object_detection/person_vehicle_bike"
+cat > /tmp/sample_request.json << EOF
+
+{
+    "source": {
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+    "type": "uri"
+    },
+    "destination": {
+        "metadata": {
+            "type": "file",
+            "path": "/tmp/results.jsonl",
+            "format": "json-lines"
+        }
+    }
+}
+
+EOF
+
+OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/person_vehicle_bike --request-file /tmp/sample_request.json --show-request)
+RETURN_CODE=$?
+
+if [[ $RETURN_CODE != 0 ]]; then
+    error
+fi
+
+if [[ ! "$OUTPUT" == *"$EXPECTED"* ]]; then
+    error "Unexpected output"
+fi
+
+rm /tmp/sample_request.json

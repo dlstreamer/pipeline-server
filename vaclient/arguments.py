@@ -33,6 +33,7 @@ import vaclient
 
 def parse_args(program_name="Video Analytics Serving Client"):
     """Process command line options"""
+    #pylint: disable=too-many-statements
     parser = argparse.ArgumentParser(
         prog=program_name,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -44,7 +45,7 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_run.set_defaults(command=vaclient.run)
     parser_run.add_argument('pipeline', type=str, help='Vaserving pipeline which to run instance of. \
         In the form of pipeline_name/pipeline_version')
-    parser_run.add_argument('uri', type=str, help='Location of the content to play/analyze')
+    parser_run.add_argument('uri', type=str, nargs="?", default=None, help='Location of the content to play/analyze')
     parser_run.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         help='Update destination information with key and value pair')
     parser_run.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
@@ -52,6 +53,8 @@ def parse_args(program_name="Video Analytics Serving Client"):
         dest='parameters', help='Update request parameter with key and value pair')
     parser_run.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
         with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
+    parser_run.add_argument('--request-file', type=str, dest='request_file', \
+        help='Update any/all sections of request with values from file')
     parser_run.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='tags', help='Update request tags with key and value pair')
     parser_run.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
@@ -60,14 +63,16 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_start.set_defaults(command=vaclient.start)
     parser_start.add_argument('pipeline', type=str, help='Vaserving pipeline which to run instance of. \
         In the form of pipeline_name/pipeline_version')
-    parser_start.add_argument('uri', type=str, help='Location of the content to play/analyze')
+    parser_start.add_argument('uri', type=str, nargs="?", default=None, help='Location of the content to play/analyze')
     parser_start.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         help='Update destination information with key and value pair')
     parser_start.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
     parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        dest='parameters', help='Update requeset parameter with key and value pair')
+        dest='parameters', help='Update request parameter with key and value pair')
     parser_start.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
         with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
+    parser_start.add_argument('--request-file', type=str, dest='request_file', \
+        help='Update any/all sections of request with values from file')
     parser_start.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         dest='tags', help='Update request tags with key and value pair')
     parser_start.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
@@ -107,4 +112,8 @@ def parse_args(program_name="Video Analytics Serving Client"):
         parser.print_help(sys.stderr)
         sys.exit(1)
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.uri is None and args.request_file is None:
+        parser.error("at least one of uri or --request-file is required")
+
+    return args

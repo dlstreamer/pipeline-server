@@ -164,8 +164,9 @@ This section summarizes all the arguments for vaclient `run` and `start` command
 #### pipeline (required)
 Positional argument (first) that specifies the pipeline to be launched in the form of `pipeline name/pipeline version`.
 
-#### uri (required)
+#### uri (optional)
 Positional argument (second) that specifies the location of the content to play/analyze.
+> Note: uri argument can be skipped only if passed in via --request-file
 
 #### --destination
 By default, vaclient uses a generic template for destination:
@@ -198,7 +199,7 @@ By default, vaclient relies on pipeline parameter defaults. This can be updated 
 
 #### --parameter-file
 Specifies a JSON file that contains parameters in key, value pairs. Parameters from this file take precedence over those set by `--parameter`.
-> **Note**: You may need to volume mount the location of the parameter file when running VA Serving.
+> **Note**: As vaclient volume mounts /tmp, the parameter file may be placed there.
 
 A sample parameter file can look like
 ```json
@@ -208,8 +209,38 @@ A sample parameter file can look like
     }
 }
 ```
+The above file, say /tmp/sample_parameters.json may be used as follows:
 ```
 ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+```
+
+#### --request-file
+Specifies a JSON file that contains the complete request i.e source, destination, tags and parameters.
+See [Customizing Pipeline Requests](../docs/customizing_pipeline_requests.md) for examples of requests in JSON format.
+> **Note**: As vaclient volume mounts /tmp, the request file may be placed there.
+
+A sample request file can look like
+```json
+{
+    "source": {
+        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+        "type": "uri"
+    },
+    "destination": {
+        "metadata": {
+            "type": "file",
+            "path": "/tmp/results.jsonl",
+            "format": "json-lines"
+        }
+    },
+    "parameters": {
+        "detection-device": "GPU"
+    }
+}
+```
+The above file, named for instance as /tmp/sample_request.json may be used as follows:
+```
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike --request-file /tmp/sample_request.json
 ```
 
 #### --tag

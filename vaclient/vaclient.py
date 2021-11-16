@@ -121,13 +121,20 @@ def update_request_options(request,
         request["parameters"] = dict(args.parameters)
     if hasattr(args, 'parameter_file') and args.parameter_file:
         with open(args.parameter_file, 'r') as parameter_file:
-            request.update(json.load(parameter_file))
+            parameter_data = json.load(parameter_file)
+            if request.get("parameters"):
+                request["parameters"].update(parameter_data.get("parameters"))
+            else:
+                request["parameters"] = parameter_data.get("parameters")
     if hasattr(args, 'tags') and args.tags:
         request["tags"] = dict(args.tags)
     if hasattr(args, 'rtsp_path') and args.rtsp_path:
         rtsp_template = RTSP_TEMPLATE
         rtsp_template['frame']['path'] = args.rtsp_path
         request['destination'].update(rtsp_template)
+    if hasattr(args, 'request_file') and args.request_file:
+        with open(args.request_file, 'r') as request_file:
+            request.update(json.load(request_file))
 
 def start_pipeline(request,
                    pipeline,
