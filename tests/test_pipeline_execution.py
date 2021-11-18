@@ -132,7 +132,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     results = []
     src_type = _test_case["request"]["source"]["type"]
     print("src_type = {}".format(src_type))
-    if src_type == "uri":
+    if src_type in ["uri", "gst"]:
         thread = results_processing.get_results_fifo(_test_case, results)
     elif src_type == "application":
         _test_case["request"]["source"]["input"] = Queue()
@@ -149,7 +149,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         test_case["result"] = results
         with open(test_filename+'.generated', "w") as test_output:
             json.dump(test_case, test_output, indent=4)
-    else:
+    elif _test_case.get("golden_results"):
         assert results_processing.cmp_results(results,
                                               _test_case["result"],
                                               numerical_tolerance), "Inference Result Mismatch"

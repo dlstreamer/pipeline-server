@@ -32,6 +32,8 @@ class GStreamerPipeline(Pipeline):
                                    "GstGvaInference",
                                    "GvaAudioDetect",
                                    "GstGvaActionRecognitionBin"]
+    SOURCE_ALIAS = "auto_source"
+    GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
 
     _inference_element_cache = {}
     _mainloop = None
@@ -57,6 +59,8 @@ class GStreamerPipeline(Pipeline):
         self.models = model_manager.models
         self.model_manager = model_manager
         self.request = request
+        self._auto_source = None
+        self._unset_properties = []
         self.state = Pipeline.State.QUEUED
         self.frame_count = 0
         self.start_time = None
@@ -230,7 +234,7 @@ class GStreamerPipeline(Pipeline):
         if isinstance(element, str):
             return (element, key, None)
         if isinstance(element, dict):
-            return (element["name"], element["property"], element.get("format", None))
+            return (element["name"], element.get("property", None), element.get("format", None))
         return None
 
     def _set_bus_messages_flag(self):
@@ -257,29 +261,38 @@ class GStreamerPipeline(Pipeline):
                     else:
                         element_properties = [self._get_element_property(
                             config[key]["element"], key)]
-
                     for element_name, property_name, format_type in element_properties:
                         element = self.pipeline.get_by_name(element_name)
-                        if element:
-                            if (property_name in [x.name for x in element.list_properties()]):
-                                if (format_type == "json"):
-                                    element.set_property(
-                                        property_name, json.dumps(request[key]))
-                                else:
-                                    element.set_property(
-                                        property_name, request[key])
-                                self._logger.debug("Setting element: {}, property: {}, value: {}".format(
-                                    element_name,
-                                    property_name,
-                                    element.get_property(property_name)))
-                            else:
-                                self._logger.debug("Parameter {} given for element {}"
-                                                   " but no property found".format(
-                                                       property_name, element_name))
+                        if not element:
+                            self._logger.debug("Parameter {} given for element {} but no element found".format(
+                                property_name, element_name))
+                            continue
+
+                        if format_type == "element-properties":
+                            for property_name, property_value in request[key].items():
+                                self._set_element_property(
+                                    element, property_name, property_value, format_type)
                         else:
-                            self._logger.debug(
-                                "Parameter {} given for element {}"
-                                " but no element found".format(property_name, element_name))
+                            self._set_element_property(
+                                element, property_name, request[key], format_type)
+
+    def _set_element_property(self, element, property_name, property_value, format_type=None):
+        if (property_name in [x.name for x in element.list_properties()]):
+            if (format_type == "json"):
+                element.set_property(
+                    property_name, json.dumps(property_value))
+            else:
+                element.set_property(
+                    property_name, property_value)
+            self._logger.debug("Setting element: {}, property: {}, value: {}".format(
+                element.__gtype__.name,
+                property_name,
+                element.get_property(property_name)))
+        else:
+            self._logger.debug("Parameter {} given for element {}"
+                                 " but no property found".format(
+                                     property_name, element.__gtype__.name))
+            self._unset_properties.append([element.__gtype__.name, property_name, property_value])
 
     def _cache_inference_elements(self):
         model_instance_id = "model-instance-id"
@@ -335,6 +348,9 @@ class GStreamerPipeline(Pipeline):
     @staticmethod
     def validate_config(config):
         template = config["template"]
+        field_names = [fname for _, fname, _, _ in string.Formatter().parse(template)]
+        if GStreamerPipeline.SOURCE_ALIAS in field_names:
+            template = template.replace("{"+ GStreamerPipeline.SOURCE_ALIAS +"}", "fakesrc")
         pipeline = Gst.parse_launch(template)
         appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSink"])
         metaconvert = pipeline.get_by_name("metaconvert")
@@ -423,6 +439,18 @@ class GStreamerPipeline(Pipeline):
                                          ["source", self.request["source"]["type"], "properties"])
         self._set_section_properties([], [])
 
+    def _set_auto_source(self):
+        element = self.request["source"].get("element")
+        capsfilter = self.request["source"].get("capsfilter", None)
+        postproc = self.request["source"].get("postproc", None)
+
+        source = "{} name=source".format(element)
+        if capsfilter:
+            source = "{} ! capsfilter caps={}".format(source, capsfilter)
+        if postproc:
+            source = "{} ! {}".format(source, postproc)
+
+        self._auto_source = source
 
     def _get_any_source(self):
         src = self.pipeline.get_by_name("source")
@@ -445,6 +473,10 @@ class GStreamerPipeline(Pipeline):
     def start(self):
 
         self.request["models"] = self.models
+        field_names = [fname for _, fname, _, _ in string.Formatter().parse(self.template)]
+        if self.SOURCE_ALIAS in field_names:
+            self._set_auto_source()
+            self.request[self.SOURCE_ALIAS] = self._auto_source
         self._gst_launch_string = string.Formatter().vformat(
             self.template, [], self.request)
 
@@ -465,6 +497,8 @@ class GStreamerPipeline(Pipeline):
                 self._set_model_instance_id()
 
                 src = self._get_any_source()
+                if self._auto_source and src.__gtype__.name in self.GST_ELEMENTS_WITH_SOURCE_SETUP:
+                    src.connect("source_setup", self.source_setup_callback, src)
 
                 sink = self.pipeline.get_by_name("appsink")
                 if (not sink):
@@ -586,6 +620,11 @@ class GStreamerPipeline(Pipeline):
         pts = buffer.pts
         self.latency_times[pts] = time.time()
         return Gst.PadProbeReturn.OK
+
+    def source_setup_callback(self, unused_bin, src_element, unused_udata):
+        for (element_name, property_name, property_value) in self._unset_properties:
+            if element_name in self.GST_ELEMENTS_WITH_SOURCE_SETUP:
+                self._set_element_property(src_element, property_name, property_value, None)
 
     @staticmethod
     def appsink_probe_callback(unused_pad, info, self):

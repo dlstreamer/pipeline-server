@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: Video Analytics Serving API
   title: Video Analytics Serving API
-  version: 0.0.2
+  version: 0.0.3
 servers:
 - url: /
 paths:
@@ -280,22 +280,52 @@ components:
         uri:
           format: uri
           type: string
+        properties:
+          type: object
+        capsfilter:
+          type: string
+        postproc:
+          type: string
       required:
       - type
       - uri
       type: object
-    DeviceSource:
+    WebcamSource:
       properties:
         type:
           enum:
-          - device
+          - webcam
           type: string
-        path:
+        device:
           type: string
           format: path
+        properties:
+          type: object
+        capsfilter:
+          type: string
+        postproc:
+          type: string
       required:
       - type
-      - path
+      - device
+      type: object
+    GstSource:
+      properties:
+        type:
+          enum:
+          - gst
+          type: string
+        element:
+          type: string
+        properties:
+          type: object
+        capsfilter:
+          type: string
+        postproc:
+          type: string
+      required:
+      - type
+      - element
       type: object
     FileDestination:
       properties:
@@ -389,7 +419,8 @@ components:
             propertyName: type
           oneOf:
           - $ref: '#/components/schemas/URISource'
-          - $ref: '#/components/schemas/DeviceSource'
+          - $ref: '#/components/schemas/GstSource'
+          - $ref: '#/components/schemas/WebcamSource'
           type: object
         destination:
           oneOf:

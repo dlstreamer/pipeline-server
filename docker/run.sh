@@ -99,6 +99,18 @@ enable_hardware_access() {
         DEVICES+="--device /dev/ion "
         VOLUME_MOUNT+="-v /var/tmp:/var/tmp "
     fi
+
+    # Webcam
+    for device in $(ls /dev | grep video); do
+        echo "Found /dev/$device - enabling webcam"
+        DEVICES+="--device /dev/$device "
+    done
+
+    # Microphone
+    if [ -e /dev/snd ]; then
+        echo "Found /dev/snd - enabling microphone"
+        DEVICES+="--device /dev/snd "
+    fi
 }
 
 while [[ "$#" -gt 0 ]]; do
