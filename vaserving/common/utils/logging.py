@@ -8,30 +8,38 @@
 
 import json
 import logging
-from vaserving.common import settings
 _static_loggers = []
+LOG_LEVEL = "INFO"
+LOG_ATTRS = ['levelname', 'asctime', 'message', 'module']
+
+
+def set_default_log_level(level):
+    # pylint: disable=global-statement
+    global LOG_LEVEL
+    LOG_LEVEL = level
+
+
+def _set_log_level(logger, level):
+    try:
+        logger.setLevel(level)
+    except Exception:
+        print('Unable to set log level, defaulting to "DEBUG"')
+        logger.setLevel('DEBUG')
 
 
 def set_log_level(level):
     for logger in _static_loggers:
-        logger.setLevel(level)
+        _set_log_level(logger, level)
 
 
 def get_logger(name, is_static=False):
-    try:
-        level = settings.LOG_LEVEL
-        attrs = settings.LOG_ATTRS
-    except SyntaxError:
-        print('Unable to read logger settings, defaulting to "DEBUG"')
-        level = 'DEBUG'
-        attrs = ['levelname', 'asctime', 'message', 'name']
     logger = logging.getLogger(name)
     if not logger.handlers:
         json_handler = logging.StreamHandler()
-        json_handler.setFormatter(JSONFormatter(attrs))
+        json_handler.setFormatter(JSONFormatter(LOG_ATTRS))
         json_handler.set_name('JSON_Handler')
         logger.addHandler(json_handler)
-    logger.setLevel(level)
+    _set_log_level(logger, LOG_LEVEL)
     logger.propagate = False
     if is_static:
         _static_loggers.append(logger)
