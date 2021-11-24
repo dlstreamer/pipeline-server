@@ -1,0 +1,31 @@
+#!/bin/bash
+
+EXPECTED=' - action_recognition/general
+ - audio_detection/environment
+ - object_classification/vehicle_attributes
+ - object_detection/app_src_dst
+ - object_detection/object_zone_count
+ - object_detection/person_vehicle_bike
+ - object_tracking/object_line_crossing
+ - object_tracking/person_vehicle_bike
+ - video_decode/app_dst'
+
+# Run server and wait for init to complete
+$SOURCE_DIR/docker/run.sh --non-interactive &
+sleep 5
+
+# Run client with list-pipelines
+# tr is used to delete carriage return
+OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh list-pipelines | egrep '^ - ' | sort | tr -d "\r")
+RETURN_CODE=$?
+
+# Stop server
+$SOURCE_DIR/tests/stop.sh
+
+if [[ $RETURN_CODE != 0 ]]; then
+    error
+fi
+
+if [[ ! "$OUTPUT" == "$EXPECTED" ]]; then
+    error "Unexpected output"
+fi

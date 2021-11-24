@@ -38,7 +38,7 @@ def parse_args(program_name="Video Analytics Serving Client"):
         prog=program_name,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(dest='subparsers')
 
     parser_run = subparsers.add_parser('run', help='Start specified pipeline with specified source. \
         Meta-data will be displayed as pipeline runs. Once pipeline ends the average fps is displayed')
@@ -113,7 +113,7 @@ def parse_args(program_name="Video Analytics Serving Client"):
         sys.exit(1)
 
     args = parser.parse_args()
-    if args.uri is None and args.request_file is None:
+    if args.subparsers in ['start', 'run'] and not args.uri and not args.request_file:
         parser.error("at least one of uri or --request-file is required")
 
     return args
