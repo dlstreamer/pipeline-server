@@ -28,8 +28,17 @@
 * SOFTWARE
 '''
 import sys
+import json
 import argparse
 import vaclient
+
+
+def get_typed_value(value):
+    try:
+        return json.loads(value)
+    except ValueError:
+        return value
+
 
 def parse_args(program_name="Video Analytics Serving Client"):
     """Process command line options"""
@@ -49,7 +58,7 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_run.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         help='Update destination information with key and value pair')
     parser_run.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
-    parser_run.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+    parser_run.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
         dest='parameters', help='Update request parameter with key and value pair')
     parser_run.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
         with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
@@ -67,7 +76,7 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_start.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         help='Update destination information with key and value pair')
     parser_start.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
-    parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+    parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
         dest='parameters', help='Update request parameter with key and value pair')
     parser_start.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
         with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
