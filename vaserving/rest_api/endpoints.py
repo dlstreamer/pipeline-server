@@ -155,6 +155,22 @@ def pipelines_name_version_instance_id_status_get(name, version, instance_id):  
         logger.error('pipelines_name_version_instance_id_status_get %s', error)
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
 
+def pipelines_status_get_all():  # noqa: E501
+    """pipelines_status_get_all
+
+    Returns all instance status summary # noqa: E501
+
+    :rtype: object
+    """
+    try:
+        logger.debug("GET on /pipelines/status_all")
+        result = VAServing.pipeline_manager.get_all_instance_status()
+        if result:
+            return result
+    except Exception as error:
+        logger.error('pipelines_name_version_instance_id_status_get_all %s', error)
+        return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
+
 
 def pipelines_name_version_post(name, version):  # noqa: E501
     """pipelines_name_version_post

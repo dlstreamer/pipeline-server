@@ -305,6 +305,14 @@ class PipelineManager:
             return self.pipeline_instances[instance_id].params()
         return None
 
+    def get_all_instance_status(self):
+        results = []
+        for key in self.pipeline_instances:
+            tmp = self.pipeline_instances[key].status()
+            tmp['state'] = self.pipeline_instances[key].status()['state'].name
+            results.append(tmp)
+        return json.dumps(results)
+
     def get_instance_status(self, name, version, instance_id):
         if self.instance_exists(name, version, instance_id):
             return self.pipeline_instances[instance_id].status()

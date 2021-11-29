@@ -189,6 +189,18 @@ paths:
                 $ref: '#/components/schemas/PipelineInstanceStatus'
           description: Success
       x-openapi-router-controller: vaserving.rest_api.endpoints
+  /pipelines/status_all:
+    get:
+      description: Returns all pipeline instance status.
+      operationId: pipelines_status_get_all
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineInstanceStatus'
+          description: Success
+      x-openapi-router-controller: vaserving.rest_api.endpoints
 components:
   schemas:
     AnyValue: {}
