@@ -15,7 +15,6 @@
             "format": "json-lines"
         }
     },
-    "golden_results": true,
     "numerical_tolerance": 0.3,
     "result": [
         {

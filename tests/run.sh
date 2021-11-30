@@ -27,7 +27,7 @@ DISABLED_TURBO=false
 ENVIRONMENT=
 
 function show_help {
-  echo "usage: run.sh (options are exclusive)"
+  echo "usage: run.sh (options are exclusive, except --connected-sources)"
   echo "  [ --pytest-gstreamer : Run gstreamer tests ]"
   echo "  [ --pytest-gstreamer-generate : Generate new gstreamer ground truth ]"
   echo "  [ --pytest-gstreamer-performance : Run gstreamer performance tests ]"
@@ -36,6 +36,7 @@ function show_help {
   echo "  [ --pylint : Run pylint scan ] "
   echo "  [ --pybandit: Run pybandit scan ] "
   echo "  [ --clamav : Run antivirus scan ] "
+  echo "  [ --connected-sources : Run with list of sources, applies to all --pytest options]"
 }
 
 function error {
@@ -97,6 +98,16 @@ while [[ "$#" -gt 0 ]]; do
     --pytest-gstreamer-performance)
       SELECTED="$1"
       PREPARE_PERFORMANCE=true
+      ;;
+    --connected-sources)
+      value="$2"
+      ENTRYPOINT="--entrypoint-args --connected_sources"
+      # converts comma separated list to space separated list
+      for source in ${value//,/ }
+        do
+          echo "Enabling tests for $source"
+          ENTRYPOINT="$ENTRYPOINT --entrypoint-args $source"
+        done
       ;;
     *)
       break
@@ -177,6 +188,7 @@ if [ $PREPARE_PERFORMANCE == true ]; then
     DISABLED_TURBO=false
   fi
 fi
+
 
 $SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS "$@"
 

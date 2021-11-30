@@ -12,6 +12,8 @@ from threading import Thread
 import copy
 from tests.common import results_processing
 from queue import Queue
+import re
+import pytest
 if os.environ['FRAMEWORK'] == "gstreamer":
     import gi
     from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
@@ -84,20 +86,29 @@ def get_results_app(test_case, results):
     thread.start()
     return thread
 
-def wait_for_pipeline_completion(pipeline, VAServing):
+def wait_for_pipeline_completion(pipeline, VAServing, abort=False, sleep_duration=PAUSE):
     status = pipeline.status()
     transitions = [status]
     while (not status.state.stopped()):
         if (status.state != transitions[-1].state):
             transitions.append(status)
-        time.sleep(PAUSE)
+        time.sleep(sleep_duration)
+        if abort:
+            pipeline.stop()
         status = pipeline.status()
     transitions.append(status)
-    assert transitions[0].state == Pipeline.State.QUEUED
-    assert transitions[-1].state == Pipeline.State.COMPLETED
+    if abort:
+        assert transitions[-1].state == Pipeline.State.ABORTED
+    else:
+        assert transitions[0].state == Pipeline.State.QUEUED
+        assert transitions[-1].state == Pipeline.State.COMPLETED
     VAServing.stop()
 
-def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance):
+def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance, skip_sources):
+    if skip_sources:
+        for source in skip_sources:
+            if re.search("[a-z_]+{}[a-z_]+".format(source), test_filename):
+                pytest.skip("add --connected_sources {} to enable related tests".format(source))
     _test_case = copy.deepcopy(test_case)
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
     test_model_dir = os.path.join(os.path.dirname(test_filename),
@@ -112,6 +123,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
             _test_case["options"]["pipeline_dir"] = test_pipeline_dir
     if "numerical_tolerance" in _test_case:
         numerical_tolerance = _test_case["numerical_tolerance"]
+
     VAServing.start(_test_case["options"])
     pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
                                   _test_case["pipeline"]["version"])
@@ -132,7 +144,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     results = []
     src_type = _test_case["request"]["source"]["type"]
     print("src_type = {}".format(src_type))
-    if src_type in ["uri", "gst"]:
+    if src_type in ["uri", "gst", "webcam"]:
         thread = results_processing.get_results_fifo(_test_case, results)
     elif src_type == "application":
         _test_case["request"]["source"]["input"] = Queue()
@@ -140,7 +152,12 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         thread = get_results_app(_test_case, results)
 
     pipeline.start(_test_case["request"])
-    wait_for_pipeline_completion(pipeline, VAServing)
+    abort = _test_case.get("abort")
+    if abort:
+        abort_delay = _test_case["abort"]["delay"]
+        wait_for_pipeline_completion(pipeline, VAServing, abort, abort_delay)
+    wait_for_pipeline_completion(pipeline, VAServing, abort)
+
     if (thread):
         thread.join()
     else:
@@ -149,7 +166,7 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         test_case["result"] = results
         with open(test_filename+'.generated', "w") as test_output:
             json.dump(test_case, test_output, indent=4)
-    elif _test_case.get("golden_results"):
+    elif _test_case.get("golden_results", True):
         assert results_processing.cmp_results(results,
                                               _test_case["result"],
                                               numerical_tolerance), "Inference Result Mismatch"

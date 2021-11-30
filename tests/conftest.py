@@ -13,11 +13,14 @@ import requests
 from collections import namedtuple
 import os
 import sys
+import re
 from vaserving.vaserving import VAServing as _VAServing
 import signal
 
 TIMEOUT = 30
 MAX_CONNECTION_ATTEMPTS = 5
+CONNECTED_SOURCES = ["webcam", "mic"]
+
 class VAServingService:
 
     VASERVING_ARGS = ["python3", "-m", "vaserving","--enable-rtsp","true"]
@@ -119,6 +122,8 @@ def pytest_addoption(parser):
                      default=False)
     parser.addoption("--performance", action="store_true", help="run performance tests",
                      default=False)
+    parser.addoption("--connected_sources", nargs="+", help="space separated list of connected sources",
+                     default=None, choices=CONNECTED_SOURCES)
 
 def pytest_configure(config):
     config.addinivalue_line("markers", "stability: run stability tests")
@@ -144,6 +149,15 @@ def stability_duration(request):
 def numerical_tolerance(request):
     return request.config.getoption("--numerical_tolerance")
 
+@pytest.fixture
+def skip_sources(request):
+    skip_sources = []
+    if not request.config.getoption("--connected_sources"):
+        skip_sources = CONNECTED_SOURCES
+    else:
+        skip_sources = [source for source in CONNECTED_SOURCES if source not in request.config.getoption("--connected_sources")]
+    return skip_sources
+
 def load_test_cases(metafunc, directory):
     known_frameworks = ['ffmpeg', 'gstreamer']
     dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test_cases", directory)
@@ -165,6 +179,12 @@ def load_test_cases(metafunc, directory):
             list_of_dir_paths.append(gpu_path)
 
     for path in list_of_dir_paths:
+        for source in CONNECTED_SOURCES:
+            source_test_path = os.path.join(path, source)
+            if os.path.isdir(source_test_path):
+                list_of_dir_paths.append(source_test_path)
+
+    for path in list_of_dir_paths:
         dir_filenames = [(os.path.abspath(os.path.join(path, fn)),
                            os.path.splitext(fn)[0]) for fn in os.listdir(path)
                            if os.path.isfile(os.path.join(path, fn)) and
@@ -177,6 +197,7 @@ def load_test_cases(metafunc, directory):
     test_cases = []
     test_names = []
     generate = metafunc.config.getoption("generate")
+
     for filepath, testname in filenames:
         try:
             with open(filepath) as json_file:
@@ -199,6 +220,9 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
     if "pipeline_execution" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_execution")
+        metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
+    if "connected_sources" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "connected_sources")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
     if "pipeline_stability" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_stability")

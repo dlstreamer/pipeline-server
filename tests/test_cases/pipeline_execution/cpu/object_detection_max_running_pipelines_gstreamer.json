@@ -17,5 +17,6 @@
             "format": "json-lines"
         }
     },
-    "check_second_pipeline_queued": true
+    "check_second_pipeline_queued": true,
+    "golden_results": false
 }
