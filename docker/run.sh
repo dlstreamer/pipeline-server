@@ -83,7 +83,11 @@ enable_hardware_access() {
     if ls /dev/dri/render* 1> /dev/null 2>&1; then
         echo "Found /dev/dri/render entry - enabling for GPU"
         DEVICES+='--device /dev/dri '
-        USER_GROUPS+="--group-add $(stat -c '%g' /dev/dri/render*) "
+        RENDER_GROUPS=$(stat -c '%g' /dev/dri/render*)
+        for group in $RENDER_GROUPS
+        do
+            USER_GROUPS+="--group-add $group "
+        done
     fi
 
     # Intel(R) NCS2
