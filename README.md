@@ -127,6 +127,7 @@ In new shell run the following command:
 > **Note:** The pipelines you will see may differ slightly
 
 Pipelines are displayed as a name/version tuple. The name reflects the action and version supplies more details of that action. Let's go with `object_detection/person_vehicle_bike`. Now we need to choose a media source. We recommend the [IoT Devkit sample videos](https://github.com/intel-iot-devkit/sample-videos) to get started. As the pipeline version indicates support for detecting people, person-bicycle-car-detection.mp4 would be a good choice.
+> **Note:** Make sure to include `raw=true` parameter in the Github URL as shown in our examples. Failure to do so will result in a pipeline execution error.
 
 vaclient offers a `run` command that takes two additional arguments the `pipeline` and the `uri` for the media source. The `run` command displays inference results until either the media is exhausted or `CTRL+C` is pressed.
 
