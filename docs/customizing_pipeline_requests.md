@@ -5,7 +5,7 @@ Pipeline requests are initiated to exercise the Video Analytics Serving REST API
 
 ## Request Format
 
-> Note: This document shows curl requests. Requests can also be sent via vaclient, see [VA Client Command Options](../vaclient/README.md#command-options)
+> Note: This document shows curl requests. Requests can also be sent via vaclient using the --request-file option see [VA Client Command Options](../vaclient/README.md#command-options)
 
 Pipeline requests sent to Video Analytics Serving REST API are JSON documents that have the following attributes:
 
@@ -68,6 +68,8 @@ Some of the common video sources are:
 * IP Camera (RTSP Source)
 * Web Camera
 
+> Note: See [Source Abstraction](./defining_pipelines.md#source-abstraction) to learn about GStreamer source elements set per request.
+
 ### File Source
 The following example shows a media `source` from a video file in GitHub:
 
@@ -126,26 +128,15 @@ The request `source` object would be updated to:
 ```
 
 ### Web Camera Source
-Web cameras accessible through the `Video4Linux` api and device drivers can be referenced using the `v4l2` uri scheme. `v4l2` uris have the format: `v4l2:///dev/<device>` where `<device>` is the path of the `v4l2` device, typically `video<N>`.
+Web cameras accessible through the `Video4Linux` api and device drivers are supported via `type=webcam`. `device` is the path of the `v4l2` device, typically `video<N>`.
 
-Depending on the default output of the `v4l2` device, the pipeline may need additional elements to convert the output to a format that gvadetect can process.
-
-Following is an example of a pipeline with videoconvert to handle format conversion:
-
-```json
-"template": ["uridecodebin name=source ! videoconvert",
-            " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
-            " ! appsink name=appsink"
-            ],
-```
 ```bash
 curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 'Content-Type: application/json' -d \
 '{
     "source": {
-      "uri": "v4l2:///dev/video0",
-      "type": "uri"
+      "device": "/dev/video0",
+      "type": "webcam"
     },
     "destination": {
         "metadata": {
@@ -155,6 +146,40 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         }
     }
 }'
+```
+
+## Setting source properties
+For any of the sources mentioned above, it is possible to set properties on the source element via the request.
+
+### Setting a property on source bin element
+For example, to set property `buffer-size` on urisourcebin, source section can be set as follows:
+```json
+{
+    "source": {
+        "uri": "file:///tmp/person-bicycle-car-detection.mp4",
+        "type": "uri",
+        "properties": {
+            "buffer-size": 4096
+        }
+    }
+}
+```
+
+### Setting a property on underlying element
+For example, if you'd like to set `ntp-sync` property of the `rtspsrc` element to synchronize timestamps across RTSP source(s).
+
+> Note: This feature, enabled via GStreamer `source-setup` callback signal is only supported for `urisourcebin` element.
+
+```json
+{
+    "source": {
+        "uri": "rtsp://<ip_address>:<port>/<server_url>",
+        "type": "uri",
+        "properties": {
+            "ntp-sync": true
+        }
+    }
+}
 ```
 
 ## Destination
