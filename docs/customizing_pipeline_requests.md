@@ -274,6 +274,85 @@ Steps to run MQTT:
   1632949271: New client connected from 127.0.0.1 as mosquitto-sub (p2, c1, k60).
   1632949274: Client gva-meta-publish disconnected.
   ```
+
+#### Kafka
+The following are available properties:
+- type : "kafka"
+- host (required) expects a format of host:port
+- topic (required) Kafka topic on which broker messages are sent
+
+Steps to run Kafka:
+1. Prepare to run a Kafka broker. Since Kafka relies on ZooKeeper for management, let's create `docker-compose-kafka.yml` with the following content:
+
+   ```bash
+   version: "2"
+   services:
+     zookeeper:
+       image: docker.io/bitnami/zookeeper:3.7
+       ports:
+         - "2181:2181"
+       volumes:
+         - "zookeeper_data:/bitnami"
+       environment:
+         - ALLOW_ANONYMOUS_LOGIN=yes
+     kafka:
+       image: docker.io/bitnami/kafka:2
+       ports:
+         - "9092:9092"
+       volumes:
+         - "kafka_data:/bitnami"
+       environment:
+         - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+         - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+         - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+         - ALLOW_PLAINTEXT_LISTENER=yes
+       depends_on:
+         - zookeeper
+   volumes:
+     zookeeper_data:
+       driver: local
+     kafka_data:
+       driver: local
+   ```
+
+2. Run the following command to launch Kafka broker as a detached service:
+   ```bash
+   docker-compose -p vaserving -f docker-compose-kafka.yml up -d
+   ```
+
+3. Start VA Serving with host network enabled:
+   ```bash
+   docker/run.sh -v /tmp:/tmp --network host
+   ```
+
+4. Launch pipeline with parameters to emit on the Kafka topic we are listening for:
+   ```
+   ./vaclient/vaclient.sh start object_detection/person_vehicle_bike  \
+   https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true  \
+   --destination type kafka  \
+   --destination host localhost \
+   --destination port 9092  \
+   --destination topic vaserving.person_vehicle_bike
+   ```
+
+5. Connect to Kafka broker to view inference results:
+   ```bash
+   docker exec -it vaserving_kafka_1 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
+      --bootstrap-server localhost:9092 --topic vaserving.person_vehicle_bike
+   ```
+
+   ```bash
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7448995113372803,"x_min":0.6734093427658081,"y_max":0.9991495609283447,"y_min":0.8781012296676636},"confidence":0.5402464866638184,"label":"person","label_id":1},"h":52,"roi_type":"person","w":55,"x":517,"y":379}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1500000000}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7442193031311035,"x_min":0.6763269901275635,"y_max":1.0,"y_min":0.8277983069419861},"confidence":0.5505848526954651,"label":"person","label_id":1},"h":74,"roi_type":"person","w":52,"x":519,"y":358}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1666666666}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7465137243270874,"x_min":0.6821863651275635,"y_max":1.0,"y_min":0.810469388961792},"confidence":0.6447391510009766,"label":"person","label_id":1},"h":82,"roi_type":"person","w":49,"x":524,"y":350}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1750000000}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7481285929679871,"x_min":0.6836653351783752,"y_max":0.9999656677246094,"y_min":0.7867168188095093},"confidence":0.8825281858444214,"label":"person","label_id":1},"h":92,"roi_type":"person","w":50,"x":525,"y":340}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1833333333}
+   ```
+
+6. NOTE: When finished, remember to close running containers with this command:
+   ```bash
+   docker-compose -f docker-compose-kafka.yml down
+   ```
+
 ### Frame
 Frame is another aspect of destination and it can be set to RTSP.
 
