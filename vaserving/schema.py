@@ -273,6 +273,25 @@ destination = {
                     "type":"string",
                     "minLength": 1,
                     "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]$"
+                },
+                "cache-length": {
+                    "type":"integer",
+                    "default":30,
+                    "minimum":0
+                },
+                "sync-with-source": {
+                    "type":"boolean",
+                    "default":True
+                },
+                "sync-with-destination":{
+                    "type":"boolean",
+                    "default":True
+                },
+                "encode-quality":{
+                    "type":"integer",
+                    "minimum":0,
+                    "maximum":100,
+                    "default":85
                 }
             },
             "required": [

@@ -192,10 +192,19 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 *  Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
 
 ### RTSP destination params.
+
+> **Note:** If the RTSP stream playback is choppy this may be due to
+> network bandwidth. Decreasing the encoding-quality or increasing the
+> cache-length can help.
+
 ```bash
 "frame": {
   "type": "rtsp",
-  "path" : <custom rtsp path>(required. When path already exists, throws error)
+  "path" : <custom rtsp path>(required. When path already exists, throws error),
+  "cache-length": (default 30) number of frames to buffer in rtsp pipeline.
+  "encoding-quality": (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
+  "synchronize-with-source": (default True) process media at the encoded frame rate (e.g. 30 fps)
+  "synchronize-with-destination": (default True) block processing pipeline if rtsp pipeline is blocked.
 }
 ```
 
