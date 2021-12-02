@@ -98,10 +98,9 @@ enable_hardware_access() {
     fi
 
     # HDDL
-    if [ -e /dev/ion ]; then
-        echo "Found /dev/ion - enabling for HDDL-R"
-        DEVICES+="--device /dev/ion "
-        VOLUME_MOUNT+="-v /var/tmp:/var/tmp "
+    if compgen -G /dev/myriad* > /dev/null ; then
+        echo "Found /dev/myriad devices - enabling for HDDL-R"
+        VOLUME_MOUNT+="-v /var/tmp:/var/tmp -v /dev/shm:/dev/shm "
     fi
 
     # Webcam
