@@ -143,8 +143,11 @@ def gst_playback(options):
     metadata_args = {"metadata_file_path": options.metadata_file_path, "offset_timestamp": start_pts}
     request = {
         "source": {
-            "type": "path",
-            "path": location
+            "type": "gst",
+            "element": "splitfilesrc",
+            "properties": {
+                "location": location
+            }
         },
         "parameters": {
             "module": module,

@@ -1,6 +1,6 @@
 {
 	"type": "GStreamer",
-	"template": ["splitfilesrc name=source ! decodebin",
+	"template": ["{auto_source} ! decodebin",
                                 " ! gvapython name=gvapython",
                                 " ! gvawatermark ! videoconvert ! ximagesink"
                                 ],
