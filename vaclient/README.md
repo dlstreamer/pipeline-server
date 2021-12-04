@@ -96,8 +96,7 @@ Pipeline failed to start
 #### Instance ID
 On a successful start of a pipeline, VA Serving assigns a pipeline `instance_id` which is a unique number which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `1`
 ```
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 1
 ```
 ### Stopping Pipelines
 Stopping a pipeline can be accomplished using the `stop` command along with the `pipeline` and `instance id`:

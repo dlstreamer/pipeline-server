@@ -168,8 +168,7 @@ All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate
 ```
 ```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 2
+Starting pipeline object_detection/person_vehicle_bike, instance = 2
 ```
 You will need both the pipeline tuple and `instance` id for the status command. This command will display pipeline state:
 ```
@@ -195,8 +194,7 @@ Start the pipeline again, this time we'll stop it.
 ```
 ```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 3
+Starting pipeline object_detection/person_vehicle_bike, instance = 3
 ```
 ```
 ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
@@ -228,8 +226,7 @@ The error state covers a number of outcomes such as the request could not be sat
 ```
 ```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 4
+Starting pipeline object_detection/person_vehicle_bike, instance = 4
 ```
 Note that VA Serving does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
 Checking on state a few seconds later will show the error.
@@ -250,12 +247,11 @@ docker/run.sh --enable-rtsp -v /tmp:/tmp
 ```
 Then start a pipeline specifying the RTSP server endpoint path `vaserving`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
 ```
 If you see the error
 ```
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 1
 Error in pipeline, please check vaserving log messages
 ```
 You probably forgot to enable RTSP in the server.
@@ -272,8 +268,8 @@ With vaclient it is easy to customize service requests. Here will use a vehicle 
 ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 ```
-Starting pipeline...
-Pipeline running: object_classification/vehicle_attributes, instance = 1
+Starting pipeline object_classification/vehicle_attributes, instance = 1
+Pipeline running
 <snip>
 Timestamp 18080000000
 - vehicle (1.00) [0.41, 0.00, 0.57, 0.33] {'color': 'red', 'type': 'car'}
@@ -305,8 +301,7 @@ but this time use the integrated GPU for detection inference by setting the `det
 ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
 ```
 ```
-Starting pipeline...
-Pipeline running: object_classification/vehicle_attributes, instance = 2
+Starting pipeline object_classification/vehicle_attributes, instance = 2
 ```
 > **Note:** The GPU inference plug-in dynamically builds OpenCL kernels when it is first loaded resulting in a ~30s delay before inference results are produced.
 

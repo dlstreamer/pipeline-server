@@ -209,8 +209,7 @@ samples/record_frames/run_client.sh --frame-store samples/record_frames/frame_st
 ```
 ```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/record_frames, instance = 1
+Starting pipeline object_detection/record_frames, instance = 1
 Frame store file location = /path/to/video-analytics-serving/samples/record_frames/frame_store/%08d.jpg
 Starting mqtt client
 Connected to broker

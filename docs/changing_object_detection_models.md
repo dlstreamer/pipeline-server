@@ -69,8 +69,7 @@ In a second terminal window use [vaclient](/vaclient/README.md) to run the pipel
 ```
 ```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 1
 Timestamp 33519553
 - vehicle (0.53) [0.79, 0.71, 0.89, 0.88]
 Timestamp 67039106

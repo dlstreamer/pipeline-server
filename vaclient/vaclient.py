@@ -157,7 +157,7 @@ def start_pipeline(request,
     instance_id = post(pipeline_url, request, show_request)
     if instance_id:
         if verbose:
-            print("Pipeline instance = {}".format(instance_id))
+            print("Starting pipeline {}, instance = {}".format(pipeline, instance_id))
         else:
             print(instance_id)
         return instance_id
