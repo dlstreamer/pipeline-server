@@ -6,6 +6,10 @@ This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfou
 
 # Overview
 
+
+> **WARNING:** This sample is currently encountering issues with integration to upstream EdgeXFoundry repositories. This causes problems on launch of the EdgeX stack. Monitor issue [#97](https://github.com/intel/video-analytics-serving/issues/97) for workarounds.
+
+
 ## EdgeX Foundry
 
 EdgeX Foundry consists of vendor-neutral open-source middleware that provides a common framework to assemble and deploy solutions that utilize edge-based sensors and interoperates with operational technology and information technology systems. Especially suited for industrial IoT computing, EdgeX consists of a core set of loosely coupled microservices organized in different layers. At the [_South Side_](https://en.wikipedia.org/wiki/EdgeX_Foundry) the framework provides extensive integration of devices and software by use of a number of available device services. Each EdgeX device service is able to support a range of devices so long as they conform to a particular protocol. EdgeX also includes a [device-sdk](https://github.com/edgexfoundry/device-sdk-go/) to create new device services as needed.
