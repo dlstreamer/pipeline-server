@@ -362,8 +362,8 @@ RTSP is a type of frame destination supported. The following are available prope
 - path (required): custom string to uniquely identify the stream
 - cache-length (default 30): number of frames to buffer in rtsp pipeline.
 - encoding-quality (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
-- synchronize-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
-- synchronize-with-destination (default True): block processing pipeline if rtsp pipeline is blocked.
+- sync-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
+- sync-with-destination (default True): block processing pipeline if rtsp pipeline is blocked.
 
 For more information, see [RTSP re-streaming](running_video_analytics_serving.md#real-time-streaming-protocol-rtsp-re-streaming)
 

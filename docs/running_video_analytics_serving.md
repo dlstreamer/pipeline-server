@@ -203,8 +203,8 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
   "path" : <custom rtsp path>(required. When path already exists, throws error),
   "cache-length": (default 30) number of frames to buffer in rtsp pipeline.
   "encoding-quality": (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
-  "synchronize-with-source": (default True) process media at the encoded frame rate (e.g. 30 fps)
-  "synchronize-with-destination": (default True) block processing pipeline if rtsp pipeline is blocked.
+  "sync-with-source": (default True) process media at the encoded frame rate (e.g. 30 fps)
+  "sync-with-destination": (default True) block processing pipeline if rtsp pipeline is blocked.
 }
 ```
 
