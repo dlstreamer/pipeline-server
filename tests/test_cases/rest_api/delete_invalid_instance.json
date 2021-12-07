@@ -1,7 +1,0 @@
-{
-    "body": {},
-    "path": "pipelines/object_detection/1/10",
-    "result": "Invalid pipeline, version or instance",
-    "status_code": 400,
-    "verb": "delete"
-}
