@@ -31,18 +31,18 @@ class ResultsWatcher:
 
     def watch_method(self):
         try:
-            file = open(self.filename, 'r')
-            while not self.trigger_stop:
-                where = file.tell()
-                line = file.readline()
-                if not line:
-                    time.sleep(self.sleep_time)
-                    file.seek(where)
-                else:
-                    try:
-                        ResultsWatcher.print_results(json.loads(line))
-                    except ValueError:
-                        pass
+            with open(self.filename, 'r') as file:
+                while not self.trigger_stop:
+                    where = file.tell()
+                    line = file.readline()
+                    if not line:
+                        time.sleep(self.sleep_time)
+                        file.seek(where)
+                    else:
+                        try:
+                            ResultsWatcher.print_results(json.loads(line))
+                        except ValueError:
+                            pass
         except OSError:
             self.error_message = "Unable to read from destination metadata file {}".format(self.filename)
 
@@ -51,37 +51,7 @@ class ResultsWatcher:
     def print_results(cls, results):
         object_output = []
         for detected_object in results.get("objects", []):
-            meta = {}
-            current_object = []
-            for key in detected_object:
-                if key == "detection":
-                    confidence = detected_object[key]["confidence"]
-                    label = detected_object[key]["label"]
-                    x_min = detected_object[key]["bounding_box"]["x_min"]
-                    y_min = detected_object[key]["bounding_box"]["y_min"]
-                    x_max = detected_object[key]["bounding_box"]["x_max"]
-                    y_max = detected_object[key]["bounding_box"]["y_max"]
-                    current_object.append(label)
-                    current_object.append("({:.2f})".format(confidence))
-                    current_object.append("[{:.2f}, {:.2f}, {:.2f}, {:.2f}]".format(x_min,
-                                                                                    y_min,
-                                                                                    x_max,
-                                                                                    y_max))
-                elif key == "id":
-                    meta[key] = detected_object[key]
-                elif isinstance(detected_object[key], dict) and "label" in detected_object[key]:
-                    meta[key] = detected_object[key]["label"]
-                elif key == "tensors":
-                    for tensor in detected_object[key]:
-                        if "name" in tensor and tensor["name"] == "action":
-                            confidence = tensor["confidence"]
-                            label = tensor["label"]
-                            current_object.append(label)
-                            current_object.append("({:.2f})".format(confidence))
-            if meta:
-                current_object.append(str(meta))
-            if current_object:
-                object_output.append("- {}".format(" ".join(current_object)))
+            ResultsWatcher.process_detections(detected_object, object_output)
         event_output = []
         for event in results.get("events", []):
             current_event = []
@@ -95,3 +65,35 @@ class ResultsWatcher:
             print("{}".format("\n".join(object_output)))
         if event_output:
             print("{}".format("\n".join(event_output)))
+
+    @staticmethod
+    def process_detections(detected_object, object_output):
+        meta = {}
+        current_object = []
+        for key in detected_object:
+            if key == "detection":
+                confidence = detected_object[key]["confidence"]
+                label = detected_object[key]["label"]
+                bbox = detected_object[key]["bounding_box"]
+                current_object.append(label)
+                current_object.append("({:.2f})".format(confidence))
+                current_object.append("[{:.2f}, {:.2f}, {:.2f}, {:.2f}]"
+                    .format(bbox["x_min"],
+                            bbox["y_min"],
+                            bbox["x_max"],
+                            bbox["y_max"]))
+            elif key == "id":
+                meta[key] = detected_object[key]
+            elif isinstance(detected_object[key], dict) and "label" in detected_object[key]:
+                meta[key] = detected_object[key]["label"]
+            elif key == "tensors":
+                for tensor in detected_object[key]:
+                    if "name" in tensor and tensor["name"] == "action":
+                        confidence = tensor["confidence"]
+                        label = tensor["label"]
+                        current_object.append(label)
+                        current_object.append("({:.2f})".format(confidence))
+        if meta:
+            current_object.append(str(meta))
+        if current_object:
+            object_output.append("- {}".format(" ".join(current_object)))

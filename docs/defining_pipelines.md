@@ -1,5 +1,5 @@
 # Defining Media Analytics Pipelines
-| [Pipeline Definition Files](#pipeline-definition-files) | [Pipeline Discovery](#how-pipeline-definition-files-are-discovered-and-loaded) | [Pipeline Templates](#pipeline-templates) | [Pipeline Parameters](#pipeline-parameters) | [Deep Learning Models](#deep-learning-models) |
+| [Pipeline Definition Files](#pipeline-definition-files) | [Pipeline Discovery](#how-pipeline-definition-files-are-discovered-and-loaded) | [Pipeline Templates](#pipeline-templates) | [Source Abstraction](#source-abstraction) | [Pipeline Parameters](#pipeline-parameters) | [Deep Learning Models](#deep-learning-models) |
 
 Media analytics pipelines are directed graphs of audio/video
 processing, computer vision, and deep learning inference
@@ -94,6 +94,132 @@ the calling application.
             " ! appsink name=appsink"
 			]
 ```
+
+#### Source Abstraction
+`{auto_source}` is a virtual source that is updated with the appropriate GStreamer element and properties at request time.
+The GStreamer element is chosen based on the `type` specified in the source section of the request (shown below), making pipelines flexible as they can be reused for source media of different types.
+
+**Sample video pipeline**
+```
+"template": ["{auto_source}",
+            " ! gvadetect model={models[person_vehicle_bike_detection][1][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+            " ! appsink name=appsink"
+			]
+```
+
+**Sample audio pipeline**
+```
+"template": ["{auto_source} ! audioresample ! audioconvert",
+            " ! audio/x-raw, channels=1,format=S16LE,rate=16000 ! audiomixer name=audiomixer",
+            " ! level name=level",
+            " ! gvaaudiodetect model={models[audio_detection][environment][network]} name=detection",
+            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+            " ! appsink name=appsink"
+            ],
+```
+
+<table>
+<tr>
+<th>Source</th><th>GStreamer Element</th><th>Source section of curl request</th><th>Source pipeline snippet</th></tr>
+<tr>
+<tr>
+<td>Application</td><td>appsrc</td><td>N/A
+<td>N/A</td></tr>
+<tr>
+<td>File</td><td>urisourcebin</td><td>
+<pre>
+<code>
+"source": {
+  "uri": "file://path",
+  "type": "uri"
+}
+</code></pre>
+  <td><pre><code>urisourcebin uri=file://path name=source</code></pre></td></tr>
+<td>RTSP</td><td>urisourcebin</td><td>
+<pre>
+<code>
+"source": {
+  "uri": "rtsp://url",
+  "type": "uri",
+}
+</code></pre>
+  <td><pre><code>urisourcebin uri=rtsp://url name=source </code></pre></td></tr>
+<tr>
+<td>URL</td><td>urisourcebin</td><td>
+<pre>
+<code>
+"source": {
+    "uri": "https://url",
+    "type": "uri"
+}
+</code></pre>
+  <td><pre><code>urisourcebin uri=https://url name=source </code></pre></td></tr>
+<tr>
+<td>Web camera</td><td>v4l2src</td><td>
+<pre>
+<code>
+"source": {
+  "device": "/dev/video0",
+  "type": "webcam",
+}
+</code></pre>
+<td><pre><code>v4l2src device=/dev/video0 name=source ! capsfilter caps="image/jpeg"</code></pre></td></tr>
+<tr>
+<td>Custom GStreamer Element</td><td>Value specified in "element" field of source request</td><td>
+<pre>
+<code>
+"source": {
+  "element": GStreamer Element name,
+  "type": "gst",
+}
+</code></pre>
+Example for microphone for an audio pipeline:
+<pre>
+<code>
+  "source": {
+    "element": "alsasrc",
+    "type": "gst",
+    "properties": {
+        "device": "hw:1,0"
+      }
+</code></pre>
+<td><pre><code>alsasrc device=hw:1,0 name=source</code></pre></td></tr>
+</table>
+
+> Note: For request of `type=gst`, the container must support the corresponding element.
+
+Source request accepts the following optional fields set via the request:
+- `capsfilter` if set is applied right after the source element as shown in example below.
+  The default value of capsfilter for webcam is `image/jpeg` but it can be set via the request to another valid format.
+  ```json
+    "source": {
+        "device": "/dev/video0",
+        "type": "webcam",
+        "capsfilter": "video/x-h264"
+    }
+  ```
+  The source pipeline resolves to:
+  ```
+  v4l2src device=/dev/video0 name=source ! capsfilter caps=video/x-h264 ! ..
+  ```
+- `postproc` if set is applied _after_ the source and capsfilter element (if specified).
+  Below is an example of the use of `capsfilter` and `postproc`
+  ```json
+    "source": {
+        "element": "videotestsrc",
+        "type": "gst",
+        "capsfilter": "video/x-raw,format=GRAY8",
+        "postproc": "rawvideoparse",
+        "properties": {
+            "pattern": "snow"
+        }
+    }
+  ```
+    The source pipeline resolves to:
+  ```
+  videotestsrc name=source ! capsfilter caps=video/x-raw,format=GRAY8 ! rawvideoparse ! ..
+  ```
 
 #### Element Names
 
@@ -362,6 +488,41 @@ The JSON schema for a GStreamer pipeline parameter can include an
         }
     }
 	```
+
+1. **Object** with dictionary of properties. <br/> <br/> A dictionary specifying properties that apply to a pipeline element by name.
+
+    **Example:**
+
+    The following snippet defines `detection-properties` which can be used to pass
+    GStreamer element properties for the `detection` element without explicitly defining each one.
+    > **Note:** The property names are expected to match the GStreamer properties for the corresponding element.
+
+    ```json
+    "parameters": {
+            "type": "object",
+            "detection-properties" : {
+                "element": {
+                    "name": "detection",
+                    "property": "properties"
+                }
+            }
+    }
+    ```
+
+    Pipeline Request
+    ```json
+    "source": {
+        "uri":"file:///temp.mp4",
+        "type": "uri"
+    },
+    "parameters" : {
+        "detection-properties": {
+            "threshold": 0.1,
+            "device": "CPU"
+        }
+    }
+    ```
+
 #### Parameters and FFmpeg Filters
 
 Parameters in FFmpeg pipeline definitions can include information on
@@ -430,9 +591,6 @@ The JSON schema for a FFmpeg pipeline parameter can include a
         }
     }
 	```
-
-
-
 
 ### Parameter Resolution in Pipeline Templates
 
@@ -524,7 +682,10 @@ Pipeline Parameters:
     "properties": {
         "scale_method": {
             "type": "string",
-            "element": { "name": "videoscale", "property": "method" },
+            "element": {
+                "name": "videoscale",
+                "property": "method"
+            },
             "enum": ["nearest-neighbour","bilinear"],
             "default": "bilinear"
         }
@@ -556,7 +717,6 @@ Parameter Resolution:
 " ! video/x-raw,height=300,width=300" \
 " ! appsink name=appsink"
 ```
-
 ### Reserved Parameters
 
 The following parameters have built-in handling within the Video

@@ -1,6 +1,6 @@
 {
 	"type": "GStreamer",
-	"template": ["uridecodebin name=source",
+	"template": ["{auto_source} ! decodebin",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
 				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
 				" ! appsink name=appsink"

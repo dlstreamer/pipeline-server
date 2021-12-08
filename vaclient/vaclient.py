@@ -54,10 +54,11 @@ def run(args):
         if started_instance_id is None:
             sys.exit(1)
         try:
-            if request['destination']['metadata']['type'] == 'file'and \
-                os.path.exists(request['destination']['metadata']['path']):
-                watcher = ResultsWatcher(request['destination']['metadata']['path'])
-                watcher.watch()
+            if request['destination']['metadata']['type'] == 'file':
+                watcher = launch_results_watcher(request,
+                                                 args.pipeline,
+                                                 started_instance_id,
+                                                 verbose=args.verbose)
         except KeyError:
             pass
         print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
@@ -120,13 +121,20 @@ def update_request_options(request,
         request["parameters"] = dict(args.parameters)
     if hasattr(args, 'parameter_file') and args.parameter_file:
         with open(args.parameter_file, 'r') as parameter_file:
-            request.update(json.load(parameter_file))
+            parameter_data = json.load(parameter_file)
+            if request.get("parameters"):
+                request["parameters"].update(parameter_data.get("parameters"))
+            else:
+                request["parameters"] = parameter_data.get("parameters")
     if hasattr(args, 'tags') and args.tags:
         request["tags"] = dict(args.tags)
     if hasattr(args, 'rtsp_path') and args.rtsp_path:
         rtsp_template = RTSP_TEMPLATE
         rtsp_template['frame']['path'] = args.rtsp_path
         request['destination'].update(rtsp_template)
+    if hasattr(args, 'request_file') and args.request_file:
+        with open(args.request_file, 'r') as request_file:
+            request.update(json.load(request_file))
 
 def start_pipeline(request,
                    pipeline,
@@ -141,17 +149,15 @@ def start_pipeline(request,
         pass
     except FileNotFoundError:
         pass
-    except OSError:
-        raise OSError("Unable to delete destination metadata file {}".format(output_file))
-    if verbose and not show_request:
-        print("Starting pipeline...")
+    except OSError as error:
+        raise OSError("Unable to delete destination metadata file {}".format(output_file)) from error
 
     pipeline_url = urljoin(SERVER_ADDRESS,
                            "pipelines/" + pipeline)
     instance_id = post(pipeline_url, request, show_request)
     if instance_id:
         if verbose:
-            print("Pipeline running: {}, instance = {}".format(pipeline, instance_id))
+            print("Starting pipeline {}, instance = {}".format(pipeline, instance_id))
         else:
             print(instance_id)
         return instance_id
@@ -173,6 +179,24 @@ def stop_pipeline(pipeline, instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
+def wait_for_pipeline_running(pipeline,
+                              instance_id,
+                              timeout_sec = 30):
+    status = {"state" : "QUEUED"}
+    timeout_count = 0
+    while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
+        status = get_pipeline_status(pipeline,
+                                     instance_id)
+        if status and status["state"] == "ERROR":
+            raise ValueError("Error in pipeline, please check vaserving log messages")
+        time.sleep(SLEEP_FOR_STATUS)
+        timeout_count += 1
+        if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
+            print("Timed out waiting for RUNNING status")
+            break
+
+    return status
+
 def wait_for_pipeline_completion(pipeline,
                                  instance_id):
     status = {"state" : "RUNNING"}
@@ -193,6 +217,20 @@ def get_pipeline_status(pipeline, instance_id, show_request=False):
                                    "status"]))
     return get(status_url, show_request)
 
+def launch_results_watcher(request, pipeline, pipeline_instance_id, verbose=True):
+    status = wait_for_pipeline_running(pipeline, pipeline_instance_id)
+    watcher = None
+    if Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
+        if verbose:
+            print("Pipeline running")
+        if os.path.exists(request['destination']['metadata']['path']):
+            watcher = ResultsWatcher(request['destination']['metadata']['path'])
+            watcher.watch()
+        else:
+            print("Can not find results file {}. Are you missing a volume mount?"\
+                .format(request['destination']['metadata']['path']))
+    return watcher
+
 def _list(list_name, show_request=False):
     url = urljoin(SERVER_ADDRESS, list_name)
     response = get(url, show_request)
@@ -212,8 +250,8 @@ def post(url, body, show_request=False):
             return instance_id
         print("Got unsuccessful status code: {}".format(launch_response.status_code))
         print(launch_response.text)
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def get(url, show_request=False):
@@ -226,8 +264,8 @@ def get(url, show_request=False):
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
         print(status_response.text)
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def delete(url, show_request=False):
@@ -239,8 +277,8 @@ def delete(url, show_request=False):
         if stop_response.status_code != RESPONSE_SUCCESS:
             print("Unsuccessful status code {} - {}".format(stop_response.status_code, stop_response.text))
         return stop_response.status_code
-    except requests.exceptions.ConnectionError:
-        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE)
+    except requests.exceptions.ConnectionError as error:
+        raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
 def print_fps(status):

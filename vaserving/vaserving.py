@@ -11,9 +11,9 @@ from vaserving.arguments import parse_options
 from vaserving.pipeline_manager import PipelineManager
 from vaserving.model_manager import ModelManager
 from vaserving.common.utils import logging
-from vaserving.common import settings
 
-#pylint: disable=C0103
+# Allow non-PascalCase class name for __VAServing
+#pylint: disable=invalid-name
 
 class __VAServing:
 
@@ -129,7 +129,7 @@ class __VAServing:
     def start(self, _options=None):
         if (self._stopped):
             self.options = parse_options(_options)
-            settings.set_log_level(self.options.log_level)
+            logging.set_default_log_level(self.options.log_level)
             self._log_options()
             self.model_manager = ModelManager(
                 os.path.abspath(
@@ -142,6 +142,7 @@ class __VAServing:
                 self.model_manager,
                 os.path.abspath(os.path.join(self.options.config_path,
                                              self.options.pipeline_dir)),
+                max_running_pipelines=self.options.max_running_pipelines,
                 ignore_init_errors=self.options.ignore_init_errors)
             self._stopped = False
 

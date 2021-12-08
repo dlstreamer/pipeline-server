@@ -128,13 +128,9 @@ class ModelManager:
 
     def load_models(self, model_dir, network_preference):
         #TODO: refactor
-        #pylint: disable=R1702
+        #pylint: disable=too-many-nested-blocks
 
-        heading = "Loading Models"
-        banner = "="*len(heading)
-        self.logger.info(banner)
-        self.logger.info(heading)
-        self.logger.info(banner)
+        self.log_banner("Loading Models")
         error_occurred = False
 
         self.logger.info("Loading Models from Path {path}".format(
@@ -198,15 +194,15 @@ class ModelManager:
                 self.logger.error("Error Loading Model {model_name}"
                                   " from: {model_dir}: {err}".format(
                                       err=error, model_name=model_name, model_dir=model_dir))
-
         self.models = models
+        self.log_banner("Completed Loading Models")
+        return not error_occurred
 
-        heading = "Completed Loading Models"
+    def log_banner(self, heading):
         banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)
-        return not error_occurred
 
     def get_model_parameters(self, name, version):
         if name not in self.models or version not in self.models[name]:

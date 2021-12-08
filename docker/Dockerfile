@@ -45,6 +45,15 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; the
     rm -rf /var/lib/apt/lists/* ;\
     fi
 
+# Install boost library required for HDDL plugin
+RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    libboost-program-options1.71.0 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;\
+    fi
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get upgrade -y -q && \
     apt-get dist-upgrade -y -q && \
@@ -69,6 +78,9 @@ RUN rm -f /requirements.txt
 COPY ./vaserving /home/video-analytics-serving/vaserving
 COPY ./vaclient /home/video-analytics-serving/vaclient
 COPY --chown=vaserving ./tools /home/video-analytics-serving/tools
+
+# Copy GVA Python extensions
+COPY ./extensions /home/video-analytics-serving/extensions
 
 # Media Analytics Framework set via environment variable
 ENV FRAMEWORK=${FRAMEWORK}
@@ -106,9 +118,6 @@ FROM video-analytics-serving-with-models as copy_pipelines
 ONBUILD ARG PIPELINES_PATH
 ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
 ONBUILD COPY ${PIPELINES_PATH} /home/video-analytics-serving/pipelines
-
-# Copy GVA Python extensions
-ONBUILD COPY ./extensions /home/video-analytics-serving/extensions
 
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as video-analytics-serving-with-models-and-pipelines

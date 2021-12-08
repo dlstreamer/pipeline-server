@@ -18,7 +18,7 @@ This section will outline an example to show how inference results of object det
 ### Extension
 
 `process_frame` is the default function invoked by GVA Python.
-> Note: The `process_frame` function needs to `return True` in order for the rest of the pipeline to function. In the absence of this statement, the extension runs and exits without executing the subsequent parts of the pipeline which might be useful for extension debug.
+> Note: The `process_frame` function needs to `return True` in order for the rest of the pipeline to function. Without `return True` or with `return False`, the extension runs but drops frames. This could be useful to short circuit processing i.e intentionally drop certain frames.
 
 In the example below, in `process_frame`, the number of objects in the frame is obtained by counting the number of detected regions. A statement is printed if the number of objects exceeds a threshold value.
 

@@ -55,3 +55,45 @@ If a tracked object crosses any of the lines, an event of type `object-zone-coun
    "zone-count" : 3
 }
 ```
+## Example Run
+VA Serving comes with an [example configuration](../../vaclient/parameter_files/object-zone-count.json) for object-zone-count
+
+1. [Build](../../README.md#building-the-microservice) & [Run](../../README.md#running-the-microservice) VA Serving
+
+2. Run object-zone-count pipeline with vaclient using example parameter file:
+    ```
+    vaclient/vaclient.sh run object_detection/object_zone_count https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --parameter-file vaclient/parameter_files/object-zone-count.json
+    ```
+    You will see events among the detections in vaclient output:
+    ```
+    Timestamp 45000000000
+    - person (0.76) [0.28, 0.15, 0.42, 0.72]
+    Event: event-type: object-zone-count, zone-name: Zone2, related-objects: [0], status: ['intersects'], zone-count: 1
+    Event: event-type: object-zone-count, zone-name: Zone3, related-objects: [0], status: ['intersects'], zone-count: 1
+    Timestamp 45166666666
+    - person (0.57) [0.24, 0.16, 0.35, 0.69]
+    Event: event-type: object-zone-count, zone-name: Zone2, related-objects: [0], status: ['intersects'], zone-count: 1
+    ```
+
+## Watermark Example
+1. Open the [example configuration](../../vaclient/parameter_files/object-zone-count.json) and add `enable_watermark` as follows:
+    ```
+    "object-zone-count-config": {
+        "zones": [
+            <snip>
+        ],
+        "enable_watermark": true
+    }
+    ```
+2. Rebuild and Run VA Serving with additional flag `--enable-rtsp`
+    ```
+    ./docker/run.sh -v /tmp:/tmp --enable-rtsp
+
+3. Run object-zone-count pipeline with vaclient using example parameter file with additional parameter `rtsp-path`. Note that `rtsp-path` is set to `vaserving`, this path is    what will be used to view the rtsp stream:
+    ```
+    vaclient/vaclient.sh run object_detection/object_zone_count https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --parameter-file vaclient/parameter_files/object-zone-count.json --rtsp-path vaserving
+    ```
+
+4. Open up a media player with network stream viewing (VLC for example) and connect to `rtsp:://<host ip>:8554/vaserving`. The stream is real time so you might want to setup your media player ahead of time. You will see people-detection.mp4 with an overlay of points. Each zone has a start point which has a label of the zone name. Other points of the zone are not labeled. If an object `intersects` or is `within` a zone the label is updated to reflect that.
+
+    ![object_zone_count_watermark](object_zone_count_watermark.png)

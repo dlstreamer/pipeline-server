@@ -6,9 +6,9 @@
 
 from collections import namedtuple
 from enum import Enum, auto
+from gstgva.video_frame import VideoFrame
 from vaserving.app_destination import AppDestination
 from vaserving.gstreamer_pipeline import GStreamerPipeline
-from gstgva.video_frame import VideoFrame
 
 GvaSample = namedtuple('GvaSample', ['sample', 'video_frame'])
 GvaSample.__new__.__defaults__ = (None, None)
@@ -24,7 +24,7 @@ class GStreamerAppDestination(AppDestination):
         def _missing_(cls, name):
             return cls[name.upper()]
 
-    def __init__(self, request, pipeline, *args, **kwargs):
+    def __init__(self, request, pipeline):
         AppDestination.__init__(self, request, pipeline)
 
         request_config = request.get("destination", {})

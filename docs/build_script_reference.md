@@ -4,7 +4,9 @@ The `build.sh` script passes common options to the underlying `docker build` com
 Use the --help option to see how the use the script. All arguments are optional.
 
 ```
-$ docker/build.sh --help
+docker/build.sh --help
+```
+```
 usage: build.sh
   [--base base image]
   [--framework ffmpeg || gstreamer]

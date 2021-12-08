@@ -13,12 +13,11 @@ from collections import defaultdict
 import jsonschema
 from vaserving.common.utils import logging
 from vaserving.pipeline import Pipeline
-import vaserving.schema as schema
-
+from vaserving import schema
 
 class PipelineManager:
 
-    def __init__(self, model_manager, pipeline_dir, max_running_pipelines=-1,
+    def __init__(self, model_manager, pipeline_dir, max_running_pipelines,
                  ignore_init_errors=False):
         self.max_running_pipelines = max_running_pipelines
         self.model_manager = model_manager
@@ -62,24 +61,13 @@ class PipelineManager:
 
     def _load_pipelines(self):
         # TODO: refactor
-        # pylint: disable=R0912,R1702
-
-        heading = "Loading Pipelines"
-        banner = "="*len(heading)
-        self.logger.info(banner)
-        self.logger.info(heading)
-        self.logger.info(banner)
-
+        # pylint: disable=too-many-branches,too-many-nested-blocks
+        self.log_banner("Loading Pipelines")
         error_occurred = False
         self.pipeline_types = self._import_pipeline_types()
         self.logger.info("Loading Pipelines from Config Path {path}".format(
             path=self.pipeline_dir))
-        if os.path.islink(self.pipeline_dir):
-            self.logger.warning(
-                "Pipelines directory is symbolic link")
-        if os.path.ismount(self.pipeline_dir):
-            self.logger.warning(
-                "Pipelines directory is mount point")
+        self.warn_if_mounted()
         pipelines = defaultdict(dict)
         for root, subdirs, files in os.walk(self.pipeline_dir):
             if os.path.abspath(root) == os.path.abspath(self.pipeline_dir):
@@ -145,13 +133,22 @@ class PipelineManager:
         pipelines = {pipeline: versions for pipeline,
                      versions in pipelines.items() if len(versions) > 0}
         self.pipelines = pipelines
+        self.log_banner("Completed Loading Pipelines")
+        return not error_occurred
 
-        heading = "Completed Loading Pipelines"
+    def warn_if_mounted(self):
+        if os.path.islink(self.pipeline_dir):
+            self.logger.warning(
+                "Pipelines directory is symbolic link")
+        if os.path.ismount(self.pipeline_dir):
+            self.logger.warning(
+                "Pipelines directory is mount point")
+
+    def log_banner(self, heading):
         banner = "="*len(heading)
         self.logger.info(banner)
         self.logger.info(heading)
         self.logger.info(banner)
-        return not error_occurred
 
     def get_loaded_pipelines(self):
         results = []

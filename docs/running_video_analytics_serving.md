@@ -64,14 +64,14 @@ provided utility script.
 ### DL Streamer based Microservice
 **Example:**
 ```bash
-$ docker/run.sh -v /tmp:/tmp
+docker/run.sh -v /tmp:/tmp
 ```
 
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 
 ```bash
-$ docker/run.sh --framework ffmpeg -v /tmp:/tmp
+docker/run.sh --framework ffmpeg -v /tmp:/tmp
 ```
 
 ## Issuing Requests
@@ -83,7 +83,9 @@ microservice.
 **Example:**
 > **Note:** In this example we assume you are running FFmpeg Video Analytics based Microservice
 ```bash
-$ curl localhost:8080/pipelines
+curl localhost:8080/pipelines
+```
+```
 [
   {
     "description": "Object Detection Pipeline",
@@ -121,7 +123,11 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
     }
   }
 }'
-$ tail -f /tmp/results.txt
+```
+```
+tail -f /tmp/results.txt
+```
+```
 {"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
 ```
 
@@ -137,13 +143,13 @@ kill` commands with the name of the running container.
 **Example:**
 
 ```bash
-$ docker stop video-analytics-serving-gstreamer
+docker stop video-analytics-serving-gstreamer
 ```
 
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 ```bash
-$ docker stop video-analytics-serving-ffmpeg
+docker stop video-analytics-serving-ffmpeg
 ```
 
 # Real Time Streaming Protocol (RTSP) Re-streaming
@@ -153,7 +159,7 @@ VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_
 
 ### Enable RTSP in service
 ```bash
-$ docker/run.sh --enable-rtsp
+docker/run.sh --enable-rtsp
 ```
 > **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
 
@@ -186,10 +192,19 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 *  Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
 
 ### RTSP destination params.
+
+> **Note:** If the RTSP stream playback is choppy this may be due to
+> network bandwidth. Decreasing the encoding-quality or increasing the
+> cache-length can help.
+
 ```bash
 "frame": {
   "type": "rtsp",
-  "path" : <custom rtsp path>(required. When path already exists, throws error)
+  "path" : <custom rtsp path>(required. When path already exists, throws error),
+  "cache-length": (default 30) number of frames to buffer in rtsp pipeline.
+  "encoding-quality": (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
+  "sync-with-source": (default True) process media at the encoded frame rate (e.g. 30 fps)
+  "sync-with-destination": (default True) block processing pipeline if rtsp pipeline is blocked.
 }
 ```
 
@@ -210,7 +225,7 @@ appropriate directories when starting the container.
 **Example:**
 
 ```bash
-$ ./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
+./docker/run.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
 ```
 
 # Enabling Hardware Accelerators
@@ -232,28 +247,33 @@ The following the table shows docker configuration and inference device name for
 > **Note:** Open Visual Cloud base images only support the GPU accelerator.
 > OpenVINO base images support all accelerators.
 
-|Accelerator|Docker Device|Volume Mount  |CGroup Rule|Inference Device|
-|-----------|-------------|--------------|-----------|----------------|
-| GPU       | /dev/dri    |              |           | GPU            |
-| NCS2      |             | /dev/bus/usb |c 189:* rmw| MYRIAD         |
-| HDDL-R    | /dev/ion    | /var/tmp     |           | HDDL           |
+|Accelerator| Device      | Volume Mount(s)    |CGroup Rule|Inference Device|
+|-----------|-------------|------------------- |-----------|----------------|
+| GPU       | /dev/dri    |                    |           | GPU            |
+| NCS2      |             | /dev/bus/usb       |c 189:* rmw| MYRIAD         |
+| HDDL-R    |             | /var/tmp, /dev/shm |           | HDDL           |
 
-## Specific Instructions for NCS2
+> **Note:** NCS2 and HDDL-R accelerators are incompatible and cannot be used on the same system.
 
-### User Permissions
-NCS2 accelerators require users to have special permissions for hardware access. To configure your system please follow the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
+## GPU
+The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request.
+
+On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md), not shown in the above table, is necessary to allow access to the GPU. The [docker/run.sh](../docker/run.sh) script takes care of this for you, but other deployments will have to be updated accordingly.
+
+## NCS2
+
+Configure your host by following the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
 
 > **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
->
-> ```bash
-> ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino_2021/inference_engine/external/97-myriad-usbboot.rules /tmp"
-> ```
->
+```bash
+./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino/inference_engine/external/97-myriad-usbboot.rules /tmp"
+```
 > Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO documentation to copy it to the correct location.
 
-### Limitations
-DL Streamer pipelines can only target a single neural network model to each NCS2 accelerator in a system. For pipelines that contain multiple models
-(for example, [object_classification](/pipelines/gstreamer/object_classification/vehicle_attributes/pipeline.json)), only a single element can have its device property set to MYRIAD. Other elements in the pipeline must target other accelerators (for example, CPU, GPU). In the case the system has `N` NCS2 accelerators available then up to `N` elements can have their device property set to MYRIAD.
+## HDDL-R
+Configure your host by downloading the [HDDL driver package](https://storage.openvinotoolkit.org/drivers/vpu/hddl/2021.4.2/hddl_ubuntu20_1886.tgz) then installing dependencies and run the hddldaemon on the host as per the [HDDL install guide](https://github.com/openvinotoolkit/docker_ci/blob/releases/2021/4/install_guide_vpu_hddl.md).
+
+> The HDDL plug-in in the container communicates with the daemon on the host, so the daemon must be started before running the container.
 
 # Developer Mode
 
@@ -280,7 +300,9 @@ Developer mode:
 **Example:**
 
 ```bash
-$ docker/run.sh --dev
+docker/run.sh --dev
+```
+```
 vaserving@my-host:~$ python3 -m vaserving
 ```
 

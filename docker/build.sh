@@ -10,7 +10,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4.1"
+BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4.2"
 
 BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
@@ -36,7 +36,7 @@ BASE_BUILD_OPTIONS="--network=host "
 
 SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.1"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.2"}
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
@@ -419,7 +419,7 @@ cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
 if [[ "$BASE_IMAGE" == *"openvino/"* ]]; then
-    $RUN_PREFIX docker run -t --rm $DOCKER_RUN_ENVIRONMENT --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
+    $RUN_PREFIX docker run -t --rm --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi
 
@@ -430,7 +430,7 @@ for ENVIRONMENT_FILE in ${ENVIRONMENT_FILES[@]}; do
 done
 
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
-    cat $ENVIRONMENT_FILE_LIST | grep -E '=' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
+    cat $ENVIRONMENT_FILE_LIST | grep -E '=' | sed -e 's/,\s\+/,/g' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
     echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
     printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/video-analytics-serving\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKERFILE_DIR/Dockerfile.env

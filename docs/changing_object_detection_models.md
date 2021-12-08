@@ -48,25 +48,28 @@ Build and run the sample microservice with the following commands:
 ```
 
 ### List Models
-Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also count the number of models. In this example there are 8.
+Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also count the number of models. In this example there are 7.
 ```
-$ ./vaclient/vaclient.sh list-models
- - emotion_recognition/1
- - object_detection/person_vehicle_bike
- - object_classification/vehicle_attributes
+./vaclient/vaclient.sh list-models
+```
+```
  - audio_detection/environment
+ - face_detection_retail/1
+ - object_classification/vehicle_attributes
  - action_recognition/encoder
  - action_recognition/decoder
- - face_detection_retail/1
+ - object_detection/person_vehicle_bike
+ - emotion_recognition/1
 ```
 
 ### Detect Objects on Sample Video
 In a second terminal window use [vaclient](/vaclient/README.md) to run the pipeline. Expected output is abbreviated.
 ```bash
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
+```
+```
 <snip>
-Starting pipeline...
-Pipeline running: object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 1
 Timestamp 33519553
 - vehicle (0.53) [0.79, 0.71, 0.89, 0.88]
 Timestamp 67039106
@@ -139,7 +142,9 @@ Copied model_proc to: /output/models/object_detection/yolo-v2-tiny-tf/yolo-v2-ti
 The model will now be in `models` folder in the root of the project:
 > **Note:** If you see an entry for `keras-YOLOv3-model-set` you can ignore it
 ```
-$ tree models
+tree models
+```
+```
 models
 └── object_detection
     └── yolo-v2-tiny-tf
@@ -161,10 +166,8 @@ models
 Make a copy of the `object_detection` version `person_vehicle_bike` pipeline definition file and change the version to `yolo-v2-tiny-tf`.
 
 ```
-$ cp -r pipelines/gstreamer/object_detection/person_vehicle_bike pipelines/gstreamer/object_detection/yolo-v2-tiny-tf
+cp -r pipelines/gstreamer/object_detection/person_vehicle_bike pipelines/gstreamer/object_detection/yolo-v2-tiny-tf
 ```
-
-> **Note:** You can also update the existing version `1` to point to the new model instead of creating a new version.
 
 #### Edit the Pipeline Template
 
@@ -209,9 +212,11 @@ pipelines to make testing local changes easier.
 ```
 Once started you can verify that the new model and pipeline have been loaded.
 
-The `list-models` command now shows 9 models, including `object_detection/yolo-v2-tiny-tf`
+The `list-models` command now shows 8 models, including `object_detection/yolo-v2-tiny-tf`
 ```bash
-$ ./vaclient/vaclient.sh list-models
+./vaclient/vaclient.sh list-models
+```
+```
  - emotion_recognition/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike
@@ -223,7 +228,9 @@ $ ./vaclient/vaclient.sh list-models
 ```
 The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
 ```bash
-$ ./vaclient/vaclient.sh list-pipelines
+./vaclient/vaclient.sh list-pipelines
+```
+```
  - object_detection/app_src_dst
  - object_detection/yolo-v2-tiny-tf
  - object_detection/object_zone_count
@@ -242,7 +249,9 @@ $ ./vaclient/vaclient.sh list-pipelines
 Now use vaclient to run the `object_detection/yolo-v2-tiny-tf` pipeline with the new model.
 You can see the `yolo-v2-tiny-tf` model in action as objects are now correctly detected as bottles.
 ```bash
-$ ./vaclient/vaclient.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4
+./vaclient/vaclient.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
+```
+```
 Pipeline running: object_detection/yolo-v2-tiny-tf, instance = 1
 Timestamp 972067039
 - bottle (0.51) [0.09, 0.36, 0.18, 0.62]
@@ -270,7 +279,9 @@ rm -r models
 ```
 Once started you can verify that the new model has been loaded.
 ```bash
-$ ./vaclient/vaclient.sh list-models
+./vaclient/vaclient.sh list-models
+```
+```
  - emotion_recognition/1
  - object_detection/yolo-v2-tiny-tf
  - object_detection/person_vehicle_bike

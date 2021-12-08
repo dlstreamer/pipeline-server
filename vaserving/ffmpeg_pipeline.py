@@ -206,7 +206,7 @@ class FFmpegPipeline(Pipeline):
         with self._create_delete_lock:
             if not self.state is Pipeline.State.ABORTED:
 
-                self._process = subprocess.Popen(args,
+                self._process = subprocess.Popen(args, #pylint: disable=consider-using-with
                                                  stdout=subprocess.PIPE,
                                                  stderr=subprocess.PIPE,
                                                  bufsize=1,
@@ -427,7 +427,7 @@ class FFmpegPipeline(Pipeline):
         self._set_section_properties([], [])
 
     def _get_outputs(self, args):
-        # pylint: disable=R1724,E1137,E1136
+        # pylint: disable=unsupported-assignment-operation,unsubscriptable-object
         result = []
         args_remaining = len(args)
         indices = [args_remaining - (x + 1) for x in range(len(args))]
@@ -443,18 +443,17 @@ class FFmpegPipeline(Pipeline):
                                                   ] = args[index + 1]
                         args_remaining -= 2
                         continue
-                    else:
-                        output_index = self._output_format_index[args[current_start + 1]]
-                        output = FFmpegPipeline.Output((current_start, index - 1), "-f",
-                                                       args[current_start + 1],
-                                                       current_output_properties)
-                        result.append(output)
-                        self._output_format_map[(
-                            args[current_start + 1], output_index)] = output
-                        self._output_format_index[args[current_start + 1]] += 1
-                        current_output_list = None
-                        current_output_properties = None
-                        current_start = None
+                    output_index = self._output_format_index[args[current_start + 1]]
+                    output = FFmpegPipeline.Output((current_start, index - 1), "-f",
+                                                    args[current_start + 1],
+                                                    current_output_properties)
+                    result.append(output)
+                    self._output_format_map[(
+                        args[current_start + 1], output_index)] = output
+                    self._output_format_index[args[current_start + 1]] += 1
+                    current_output_list = None
+                    current_output_properties = None
+                    current_start = None
                 else:
                     current_output_list = current_output_properties["_ARGS_"]
                     current_output_list.append(args[index])

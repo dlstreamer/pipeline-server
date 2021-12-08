@@ -83,7 +83,11 @@ enable_hardware_access() {
     if ls /dev/dri/render* 1> /dev/null 2>&1; then
         echo "Found /dev/dri/render entry - enabling for GPU"
         DEVICES+='--device /dev/dri '
-        USER_GROUPS+="--group-add $(stat -c '%g' /dev/dri/render*) "
+        RENDER_GROUPS=$(stat -c '%g' /dev/dri/render*)
+        for group in $RENDER_GROUPS
+        do
+            USER_GROUPS+="--group-add $group "
+        done
     fi
 
     # Intel(R) NCS2
@@ -94,10 +98,21 @@ enable_hardware_access() {
     fi
 
     # HDDL
-    if [ -e /dev/ion ]; then
-        echo "Found /dev/ion - enabling for HDDL-R"
-        DEVICES+="--device /dev/ion "
-        VOLUME_MOUNT+="-v /var/tmp:/var/tmp "
+    if compgen -G /dev/myriad* > /dev/null ; then
+        echo "Found /dev/myriad devices - enabling for HDDL-R"
+        VOLUME_MOUNT+="-v /var/tmp:/var/tmp -v /dev/shm:/dev/shm "
+    fi
+
+    # Webcam
+    for device in $(ls /dev | grep video); do
+        echo "Found /dev/$device - enabling webcam"
+        DEVICES+="--device /dev/$device "
+    done
+
+    # Microphone
+    if [ -e /dev/snd ]; then
+        echo "Found /dev/snd - enabling microphone"
+        DEVICES+="--device /dev/snd "
     fi
 }
 
@@ -298,15 +313,18 @@ if [ "${MODE}" == "DEV" ]; then
         PIPELINES=$SOURCE_DIR/pipelines/$FRAMEWORK
     fi
     PRIVILEGED="--privileged "
+elif [ ! -z "$ENTRYPOINT" ]; then
+    MODE=CUSTOM_ENTRYPOINT
 elif [ "${MODE}" == "SERVICE" ]; then
     if [ -z "$PORTS" ]; then
         PORTS+="-p 8080:8080 "
     fi
-    enable_hardware_access
 else
     echo "Invalid Mode"
     show_help
 fi
+
+enable_hardware_access
 
 if [ ! -z "$ENABLE_RTSP" ]; then
     ENVIRONMENT+="-e ENABLE_RTSP=true -e RTSP_PORT=$RTSP_PORT "

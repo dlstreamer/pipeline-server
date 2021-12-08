@@ -20,14 +20,17 @@ class ObjectZoneCount:
     DEFAULT_DETECTION_CONFIDENCE_THRESHOLD = 0.0
 
     # Caller supplies one or more zones via request parameter
-    def __init__(self, zones=[], enable_watermark=False, log_level="INFO"):
+    def __init__(self, zones=None, enable_watermark=False, log_level="INFO"):
         self._zones = []
         self._logger = logger
         self._logger.log_level = log_level
         self._enable_watermark = enable_watermark
+        if not zones:
+            logger.warning("No zone configuration was supplied to ObjectZoneCount.")
+            return
         self._zones = self._assign_defaults(zones)
         if not self._zones:
-            logger.warn("Empty zone configuration. No zones to check against.")
+            raise Exception('Empty zone configuration. No zones to check against.')
 
     # Note that the pipeline already applies a pipeline-specific threshold value, but
     # this method serves as an example for handling optional zone-specific parameters.

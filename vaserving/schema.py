@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 '''
-#pylint: disable=R0801
 
 tags = {
     "type": "object",
@@ -30,7 +29,12 @@ source = {
             },
             "class":{
                 "type":"string"
-            }
+            },
+            "element": {"enum": ["appsrc"], "default" : "appsrc"},
+            "properties": {"type": "object",
+                           "element": {"name": "source", "format": "element-properties"}},
+            "capsfilter": {"type": "string"},
+            "postproc": {"type": "string"}
         },
         "required":["type", "class"]
     },
@@ -48,45 +52,51 @@ source = {
                            {"name": "i", "property": "_INPUT_ARG_", "type": "input"}],
                 "element": [{"name": "source",
                              "property": "uri"},
-                            {"name": "source",
-                             "property": "location"},
-                            {"name": "metaconvert", "property": "source"}]}
+                            {"name": "metaconvert", "property": "source"}]},
+            "element": {"enum": ["urisourcebin"], "default": "urisourcebin"},
+            "properties": {"type": "object",
+                           "element": {"name": "source", "format": "element-properties"}},
+            "capsfilter": {"type": "string"},
+            "postproc": {"type": "string"}
         },
         "required": ["type", "uri"]
     },
-    "path": {
+    "webcam": {
         "type": "object",
         "properties": {
-            "type": {
-                "type": "string",
-                "enum": ["path"]
-            },
-            "path": {
-                "type": "string",
-                "element": [{"name": "source",
-                             "property": "location"}]}
+            "type": {"type": "string", "enum": ["webcam"]},
+            "device": {"type": "string",
+                       "format": "path", "element": [{"name": "source", "property": "device"},
+                                                     {"name": "metaconvert", "property": "source"}]},
+            "element": {"enum": ["v4l2src"], "default": "v4l2src"},
+            "properties": {"type": "object",
+                           "element": {"name": "source", "format": "element-properties"}},
+            "capsfilter": {"type": "string", "default": "image/jpeg"},
+            "postproc": {"type": "string"}
         },
-        "required": ["type", "path"]
+        "required": ["type", "device"]
     },
-    "device": {
+    "gst": {
         "type": "object",
         "properties": {
-            "type": {"type": "string", "enum": ["device"]},
-            "path": {"type": "string",
-                     "format": "path", "element": [{"name": "source", "property": "device"},
-                                                   {"name": "metaconvert", "property": "source"}]}
+            "type": {"type": "string", "enum": ["gst"]},
+            "element": {"type": "string"},
+            "properties": {"type": "object",
+                           "element": {"name": "source", "format": "element-properties"}},
+            "capsfilter": {"type": "string"},
+            "postproc": {"type": "string"}
         },
-        "required": ["type", "path"]
+        "required": ["type", "element"]
     },
     "oneOf": [
         {
             "$ref": "#/uri"
         },
         {
-            "$ref": "#/path"
+            "$ref": "#/webcam"
         },
         {
-            "$ref": "#/device"
+            "$ref": "#/gst"
         },
         {
             "$ref": "#/application"
@@ -178,7 +188,7 @@ destination = {
                     "type": "string",
                     "element": "destination"
                 },
-                "clientId": {
+                "mqtt-client-id": {
                     "type": "string",
                     "element": "destination"
                 },
@@ -263,6 +273,25 @@ destination = {
                     "type":"string",
                     "minLength": 1,
                     "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9_/-]*[a-zA-Z0-9]$"
+                },
+                "cache-length": {
+                    "type":"integer",
+                    "default":30,
+                    "minimum":0
+                },
+                "sync-with-source": {
+                    "type":"boolean",
+                    "default":True
+                },
+                "sync-with-destination":{
+                    "type":"boolean",
+                    "default":True
+                },
+                "encode-quality":{
+                    "type":"integer",
+                    "minimum":0,
+                    "maximum":100,
+                    "default":85
                 }
             },
             "required": [

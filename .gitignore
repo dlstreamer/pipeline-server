@@ -1,4 +1,5 @@
 __pycache__/
+.cache/
 .vscode/
 .bash_history
 *.generated
@@ -6,6 +7,4 @@ docker/openvino_base_environment.txt
 docker/Dockerfile.env
 docker/final.env
 models
-tests/results/**/*
-samples/ava_ai_extension/tests/results/**/*
 samples/edgex_bridge/edgex/**/*

@@ -81,5 +81,5 @@ class AppSource(metaclass=abc.ABCMeta):
                 raise Exception("Error Creating App Source: {},"
                                 "Exception: {} {}".format(requested_source_class,
                                                           type(error),
-                                                          error))
+                                                          error)) from error
         return None

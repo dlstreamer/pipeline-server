@@ -14,7 +14,7 @@ A detailed description can be found [here](https://github.com/openvinotoolkit/op
 
 A composite model is used, consisting of:
 
-- [action-recognition-0001-encoder](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/action-recognition-0001/action-recognition-0001-encoder) 
+- [action-recognition-0001-encoder](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/action-recognition-0001/action-recognition-0001-encoder)
 - [action-recognition-0001-decoder](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/action-recognition-0001/action-recognition-0001-decoder)
 
 These are based on (400 actions) models for [Kinetics-400 dataset](https://deepmind.com/research/open-source/kinetics).
@@ -89,8 +89,7 @@ The corresponding vaclient output resembles:
 For example:
 
 ```code
-Starting pipeline...
-Pipeline running: action_recognition/general, instance = 1
+Starting pipeline action_recognition/general, instance = 1
 Timestamp 0
 - surfing crowd (0.01)
 Timestamp 83333333

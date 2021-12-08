@@ -24,14 +24,16 @@ logger = logging.get_logger('object_line_crossing', is_static=True)
 
 class ObjectLineCrossing: # pylint: disable=too-few-public-methods
 
-    def __init__(self, lines=[], enable_watermark=False, log_level="INFO"):
+    def __init__(self, lines=None, enable_watermark=False, log_level="INFO"):
         self._detected_objects = {}
         self._lines = []
         self._enable_watermark = enable_watermark
         logger.log_level = log_level
         if self._enable_watermark and os.getenv("ENABLE_RTSP") != "true":
             logger.warning("RTSP output is not enabled by environment variable.")
-
+        if not lines:
+            logger.warning("No line configuration was supplied to ObjectLineCrossing.")
+            return
         for line in lines:
             try:
                 self._lines.append(SpatialAnalysisCrossingLine(line))
@@ -39,7 +41,7 @@ class ObjectLineCrossing: # pylint: disable=too-few-public-methods
                 logger.error(error)
                 logger.error("Exception creating SpatialAnalysisCrossingLine: {}".format(line))
         if not self._lines:
-            logger.warn("Empty line configuration. No lines to check against.")
+            raise Exception('Empty line configuration. No lines to check against.')
 
     def process_frame(self, frame):
         try:
@@ -88,7 +90,7 @@ class ObjectLineCrossing: # pylint: disable=too-few-public-methods
             tensor.set_name("watermark_region")
 
     def _add_watermark(self, frame):
-        for index in range(0, len(self._lines)):
+        for index, _ in enumerate(self._lines):
             self._add_point(frame, self._lines[index].line_segment.start_point, "{}_Start".format(index))
             self._add_point(frame, self._lines[index].line_segment.end_point, "{}_End".format(index))
             self._add_point(frame, self._lines[index].get_segment_midpoint(),
@@ -127,8 +129,8 @@ class SpatialAnalysisCrossingLine:
         if 'focus' in line:
             try:
                 self._focus_point = self.FocusPoint[line['focus']]
-            except:
-                raise ValueError('Got invalid focus point: {}'.format(line['focus']))
+            except Exception as exception:
+                raise ValueError('Got invalid focus point: {}'.format(line['focus'])) from exception
 
     def detect_line_crossing(self, previous_position, current_position):
         previous_position_point = self._get_focus_point(previous_position)

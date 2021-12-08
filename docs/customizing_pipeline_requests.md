@@ -5,7 +5,7 @@ Pipeline requests are initiated to exercise the Video Analytics Serving REST API
 
 ## Request Format
 
-> Note: This document shows curl requests. Requests can also be sent via vaclient, see [VA Client Command Options](../vaclient/README.md#command-options)
+> Note: This document shows curl requests. Requests can also be sent via vaclient using the --request-file option see [VA Client Command Options](../vaclient/README.md#command-options)
 
 Pipeline requests sent to Video Analytics Serving REST API are JSON documents that have the following attributes:
 
@@ -43,6 +43,8 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         "threshold": 0.90
    }
 }'
+```
+```
 2
 ```
 
@@ -50,7 +52,9 @@ The number returned on the console is the pipeline instance id (e.g. 2).
 As the video is being analyzed and as objects are detected, results are added to the `destination` file which can be viewed using:
 
 ```bash
-$ tail -f /tmp/results.jsonl
+tail -f /tmp/results.jsonl
+```
+```
 {"objects":[{"detection":{"bounding_box":{"x_max":0.7503407597541809,"x_min":0.6836109757423401,"y_max":0.9968345165252686,"y_min":0.7712376117706299},"confidence":0.93408203125,"label":"person","label_id":1},"h":97,"roi_type":"person","w":51,"x":525,"y":333}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1916666666}
 {"objects":[{"detection":{"bounding_box":{"x_max":0.7554543018341064,"x_min":0.6827328205108643,"y_max":0.9928492903709412,"y_min":0.7551988959312439},"confidence":0.92578125,"label":"person","label_id":1},"h":103,"roi_type":"person","w":56,"x":524,"y":326}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":2000000000}
 <snip>
@@ -63,6 +67,8 @@ Some of the common video sources are:
 * File Source
 * IP Camera (RTSP Source)
 * Web Camera
+
+> Note: See [Source Abstraction](./defining_pipelines.md#source-abstraction) to learn about GStreamer source elements set per request.
 
 ### File Source
 The following example shows a media `source` from a video file in GitHub:
@@ -122,26 +128,15 @@ The request `source` object would be updated to:
 ```
 
 ### Web Camera Source
-Web cameras accessible through the `Video4Linux` api and device drivers can be referenced using the `v4l2` uri scheme. `v4l2` uris have the format: `v4l2:///dev/<device>` where `<device>` is the path of the `v4l2` device, typically `video<N>`.
+Web cameras accessible through the `Video4Linux` api and device drivers are supported via `type=webcam`. `device` is the path of the `v4l2` device, typically `video<N>`.
 
-Depending on the default output of the `v4l2` device, the pipeline may need additional elements to convert the output to a format that gvadetect can process.
-
-Following is an example of a pipeline with videoconvert to handle format conversion:
-
-```json
-"template": ["uridecodebin name=source ! videoconvert",
-            " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-            " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
-            " ! appsink name=appsink"
-            ],
-```
 ```bash
 curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 'Content-Type: application/json' -d \
 '{
     "source": {
-      "uri": "v4l2:///dev/video0",
-      "type": "uri"
+      "device": "/dev/video0",
+      "type": "webcam"
     },
     "destination": {
         "metadata": {
@@ -151,6 +146,40 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         }
     }
 }'
+```
+
+## Setting source properties
+For any of the sources mentioned above, it is possible to set properties on the source element via the request.
+
+### Setting a property on source bin element
+For example, to set property `buffer-size` on urisourcebin, source section can be set as follows:
+```json
+{
+    "source": {
+        "uri": "file:///tmp/person-bicycle-car-detection.mp4",
+        "type": "uri",
+        "properties": {
+            "buffer-size": 4096
+        }
+    }
+}
+```
+
+### Setting a property on underlying element
+For example, if you'd like to set `ntp-sync` property of the `rtspsrc` element to synchronize timestamps across RTSP source(s).
+
+> Note: This feature, enabled via GStreamer `source-setup` callback signal is only supported for `urisourcebin` element.
+
+```json
+{
+    "source": {
+        "uri": "rtsp://<ip_address>:<port>/<server_url>",
+        "type": "uri",
+        "properties": {
+            "ntp-sync": true
+        }
+    }
+}
 ```
 
 ## Destination
@@ -196,11 +225,12 @@ The following are available properties:
 - host (required) expects a format of host:port
 - topic (required) MQTT topic on which broker messages are sent
 - timeout (optional) Broker timeout
+- mqtt-client-id (optional) Unique identifier for the MQTT client
 
 Steps to run MQTT:
   1. Start the MQTT broker, here we use [Eclipse Mosquitto](https://hub.docker.com/_/eclipse-mosquitto/), an open source message broker.
   ```bash
-  docker run --network=host -d eclipse-mosquitto:1.6
+  docker run --network=host eclipse-mosquitto:1.6
   ```
   2. Start VA Serving with host network enabled
   ```bash
@@ -219,14 +249,15 @@ Steps to run MQTT:
         "metadata": {
             "type": "mqtt",
             "host": "localhost:1883",
-            "topic": "vaserving"
+            "topic": "vaserving",
+            "mqtt-client-id": "gva-meta-publish"
         }
     }
   }'
   ```
   4. Connect to MQTT broker to view inference results
   ```bash
-  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic vaserving
+  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic vaserving --id mosquitto-sub
   ```
 
   ```bash
@@ -234,6 +265,93 @@ Steps to run MQTT:
   {"objects":[{"detection":{"bounding_box":{"x_max":0.3472719192504883,"x_min":0.12164716422557831,"y_max":1.0,"y_min":0.839308500289917},"confidence":0.6197869777679443,"label":"vehicle","label_id":2},"h":69,"roi_type":"vehicle","w":173,"x":93,"y":363}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":14333333333}
   {"objects":[{"detection":{"bounding_box":{"x_max":0.3529694750905037,"x_min":0.12145502120256424,"y_max":1.0,"y_min":0.8094810247421265},"confidence":0.7172137498855591,"label":"vehicle","label_id":2},"h":82,"roi_type":"vehicle","w":178,"x":93,"y":350}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":14416666666}
   ```
+  5. In the MQTT broker terminal, you should see the connection from client with specified `mqtt-client-id`
+  ```
+  <snip>
+  1632949258: New connection from 127.0.0.1 on port 1883.
+  1632949258: New client connected from 127.0.0.1 as gva-meta-publish (p2, c1, k20).
+  1632949271: New connection from 127.0.0.1 on port 1883.
+  1632949271: New client connected from 127.0.0.1 as mosquitto-sub (p2, c1, k60).
+  1632949274: Client gva-meta-publish disconnected.
+  ```
+
+#### Kafka
+The following are available properties:
+- type : "kafka"
+- host (required) expects a format of host:port
+- topic (required) Kafka topic on which broker messages are sent
+
+Steps to run Kafka:
+1. Prepare to run a Kafka broker. Since Kafka relies on ZooKeeper for management, let's create `docker-compose-kafka.yml` with the following content:
+
+   ```bash
+   version: "2"
+   services:
+     zookeeper:
+       image: docker.io/bitnami/zookeeper:3.7
+       ports:
+         - "2181:2181"
+       volumes:
+         - "zookeeper_data:/bitnami"
+       environment:
+         - ALLOW_ANONYMOUS_LOGIN=yes
+     kafka:
+       image: docker.io/bitnami/kafka:2
+       ports:
+         - "9092:9092"
+       volumes:
+         - "kafka_data:/bitnami"
+       environment:
+         - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+         - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+         - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+         - ALLOW_PLAINTEXT_LISTENER=yes
+       depends_on:
+         - zookeeper
+   volumes:
+     zookeeper_data:
+       driver: local
+     kafka_data:
+       driver: local
+   ```
+
+2. Run the following command to launch Kafka broker as a detached service:
+   ```bash
+   docker-compose -p vaserving -f docker-compose-kafka.yml up -d
+   ```
+
+3. Start VA Serving with host network enabled:
+   ```bash
+   docker/run.sh -v /tmp:/tmp --network host
+   ```
+
+4. Launch pipeline with parameters to emit on the Kafka topic we are listening for:
+   ```
+   ./vaclient/vaclient.sh start object_detection/person_vehicle_bike  \
+   https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true  \
+   --destination type kafka  \
+   --destination host localhost \
+   --destination port 9092  \
+   --destination topic vaserving.person_vehicle_bike
+   ```
+
+5. Connect to Kafka broker to view inference results:
+   ```bash
+   docker exec -it vaserving_kafka_1 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
+      --bootstrap-server localhost:9092 --topic vaserving.person_vehicle_bike
+   ```
+
+   ```bash
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7448995113372803,"x_min":0.6734093427658081,"y_max":0.9991495609283447,"y_min":0.8781012296676636},"confidence":0.5402464866638184,"label":"person","label_id":1},"h":52,"roi_type":"person","w":55,"x":517,"y":379}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1500000000}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7442193031311035,"x_min":0.6763269901275635,"y_max":1.0,"y_min":0.8277983069419861},"confidence":0.5505848526954651,"label":"person","label_id":1},"h":74,"roi_type":"person","w":52,"x":519,"y":358}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1666666666}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7465137243270874,"x_min":0.6821863651275635,"y_max":1.0,"y_min":0.810469388961792},"confidence":0.6447391510009766,"label":"person","label_id":1},"h":82,"roi_type":"person","w":49,"x":524,"y":350}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1750000000}
+   {"objects":[{"detection":{"bounding_box":{"x_max":0.7481285929679871,"x_min":0.6836653351783752,"y_max":0.9999656677246094,"y_min":0.7867168188095093},"confidence":0.8825281858444214,"label":"person","label_id":1},"h":92,"roi_type":"person","w":50,"x":525,"y":340}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":1833333333}
+   ```
+
+6. NOTE: When finished, remember to close running containers with this command:
+   ```bash
+   docker-compose -f docker-compose-kafka.yml down
+   ```
 
 ### Frame
 Frame is another aspect of destination and it can be set to RTSP.
@@ -242,6 +360,10 @@ Frame is another aspect of destination and it can be set to RTSP.
 RTSP is a type of frame destination supported. The following are available properties:
 - type : "rtsp"
 - path (required): custom string to uniquely identify the stream
+- cache-length (default 30): number of frames to buffer in rtsp pipeline.
+- encoding-quality (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
+- sync-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
+- sync-with-destination (default True): block processing pipeline if rtsp pipeline is blocked.
 
 For more information, see [RTSP re-streaming](running_video_analytics_serving.md#real-time-streaming-protocol-rtsp-re-streaming)
 

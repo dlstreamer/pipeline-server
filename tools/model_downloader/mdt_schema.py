@@ -20,10 +20,10 @@ model_list_schema = {
                                                  "FP16-INT8", "FP32-INT8",
                                                  "FP32-INT1", "FP16-INT1", "INT1"]}
                         },
-                        "model-proc":{"type": "string"}
+                        "model-proc" : {"type": "string"}
                     },
                     "required" : ["model"],
-                    "additionalProperties": False
+                    "additionalProperties" : False
                 },
                 {
                     "type" : "string"

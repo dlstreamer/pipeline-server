@@ -15,8 +15,8 @@ from vaserving.common.utils import logging
 class GStreamerRtspFactory(GstRtspServer.RTSPMediaFactory):
     _source = "appsrc name=source format=GST_FORMAT_TIME"
 
-    _RtspVideoPipeline = " ! videoconvert ! video/x-raw,format=I420 ! gvawatermark " \
-    " ! jpegenc ! rtpjpegpay name=pay0 pt=96"
+    _RtspVideoPipeline = " ! videoconvert ! video/x-raw,format=I420 \
+        ! gvawatermark ! jpegenc name=jpegencoder ! rtpjpegpay name=pay0"
 
     # Decoding audio again as there is issue with audio pipeline element audiomixer
     _RtspAudioPipeline = " ! queue ! decodebin ! audioresample ! audioconvert " \
@@ -69,7 +69,7 @@ class GStreamerRtspFactory(GstRtspServer.RTSPMediaFactory):
         pipeline = Gst.parse_launch(launch_string)
         pipeline.caps = caps
         appsrc = pipeline.get_by_name("source")
-        source.set_app_src(appsrc, is_audio_pipeline)
+        source.set_app_src(appsrc, is_audio_pipeline, pipeline)
         appsrc.connect('need-data', source.on_need_data)
-        appsrc.connect('enough-data', source.enough_data)
+        appsrc.connect('enough-data', source.on_enough_data)
         return pipeline

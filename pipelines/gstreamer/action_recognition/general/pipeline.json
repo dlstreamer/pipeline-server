@@ -1,6 +1,6 @@
 {
 	"type": "GStreamer",
-	"template": ["uridecodebin name=source ! videoconvert ! video/x-raw,format=BGRx",
+	"template": ["{auto_source} ! decodebin ! videoconvert ! video/x-raw,format=BGRx",
 		" ! gvaactionrecognitionbin enc-model={models[action_recognition][encoder][network]} dec-model={models[action_recognition][decoder][network]} model-proc={models[action_recognition][decoder][proc]} name=action_recognition",
 		" ! gvametaconvert add-tensor-data=true name=metaconvert",
 		" ! gvametapublish name=destination",
