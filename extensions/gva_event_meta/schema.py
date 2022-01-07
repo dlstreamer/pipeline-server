@@ -1,3 +1,8 @@
+'''
+* Copyright (C) 2021 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+'''
 gva_event_schema = {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "type": "array",
