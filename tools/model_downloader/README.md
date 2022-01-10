@@ -93,6 +93,6 @@ usage: model_downloader.sh
   [--output absolute path where to save models]
   [--model-list input file with model names and properties]
   [--force force download and conversion of existing models]
-  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]
+  [--open-model-zoo-version specify the version of OpenVINO(TM) image to be used for downloading models from Open Model Zoo]
   [--dry-run print commands without executing]
 ```

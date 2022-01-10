@@ -256,7 +256,7 @@ python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
-#### Model Persistance in OpenVINO GStreamer Elements
+#### Model Persistance in OpenVINO<sup>&#8482;</sup> GStreamer Elements
 
 `model-instance-id` is an optional property that will hold the model in memory instead
 of releasing it when the pipeline completes. This improves load time and reduces memory

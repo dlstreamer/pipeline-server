@@ -28,13 +28,13 @@ can be customized to meet an application's requirements.
 | ---     | ---        | --- | ----        |
 | `./docker/build.sh`| **ubuntu20_data_runtime:2021.4.2** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
 | `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
-### Building with OpenVINO, Ubuntu 20.04 and DL Streamer Support
+### Building with OpenVINO<sup>&#8482;</sup>, Ubuntu 20.04 and DL Streamer Support
 **Example:**
 ```
 ./docker/build.sh --framework gstreamer
 ```
 
-### Building with Ubuntu 18.04, OpenVINO and FFmpeg Support
+### Building with Ubuntu 18.04, OpenVINO<sup>&#8482;</sup> and FFmpeg Support
 **Example:**
 ```
 ./docker/build.sh --framework ffmpeg \
@@ -68,9 +68,9 @@ The above example shows a directory being passed as argument to `--models` optio
 # Supported Base Images
 All validation is done in docker environment. Host built (aka "bare metal") configurations are not supported. You may customize and rebuild base images from source to meet your runtime requirements.
 
-| **Base Image** | **Framework** | **Openvino Version** | **Link** | **Default** |
+| **Base Image** | **Framework** | **OpenVINO<sup>&#8482;</sup> Version** | **Link** | **Default** |
 |---------------------|---------------|---------------|------------------------|-------------|
-| OpenVINO 2021.4.2 ubuntu20_data_runtime | GStreamer | 2021.4.2 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | Y |
+| OpenVINO<sup>&#8482;</sup> 2021.4.2 ubuntu20_data_runtime | GStreamer | 2021.4.2 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | Y |
 | Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | Y |
 
 ---

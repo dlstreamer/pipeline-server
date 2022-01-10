@@ -1219,14 +1219,14 @@ SOFTWARE.
 
 * Docker Base Images
 
-   OpenVINO Runtime Base Image
+   OpenVINO(TM) Runtime Base Image
    https://hub.docker.com/r/openvino/ubuntu18_runtime
    https://hub.docker.com/r/openvino/ubuntu20_runtime
    https://github.com/openvinotoolkit/docker_ci
     Copyright (C) 2019-2021 Intel Corporation
     All rights reserved.
     
-   OpenVINO Data Runtime Base Image
+   OpenVINO(TM) Data Runtime Base Image
    https://hub.docker.com/r/openvino/ubuntu18_data_runtime
    https://hub.docker.com/r/openvino/ubuntu20_data_runtime
    https://github.com/openvinotoolkit/docker_ci

@@ -50,7 +50,7 @@ The sample microservice includes five categories of media analytics pipelines. C
 
 ## Supported Hardware
 
-Refer to [OpenVINO System Requirements](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/system-requirements.html) for supported development and target runtime platforms and the [OpenVINO Container Release Notes](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) for details on providing access to accelerator devices.
+Refer to [OpenVINO<sup>&#8482;</sup> System Requirements](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/system-requirements.html) for supported development and target runtime platforms and the [OpenVINO<sup>&#8482;</sup> Container Release Notes](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) for details on providing access to accelerator devices.
 
 ## Building the Microservice
 

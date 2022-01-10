@@ -11,8 +11,8 @@ usage: build.sh
   [--base base image]
   [--framework ffmpeg || gstreamer]
   [--models path to models directory or model list file or NONE]
-  [--open-model-zoo-image specify the openvino image to be used for downloading models from Open Model Zoo]
-  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]
+  [--open-model-zoo-image specify the OpenVINO<sup>&#8482;</sup> image to be used for downloading models from Open Model Zoo]
+  [--open-model-zoo-version specify the version of OpenVINO<sup>&#8482;</sup> image to be used for downloading models from Open Model Zoo]
   [--force-model-download force the download of models from Open Model Zoo]
   [--pipelines path to pipelines directory relative to /home/thanaji/git/vaServing or NONE]
   [--base-build-context docker context for building base image]
@@ -39,14 +39,14 @@ VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Sel
 This option can be used to specify path to models directory or a model list file. When its a directory, models used by pipelines are expected to be in this directory. When its a file, the models listed in the file are downloaded and converted to IR format if needed by the [model download tool](../tools/model_downloader/README.md) during build time. If nothing is specified, default models listed in the file `models_list/models.list.yml` are downloaded, converted to IR format if needed and included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
 
 ## Open Model Zoo Image (--open-model-zoo-image)
-This option can be used to specify the OpenVINO base image to be used for downloading models from Open Model Zoo.
+This option can be used to specify the OpenVINO<sup>&#8482;</sup> base image to be used for downloading models from Open Model Zoo.
 
 For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo image as per the table in [section](building_video_analytics_serving.md#supported-base-images).
 
 For FFmpeg, you **must** specify the Open Model Zoo image to build with (i.e., when using `--framework ffmpeg` provide the image corresponding to the table in [section](building_video_analytics_serving.md#supported-base-images)).
 
 ## Open Model Zoo Version (--open-model-zoo-version)
-This option can be used to specify the version of OpenVINO base image to be used for downloading models from Open Model Zoo.
+This option can be used to specify the version of OpenVINO<sup>&#8482;</sup> base image to be used for downloading models from Open Model Zoo.
 
 For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo version as per the table in [section](building_video_analytics_serving.md#supported-base-images).
 
@@ -79,7 +79,7 @@ Specify a docker build argument when building the VA Serving image.
 Specify and docker build argument when building the base image.
 
 ## Image Tag (--tag)
-Set tag of VA serving image you build. Default value is `framework` based.
+Set tag of VA Serving image you build. Default value is `framework` based.
 * For `gstreamer` framework: `video-analytics-serving-gstreamer`
 * For `ffmpeg` framework: `video-analytics-serving-ffmpeg`
 

@@ -231,7 +231,7 @@ appropriate directories when starting the container.
 # Enabling Hardware Accelerators
 The run script automatically gives docker access (i.e. device, volume mount and device cgroup rule) to the following accelerators
 * iGPU
-* Intel&reg; Neural Compute Stick 2 (NCS2)
+* Intel&reg; Neural Compute Stick 2 (Intel&reg; NCS2)
 * HDDL-R cards
 
 You also need to specify the inference device in the parameters section
@@ -245,30 +245,30 @@ See [Customizing Pipeline Requests](customizing_pipeline_requests.md) for more i
 
 The following the table shows docker configuration and inference device name for all accelerators.
 > **Note:** Open Visual Cloud base images only support the GPU accelerator.
-> OpenVINO base images support all accelerators.
+> OpenVINO<sup>&#8482;</sup> base images support all accelerators.
 
 |Accelerator| Device      | Volume Mount(s)    |CGroup Rule|Inference Device|
 |-----------|-------------|------------------- |-----------|----------------|
 | GPU       | /dev/dri    |                    |           | GPU            |
-| NCS2      |             | /dev/bus/usb       |c 189:* rmw| MYRIAD         |
+| Intel&reg; NCS2      |             | /dev/bus/usb       |c 189:* rmw| MYRIAD         |
 | HDDL-R    |             | /var/tmp, /dev/shm |           | HDDL           |
 
-> **Note:** NCS2 and HDDL-R accelerators are incompatible and cannot be used on the same system.
+> **Note:** Intel&reg; NCS2 and HDDL-R accelerators are incompatible and cannot be used on the same system.
 
 ## GPU
 The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request.
 
 On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md), not shown in the above table, is necessary to allow access to the GPU. The [docker/run.sh](../docker/run.sh) script takes care of this for you, but other deployments will have to be updated accordingly.
 
-## NCS2
+## Intel&reg; NCS2
 
-Configure your host by following the steps outlined in the OpenVINO [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
+Configure your host by following the steps outlined in the OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
 
 > **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
 ```bash
 ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino/inference_engine/external/97-myriad-usbboot.rules /tmp"
 ```
-> Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO documentation to copy it to the correct location.
+> Once extracted the file will be in the current directory. Follow the instructions given in the OpenVINO<sup>&#8482;</sup> documentation to copy it to the correct location.
 
 ## HDDL-R
 Configure your host by downloading the [HDDL driver package](https://storage.openvinotoolkit.org/drivers/vpu/hddl/2021.4.2/hddl_ubuntu20_1886.tgz) then installing dependencies and run the hddldaemon on the host as per the [HDDL install guide](https://github.com/openvinotoolkit/docker_ci/blob/releases/2021/4/install_guide_vpu_hddl.md).

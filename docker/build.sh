@@ -250,7 +250,7 @@ get_options() {
     if [ -f "$MODELS" ]; then
         if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
            if [ -z "$OPEN_MODEL_ZOO_VERSION" ]; then
-            error 'ERROR: Unknown version of Intel(R) distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
+            error 'ERROR: Unknown version of Intel(R) Distribution of OpenVINO(TM) Toolkit in base image: '"${BASE_IMAGE}"'. Specify corresponding Open Model Zoo version for model download.'
            fi
         fi
         if [ ! -d "$SOURCE_DIR/models" ]; then
@@ -350,8 +350,8 @@ show_help() {
     echo "  [--base base image]"
     echo "  [--framework ffmpeg || gstreamer]"
     echo "  [--models path to models directory or model list file or NONE]"
-    echo "  [--open-model-zoo-image specify the openvino image to be used for downloading models from Open Model Zoo]"
-    echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
+    echo "  [--open-model-zoo-image specify the OpenVINO(TM) image to be used for downloading models from Open Model Zoo]"
+    echo "  [--open-model-zoo-version specify the version of OpenVINO(TM) image to be used for downloading models from Open Model Zoo]"
     echo "  [--force-model-download force the download of models from Open Model Zoo]"
     echo "  [--pipelines path to pipelines directory relative to $SOURCE_DIR or NONE]"
     echo "  [--base-build-context docker context for building base image]"

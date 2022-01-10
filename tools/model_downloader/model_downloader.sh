@@ -26,7 +26,7 @@ show_help() {
   echo "  [--output absolute path where to save models]"
   echo "  [--model-list input file with model names and properties]"
   echo "  [--force force download and conversion of existing models]"
-  echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
+  echo "  [--open-model-zoo-version specify the version of OpenVINO(TM) image to be used for downloading models from Open Model Zoo]"
   echo "  [--dry-run print commands without executing]"
   exit 0
 }
