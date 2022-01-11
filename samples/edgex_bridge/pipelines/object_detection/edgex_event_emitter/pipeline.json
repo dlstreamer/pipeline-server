@@ -1,11 +1,11 @@
 {
 	"type": "GStreamer",
-	"template": ["uridecodebin name=source",
-		" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
+	"template": ["{auto_source} ! decodebin",
+				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
 				" ! gvametaconvert name=metaconvert",
 				" ! gvapython name=edgexbridge module=/home/video-analytics-serving/samples/edgex_bridge/extensions/edgex_transform.py class=Bridge",
 				" ! gvametapublish name=destination",
-				" ! gvawatermark ! videoconvert ! fpsdisplaysink video-sink=ximagesink"
+				" ! appsink name=appsink"
 			],
 	"description": "Person Vehicle Bike Detection based on person-vehicle-bike-detection-crossroad-0078, with events emitted to EdgeX.",
 	"parameters": {

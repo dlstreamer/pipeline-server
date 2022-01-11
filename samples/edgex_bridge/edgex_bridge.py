@@ -51,11 +51,21 @@ def parse_args(args=None):
                         dest="generate_profile",
                         help="Generate EdgeX device profile for device-mqtt.",
                         default=False)
+    parser.add_argument("--rtsp-path",
+                        action="store",
+                        dest="requested_rtsp_path",
+                        help="Indicates VA Serving should render processed frames output using this RTSP path.",
+                        default=None)
     parser.add_argument("--analytics-image",
                         action="store",
                         dest="analyticsimage",
                         help="Analytics image to use for uService deployment to Docker compose.",
-                        default="edgex-video-analytics-serving:0.5.0")
+                        default="video-analytics-serving-edgex:latest")
+    parser.add_argument("--analytics-container",
+                        action="store",
+                        dest="analyticscontainer",
+                        help="Analytics container name to use for uService deployment to Docker compose.",
+                        default="edgex-video-analytics-serving")
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
@@ -75,18 +85,25 @@ if __name__ == "__main__":
     args = parse_args()
     print_args(args, program_name=__file__)
     try:
+        local_sample_path = os.path.dirname(os.path.abspath(__file__))
         parameters = {"edgexbridge":{"topic":args.topic,
                                      "edgexdevice":args.edgexdevice,
                                      "edgexcommand":args.edgexcommand,
-                                     "edgexresource":args.edgexresource,
-                                     "analyticsimage":args.analyticsimage,
-                                     "containername":args.analyticsimage.split(":", 1)[0],
-                                     "source":args.source},
-                      "inference-interval":6}
+                                     "edgexresource":args.edgexresource},
+                      "compose":{"topic":args.topic,
+                                 "edgexdevice":args.edgexdevice,
+                                 "edgexcommand":args.edgexcommand,
+                                 "edgexresource":args.edgexresource,
+                                 "analyticsimage":args.analyticsimage,
+                                 "containername":args.analyticscontainer,
+                                 "source":args.source,
+                                 "local_sample_path":local_sample_path},
+                      "inference-interval":6 }
 
         # TODO: Add parameter to specify edgex folder
         out_folder = "/home/video-analytics-serving/samples/edgex_bridge/edgex/"
         compose_dest = os.path.abspath(os.path.join(out_folder, "docker-compose.override.yml"))
+
         if args.generate_profile:
             TEMPLATE = "name: \"{edgexdevice}\"\n" \
             "manufacturer: \"VideoAnalyticsServing\"\n"\
@@ -131,7 +148,7 @@ if __name__ == "__main__":
                 "[DeviceList.Protocols]\n"\
                 "  [DeviceList.Protocols.mqtt]\n"\
                 "  Schema = 'tcp'\n"\
-                "  Host = 'mqtt-broker'\n"\
+                "  Host = 'localhost'\n"\
                 "  Port = '1883'\n"\
                 "  ClientId = 'videoAnalytics-pub'\n"\
                 "  Topic = 'videoAnalyticsTopic'\n"\
@@ -150,6 +167,13 @@ if __name__ == "__main__":
 
             COMPOSE = "services:\n"\
                 "  device-mqtt:\n"\
+                "    healthcheck:\n"\
+                "      test: \"wget --quiet --tries=1 --spider http://edgex-device-mqtt:49982/api/v1/ping "\
+                " || exit 1\"\n"\
+                "      interval: 5s\n"\
+                "      timeout: 3s\n"\
+                "      retries: 5\n"\
+                "      start_period: 5s\n"\
                 "    environment:\n"\
                 "      DRIVER_INCOMINGTOPIC: edgex_bridge/#\n"\
                 "      DRIVER_INCOMINGCLIENTID: edgex-mqtt-sub\n"\
@@ -161,8 +185,10 @@ if __name__ == "__main__":
                 "    container_name: {containername}\n"\
                 "    depends_on:\n"\
                 "      device-mqtt:\n"\
+                "        condition: service_healthy\n"\
+                "      rulesengine:\n"\
                 "        condition: service_started\n"\
-                "      data:\n"\
+                "      consul:\n"\
                 "        condition: service_started\n"\
                 "      metadata:\n"\
                 "        condition: service_started\n"\
@@ -181,34 +207,60 @@ if __name__ == "__main__":
                 "      EDGEX_SECURITY_SECRET_STORE: 'false'\n"\
                 "      REGISTRY_HOST: edgex-core-consul\n"\
                 "      SERVICE_HOST: {containername}\n"\
-                "      DISPLAY: $DISPLAY\n"\
+                "      ENABLE_RTSP: '$edgex_env_enable_rtsp'\n"\
+                "      RTSP_PORT: $edgex_rtsp_port\n"\
+                "      https_proxy: $https_proxy\n"\
+                "      http_proxy: $http_proxy\n"\
+                "      socks_proxy: $socks_proxy\n"\
+                "      no_proxy: $no_proxy\n"\
                 "    volumes:\n"\
-                "      - /tmp/.X11-unix:/tmp/.X11-unix\n"\
+                "      - /tmp/.xdg_runtime_dir:/home/.xdg_runtime_dir\n"\
                 "    devices:\n"\
                 "      - /dev/dri:/dev/dri\n"\
                 "    hostname: {containername}\n"\
                 "    image: {analyticsimage}\n"\
-                "    command: \"--source={source} --topic={topic}\"\n" \
-                "    user: vaserving\n"\
+                "    command: \"--source={source} --topic={topic} $edgex_request_rtsp_path\"\n" \
+                "#    user: \"$UID:$GID\"\n"\
                 "    networks:\n"\
                 "      edgex-network: {{}}\n"\
                 "    ports:\n"\
                 "    - 127.0.0.1:8080:8080/tcp\n"\
+                "    - 127.0.0.1:$edgex_rtsp_port:$edgex_rtsp_port/tcp\n"\
                 "    read_only: true\n"\
                 "version: '3.7'\n\n"
             with open(compose_dest, 'w') as override_file:
-                override_file.write(COMPOSE.format(**parameters["edgexbridge"]))
+                override_file.write(COMPOSE.format(**parameters["compose"]))
                 print("Generated EdgeX Compose Override:\n{}\n\n".format(compose_dest))
 
         else:
             pipeline_name = "object_detection"
             pipeline_version = "edgex_event_emitter"
-            VAServing.start({'log_level': 'INFO', "ignore_init_errors":False})
+            pipeline_file = "pipeline.json"
+            pipeline_root = "/home/video-analytics-serving/pipelines/"
+
+            pipeline_file = os.path.abspath(os.path.join(pipeline_root,
+                                                         pipeline_name,
+                                                         pipeline_version,
+                                                         pipeline_file))
+
+            VAServing.start({'log_level': 'INFO'})
             pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
             source = {"uri":args.source, "type":"uri"}
-            destination = {"type":"mqtt",
-                           "host":args.destination,
-                           "topic":'edgex_bridge/'+args.topic}
+            frame_destination={}
+            if args.requested_rtsp_path:
+                frame_destination = {
+                    "type": "rtsp",
+                    "path": args.requested_rtsp_path
+                }
+            destination = {
+                "metadata": {
+                    "type":"mqtt",
+                    "host":args.destination,
+                    "topic":'edgex_bridge/'+args.topic
+                },
+                "frame": frame_destination
+            }
+
             pipeline.start(source=source, destination=destination, parameters=parameters)
             start_time = None
             start_size = 0

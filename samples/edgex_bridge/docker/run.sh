@@ -1,15 +1,22 @@
 #!/bin/bash
-# This script runs the EdgeX VA Serving image with EdgeX sample pipeline 
-# and dependencies.
 RUN_PREFIX=
 WORK_DIR=$(dirname $(readlink -f "$0"))
 SAMPLE_DIR=$(dirname $WORK_DIR)
-IMAGE_NAME=${IMAGE_NAME:-"edgex-video-analytics-serving:1.3.0"}
-ENTRYPOINT_ARGS="--entrypoint-args \"--topic=objects_detected\" "
-ENTRYPOINT_ARGS+="--entrypoint-args \"--source=https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\" "
+# Prepare parameters used for generating docker compose parameters
+# Try supplying different stream inputs such as an RTSP camera feed, etc.
+DEMO_STREAM_INPUT="https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true"
+IMAGE_NAME=${IMAGE_NAME:-"video-analytics-serving-edgex:latest"}
+
+# Notice we must override edgex-device-mqtt with localhost since
+# this container will run on 'host' network; only when using run.sh.
+ENTRYPOINT_ARGS="--entrypoint-args \"--destination=localhost:1883\" "
+ENTRYPOINT_ARGS+="--entrypoint-args \"--topic=objects_detected\" "
+ENTRYPOINT_ARGS+="--entrypoint-args \"--source=$DEMO_STREAM_INPUT\" "
 ENTRYPOINT_ARGS+="--entrypoint-args \"--analytics-image=$IMAGE_NAME\" "
 
-VOLUME_MOUNT=
+# Mount to the host's pipelines to allow writes
+VOLUME_MOUNT="-v $SAMPLE_DIR/pipelines:/home/video-analytics-serving/pipelines "
+
 PASS_THROUGH_PARAMS=
 
 function show_help {
@@ -51,7 +58,7 @@ $RUN_PREFIX $SAMPLE_DIR/../../docker/run.sh \
   --name edgex-vaserving \
   --image $IMAGE_NAME \
   $VOLUME_MOUNT \
-  --user vaserving \
+  --user $UID:$GID \
   --network host \
   $ENTRYPOINT_ARGS \
   $PASS_THROUGH_PARAMS

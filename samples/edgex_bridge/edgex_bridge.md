@@ -1,8 +1,8 @@
 ## Script Arguments
 
 The `./samples/edgex_bridge/edgex_bridge.py` script accepts the following command line parameters.
- 
-```
+
+```code
 usage: edgex_bridge.py [-h] [--source SOURCE] [--destination DESTINATION]
                        [--edgexdevice EDGEXDEVICE]
                        [--edgexcommand EDGEXCOMMAND]
@@ -27,6 +27,11 @@ optional arguments:
                         (default: videoAnalyticsData)
   --topic TOPIC         destination topic associated with EdgeX Core Data
                         (default: objects_detected)
-  --generate            Generate EdgeX device profile for device-mqtt.
-                        (default: False)
+  --generate            Generate EdgeX device profile for device-mqtt. Also populates docker.compose.override.yml
+  --rtsp-path           Instructs VA Serving to render frames to RTSP at the supplied URI path segment (e.g., edgex_event_emitter).
+                        (default: None)
+  --analytics-image     Analytics image name to use for uService deployment to Docker compose.
+                        (default: video-analytics-serving-edgex:latest)
+  --analytics-container Analytics container name to use for uService deployment to Docker compose.
+                        (default: edgex-video-analytics-serving)
 ```
