@@ -127,6 +127,62 @@ If you wish to wait for a pipeline to finish running you can use the `wait` comm
 ```
 The client will print the initial status of the pipeline. Then wait for completion and print the average fps.
 
+### Getting Status of All Pipelines
+Querying the current state of the pipeline is done using the `list-instances` command.
+
+This example starts two pipelines and then gets their status and request details.
+```
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+```
+```
+Starting pipeline object_detection/person_vehicle_bike, instance = 1
+```
+```
+./vaclient/vaclient.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+```
+```
+Starting pipeline object_classification/vehicle_attributes, instance = 2
+```
+```
+./vaclient/vaclient.sh list-instances
+```
+```
+01: object_detection/person_vehicle_bike
+state: RUNNING
+fps: 16.74
+source: {
+    "element": "urisourcebin",
+    "type": "uri",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true"
+}
+destination: {
+    "metadata": {
+        "format": "json-lines",
+        "path": "/tmp/results.jsonl",
+        "type": "file"
+    }
+}
+
+02: object_classification/vehicle_attributes
+state: RUNNING
+fps: 11.08
+source: {
+    "element": "urisourcebin",
+    "type": "uri",
+    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true"
+}
+destination: {
+    "metadata": {
+        "format": "json-lines",
+        "path": "/tmp/results.jsonl",
+        "type": "file"
+    }
+}
+parameters: {
+    "object-class": "vehicle"
+}
+```
+
 ## Command Line Arguments
 See [customizing pipeline requests](../docs/customizing_pipeline_requests.md) to further understand how pipeline request options can be customized.
 

@@ -20,10 +20,10 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
         assert instance_id is not None
         assert instance_id > 0
         time.sleep(test_case['sleep_time_sec'])
-        status = vaclient.get_pipeline_status(test_case['pipeline'], instance_id)
+        status = vaclient.get_pipeline_status(instance_id)
         assert status['state'] == 'RUNNING'
-        vaclient.stop_pipeline(test_case['pipeline'], instance_id)
-        status = vaclient.get_pipeline_status(test_case['pipeline'], instance_id)
+        vaclient.stop_pipeline(instance_id)
+        status = vaclient.get_pipeline_status(instance_id)
         assert status['state'] == 'ABORTED'
     elif test_case['test_function'] == 'run_with_bad_detection_device':
         request = vaclient.REQUEST_TEMPLATE
@@ -31,7 +31,7 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
         request.update({'parameters' : {'detection-device' : test_case['detection_device']}})
         instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=show_request)
         with pytest.raises(ValueError):
-            vaclient.wait_for_pipeline_completion(test_case['pipeline'], instance_id)
+            vaclient.wait_for_pipeline_completion(instance_id)
             captured = capsys.readouterr()
             assert test_case['expected_output'] in captured.out
         del request['parameters']
@@ -43,7 +43,7 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
         captured = capsys.readouterr()
         assert test_case['expected_output'] in captured.out
     elif test_case['test_function'] == 'stop_pipeline':
-        vaclient.stop_pipeline(test_case['pipeline'], test_case['instance_id'])
+        vaclient.stop_pipeline(test_case['instance_id'])
         captured = capsys.readouterr()
         assert test_case['expected_output'] in captured.out
     elif test_case['test_function'] == 'list_pipelines':

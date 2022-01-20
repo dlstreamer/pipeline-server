@@ -89,6 +89,20 @@ paths:
         200:
           description: Success
       x-openapi-router-controller: vaserving.rest_api.endpoints
+  /pipelines/status:
+    get:
+      description: Returns all pipeline instance status.
+      operationId: pipelines_status_get_all
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PipelineInstanceStatus'
+                type: array
+          description: Success
+      x-openapi-router-controller: vaserving.rest_api.endpoints
   /pipelines/{name}/{version}/{instance_id}:
     delete:
       description: Stop pipeline instance.
@@ -154,6 +168,43 @@ paths:
                 $ref: '#/components/schemas/PipelineInstanceSummary'
           description: Success
       x-openapi-router-controller: vaserving.rest_api.endpoints
+  /pipelines/{instance_id}:
+    delete:
+      description: Stop pipeline instance.
+      operationId: pipelines_instance_id_delete
+      parameters:
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        200:
+          description: Success
+      x-openapi-router-controller: vaserving.rest_api.endpoints
+    get:
+      description: Return pipeline instance summary.
+      operationId: pipelines_instance_id_get
+      parameters:
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineInstanceSummary'
+          description: Success
+      x-openapi-router-controller: vaserving.rest_api.endpoints
   /pipelines/{name}/{version}/{instance_id}/status:
     get:
       description: Return pipeline instance status.
@@ -173,6 +224,27 @@ paths:
         schema:
           type: string
         style: simple
+      - explode: false
+        in: path
+        name: instance_id
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineInstanceStatus'
+          description: Success
+      x-openapi-router-controller: vaserving.rest_api.endpoints
+  /pipelines/status/{instance_id}:
+    get:
+      description: Return pipeline instance status.
+      operationId: pipelines_instance_id_status_get
+      parameters:
       - explode: false
         in: path
         name: instance_id

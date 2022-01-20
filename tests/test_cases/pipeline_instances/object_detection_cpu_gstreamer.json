@@ -1,0 +1,47 @@
+{
+    "options": {},
+    "pipelines": [
+        {
+            "name": "object_detection",
+            "version": "person_vehicle_bike",
+            "request": {
+                "source": {
+                    "type": "uri",
+                    "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4"
+                },
+                "destination": {
+                    "metadata" : {
+                        "type": "file",
+                        "path": "/dev/null"
+                    }
+                },
+                "parameters": {
+                    "detection-device": "CPU"
+                }
+            }
+        },
+        {
+            "name": "object_classification",
+            "version": "vehicle_attributes",
+            "request": {
+                "source": {
+                    "type": "uri",
+                    "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4"
+                },
+                "destination": {
+                    "metadata" : {
+                        "type": "file",
+                        "path": "/dev/null"
+                    }
+                },
+                "parameters": {
+                    "detection-device": "CPU"
+                }
+            }
+        }
+    ],
+    "abort": {
+        "delay": 1
+    }
+
+}

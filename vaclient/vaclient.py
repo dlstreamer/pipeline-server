@@ -56,17 +56,16 @@ def run(args):
         try:
             if request['destination']['metadata']['type'] == 'file':
                 watcher = launch_results_watcher(request,
-                                                 args.pipeline,
                                                  started_instance_id,
                                                  verbose=args.verbose)
         except KeyError:
             pass
-        print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
+        print_fps(wait_for_pipeline_completion(started_instance_id))
     except KeyboardInterrupt:
         print()
         if started_instance_id:
-            stop_pipeline(args.pipeline, started_instance_id)
-            print_fps(wait_for_pipeline_completion(args.pipeline, started_instance_id))
+            stop_pipeline(started_instance_id)
+            print_fps(wait_for_pipeline_completion(started_instance_id))
     finally:
         if watcher:
             watcher.stop()
@@ -80,26 +79,24 @@ def start(args):
                    show_request=args.show_request)
 
 def stop(args):
-    stop_pipeline(args.pipeline, args.instance, args.show_request)
+    stop_pipeline(args.instance, args.show_request)
     print_fps(get_pipeline_status(args.pipeline, args.instance))
 
 def wait(args):
     try:
-        pipeline_status = get_pipeline_status(args.pipeline, args.instance, args.show_request)
+        pipeline_status = get_pipeline_status(args.instance, args.show_request)
         if pipeline_status is not None and "state" in pipeline_status:
             print(pipeline_status["state"])
         else:
             print("Unable to fetch status")
-        print_fps(wait_for_pipeline_completion(args.pipeline,
-                                               args.instance))
+        print_fps(wait_for_pipeline_completion(args.instance))
     except KeyboardInterrupt:
         print()
         stop_pipeline(args.pipeline, args.instance)
-        print_fps(wait_for_pipeline_completion(args.pipeline,
-                                               args.instance))
+        print_fps(wait_for_pipeline_completion(args.instance))
 
 def status(args):
-    pipeline_status = get_pipeline_status(args.pipeline, args.instance, args.show_request)
+    pipeline_status = get_pipeline_status(args.instance, args.show_request)
     if pipeline_status is not None and "state" in pipeline_status:
         print(pipeline_status["state"])
     else:
@@ -110,6 +107,25 @@ def list_pipelines(args):
 
 def list_models(args):
     _list("models", args.show_request)
+
+def list_instances(args):
+    url = urljoin(SERVER_ADDRESS, "pipelines/status")
+    statuses = get(url, args.show_request)
+    for status in statuses:
+        url = urljoin(SERVER_ADDRESS, "pipelines/{}".format(status["id"]))
+        response = requests.get(url, timeout=TIMEOUT)
+        request_status = json.loads(response.text)
+        response.close()
+        pipeline = request_status["request"]["pipeline"]
+        print("{:02d}: {}/{}".format(status["id"], pipeline["name"], pipeline["version"]))
+        print("state: {}".format(status["state"]))
+        print("fps: {:.2f}".format(status["avg_fps"]))
+        print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
+        if request_status["request"].get("destination") is not None:
+            print("destination: {}".format(json.dumps(request_status["request"]["destination"], indent=4)))
+        if request_status["request"].get("parameters") is not None:
+            print("parameters: {}".format(json.dumps(request_status["request"]["parameters"], indent=4)))
+        print()
 
 def update_request_options(request,
                            args):
@@ -166,12 +182,11 @@ def start_pipeline(request,
 
     return None
 
-def stop_pipeline(pipeline, instance_id, show_request=False):
+def stop_pipeline(instance_id, show_request=False):
     if not show_request:
         print("Stopping Pipeline...")
     stop_url = urljoin(SERVER_ADDRESS,
                        "/".join(["pipelines",
-                                 pipeline,
                                  str(instance_id)]))
     status_code = delete(stop_url, show_request)
     if status_code == RESPONSE_SUCCESS:
@@ -179,14 +194,12 @@ def stop_pipeline(pipeline, instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
-def wait_for_pipeline_running(pipeline,
-                              instance_id,
+def wait_for_pipeline_running(instance_id,
                               timeout_sec = 30):
     status = {"state" : "QUEUED"}
     timeout_count = 0
     while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
-        status = get_pipeline_status(pipeline,
-                                     instance_id)
+        status = get_pipeline_status(instance_id)
         if status and status["state"] == "ERROR":
             raise ValueError("Error in pipeline, please check vaserving log messages")
         time.sleep(SLEEP_FOR_STATUS)
@@ -197,28 +210,25 @@ def wait_for_pipeline_running(pipeline,
 
     return status
 
-def wait_for_pipeline_completion(pipeline,
-                                 instance_id):
+def wait_for_pipeline_completion(instance_id):
     status = {"state" : "RUNNING"}
     while status and not Pipeline.State[status["state"]].stopped():
-        status = get_pipeline_status(pipeline,
-                                     instance_id)
+        status = get_pipeline_status(instance_id)
         time.sleep(SLEEP_FOR_STATUS)
     if status and status["state"] == "ERROR":
         raise ValueError("Error in pipeline, please check vaserving log messages")
 
     return status
 
-def get_pipeline_status(pipeline, instance_id, show_request=False):
+def get_pipeline_status(instance_id, show_request=False):
     status_url = urljoin(SERVER_ADDRESS,
                          "/".join(["pipelines",
-                                   pipeline,
-                                   str(instance_id),
-                                   "status"]))
+                                   "status",
+                                   str(instance_id)]))
     return get(status_url, show_request)
 
-def launch_results_watcher(request, pipeline, pipeline_instance_id, verbose=True):
-    status = wait_for_pipeline_running(pipeline, pipeline_instance_id)
+def launch_results_watcher(request, pipeline_instance_id, verbose=True):
+    status = wait_for_pipeline_running(pipeline_instance_id)
     watcher = None
     if Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
         if verbose:

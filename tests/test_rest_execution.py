@@ -34,17 +34,26 @@ def test_rest_execution(service, test_case, test_filename, generate):
     instance = int(response.text)
     assert type(instance) == int, "Response Type Mismatch"
     assert instance > 0, "Invalid instance"
+
+    # Check get all instances call
+    all_status_url = urllib.parse.urljoin(service.host, "pipelines/status")
+    response = requests.get(all_status_url, timeout=TIMEOUT)
+    statuses = json.loads(response.text)
+    assert len(statuses) == instance, "Invalid number of entries in all instances status"
+    response.close()
+
     # Check pipeline state transitions
-    instance_url = "{}/{}".format(url, instance)
+    status_url = "{}/{}".format(all_status_url, str(instance))
+    instance_url = urllib.parse.urljoin(service.host, "pipelines/{}".format(instance))
     if "check_error" in test_case:
         # Negative tests expect errors before pipeline enters RUNNING
         time.sleep(test_case["check_error"]["delay"])
         state_transition_timeout = float(test_case["check_error"]["timeout"])
-        assert pipeline_processing.wait_for_pipeline_status(instance_url, "ERROR", states_negative, 
+        assert pipeline_processing.wait_for_pipeline_status(status_url, "ERROR", states_negative,
                                         state_transition_timeout), "Pipeline did not error"
     else:
         state_transition_timeout = float(test_case["check_running"]["timeout"])
-        assert pipeline_processing.wait_for_pipeline_status(instance_url, "RUNNING", states, 
+        assert pipeline_processing.wait_for_pipeline_status(status_url, "RUNNING", states,
                                         state_transition_timeout), "Pipeline did not start"
         state_transition_timeout = float(test_case["check_stopped"]["timeout"])
 
@@ -68,8 +77,8 @@ def test_rest_execution(service, test_case, test_filename, generate):
             time.sleep(test_case["abort"]["delay"])
             response = requests.delete(instance_url, timeout=TIMEOUT)
             assert response.status_code == HTTP_OK, "DELETE Status Code Mismatch"
-            assert pipeline_processing.wait_for_pipeline_status(instance_url, "ABORTED", states, 
+            assert pipeline_processing.wait_for_pipeline_status(status_url, "ABORTED", states,
                                             state_transition_timeout), "Pipeline did not abort"
         else:
-            assert pipeline_processing.wait_for_pipeline_status(instance_url, "COMPLETED", states, 
+            assert pipeline_processing.wait_for_pipeline_status(status_url, "COMPLETED", states,
                                             state_transition_timeout), "Pipeline did not complete"

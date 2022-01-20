@@ -73,10 +73,10 @@ def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
         assert type(instance) == int, "Response Type Mismatch"
         assert instance > 0, "Invalid instance"
         # Check pipeline state transitions
-        instance_url = "{}/{}".format(url, instance)
+        instance_url = urllib.parse.urljoin(service.host, "pipelines/status/{}".format(instance))
         pipeline_processing.wait_for_pipeline_status(instance_url, "COMPLETED", states, TIMEOUT)
         #   Get avg_fps
-        va_serving_avg_fps.append(pipeline_processing.get_pipeline_avg_fps(status_url = instance_url + "/status"))
+        va_serving_avg_fps.append(pipeline_processing.get_pipeline_avg_fps(instance_url))
         time_elapsed = time.time() - start_vas_time
         print("##teamcity[buildStatisticValue key='va_serving_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 

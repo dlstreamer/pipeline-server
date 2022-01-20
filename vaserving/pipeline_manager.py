@@ -260,6 +260,10 @@ class PipelineManager:
         with self._create_lock:
             self.pipeline_id += 1
             instance_id = self.pipeline_id
+            request["pipeline"] = {
+                "name": name,
+                "version": version
+            }
         self.pipeline_instances[instance_id] = self.pipeline_types[pipeline_type](
             instance_id,
             pipeline_config,
@@ -297,18 +301,30 @@ class PipelineManager:
             self.running_pipelines -= 1
         self._start()
 
-    def get_instance_parameters(self, name, version, instance_id):
-        if self.instance_exists(name, version, instance_id):
+    def get_instance_summary(self, instance_id):
+        if self.instance_exists(instance_id):
             return self.pipeline_instances[instance_id].params()
         return None
 
-    def get_instance_status(self, name, version, instance_id):
-        if self.instance_exists(name, version, instance_id):
-            return self.pipeline_instances[instance_id].status()
+    def get_instance_parameters(self, name, version, instance_id):
+        if self.instance_exists(instance_id, name, version):
+            return self.pipeline_instances[instance_id].params()
         return None
 
-    def stop_instance(self, name, version, instance_id):
-        if self.instance_exists(name, version, instance_id):
+    def get_all_instance_status(self):
+        results = []
+        for pipeline_instance in self.pipeline_instances.values():
+            results.append(pipeline_instance.status())
+        return results
+
+    def get_instance_status(self, instance_id, name=None, version=None):
+        if self.instance_exists(instance_id, name, version):
+            status = self.pipeline_instances[instance_id].status()
+            return status
+        return None
+
+    def stop_instance(self, instance_id, name=None, version=None):
+        if self.instance_exists(instance_id, name, version):
             try:
                 self.pipeline_queue.remove(instance_id)
             except Exception:
@@ -316,10 +332,14 @@ class PipelineManager:
             return self.pipeline_instances[instance_id].stop()
         return None
 
-    def instance_exists(self, name, version, instance_id):
-        if (self.pipeline_exists(name, version) and
-                instance_id in self.pipeline_instances):
-            return True
+    def instance_exists(self, instance_id, name=None, version=None):
+        if instance_id in self.pipeline_instances:
+            if name and version:
+                pipeline = self.pipeline_instances[instance_id].request["pipeline"]
+                if name == pipeline["name"] and version == pipeline["version"]:
+                    return True
+            else:
+                return True
         self.logger.warning("Invalid Instance ID")
         return False
 

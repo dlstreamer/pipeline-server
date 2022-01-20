@@ -90,7 +90,7 @@ def pipelines_name_version_instance_id_delete(name, version, instance_id):  # no
         logger.debug("DELETE on /pipelines/{name}/{version}/{id}".format(
             name=name, version=str(version), id=instance_id))
         result = VAServing.pipeline_manager.stop_instance(
-            name, version, instance_id)
+            instance_id, name, version)
         if result:
             result['state'] = result['state'].name
             return result
@@ -100,17 +100,39 @@ def pipelines_name_version_instance_id_delete(name, version, instance_id):  # no
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
+def pipelines_instance_id_delete(instance_id):  # noqa: E501
+    """pipelines_instance_id_delete
+
+    Stop and remove an instance of the customized pipeline # noqa: E501
+
+    :param instance_id:
+    :type instance_id: int
+
+    :rtype: None
+    """
+    try:
+        logger.debug("DELETE on /pipelines/{id}".format(id=instance_id))
+        result = VAServing.pipeline_manager.stop_instance(instance_id)
+        if result:
+            result['state'] = result['state'].name
+            return result
+        return (bad_request_response, HTTPStatus.BAD_REQUEST)
+    except Exception as error:
+        logger.error('pipelines_instance_id_delete %s', error)
+        return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
 def pipelines_name_version_instance_id_get(name, version, instance_id):  # noqa: E501
     """pipelines_name_version_instance_id_get
 
     Return instance summary # noqa: E501
 
+    :param instance_id:
+    :type instance_id: int
     :param name:
     :type name: str
     :param version:
     :type version: str
-    :param instance_id:
-    :type instance_id: int
 
     :rtype: object
     """
@@ -124,6 +146,27 @@ def pipelines_name_version_instance_id_get(name, version, instance_id):  # noqa:
         return (bad_request_response, HTTPStatus.BAD_REQUEST)
     except Exception as error:
         logger.error('pipelines_name_version_instance_id_get %s', error)
+        return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+def pipelines_instance_id_get(instance_id):  # noqa: E501
+    """pipelines_instance_id_get
+
+    Return instance summary # noqa: E501
+
+    :param instance_id:
+    :type instance_id: int
+
+    :rtype: object
+    """
+    try:
+        logger.debug("GET on /pipelines/{id}".format(id=instance_id))
+        result = VAServing.pipeline_manager.get_instance_summary(instance_id)
+        if result:
+            return result
+        return (bad_request_response, HTTPStatus.BAD_REQUEST)
+    except Exception as error:
+        logger.error('pipelines_instance_id_get %s', error)
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
@@ -146,13 +189,52 @@ def pipelines_name_version_instance_id_status_get(name, version, instance_id):  
                                                                              version=version,
                                                                              id=instance_id))
         result = VAServing.pipeline_manager.get_instance_status(
-            name, version, instance_id)
+            instance_id, name, version)
         if result:
             result['state'] = result['state'].name
             return result
         return ('Invalid pipeline, version or instance', HTTPStatus.BAD_REQUEST)
     except Exception as error:
         logger.error('pipelines_name_version_instance_id_status_get %s', error)
+        return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
+
+def pipelines_status_get_all():  # noqa: E501
+    """pipelines_status_get_all
+
+    Returns all instance status summary # noqa: E501
+
+    :rtype: object
+    """
+    try:
+        logger.debug("GET on /pipelines/status")
+        results = VAServing.pipeline_manager.get_all_instance_status()
+        for result in results:
+            result['state'] = result['state'].name
+        return results
+    except Exception as error:
+        logger.error('pipelines_status_get %s', error)
+        return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+def pipelines_instance_id_status_get(instance_id):  # noqa: E501
+    """pipelines_name_version_instance_id_status_get
+
+    Return instance status summary # noqa: E501
+
+    :param instance_id:
+    :type instance_id: int
+
+    :rtype: object
+    """
+    try:
+        logger.debug("GET on /pipelines/status/{id}".format(id=instance_id))
+        result = VAServing.pipeline_manager.get_instance_status(instance_id)
+        if result:
+            result['state'] = result['state'].name
+            return result
+        return ('Invalid instance', HTTPStatus.BAD_REQUEST)
+    except Exception as error:
+        logger.error('pipelines_instance_id_status_get %s', error)
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
 
 

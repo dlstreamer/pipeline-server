@@ -113,6 +113,10 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_list_models.set_defaults(command=vaclient.list_models)
     parser_list_models.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 
+    parser_list_instances = subparsers.add_parser('list-instances', help='List active pipeline instances')
+    parser_list_instances.set_defaults(command=vaclient.list_instances)
+    parser_list_instances.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+
     parser.add_argument("--quiet", action="store_false",
                         dest="verbose", default=True,
                         help="Pass this flag to reduce amount of logging.")
