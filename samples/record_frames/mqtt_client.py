@@ -47,7 +47,7 @@ def get_arguments():
     parser.add_argument('--topic',
                         action='store',
                         type=str,
-                        default='vaserving',
+                        default='pipeline-server',
                         help='Set MQTT topic')
     parser.add_argument('--broker-address',
                         action='store',

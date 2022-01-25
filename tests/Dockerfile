@@ -1,5 +1,5 @@
-ARG BASE="video-analytics-serving-gstreamer"
-FROM ${BASE} as video-analytics-serving-tests
+ARG BASE="dlstreamer-pipeline-server-gstreamer"
+FROM ${BASE} as dlstreamer-pipeline-server-tests
 
 USER root
 
@@ -15,19 +15,19 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 
 # Dependencies installed via pip
-COPY ./tests/requirements.tests.txt /home/video-analytics-serving
-RUN pip3 install  --no-cache-dir -r /home/video-analytics-serving/requirements.tests.txt
-RUN rm -f /home/video-analytics-serving/requirements.tests.txt
+COPY ./tests/requirements.tests.txt /home/pipeline-server
+RUN pip3 install  --no-cache-dir -r /home/pipeline-server/requirements.tests.txt
+RUN rm -f /home/pipeline-server/requirements.tests.txt
 
 # Copy tests and sample files
-COPY tests/ /home/video-analytics-serving/tests/
-COPY samples/ /home/video-analytics-serving/samples/
-COPY models_list/models.list.yml /home/video-analytics-serving/models/models.list.yml
+COPY tests/ /home/pipeline-server/tests/
+COPY samples/ /home/pipeline-server/samples/
+COPY models_list/models.list.yml /home/pipeline-server/models/models.list.yml
 
 RUN wget -O tests/media/store-aisle-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/store-aisle-detection.mp4?raw=true
 RUN wget -O tests/media/person-bicycle-car-detection.mp4 https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 
-ARG USER=vaserving
+ARG USER=pipeline-server
 
 USER ${USER}
 

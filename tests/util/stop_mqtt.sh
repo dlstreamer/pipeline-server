@@ -1,2 +1,2 @@
 echo "Stopping MQTT broker"
-docker stop vaserving_mqtt
+docker stop pipeline-server_mqtt

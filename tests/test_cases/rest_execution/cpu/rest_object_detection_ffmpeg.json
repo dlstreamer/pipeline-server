@@ -3,7 +3,7 @@
     "start" : {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/samples/pinwheel.ts",
+                "uri": "file:///home/pipeline-server/samples/pinwheel.ts",
                 "type": "uri"
             },
             "destination": {

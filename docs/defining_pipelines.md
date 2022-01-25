@@ -4,7 +4,7 @@
 Media analytics pipelines are directed graphs of audio/video
 processing, computer vision, and deep learning inference
 operations. The following sections explain how media analytics
-pipelines are defined and loaded by Video Analytics Serving.
+pipelines are defined and loaded by Intel(R) DL Streamer Pipeline Server.
 
 # Pipeline Definition Files
 Pipeline definition files are JSON documents containing a single
@@ -21,7 +21,7 @@ top-level object with four sections.
 
 Pipeline definition files are stored in a hierarchical directory
 structure that determines their name and version. On startup, the
-Video Analytics Serving `pipeline_manager` searches the configured
+Intel(R) DL Streamer Pipeline Server `pipeline_manager` searches the configured
 pipeline directory and loads all pipeline definitions that are found.
 
 The hierarchical directory structure is made up of three levels:
@@ -45,7 +45,7 @@ pipelines/gstreamer
             └── pipeline.json
 ```
 
-> **Note:** When a Video Analytics Serving application needs to support
+> **Note:** When a Intel(R) DL Streamer Pipeline Server application needs to support
 > multiple frameworks their pipelines are typically stored in separate
 > top-level directories and built into separate docker images.
 
@@ -231,7 +231,7 @@ section of a pipeline definition. More details on parameters can be
 found in the [Pipeline Parameters](#pipeline-parameters) section.
 
 Certain element names also trigger special default handling by the
-Video Analytics Serving modules. For example in the `object_detection/person_vehicle_bike`
+Intel(R) DL Streamer Pipeline Server modules. For example in the `object_detection/person_vehicle_bike`
 sample template the special element name `source` results in the
 `urisourcebin`'s `uri` property getting automatically set to the
 source uri of an incoming request.
@@ -298,7 +298,7 @@ targets the same hardware device and video format.
 #### More Information
 
 For more information and examples of media analytics pipelines created
-with DL Streamer please see the DL Streamer [tutorial](https://github.com/opencv/gst-video-analytics/wiki/GStreamer%20Video%20Analytics%20Tutorial).
+with Intel(R) DL Streamer please see the Intel(R) DL Streamer [tutorial](https://github.com/opencv/gst-video-analytics/wiki/GStreamer%20Video%20Analytics%20Tutorial).
 
 ### FFmpeg Templates
 
@@ -752,7 +752,7 @@ to the bus such as
 
 ## OpenVINO<sup>&#8482;</sup> Toolkit's Intermediate Representation
 
-Video Analytics Serving applications and pipelines use deep learning
+Intel(R) DL Streamer Pipeline Server applications and pipelines use deep learning
 models in the OpenVINO<sup>&#8482;</sup> Toolkit's [Intermediate
 Representation](https://docs.openvinotoolkit.org/latest/_docs_MO_DG_IR_and_opsets.html)
 format (`IR`). A model in the `IR` format is represented by two files:
@@ -780,18 +780,18 @@ Zoo](https://github.com/openvinotoolkit/open_model_zoo).
 ## Model-Proc Files
 
 In addition to the `.xml` and `.bin` files that are part of a model's
-`IR` format, `DL Streamer` elements and `FFmpeg Video Analytics`
+`IR` format, `Intel(R) DL Streamer` elements and `FFmpeg Video Analytics`
 filters make use of an additional JSON file specifying the input and
 output processing instructions for a model. Processing instructions
 include details such as the expected color format and resolution of
 the input as well labels to associate with a models outputs.
-Video Analytics Serving automatically looks for this file in the path
+Intel(R) DL Streamer Pipeline Server automatically looks for this file in the path
 `models/model-alias/model-version/*.json`. Note that the model manager will
 fail to load if there are multiple ".json" model-proc files in this directory.
 
-### DL Streamer
-For more information on DL Streamer `model-proc` files and samples for
-common models please see the DL Streamer
+### Intel(R) DL Streamer
+For more information on Intel(R) DL Streamer `model-proc` files and samples for
+common models please see the Intel(R) DL Streamer
 [documentation](https://github.com/opencv/gst-video-analytics/wiki/Model-preparation)
 and
 [samples](https://github.com/opencv/gst-video-analytics/tree/master/samples/model_proc).
@@ -805,7 +805,7 @@ see the following [samples](https://github.com/VCDP/FFmpeg-patch/tree/ffmpeg4.2_
 Model files are stored in a hierarchical directory structure that
 determines their name, version and precision.
 
-On startup, the Video Analytics Serving `model_manager` searches
+On startup, the Intel(R) DL Streamer Pipeline Server `model_manager` searches
 the configured model directory and creates a dictionary storing the
 location of each model and their associated collateral
 (i.e. `<model-name>.bin`, `<model-name>.xml`, `<model-name>.json`)

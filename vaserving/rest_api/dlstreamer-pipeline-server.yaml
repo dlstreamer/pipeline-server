@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  description: Video Analytics Serving API
-  title: Video Analytics Serving API
+  description: Intel(R) DL Streamer Pipeline Server API
+  title: Intel(R) DL Streamer Pipeline Server API
   version: 0.0.3
 servers:
 - url: /

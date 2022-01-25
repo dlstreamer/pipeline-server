@@ -15,8 +15,8 @@ logger = logging.get_logger('main', is_static=True)
 def main(options):
     try:
         app = connexion.App(__name__, port=options.port, specification_dir='rest_api/', server='tornado')
-        app.add_api('video-analytics-serving.yaml',
-                    arguments={'title': 'Video Analytics Serving API'})
+        app.add_api('dlstreamer-pipeline-server.yaml',
+                    arguments={'title': 'Intel(R) DL Streamer Pipeline Server API'})
         logger.info("Starting Tornado Server on port: %s", options.port)
         app.run(port=options.port, server='tornado')
     except (KeyboardInterrupt, SystemExit):

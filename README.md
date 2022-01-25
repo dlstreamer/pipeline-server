@@ -1,11 +1,11 @@
-# Video Analytics Serving
+# Intel(R) Deep Learning Streamer Pipeline Server
 | [Getting Started](#getting-started)
 | [Request Customizations](#request-customizations)
 | [Changing Pipeline Model](#changing-pipeline-model)
 | [Further Reading](#further-reading)
 | [Known Issues](#known-issues) |
 
-Video Analytics Serving is a python package and microservice for
+Intel(R) Deep Learning Streamer Pipeline Server (Intel(R) DL Streamer Pipeline Server) is a python package and microservice for
 deploying optimized media analytics pipelines. It supports pipelines
 defined in
 [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)*
@@ -21,12 +21,12 @@ Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 | **Customizable Media Analytics Containers** | Scripts and dockerfiles to build and run container images with the required dependencies for hardware optimized media analytics pipelines. |
 | **No-Code Pipeline Definitions and Templates** | JSON based definition files, a flexible way for developers to define and parameterize pipelines while abstracting the low level details from their users. |
 | **Deep Learning Model Integration** | A simple way to package and reference [OpenVINO<sup>&#8482;</sup>](https://software.intel.com/en-us/openvino-toolkit) based models in pipeline definitions. The precision of a model can be auto-selected at runtime based on the chosen inference device. |
-| **Video Analytics Serving Python API** | A python module to discover, start, stop, customize and monitor pipelines based on their no-code definitions. |
-| **Video Analytics Serving Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| A RESTful microservice providing endpoints and APIs matching the functionality of the python module. |
+| **Intel(R) DL Streamer Pipeline Server Python API** | A python module to discover, start, stop, customize and monitor pipelines based on their no-code definitions. |
+| **Intel(R) DL Streamer Pipeline Server Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| A RESTful microservice providing endpoints and APIs matching the functionality of the python module. |
 
-> **IMPORTANT:** Video Analytics Serving is provided as a _sample_. It
+> **IMPORTANT:** Intel(R) DL Streamer Pipeline Server is provided as a _sample_. It
 > is not intended to be deployed into production environments without
-> modification. Developers deploying Video Analytics Serving should
+> modification. Developers deploying Intel(R) DL Streamer Pipeline Server should
 > review it against their production requirements.
 
 The sample microservice includes five categories of media analytics pipelines. Click on the links below to find out more about each of them.
@@ -45,8 +45,8 @@ The sample microservice includes five categories of media analytics pipelines. C
 
 | |                  |
 |---------------------------------------------|------------------|
-| **Docker** | Video Analytics Serving requires Docker for it's build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
-| **bash** | Video Analytics Serving's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
+| **Docker** | Intel(R) DL Streamer Pipeline Server requires Docker for its build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
+| **bash** | Intel(R) DL Streamer Pipeline Server's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
 
 ## Supported Hardware
 
@@ -66,14 +66,14 @@ required dependencies.
 To verify the build succeeded execute the following command:
 
 ```bash
-docker images video-analytics-serving-gstreamer:latest
+docker images dlstreamer-pipeline-server-gstreamer:latest
 ```
 
 Expected output:
 
 ```bash
 REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
-video-analytics-serving-gstreamer   latest              f51f2695639f        2 minutes ago          3.03GB
+dlstreamer-pipeline-server-gstreamer   latest              f51f2695639f        2 minutes ago          3.03GB
 ```
 
 ## Running the Microservice
@@ -95,12 +95,12 @@ Expected output:
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "=================", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "Loading Pipelines", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:42,406", "message": "=================", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,073", "message": "Loading Pipelines from Config Path /home/video-analytics-serving/pipelines", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,088", "message": "Loading Pipeline: audio_detection version: environment type: GStreamer from /home/video-analytics-serving/pipelines/audio_detection/environment/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,090", "message": "Loading Pipeline: object_classification version: vehicle_attributes type: GStreamer from /home/video-analytics-serving/pipelines/object_classification/vehicle_attributes/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,102", "message": "Loading Pipeline: object_detection version: edgex type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/edgex/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,104", "message": "Loading Pipeline: object_detection version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_detection/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
-{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "Loading Pipeline: object_tracking version: person_vehicle_bike type: GStreamer from /home/video-analytics-serving/pipelines/object_tracking/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,073", "message": "Loading Pipelines from Config Path /home/pipeline-server/pipelines", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,088", "message": "Loading Pipeline: audio_detection version: environment type: GStreamer from /home/pipeline-server/pipelines/audio_detection/environment/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,090", "message": "Loading Pipeline: object_classification version: vehicle_attributes type: GStreamer from /home/pipeline-server/pipelines/object_classification/vehicle_attributes/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,102", "message": "Loading Pipeline: object_detection version: edgex type: GStreamer from /home/pipeline-server/pipelines/object_detection/edgex/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,104", "message": "Loading Pipeline: object_detection version: person_vehicle_bike type: GStreamer from /home/pipeline-server/pipelines/object_detection/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
+{"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "Loading Pipeline: object_tracking version: person_vehicle_bike type: GStreamer from /home/pipeline-server/pipelines/object_tracking/person_vehicle_bike/pipeline.json", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "===========================", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "Completed Loading Pipelines", "module": "pipeline_manager"}
 {"levelname": "INFO", "asctime": "2021-04-05 23:43:43,109", "message": "===========================", "module": "pipeline_manager"}
@@ -245,9 +245,9 @@ First start VA Serving with RTSP enabled. By default, the RTSP stream will use p
 ```
 docker/run.sh --enable-rtsp -v /tmp:/tmp
 ```
-Then start a pipeline specifying the RTSP server endpoint path `vaserving`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
+Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
 ```
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path vaserving
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path pipeline-server
 ```
 If you see the error
 ```
@@ -256,7 +256,7 @@ Error in pipeline, please check vaserving log messages
 ```
 You probably forgot to enable RTSP in the server.
 
-Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL enter `rtsp://localhost:8554/vaserving` and hit `Play`.
+Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL enter `rtsp://localhost:8554/pipeline-server` and hit `Play`.
 > **Note:** The pipeline must be running before you hit play otherwise VLC will not be able to connect to the RTSP server.
 
 > **Note:** For shorter video files you should have VLC ready to go before starting pipeline otherwise by the time you hit play the pipeline will have completed and the RTSP server will have shut down.
@@ -319,7 +319,7 @@ Let's repeat the previous GPU inference example, adding RTSP output and show the
 ```
 <snip>
 POST http://localhost:8080/pipelines/object_classification/vehicle_attributes
-Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/results.jsonl', 'format': 'json-lines'}, 'frame': {'type': 'rtsp', 'path': 'vaserving'}}, 'parameters': {'detection-device': 'GPU'}}
+Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true', 'type': 'uri'}, 'destination': {'metadata': {'type': 'file', 'path': '/tmp/results.jsonl', 'format': 'json-lines'}, 'frame': {'type': 'rtsp', 'path': 'pipeline-server'}}, 'parameters': {'detection-device': 'GPU'}}
 ```
 The REST request is broken into three parts
 1. VERB: `POST`
@@ -346,7 +346,7 @@ They are easier to understand when the json is pretty-printed
     },
     "frame": {
       "type": "rtsp",
-      "path": "vaserving"
+      "path": "pipeline-server"
     }
   },
   "parameters": {
@@ -357,7 +357,7 @@ They are easier to understand when the json is pretty-printed
 1. Media source: type is `uri` and the uri is the car-detection.mp4 video
 2. Destinations:
    * metadata: this is the inference results, they are sent to file `/tmp/results.jsonl` in `json-lines` format. vaclient parses this file to display the inference results and metadata.
-   * frames: this the watermarked frames. Here they are sent to the RTSP server and available over given endpoint `vaserving`.
+   * frames: this the watermarked frames. Here they are sent to the RTSP server and available over given endpoint `pipeline-server`.
 3. Parameters set pipeline properties. See the [Defining Pipelines](docs/defining_pipelines.md) document for more details on parameters.
 
 The `--show-request` output can be easily converted int a curl command.
@@ -381,7 +381,7 @@ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -
     },
     "frame": {
       "type": "rtsp",
-      "path": "vaserving"
+      "path": "pipeline-server"
     }
   },
   "parameters": {
@@ -393,23 +393,23 @@ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -
 1
 ```
 # Changing Pipeline Model
-Video Analytics Serving makes pipeline customization and model selection a simple task. The [Changing Object Detection Models Tutorial](docs/changing_object_detection_models.md) provides step by step instructions for changing the object detection reference pipeline to use a model better suited to a different video source.
+Intel(R) DL Streamer Pipeline Server makes pipeline customization and model selection a simple task. The [Changing Object Detection Models Tutorial](docs/changing_object_detection_models.md) provides step by step instructions for changing the object detection reference pipeline to use a model better suited to a different video source.
 
 
 # Further Reading
 | **Documentation** | **Reference Guides** | **Tutorials** |
 | ------------    | ------------------ | ----------- |
-| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Video Analytics Serving](docs/building_video_analytics_serving.md) <br/> **-** [Running Video Analytics Serving](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Video Analytics Serving Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| <br/> **-** [Changing Object Detection Models](docs/changing_object_detection_models.md)
+| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Intel(R) DL Streamer Pipeline Server](docs/building_video_analytics_serving.md) <br/> **-** [Running Intel(R) DL Streamer Pipeline Server](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Intel(R) DL Streamer Pipeline Server Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| <br/> **-** [Changing Object Detection Models](docs/changing_object_detection_models.md)
 
 ## Related Links
 
 | **Media Frameworks** | **Media Analytics** | **Samples and Reference Designs**
 | ------------    | ------------------ | -----------------|
-| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [OpenVINO<sup>&#8482;</sup> Toolkit DL Streamer](https://github.com/opencv/gst-video-analytics) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad-Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
+| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [OpenVINO<sup>&#8482;</sup> Toolkit Intel(R) DL Streamer](https://github.com/opencv/gst-video-analytics) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad-Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
 
 
 # Known Issues
-Known issues are tracked on [GitHub](https://github.com/intel/video-analytics-serving/issues)*
+Known issues are tracked on [GitHub](https://github.com/intel/dlstreamer-pipeline-server/issues)*
 
 ---
 \* Other names and brands may be claimed as the property of others.

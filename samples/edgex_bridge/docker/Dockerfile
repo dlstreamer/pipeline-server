@@ -1,13 +1,13 @@
-ARG BASE=video-analytics-serving-gstreamer
+ARG BASE=dlstreamer-pipeline-server-gstreamer
 FROM $BASE
 
-RUN mkdir -p /home/video-analytics-serving/samples
-COPY ./extensions /home/video-analytics-serving/samples/edgex_bridge/extensions
-COPY ./edgex_bridge.py /home/video-analytics-serving/samples/edgex_bridge/edgex_bridge.py
+RUN mkdir -p /home/pipeline-server/samples
+COPY ./extensions /home/pipeline-server/samples/edgex_bridge/extensions
+COPY ./edgex_bridge.py /home/pipeline-server/samples/edgex_bridge/edgex_bridge.py
 
-ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving
-ENV PYTHONPATH=$PYTHONPATH:/home/video-analytics-serving/samples/edgex_bridge
+ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server
+ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server/samples/edgex_bridge
 
-USER vaserving
+USER pipeline-server
 
-ENTRYPOINT [ "python3", "/home/video-analytics-serving/samples/edgex_bridge/edgex_bridge.py"]
+ENTRYPOINT [ "python3", "/home/pipeline-server/samples/edgex_bridge/edgex_bridge.py"]

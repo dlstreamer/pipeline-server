@@ -7,7 +7,7 @@
 | [Rebuild Microservice](#step-6-rebuild-microservice-with-new-model-and-pipeline)
 | [Further Reading](#further-reading)
 
-Video Analytics Serving pipeline definitions are designed to make
+Intel(R) DL Streamer Pipeline Server pipeline definitions are designed to make
 pipeline customization and model selection easy. This tutorial
 provides step by step instructions for changing the object detection
 reference pipeline to use a different object detection model.
@@ -92,7 +92,7 @@ In the original terminal window, stop the service using `CTRL-C`.
 
 ## Step 2. Download New Model
 
-On start-up Video Analytics Serving discovers models that have been
+On start-up Intel(R) DL Streamer Pipeline Server discovers models that have been
 downloaded and makes them available for reference within pipelines.
 
 Models can be downloaded either as part of the normal Video Analytics
@@ -171,7 +171,7 @@ cp -r pipelines/gstreamer/object_detection/person_vehicle_bike pipelines/gstream
 
 #### Edit the Pipeline Template
 
-Video Analytics Serving pipeline definition files contain a template
+Intel(R) DL Streamer Pipeline Server pipeline definition files contain a template
 that specifies which model to use. The template needs to be updated to
 select a different model.
 
@@ -297,7 +297,7 @@ Once started you can verify that the new model has been loaded.
 For more information on the build, run, pipeline definition and model download please see:
 
 * [Getting Started](/README.md#getting-started)
-* [Building Video Analytics Serving](/docs/building_video_analytics_serving.md)
-* [Running Video Analytics Serving](/docs/running_video_analytics_serving.md)
+* [Building Intel(R) DL Streamer Pipeline Server](/docs/building_video_analytics_serving.md)
+* [Running Intel(R) DL Streamer Pipeline Server](/docs/running_video_analytics_serving.md)
 * [Defining Pipelines](/docs/defining_pipelines.md)
 * [Model Downloader Tool](/tools/model_downloader/README.md)

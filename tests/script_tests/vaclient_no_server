@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXPECTED="Unable to connect to server, check if the vaserving microservice is running"
+EXPECTED="Unable to connect to server, check if the pipeline-server microservice is running"
 
 OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/1 https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true)
 RETURN_CODE=$?

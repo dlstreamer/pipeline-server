@@ -11,7 +11,7 @@ from shutil import copyfile
 import traceback
 from vaserving.vaserving import VAServing
 
-DEFAULT_SOURCE_URI = "https://github.com/intel/video-analytics-serving/raw/master/samples/bottle_detection.mp4"
+DEFAULT_SOURCE_URI = "https://github.com/intel/dlstreamer-pipeline-server/raw/master/samples/bottle_detection.mp4"
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
@@ -60,12 +60,12 @@ def parse_args(args=None):
                         action="store",
                         dest="analyticsimage",
                         help="Analytics image to use for uService deployment to Docker compose.",
-                        default="video-analytics-serving-edgex:latest")
+                        default="dlstreamer-pipeline-server-edgex:latest")
     parser.add_argument("--analytics-container",
                         action="store",
                         dest="analyticscontainer",
                         help="Analytics container name to use for uService deployment to Docker compose.",
-                        default="edgex-video-analytics-serving")
+                        default="edgex-dlstreamer-pipeline-server")
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)
                 for key, value in args.items() if value]
@@ -101,7 +101,7 @@ if __name__ == "__main__":
                       "inference-interval":6 }
 
         # TODO: Add parameter to specify edgex folder
-        out_folder = "/home/video-analytics-serving/samples/edgex_bridge/edgex/"
+        out_folder = "/home/pipeline-server/samples/edgex_bridge/edgex/"
         compose_dest = os.path.abspath(os.path.join(out_folder, "docker-compose.override.yml"))
 
         if args.generate_profile:
@@ -236,7 +236,7 @@ if __name__ == "__main__":
             pipeline_name = "object_detection"
             pipeline_version = "edgex_event_emitter"
             pipeline_file = "pipeline.json"
-            pipeline_root = "/home/video-analytics-serving/pipelines/"
+            pipeline_root = "/home/pipeline-server/pipelines/"
 
             pipeline_file = os.path.abspath(os.path.join(pipeline_root,
                                                          pipeline_name,

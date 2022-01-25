@@ -3,7 +3,7 @@
 	"template": ["{auto_source} ! decodebin",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
 				" ! gvametaconvert name=metaconvert",
-				" ! gvapython name=edgexbridge module=/home/video-analytics-serving/samples/edgex_bridge/extensions/edgex_transform.py class=Bridge",
+				" ! gvapython name=edgexbridge module=/home/pipeline-server/samples/edgex_bridge/extensions/edgex_transform.py class=Bridge",
 				" ! gvametapublish name=destination",
 				" ! appsink name=appsink"
 			],

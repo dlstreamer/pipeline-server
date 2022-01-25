@@ -24,8 +24,8 @@ ignore=CVS
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
-ignore-paths=^/home/video-analytics-serving/tests/.*$,
-             ^/home/video-analytics-serving/samples/edgex_bridge/edgex/.*$
+ignore-paths=^/home/pipeline-server/tests/.*$,
+             ^/home/pipeline-server/samples/edgex_bridge/edgex/.*$
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.

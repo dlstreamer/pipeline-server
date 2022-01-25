@@ -1,4 +1,4 @@
-# Video Analytics Serving Tests and Scans
+# Intel(R) DL Streamer Pipeline Server Tests and Scans
 
 ## Tests Run Script Reference
 The `run.sh` can be used to run tests or scans with option to select only one at a time, default selected as --pytest-gstreamer. It uses [docker/run.sh](../docker/run.sh) to pass common options to the underlying docker run command [Reference Doc](../docs/run_script_reference.md).

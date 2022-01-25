@@ -8,10 +8,10 @@
             "description": "object_classification",
             "name": "object_classification",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/vehicle-attributes-recognition-barrier-0039.json",
+                "model-proc": "/home/pipeline-server/models/object_classification/vehicle_attributes/vehicle-attributes-recognition-barrier-0039.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP16/vehicle-attributes-recognition-barrier-0039.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_classification/vehicle_attributes/FP32/vehicle-attributes-recognition-barrier-0039.xml"
+                    "FP16": "/home/pipeline-server/models/object_classification/vehicle_attributes/FP16/vehicle-attributes-recognition-barrier-0039.xml",
+                    "FP32": "/home/pipeline-server/models/object_classification/vehicle_attributes/FP32/vehicle-attributes-recognition-barrier-0039.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -23,8 +23,8 @@
             "networks": {
                 "model-proc": null,
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
-                    "FP32": "/home/video-analytics-serving/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
+                    "FP16": "/home/pipeline-server/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
+                    "FP32": "/home/pipeline-server/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -34,10 +34,10 @@
             "description": "action_recognition",
             "name": "action_recognition",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/action_recognition/decoder/action-recognition-0001.json",
+                "model-proc": "/home/pipeline-server/models/action_recognition/decoder/action-recognition-0001.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
-                    "FP32": "/home/video-analytics-serving/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
+                    "FP16": "/home/pipeline-server/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
+                    "FP32": "/home/pipeline-server/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -47,10 +47,10 @@
             "description": "emotion_recognition",
             "name": "emotion_recognition",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/emotion_recognition/1/emotions-recognition-retail-0003.json",
+                "model-proc": "/home/pipeline-server/models/emotion_recognition/1/emotions-recognition-retail-0003.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/emotion_recognition/1/FP16/emotions-recognition-retail-0003.xml",
-                    "FP32": "/home/video-analytics-serving/models/emotion_recognition/1/FP32/emotions-recognition-retail-0003.xml"
+                    "FP16": "/home/pipeline-server/models/emotion_recognition/1/FP16/emotions-recognition-retail-0003.xml",
+                    "FP32": "/home/pipeline-server/models/emotion_recognition/1/FP32/emotions-recognition-retail-0003.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -60,10 +60,10 @@
             "description": "audio_detection",
             "name": "audio_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/audio_detection/environment/aclnet.json",
+                "model-proc": "/home/pipeline-server/models/audio_detection/environment/aclnet.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/audio_detection/environment/FP16/aclnet.xml",
-                    "FP32": "/home/video-analytics-serving/models/audio_detection/environment/FP32/aclnet.xml"
+                    "FP16": "/home/pipeline-server/models/audio_detection/environment/FP16/aclnet.xml",
+                    "FP32": "/home/pipeline-server/models/audio_detection/environment/FP32/aclnet.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -73,10 +73,10 @@
             "description": "object_detection",
             "name": "object_detection",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json",
+                "model-proc": "/home/pipeline-server/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/object_detection/person_vehicle_bike/FP16/person-vehicle-bike-detection-crossroad-0078.xml",
-                    "FP32": "/home/video-analytics-serving/models/object_detection/person_vehicle_bike/FP32/person-vehicle-bike-detection-crossroad-0078.xml"
+                    "FP16": "/home/pipeline-server/models/object_detection/person_vehicle_bike/FP16/person-vehicle-bike-detection-crossroad-0078.xml",
+                    "FP32": "/home/pipeline-server/models/object_detection/person_vehicle_bike/FP32/person-vehicle-bike-detection-crossroad-0078.xml"
                 }
             },
             "type": "IntelDLDT",
@@ -86,10 +86,10 @@
             "description": "face_detection_retail",
             "name": "face_detection_retail",
             "networks": {
-                "model-proc": "/home/video-analytics-serving/models/face_detection_retail/1/face-detection-retail-0004.json",
+                "model-proc": "/home/pipeline-server/models/face_detection_retail/1/face-detection-retail-0004.json",
                 "networks": {
-                    "FP16": "/home/video-analytics-serving/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml",
-                    "FP32": "/home/video-analytics-serving/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml"
+                    "FP16": "/home/pipeline-server/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml",
+                    "FP32": "/home/pipeline-server/models/face_detection_retail/1/FP32/face-detection-retail-0004.xml"
                 }
             },
             "type": "IntelDLDT",

@@ -7,7 +7,7 @@
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4"
+            "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
         },
         "destination": {
             "type": "file",
@@ -47,7 +47,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 1500000000
         },
@@ -76,7 +76,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 1666666666
         },
@@ -105,7 +105,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 1750000000
         },
@@ -134,7 +134,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 1833333333
         },
@@ -163,7 +163,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 1916666666
         },
@@ -192,7 +192,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2000000000
         },
@@ -221,7 +221,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2083333333
         },
@@ -250,7 +250,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2166666666
         },
@@ -279,7 +279,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2250000000
         },
@@ -308,7 +308,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2333333333
         },
@@ -337,7 +337,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2416666666
         },
@@ -366,7 +366,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2500000000
         },
@@ -395,7 +395,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2583333333
         },
@@ -424,7 +424,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2666666666
         },
@@ -453,7 +453,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2750000000
         },
@@ -482,7 +482,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2833333333
         },
@@ -511,7 +511,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 2916666666
         },
@@ -540,7 +540,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3166666666
         },
@@ -569,7 +569,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3250000000
         },
@@ -598,7 +598,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3333333333
         },
@@ -627,7 +627,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3416666666
         },
@@ -656,7 +656,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3500000000
         },
@@ -685,7 +685,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3583333333
         },
@@ -714,7 +714,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3666666666
         },
@@ -743,7 +743,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3750000000
         },
@@ -772,7 +772,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3833333333
         },
@@ -801,7 +801,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 3916666666
         },
@@ -830,7 +830,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4000000000
         },
@@ -859,7 +859,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4250000000
         },
@@ -888,7 +888,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4333333333
         },
@@ -917,7 +917,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4416666666
         },
@@ -946,7 +946,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4500000000
         },
@@ -975,7 +975,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4583333333
         },
@@ -1004,7 +1004,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4666666666
         },
@@ -1033,7 +1033,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4750000000
         },
@@ -1062,7 +1062,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4833333333
         },
@@ -1091,7 +1091,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 4916666666
         },
@@ -1120,7 +1120,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5166666666
         },
@@ -1149,7 +1149,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5250000000
         },
@@ -1178,7 +1178,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5333333333
         },
@@ -1207,7 +1207,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5416666666
         },
@@ -1236,7 +1236,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5500000000
         },
@@ -1265,7 +1265,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5583333333
         },
@@ -1294,7 +1294,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5666666666
         },
@@ -1323,7 +1323,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5750000000
         },
@@ -1352,7 +1352,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 5833333333
         },
@@ -1381,7 +1381,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6083333333
         },
@@ -1410,7 +1410,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6166666666
         },
@@ -1439,7 +1439,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6250000000
         },
@@ -1468,7 +1468,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6333333333
         },
@@ -1497,7 +1497,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6416666666
         },
@@ -1526,7 +1526,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6500000000
         },
@@ -1555,7 +1555,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 6583333333
         },
@@ -1600,7 +1600,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 13916666666
         },
@@ -1645,7 +1645,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14333333333
         },
@@ -1690,7 +1690,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14416666666
         },
@@ -1735,7 +1735,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14500000000
         },
@@ -1780,7 +1780,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14583333333
         },
@@ -1825,7 +1825,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14666666666
         },
@@ -1870,7 +1870,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14750000000
         },
@@ -1949,7 +1949,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14833333333
         },
@@ -2028,7 +2028,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 14916666666
         },
@@ -2073,7 +2073,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15000000000
         },
@@ -2118,7 +2118,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15083333333
         },
@@ -2163,7 +2163,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15166666666
         },
@@ -2208,7 +2208,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15250000000
         },
@@ -2253,7 +2253,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15333333333
         },
@@ -2298,7 +2298,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15416666666
         },
@@ -2377,7 +2377,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15500000000
         },
@@ -2422,7 +2422,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15583333333
         },
@@ -2501,7 +2501,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15666666666
         },
@@ -2546,7 +2546,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15750000000
         },
@@ -2625,7 +2625,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15833333333
         },
@@ -2704,7 +2704,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 15916666666
         },
@@ -2749,7 +2749,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16000000000
         },
@@ -2828,7 +2828,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16083333333
         },
@@ -2907,7 +2907,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16166666666
         },
@@ -2986,7 +2986,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16250000000
         },
@@ -3065,7 +3065,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16333333333
         },
@@ -3144,7 +3144,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16416666666
         },
@@ -3223,7 +3223,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16500000000
         },
@@ -3302,7 +3302,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16583333333
         },
@@ -3381,7 +3381,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16666666666
         },
@@ -3460,7 +3460,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16750000000
         },
@@ -3539,7 +3539,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16833333333
         },
@@ -3618,7 +3618,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 16916666666
         },
@@ -3697,7 +3697,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17000000000
         },
@@ -3776,7 +3776,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17083333333
         },
@@ -3821,7 +3821,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17166666666
         },
@@ -3900,7 +3900,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17250000000
         },
@@ -3945,7 +3945,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17333333333
         },
@@ -3990,7 +3990,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17416666666
         },
@@ -4035,7 +4035,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17500000000
         },
@@ -4080,7 +4080,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17583333333
         },
@@ -4125,7 +4125,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17666666666
         },
@@ -4170,7 +4170,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17750000000
         },
@@ -4249,7 +4249,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17833333333
         },
@@ -4328,7 +4328,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 17916666666
         },
@@ -4373,7 +4373,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18000000000
         },
@@ -4418,7 +4418,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18083333333
         },
@@ -4463,7 +4463,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18166666666
         },
@@ -4508,7 +4508,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18250000000
         },
@@ -4553,7 +4553,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18333333333
         },
@@ -4598,7 +4598,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18416666666
         },
@@ -4677,7 +4677,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18500000000
         },
@@ -4722,7 +4722,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18583333333
         },
@@ -4767,7 +4767,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18666666666
         },
@@ -4812,7 +4812,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18750000000
         },
@@ -4857,7 +4857,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18833333333
         },
@@ -4902,7 +4902,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 18916666666
         },
@@ -4947,7 +4947,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19000000000
         },
@@ -4992,7 +4992,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19083333333
         },
@@ -5037,7 +5037,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19166666666
         },
@@ -5082,7 +5082,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19250000000
         },
@@ -5127,7 +5127,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 19333333333
         },
@@ -5172,7 +5172,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 26666666666
         },
@@ -5217,7 +5217,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 26750000000
         },
@@ -5262,7 +5262,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 26833333333
         },
@@ -5307,7 +5307,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 26916666666
         },
@@ -5352,7 +5352,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 27333333333
         },
@@ -5397,7 +5397,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 28166666666
         },
@@ -5442,7 +5442,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 28916666666
         },
@@ -5471,7 +5471,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 40583333333
         },
@@ -5500,7 +5500,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 40666666666
         },
@@ -5529,7 +5529,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 40750000000
         },
@@ -5558,7 +5558,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 40833333333
         },
@@ -5587,7 +5587,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 40916666666
         },
@@ -5616,7 +5616,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41000000000
         },
@@ -5645,7 +5645,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41083333333
         },
@@ -5674,7 +5674,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41166666666
         },
@@ -5703,7 +5703,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41250000000
         },
@@ -5732,7 +5732,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41333333333
         },
@@ -5761,7 +5761,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41416666666
         },
@@ -5790,7 +5790,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41583333333
         },
@@ -5819,7 +5819,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41666666666
         },
@@ -5848,7 +5848,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41750000000
         },
@@ -5877,7 +5877,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41833333333
         },
@@ -5906,7 +5906,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 41916666666
         },
@@ -5935,7 +5935,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42000000000
         },
@@ -5964,7 +5964,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42083333333
         },
@@ -5993,7 +5993,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42166666666
         },
@@ -6022,7 +6022,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42250000000
         },
@@ -6051,7 +6051,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42333333333
         },
@@ -6080,7 +6080,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42416666666
         },
@@ -6109,7 +6109,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42500000000
         },
@@ -6138,7 +6138,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42583333333
         },
@@ -6167,7 +6167,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42666666666
         },
@@ -6196,7 +6196,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42750000000
         },
@@ -6225,7 +6225,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42833333333
         },
@@ -6254,7 +6254,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 42916666666
         },
@@ -6283,7 +6283,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43000000000
         },
@@ -6312,7 +6312,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43083333333
         },
@@ -6341,7 +6341,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43166666666
         },
@@ -6370,7 +6370,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43250000000
         },
@@ -6399,7 +6399,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43333333333
         },
@@ -6428,7 +6428,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43416666666
         },
@@ -6457,7 +6457,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43500000000
         },
@@ -6486,7 +6486,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43583333333
         },
@@ -6515,7 +6515,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43666666666
         },
@@ -6544,7 +6544,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43750000000
         },
@@ -6573,7 +6573,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43833333333
         },
@@ -6636,7 +6636,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 43916666666
         },
@@ -6699,7 +6699,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44000000000
         },
@@ -6762,7 +6762,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44083333333
         },
@@ -6825,7 +6825,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44166666666
         },
@@ -6888,7 +6888,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44250000000
         },
@@ -6951,7 +6951,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44333333333
         },
@@ -7014,7 +7014,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44416666666
         },
@@ -7077,7 +7077,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44500000000
         },
@@ -7140,7 +7140,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44583333333
         },
@@ -7203,7 +7203,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44666666666
         },
@@ -7266,7 +7266,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44750000000
         },
@@ -7329,7 +7329,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44833333333
         },
@@ -7392,7 +7392,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 44916666666
         },
@@ -7455,7 +7455,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45000000000
         },
@@ -7518,7 +7518,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45083333333
         },
@@ -7563,7 +7563,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45166666666
         },
@@ -7608,7 +7608,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45250000000
         },
@@ -7653,7 +7653,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45333333333
         },
@@ -7698,7 +7698,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45416666666
         },
@@ -7743,7 +7743,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45500000000
         },
@@ -7788,7 +7788,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45583333333
         },
@@ -7833,7 +7833,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45666666666
         },
@@ -7878,7 +7878,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45750000000
         },
@@ -7923,7 +7923,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45833333333
         },
@@ -7968,7 +7968,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 45916666666
         },
@@ -8013,7 +8013,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46000000000
         },
@@ -8058,7 +8058,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46083333333
         },
@@ -8103,7 +8103,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46166666666
         },
@@ -8148,7 +8148,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46250000000
         },
@@ -8193,7 +8193,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46333333333
         },
@@ -8238,7 +8238,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46416666666
         },
@@ -8283,7 +8283,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46500000000
         },
@@ -8328,7 +8328,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46583333333
         },
@@ -8373,7 +8373,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46666666666
         },
@@ -8418,7 +8418,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46750000000
         },
@@ -8463,7 +8463,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46833333333
         },
@@ -8508,7 +8508,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 46916666666
         },
@@ -8553,7 +8553,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47000000000
         },
@@ -8598,7 +8598,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47083333333
         },
@@ -8643,7 +8643,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47166666666
         },
@@ -8688,7 +8688,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47250000000
         },
@@ -8733,7 +8733,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47333333333
         },
@@ -8778,7 +8778,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47416666666
         },
@@ -8823,7 +8823,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47500000000
         },
@@ -8868,7 +8868,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47583333333
         },
@@ -8913,7 +8913,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47666666666
         },
@@ -8958,7 +8958,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47750000000
         },
@@ -9003,7 +9003,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47833333333
         },
@@ -9048,7 +9048,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 47916666666
         },
@@ -9093,7 +9093,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48000000000
         },
@@ -9138,7 +9138,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48083333333
         },
@@ -9183,7 +9183,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48166666666
         },
@@ -9228,7 +9228,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48250000000
         },
@@ -9273,7 +9273,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48333333333
         },
@@ -9318,7 +9318,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48416666666
         },
@@ -9363,7 +9363,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48500000000
         },
@@ -9408,7 +9408,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48583333333
         },
@@ -9453,7 +9453,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48666666666
         },
@@ -9498,7 +9498,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48833333333
         },
@@ -9543,7 +9543,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 48916666666
         },
@@ -9588,7 +9588,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 49000000000
         },
@@ -9633,7 +9633,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 49083333333
         },
@@ -9678,7 +9678,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 49166666666
         },
@@ -9723,7 +9723,7 @@
                 "height": 432,
                 "width": 768
             },
-            "source": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
             "tags": {},
             "timestamp": 49250000000
         }

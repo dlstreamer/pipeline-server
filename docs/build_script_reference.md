@@ -22,7 +22,7 @@ usage: build.sh
   [--build-arg additional build args to pass to docker build]
   [--base-build-arg additional build args to pass to docker build for base image]
   [--tag docker image tag]
-  [--create-service create an entrypoint to run video-analytics-serving as a service]
+  [--create-service create an entrypoint to run dlstreamer-pipeline-server as a service]
   [--target build a specific target]
   [--dockerfile-dir specify a different dockerfile directory]
   [--environment-file read and set environment variables from a file. Can be supplied multiple times.]
@@ -30,7 +30,7 @@ usage: build.sh
 ```
 All command line options are optional. Details of key options and their default values are shown below:
 ## Base Image (--base)
-This is the image that docker builds on. It must contain the full set of framework dependencies needed for either [DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst) or [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch) and must match the framework selected with the `--framework` option. If a base image is not defined you must provide the location of the Dockerfile to build the base image (see `--base-build-context` and `--base-build-dockerfile`).
+This is the image that docker builds on. It must contain the full set of framework dependencies needed for either [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst) or [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch) and must match the framework selected with the `--framework` option. If a base image is not defined you must provide the location of the Dockerfile to build the base image (see `--base-build-context` and `--base-build-dockerfile`).
 
 ## Framework (--framework)
 VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Select framework with `--framework` option. Default is `gstreamer`.
@@ -58,13 +58,13 @@ This option instructs the [model download tool](../tools/model_downloader/README
 If you have previously built for a different framework, you **must** download these again (or archive your models directory to different name), because the version of Open Model Zoo used by `--framework gstreamer` produces different output than when building with `--framework ffmpeg`.
 
 ## Pipeline Directory (--pipelines)
-Path to VA Serving pipelines. Path must be within docker build context which defaults to the root of the video-analytics-serving project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
+Path to VA Serving pipelines. Path must be within docker build context which defaults to the root of the dlstreamer-pipeline-server project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
 
 ## Base Build Context (--base-build-context)
 This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder.
 
 ## Base Build Dockerfile (--base-build-dockerfile)
-This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
+This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `Intel(R) DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
 
 ## Build Option (--build-option)
 Specify a docker build option when building the VA Serving image.
@@ -80,8 +80,8 @@ Specify and docker build argument when building the base image.
 
 ## Image Tag (--tag)
 Set tag of VA Serving image you build. Default value is `framework` based.
-* For `gstreamer` framework: `video-analytics-serving-gstreamer`
-* For `ffmpeg` framework: `video-analytics-serving-ffmpeg`
+* For `gstreamer` framework: `dlstreamer-pipeline-server-gstreamer`
+* For `ffmpeg` framework: `dlstreamer-pipeline-server-ffmpeg`
 
 ## Create Service (--create-service)
 Build the image as a service. Default value is TRUE.

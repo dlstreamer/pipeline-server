@@ -5,15 +5,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 
-echo "Stopping video analytics serving containers"
-docker stop $(docker ps -q -f name=video-analytics-serving) 2> /dev/null || echo "No containers to stop"
+echo "Stopping pipeline server containers"
+docker stop $(docker ps -q -f name=dlstreamer-pipeline-server) 2> /dev/null || echo "No containers to stop"
 
-echo "Removing video analytics serving containers"
-docker rm $(docker ps -q -f name=video-analytics-serving) 2> /dev/null || echo "No containers to remove"
+echo "Removing pipeline server containers"
+docker rm $(docker ps -q -f name=dlstreamer-pipeline-server) 2> /dev/null || echo "No containers to remove"
 
 function show_help {
   echo "usage: ./stop.sh"
-  echo "  [ --remove : remove video analytics serving images ]"
+  echo "  [ --remove : remove pipeline server images ]"
   echo "  [ --clean-shared-memory : remove files in /dev/shm to clean up shared memory ]"
 }
 
@@ -24,8 +24,8 @@ while [[ "$#" -gt 0 ]]; do
       exit
       ;;
     --remove)
-      echo "Removing video analytics serving images"
-      docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'video-analytics-serving') 2> /dev/null || echo "No images to remove"
+      echo "Removing pipeline server images"
+      docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'dlstreamer-pipeline-server') 2> /dev/null || echo "No images to remove"
       ;;
     --clean-shared-memory)
       echo "Removing all files in /dev/shm"

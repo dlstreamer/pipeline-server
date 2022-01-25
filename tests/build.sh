@@ -21,8 +21,8 @@ if [ -z "$PARENT_IMAGE" ]; then
     # TAG variable is set through the build script on previous line
     PARENT_IMAGE=$TAG
 else
-    # NOTE: We support building tests on top of any image. 
-    #       When caller overrides the PARENT_IMAGE, they may also need to supply 
+    # NOTE: We support building tests on top of any image.
+    #       When caller overrides the PARENT_IMAGE, they may also need to supply
     #       appropriate overrides of FRAMEWORK and/or PIPELINES depending on needs.
     if [ -z "$FRAMEWORK" ]; then
         FRAMEWORK="gstreamer"
@@ -38,7 +38,7 @@ SOURCE_DIR=$(dirname $DOCKERFILE_DIR)
 BUILD_ARGS=$(env | cut -f1 -d= | grep -E '_(proxy|REPO|VER)$' | sed 's/^/--build-arg / ' | tr '\n' ' ')
 BUILD_OPTIONS="--network=host --no-cache"
 BUILD_ARGS+=" --build-arg BASE=$PARENT_IMAGE --build-arg FRAMEWORK=$FRAMEWORK"
-TAG="video-analytics-serving-$FRAMEWORK-tests:latest"
+TAG="dlstreamer-pipeline-server-$FRAMEWORK-tests:latest"
 
 launch "docker build -f $DOCKERFILE_DIR/Dockerfile $BUILD_OPTIONS $BUILD_ARGS -t $TAG $SOURCE_DIR"
 

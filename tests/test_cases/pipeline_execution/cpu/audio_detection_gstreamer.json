@@ -7,7 +7,7 @@
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav"
+            "uri": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav"
         },
         "destination": {
             "type": "file",
@@ -39,7 +39,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -61,7 +61,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -83,7 +83,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -105,7 +105,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -127,7 +127,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -149,7 +149,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -171,7 +171,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -193,7 +193,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -215,7 +215,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -237,7 +237,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -259,7 +259,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -281,7 +281,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         },
         {
@@ -303,7 +303,7 @@
                 }
             ],
             "rate": 16000,
-            "source": "file:///home/video-analytics-serving/tests/media/how_are_you_doing.wav",
+            "source": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav",
             "tags": {}
         }
     ]

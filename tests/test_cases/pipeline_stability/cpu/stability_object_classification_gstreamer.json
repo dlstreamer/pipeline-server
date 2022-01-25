@@ -7,7 +7,7 @@
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4"
+            "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
         },
         "destination": {
             "type": "file",

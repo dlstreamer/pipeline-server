@@ -3,7 +3,7 @@
     "start" : {
         "body": {
             "source": {
-                "uri": "file:///home/video-analytics-serving/samples/classroom.mp4",
+                "uri": "file:///home/pipeline-server/samples/classroom.mp4",
                 "type": "uri"
             },
             "destination": {

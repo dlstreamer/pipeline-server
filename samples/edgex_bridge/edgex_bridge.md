@@ -12,7 +12,7 @@ usage: edgex_bridge.py [-h] [--source SOURCE] [--destination DESTINATION]
 optional arguments:
   -h, --help            show this help message and exit
   --source SOURCE       URI describing the source media to use as input.
-                        (default: https://github.com/intel/video-analytics-serving/raw/master/samples/bottle_detection.mp4)
+                        (default: https://github.com/intel/dlstreamer-pipeline-server/raw/master/samples/bottle_detection.mp4)
   --destination DESTINATION
                         address of MQTT broker listening for edgex inference
                         results. (default: localhost:1883)
@@ -31,7 +31,7 @@ optional arguments:
   --rtsp-path           Instructs VA Serving to render frames to RTSP at the supplied URI path segment (e.g., edgex_event_emitter).
                         (default: None)
   --analytics-image     Analytics image name to use for uService deployment to Docker compose.
-                        (default: video-analytics-serving-edgex:latest)
+                        (default: dlstreamer-pipeline-server-edgex:latest)
   --analytics-container Analytics container name to use for uService deployment to Docker compose.
-                        (default: edgex-video-analytics-serving)
+                        (default: edgex-dlstreamer-pipeline-server)
 ```

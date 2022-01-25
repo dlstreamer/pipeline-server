@@ -6,7 +6,7 @@ DOCKER_RUN_OPTIONS=
 TESTS_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $TESTS_DIR)
 INTERACTIVE=--non-interactive
-DOCKER_TESTS_DIR="/home/video-analytics-serving/tests"
+DOCKER_TESTS_DIR="/home/pipeline-server/tests"
 RESULTS_DIR="results"
 PYTEST_GSTREAMER_RESULTS_DIR="$RESULTS_DIR/pytest/gstreamer"
 PYTEST_FFMPEG_RESULTS_DIR="$RESULTS_DIR/pytest/ffmpeg"
@@ -116,7 +116,7 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
-IMAGE=video-analytics-serving-${FRAMEWORK}-tests:latest
+IMAGE=dlstreamer-pipeline-server-${FRAMEWORK}-tests:latest
 
 DOCKER_RESULTS_DIR="$DOCKER_TESTS_DIR/$OUTPUT_DIR"
 LOCAL_RESULTS_DIR="$TESTS_DIR/$OUTPUT_DIR"
@@ -130,7 +130,7 @@ VOLUME_MOUNT+="-v $LOCAL_RESULTS_DIR:$DOCKER_RESULTS_DIR "
 # Construct virtual paths to pipelines and models as required by test cases.
 if [[ "${FRAMEWORK}" == "gstreamer" ]]; then
   SOURCE_MODELS_DIR="$SOURCE_DIR/models"
-  DOCKER_MODELS_DIR="/home/video-analytics-serving/tests/test_cases/pipeline_execution/cpu/object_classification_intver_cpu_gstreamer_models"
+  DOCKER_MODELS_DIR="/home/pipeline-server/tests/test_cases/pipeline_execution/cpu/object_classification_intver_cpu_gstreamer_models"
   VOLUME_MOUNT+="-v $SOURCE_MODELS_DIR/object_detection/person_vehicle_bike/:$DOCKER_MODELS_DIR/object_detection/1/ "
   VOLUME_MOUNT+="-v $SOURCE_MODELS_DIR/object_classification/vehicle_attributes/:$DOCKER_MODELS_DIR/object_classification/1/ "
 fi

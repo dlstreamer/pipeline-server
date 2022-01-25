@@ -8,7 +8,7 @@ import pytest
 import re
 import time
 import sys
-sys.path.append('/home/video-analytics-serving/vaclient') # Temp fix before PYTHONPATH updated
+sys.path.append('/home/pipeline-server/vaclient') # Temp fix before PYTHONPATH updated
 import vaclient
 
 def test_vaclient(service, test_case, test_filename, generate, capsys):

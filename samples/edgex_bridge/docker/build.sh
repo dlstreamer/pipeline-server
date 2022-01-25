@@ -9,8 +9,8 @@ MODELS="models_list/models.list.yml"
 BASE_IMAGE=
 OMZ_VERSION=
 # Name the image we will build and add to EdgeX Foundry startup
-TAG_BASE="video-analytics-serving-edgex-base:latest"
-TAG="video-analytics-serving-edgex:latest"
+TAG_BASE="dlstreamer-pipeline-server-edgex-base:latest"
+TAG="dlstreamer-pipeline-server-edgex:latest"
 
 #Get options passed into script, passing through parameters supported by the parent build script.
 while [[ "$#" -gt 0 ]]; do

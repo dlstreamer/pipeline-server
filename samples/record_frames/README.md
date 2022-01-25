@@ -50,7 +50,7 @@ The updated template is shown below:
                 " ! tee name=t ! queue "
                 " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
                 " ! gvametaconvert name=metaconvert",
-                " ! gvapython name=gvapython module=/home/video-analytics-serving/extensions/add_frame_id.py class=FrameCounter",
+                " ! gvapython name=gvapython module=/home/pipeline-server/extensions/add_frame_id.py class=FrameCounter",
                 " ! gvametapublish name=destination",
                 " ! appsink name=appsink"
                 " t. ! queue ! videoconvert ! jpegenc ! multifilesink name=filesink"
@@ -92,7 +92,7 @@ In the following examples we use:
 
 Next start the service, ensuring the following
 * the updated pipeline with frame recording support is in the REST service image (or volume mounted)
-* the gvapython frame counting extension in in the REST service image in `/home/video-analytics-serving/extensions` (or volume mounted)
+* the gvapython frame counting extension in in the REST service image in `/home/pipeline-server/extensions` (or volume mounted)
 * the frame store location is volume mounted (`-v /path/to/samples/record_frames/frame_store:/path/to/samples/record_frames/frame_store`)
 
 ### Starting the pipeline
@@ -200,10 +200,10 @@ The run_client script does the following:
 * Uses the `frame-store` argument to specify frame store directory.
 * Sets the filename specifier to `%08d`
 * Starts the file saving pipeline with following request
-   * meta-data destination is mqtt with topic of `vaserving`
+   * meta-data destination is mqtt with topic of `pipeline-server`
    * parameter `file-location` which combines the `--frame-store` argument and file specifier to create `/path/to/samples/record_frames/frame_store/%08d.jpg`
 * Starts the python mqtt client that looks for the first vehicle in the stream and displays it image.
-   * Connects to broker and subscribes to mqtt topic `vaserving`
+   * Connects to broker and subscribes to mqtt topic `pipeline-server`
    * Listens for inference results with type `vehicle` above 75% confidence
    * Gets `frame_id` from meta-data and applies to filename specifier. As example, a `frame_id` value of 174 would map to path `/path/to/samples/record_frames/frame_store/00000174.jpg`
    * Displays image from file `/path/to/samples/record_frames/frame_store/00000174.jpg`
@@ -215,12 +215,12 @@ samples/record_frames/run_client.sh --frame-store samples/record_frames/frame_st
 ```
 <snip>
 Starting pipeline object_detection/record_frames, instance = 1
-Frame store file location = /path/to/video-analytics-serving/samples/record_frames/frame_store/%08d.jpg
+Frame store file location = /path/to/dlstreamer-pipeline-server/samples/record_frames/frame_store/%08d.jpg
 Starting mqtt client
 Connected to broker
-Subscribing to topic vaserving
+Subscribing to topic pipeline-server
 Detected vehicle: frame_id = 174
-Frame path: /path/to/video-analytics-serving/samples/record_frames/frame_store/00000174.jpg
+Frame path: /path/to/dlstreamer-pipeline-server/samples/record_frames/frame_store/00000174.jpg
 ```
 File `00000174.jpg` will then be displayed.
 ![](images/00000174.jpg)

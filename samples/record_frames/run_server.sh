@@ -36,6 +36,6 @@ fi
 mkdir -p $FRAME_STORE
 chmod -R a+rwx $FRAME_STORE
 rm -f $FRAME_STORE/*
-VOLUME_MOUNT+="-v $SCRIPT_DIR/extensions:/home/video-analytics-serving/extensions "
+VOLUME_MOUNT+="-v $SCRIPT_DIR/extensions:/home/pipeline-server/extensions "
 VOLUME_MOUNT+="-v $FRAME_STORE:$FRAME_STORE "
 "$ROOT_DIR/docker/run.sh" --network host --pipelines $SCRIPT_DIR/pipelines $VOLUME_MOUNT "$@"

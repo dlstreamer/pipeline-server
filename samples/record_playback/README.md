@@ -33,7 +33,7 @@ To run the program, use `./docker/run.sh --dev` to enter a container with the ap
 To playback metadata on top of recordings, access to an Xdisplay is required. This will be dependent on your setup. For most people working in a GUI environment, this will be the value for $DISPLAY on the host
 
 ```
-./docker/run.sh --dev -v $HOME/.Xauthority:/home/video-analytics-serving/.Xauthority
+./docker/run.sh --dev -v $HOME/.Xauthority:/home/pipeline-server/.Xauthority
 export DISPLAY=<X display you want to render to>
 ```
 
@@ -55,7 +55,7 @@ For playback, VIDEO_PATH is OUTPUT_FOLDER/<year>/<month>/<day> where OUTPUT_FOLD
 
 ### Example Record
 ```sh
-python3 ./samples/record_playback/record_playback.py --record --input-video-path /home/video-analytics-serving/samples/bottle_detection.mp4
+python3 ./samples/record_playback/record_playback.py --record --input-video-path /home/pipeline-server/samples/bottle_detection.mp4
 ```
 
 ### Example Playback on recorded segments (update input folder path year/month/day as appropriate)
@@ -65,7 +65,7 @@ python3 ./samples/record_playback/record_playback.py --playback --input-video-pa
 
 ### Example Playback on original video
 ```sh
-python3 ./samples/record_playback/record_playback.py --playback --input-video-path /home/video-analytics-serving/samples/bottle_detection.mp4 --metadata-file-path /tmp/metadata.txt
+python3 ./samples/record_playback/record_playback.py --playback --input-video-path /home/pipeline-server/samples/bottle_detection.mp4 --metadata-file-path /tmp/metadata.txt
 ```
 
 ## The 'Playing back video that does not conform to unixtimestamp_pts filename, assuming metadata file and video file timestamps match' warning

@@ -1,6 +1,6 @@
 # App Source and Destination Sample
 
-VA Serving source and destination definitions support a type `application` which allows programmatic interaction with the vaserving library.
+VA Serving source and destination definitions support a type `application` which allows programmatic interaction with the pipeline-server library.
 
 ## Source
 The source will be given access to a queue instantiated by the application. The source must be aware of the frame type so it can be converted to a GStreamer object

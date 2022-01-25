@@ -5,7 +5,7 @@ SAMPLE_DIR=$(dirname $WORK_DIR)
 # Prepare parameters used for generating docker compose parameters
 # Try supplying different stream inputs such as an RTSP camera feed, etc.
 DEMO_STREAM_INPUT="https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true"
-IMAGE_NAME=${IMAGE_NAME:-"video-analytics-serving-edgex:latest"}
+IMAGE_NAME=${IMAGE_NAME:-"dlstreamer-pipeline-server-edgex:latest"}
 
 # Notice we must override edgex-device-mqtt with localhost since
 # this container will run on 'host' network; only when using run.sh.
@@ -15,7 +15,7 @@ ENTRYPOINT_ARGS+="--entrypoint-args \"--source=$DEMO_STREAM_INPUT\" "
 ENTRYPOINT_ARGS+="--entrypoint-args \"--analytics-image=$IMAGE_NAME\" "
 
 # Mount to the host's pipelines to allow writes
-VOLUME_MOUNT="-v $SAMPLE_DIR/pipelines:/home/video-analytics-serving/pipelines "
+VOLUME_MOUNT="-v $SAMPLE_DIR/pipelines:/home/pipeline-server/pipelines "
 
 PASS_THROUGH_PARAMS=
 
@@ -44,7 +44,7 @@ while [[ "$#" -gt 0 ]]; do
       shift
       ;;
     --generate)
-      VOLUME_MOUNT+="-v $SAMPLE_DIR:/home/video-analytics-serving/samples/edgex_bridge " \
+      VOLUME_MOUNT+="-v $SAMPLE_DIR:/home/pipeline-server/samples/edgex_bridge " \
       ENTRYPOINT_ARGS+="--entrypoint-args \"--generate\" "
       shift
       ;;
@@ -55,7 +55,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 $RUN_PREFIX $SAMPLE_DIR/../../docker/run.sh \
-  --name edgex-vaserving \
+  --name edgex-pipeline-server \
   --image $IMAGE_NAME \
   $VOLUME_MOUNT \
   --user $UID:$GID \

@@ -1,13 +1,13 @@
 # Customizing Video Analytics Pipeline Requests
 | [Request Format](#request-format) | [Source](#source) | [Destination](#destination) | [Parameters](#parameters) | [Tags](#tags) |
 
-Pipeline requests are initiated to exercise the Video Analytics Serving REST API. Each pipeline in VA Serving has a specific endpoint. A pipeline can be started by issuing a `POST` request and a running pipeline can be stopped using a `DELETE` request. The `source` and `destination` elements of VA Serving [pipeline templates](defining_pipelines.md#pipeline-templates) are configured and constructed based on the `source` and `destination` from the incoming requests.
+Pipeline requests are initiated to exercise the Intel(R) DL Streamer Pipeline Server REST API. Each pipeline in VA Serving has a specific endpoint. A pipeline can be started by issuing a `POST` request and a running pipeline can be stopped using a `DELETE` request. The `source` and `destination` elements of VA Serving [pipeline templates](defining_pipelines.md#pipeline-templates) are configured and constructed based on the `source` and `destination` from the incoming requests.
 
 ## Request Format
 
 > Note: This document shows curl requests. Requests can also be sent via vaclient using the --request-file option see [VA Client Command Options](../vaclient/README.md#command-options)
 
-Pipeline requests sent to Video Analytics Serving REST API are JSON documents that have the following attributes:
+Pipeline requests sent to Intel(R) DL Streamer Pipeline Server REST API are JSON documents that have the following attributes:
 
 |Attribute | Description |
 |---------|-----|
@@ -249,7 +249,7 @@ Steps to run MQTT:
         "metadata": {
             "type": "mqtt",
             "host": "localhost:1883",
-            "topic": "vaserving",
+            "topic": "pipeline-server",
             "mqtt-client-id": "gva-meta-publish"
         }
     }
@@ -257,7 +257,7 @@ Steps to run MQTT:
   ```
   4. Connect to MQTT broker to view inference results
   ```bash
-  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic vaserving --id mosquitto-sub
+  docker run -it --network=host --entrypoint mosquitto_sub eclipse-mosquitto:1.6 --topic pipeline-server --id mosquitto-sub
   ```
 
   ```bash
@@ -317,7 +317,7 @@ Steps to run Kafka:
 
 2. Run the following command to launch Kafka broker as a detached service:
    ```bash
-   docker-compose -p vaserving -f docker-compose-kafka.yml up -d
+   docker-compose -p pipeline-server -f docker-compose-kafka.yml up -d
    ```
 
 3. Start VA Serving with host network enabled:
@@ -332,13 +332,13 @@ Steps to run Kafka:
    --destination type kafka  \
    --destination host localhost \
    --destination port 9092  \
-   --destination topic vaserving.person_vehicle_bike
+   --destination topic pipeline-server.person_vehicle_bike
    ```
 
 5. Connect to Kafka broker to view inference results:
    ```bash
-   docker exec -it vaserving_kafka_1 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
-      --bootstrap-server localhost:9092 --topic vaserving.person_vehicle_bike
+   docker exec -it pipeline-server_kafka_1 /opt/bitnami/kafka/bin/kafka-console-consumer.sh \
+      --bootstrap-server localhost:9092 --topic pipeline-server.person_vehicle_bike
    ```
 
    ```bash

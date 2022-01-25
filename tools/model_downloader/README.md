@@ -4,10 +4,10 @@
 The model downloader downloads and prepares models from the
 OpenVINO<sup>&#8482;</sup> Toolkit [Open Model
 Zoo](https://github.com/openvinotoolkit/open_model_zoo) for use with
-Video Analytics Serving. It can be run as a standalone tool or as
-part of the Video Analytics Serving build process. For more
+Intel(R) DL Streamer Pipeline Server. It can be run as a standalone tool or as
+part of the Intel(R) DL Streamer Pipeline Server build process. For more
 information on model file formats and the directory structure used by
-Video Analytics Serving see [defining_pipelines](/docs/defining_pipelines.md#deep-learning-models).
+Intel(R) DL Streamer Pipeline Server see [defining_pipelines](/docs/defining_pipelines.md#deep-learning-models).
 
 # Specifying Models
 
@@ -62,11 +62,11 @@ exists).
 # Downloading Models
 
 The model downloader can be run either as a standalone tool or as part
-of the Video Analytics Serving build process.
+of the Intel(R) DL Streamer Pipeline Server build process.
 
-## Downloading Models as part of Video Analytics Serving Build
+## Downloading Models as part of Intel(R) DL Streamer Pipeline Server Build
 
-The Video Analytics Serving build script downloads models listed in a
+The Intel(R) DL Streamer Pipeline Server build script downloads models listed in a
 yaml file that can be specified via the `--models` argument.
 
 Example:

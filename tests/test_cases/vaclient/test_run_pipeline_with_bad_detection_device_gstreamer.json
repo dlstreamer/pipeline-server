@@ -1,7 +1,7 @@
 {
     "test_function": "run_with_bad_detection_device",
     "pipeline": "object_detection/person_vehicle_bike",
-    "uri": "file:///home/video-analytics-serving/tests/media/person-bicycle-car-detection.mp4",
+    "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
     "detection_device": "foo",
-    "expected_output": "Error in pipeline, please check vaserving log messages"
+    "expected_output": "Error in pipeline, please check pipeline-server log messages"
 }

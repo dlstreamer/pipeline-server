@@ -2,7 +2,7 @@
 EXPECTED=""
 
 # Run client with bad option
-OUTPUT=$(set -o pipefail; docker inspect video-analytics-serving-gstreamer:latest | grep -i proxy)
+OUTPUT=$(set -o pipefail; docker inspect dlstreamer-pipeline-server-gstreamer:latest | grep -i proxy)
 RETURN_CODE=$?
 
 # Expect to not match string

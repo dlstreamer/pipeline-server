@@ -42,7 +42,7 @@
 					"name": "splitmuxsink",
 					"property": "location"
 				},
-				"default": "/tmp/vaserving"
+				"default": "/tmp/pipeline-server"
 			}
 		}
 	}

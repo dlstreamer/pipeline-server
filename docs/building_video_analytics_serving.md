@@ -1,7 +1,7 @@
-# Building Video Analytics Serving
+# Building Intel(R) DL Streamer Pipeline Server
 | [Build Stages](#build-stages) | [Default Build Commands and Image Names](#default-build-commands-and-image-names)  | [Selecting Pipelines and Models at Build Time](#selecting-pipelines-and-models-at-build-time) | [Supported Base Images](#supported-base-images) |
 
-The Video Analytics Serving docker image is designed to be customized
+The Intel(R) DL Streamer Pipeline Server docker image is designed to be customized
 to support different base images, models, pipelines, and application
 requirements. The following sections give an overview of the way the
 image is built as well as common customization patterns.
@@ -12,23 +12,23 @@ image is built as well as common customization patterns.
 
 
 # Build Stages
-Video Analytics Serving docker images are built in stages. Each stage
+Intel(R) DL Streamer Pipeline Server docker images are built in stages. Each stage
 can be customized to meet an application's requirements.
 
 | Stage | Description |
 | ----------- | ----------- |
 | **Media Analytics Base Image** |The **Media Analytics Base Image** contains a media framework plus all of its dependencies([GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* or [FFmpeg](https://ffmpeg.org/)* ). |
-| **Video Analytics Serving Library** | Python modules enabling the construction and control of media analytics pipelines. |
+| **Intel(R) DL Streamer Pipeline Server Library** | Python modules enabling the construction and control of media analytics pipelines. |
 | **Models and Pipelines** | Deep learning models in OpenVINO<sup>&#8482;</sup> IR format.  Media analytics pipeline definitions in JSON. |
-| **Application / Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Application or microservice using Video Analytics Serving python modules to execute media analytics pipelines. By default a Tornado based RESTful microservice is included. |
+| **Application / Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Application or microservice using Intel(R) DL Streamer Pipeline Server python modules to execute media analytics pipelines. By default a Tornado based RESTful microservice is included. |
 
 # Default Build Commands and Image Names
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/build.sh`| **ubuntu20_data_runtime:2021.4.2** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. |
-| `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
-### Building with OpenVINO<sup>&#8482;</sup>, Ubuntu 20.04 and DL Streamer Support
+| `./docker/build.sh`| **ubuntu20_data_runtime:2021.4.2** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
+### Building with OpenVINO<sup>&#8482;</sup>, Ubuntu 20.04 and Intel(R) DL Streamer Support
 **Example:**
 ```
 ./docker/build.sh --framework gstreamer
@@ -44,7 +44,7 @@ can be customized to meet an application's requirements.
 
 # Selecting Pipelines and Models at Build Time
 
-By default the Video Analytics Serving build scripts include a set of sample pipelines and models for object detection, classification, tracking and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the --pipelines and --models flags.
+By default the Intel(R) DL Streamer Pipeline Server build scripts include a set of sample pipelines and models for object detection, classification, tracking and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the --pipelines and --models flags.
 
 > **Note:** Selected pipeline definitions must match the media
 > framework supported in the media analytics base image.

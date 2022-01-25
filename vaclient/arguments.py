@@ -40,7 +40,7 @@ def get_typed_value(value):
         return value
 
 
-def parse_args(program_name="Video Analytics Serving Client"):
+def parse_args(program_name="Intel(R) DL Streamer Pipeline Server Client"):
     """Process command line options"""
     #pylint: disable=too-many-statements
     parser = argparse.ArgumentParser(
@@ -105,11 +105,11 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_stop.add_argument('instance', type=int, help='Pipeline instance id which to stop')
     parser_stop.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 
-    parser_list_pipelines = subparsers.add_parser('list-pipelines', help='List pipelines that are loaded by vaserving')
+    parser_list_pipelines = subparsers.add_parser('list-pipelines', help='List loaded pipelines')
     parser_list_pipelines.set_defaults(command=vaclient.list_pipelines)
     parser_list_pipelines.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 
-    parser_list_models = subparsers.add_parser('list-models', help='List models that are loaded by vaserving')
+    parser_list_models = subparsers.add_parser('list-models', help='List loaded models')
     parser_list_models.set_defaults(command=vaclient.list_models)
     parser_list_models.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
 

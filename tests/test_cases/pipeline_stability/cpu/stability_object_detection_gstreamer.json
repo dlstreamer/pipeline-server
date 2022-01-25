@@ -7,7 +7,7 @@
     "request": {
         "source": {
             "type": "uri",
-            "uri": "file:///home/video-analytics-serving/samples/pinwheel.ts"
+            "uri": "file:///home/pipeline-server/samples/pinwheel.ts"
         },
         "destination": {
             "type": "file",

@@ -1,4 +1,4 @@
-Thank you for your contribution to the Video Analytics Serving repository. 
+Thank you for your contribution to the Intel(R) Deep Learning Streamer Pipeline Server repository.
 
 Before submitting this PR, please make sure:
 

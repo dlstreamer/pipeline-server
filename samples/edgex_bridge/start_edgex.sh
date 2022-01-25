@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script invokes docker-compose to launch EdgeX microservices,
-# including the edgex-video-analytics-serving container.
+# including the edgex-dlstreamer-pipeline-server container.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 COMPOSE_PATH=$SCRIPT_DIR/edgex

@@ -39,10 +39,10 @@ OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data
 OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.2"}
 FORCE_MODEL_DOWNLOAD=
 
-DEFAULT_GSTREAMER_BASE_BUILD_TAG="video-analytics-serving-gstreamer-base"
+DEFAULT_GSTREAMER_BASE_BUILD_TAG="dlstreamer-pipeline-server-gstreamer-base"
 DEFAULT_GSTREAMER_BASE_BUILD_ARGS="--build-arg ENABLE_PAHO_INSTALLATION=true --build-arg ENABLE_RDKAFKA_INSTALLATION=true"
 
-DEFAULT_FFMPEG_BASE_BUILD_TAG="video-analytics-serving-ffmpeg-base"
+DEFAULT_FFMPEG_BASE_BUILD_TAG="dlstreamer-pipeline-server-ffmpeg-base"
 DEFAULT_FFMPEG_BASE_BUILD_ARGS=""
 
 function launch { echo $@
@@ -311,7 +311,7 @@ get_options() {
     fi
 
     if [ -z "$TAG" ]; then
-        TAG="video-analytics-serving-${FRAMEWORK}"
+        TAG="dlstreamer-pipeline-server-${FRAMEWORK}"
     fi
 }
 
@@ -328,7 +328,7 @@ show_base_options() {
 
 show_image_options() {
     echo ""
-    echo "Building Video Analytics Serving Image: '${TAG}'"
+    echo "Building Intel(R) DL Streamer Pipeline Server Image: '${TAG}'"
     echo ""
     echo "   Base: '${BASE_IMAGE}'"
     echo "   Build Context: '${SOURCE_DIR}'"
@@ -361,7 +361,7 @@ show_help() {
     echo "  [--build-arg additional build args to pass to docker build]"
     echo "  [--base-build-arg additional build args to pass to docker build for base image]"
     echo "  [--tag docker image tag]"
-    echo "  [--create-service create an entrypoint to run video-analytics-serving as a service]"
+    echo "  [--create-service create an entrypoint to run dlstreamer-pipeline-server as a service]"
     echo "  [--target build a specific target]"
     echo "  [--dockerfile-dir specify a different dockerfile directory]"
     echo "  [--environment-file read and set environment variables from a file. Can be supplied multiple times.]"
@@ -410,9 +410,9 @@ else
 fi
 
 if [ "$CREATE_SERVICE" == "TRUE" ]; then
-    BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-service "
+    BUILD_ARGS+="--build-arg FINAL_STAGE=dlstreamer-pipeline-server-service "
 else
-    BUILD_ARGS+="--build-arg FINAL_STAGE=video-analytics-serving-library "
+    BUILD_ARGS+="--build-arg FINAL_STAGE=dlstreamer-pipeline-server-library "
 fi
 
 cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
@@ -431,9 +431,9 @@ done
 
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
     cat $ENVIRONMENT_FILE_LIST | grep -E '=' | sed -e 's/,\s\+/,/g' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
-    echo "  HOME=/home/video-analytics-serving " >> $DOCKERFILE_DIR/final.env
+    echo "  HOME=/home/pipeline-server " >> $DOCKERFILE_DIR/final.env
     echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
-    printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/video-analytics-serving\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKERFILE_DIR/Dockerfile.env
+    printf "\nENV PYTHONPATH=\$PYTHONPATH:/home/pipeline-server\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKERFILE_DIR/Dockerfile.env
 fi
 
 show_image_options

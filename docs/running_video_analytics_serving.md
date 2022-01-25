@@ -1,7 +1,7 @@
-# Running Video Analytics Serving
-| [Video Analytics Serving Microservice](#video-analytics-serving-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Real Time Streaming Protocol (RTSP) Re-streaming](#real-time-streaming-protocol-rtsp-re-streaming) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
+# Running Intel(R) DL Streamer Pipeline Server
+| [Intel(R) DL Streamer Pipeline Server Microservice](#dlstreamer-pipeline-server-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Real Time Streaming Protocol (RTSP) Re-streaming](#real-time-streaming-protocol-rtsp-re-streaming) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
 
-Video Analytics Serving docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
+Intel(R) DL Streamer Pipeline Server docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
 
 The following sections give an overview of the way the
@@ -11,9 +11,9 @@ image is run as well as common customization and interaction patterns.
 > knowledge of docker commands and features. For more information
 > see docker [documentation](https://docs.docker.com/get-started/).
 
-# Video Analytics Serving Microservice
+# Intel(R) DL Streamer Pipeline Server Microservice
 
-The default image of Video Analytics Serving includes a microservice
+The default image of Intel(R) DL Streamer Pipeline Server includes a microservice
 that exposes a RESTful interface on port
 8080.  The microservice has endpoints to list, start, stop, and get
 the status of media analytics pipelines.
@@ -34,26 +34,26 @@ the status of media analytics pipelines.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/run.sh`|**DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`video-analytics-serving-gstreamer` | DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
-| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`video-analytics-serving-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
+| `./docker/run.sh`|**Intel(R) DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
+| `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
 
 
 # Interacting with the Microservice
 
 The following examples demonstrate how to start and issue requests to
-a Video Analytics Serving Microservice either using the `DL Streamer`
+a Intel(R) DL Streamer Pipeline Server Microservice either using the `Intel(R) DL Streamer`
 based image or the `FFmpeg` based image.
 
 > **Note:** The following examples assume that the Video Analytics
 > Serving image has already been built. For more information and
 > instructions on building please see the [Getting Started
-> Guide](../README.md) or [Building Video Analytics Serving Docker
+> Guide](../README.md) or [Building Intel(R) DL Streamer Pipeline Server Docker
 > Images](../docs/building_video_analytics_serving.md)
 
-> **Note:** Both the `DL Streamer` based microservice and the `FFmpeg`
+> **Note:** Both the `Intel(R) DL Streamer` based microservice and the `FFmpeg`
 > based microservice use the same default port: `8080` and only one
 > can be started at a time. To change the port please see the command
-> line options for the Video Analytics Serving microservice.
+> line options for the Intel(R) DL Streamer Pipeline Server microservice.
 >
 
 ## Starting the Microservice
@@ -61,7 +61,7 @@ based image or the `FFmpeg` based image.
 To start the microservice use standard `docker run` commands via the
 provided utility script.
 
-### DL Streamer based Microservice
+### Intel(R) DL Streamer based Microservice
 **Example:**
 ```bash
 docker/run.sh -v /tmp:/tmp
@@ -106,7 +106,7 @@ curl localhost:8080/pipelines
 
 ### Detecting Objects in a Sample Video File
 **Example:**
-> **Note:** In this example we assume you are running DL Streamer based Microservice
+> **Note:** In this example we assume you are running Intel(R) DL Streamer based Microservice
 ```bash
 curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 'Content-Type: application/json' -d \
@@ -139,21 +139,21 @@ To stop the microservice use standard `docker stop` or `docker
 kill` commands with the name of the running container.
 
 
-### DL Streamer based Microservice
+### Intel(R) DL Streamer based Microservice
 **Example:**
 
 ```bash
-docker stop video-analytics-serving-gstreamer
+docker stop dlstreamer-pipeline-server-gstreamer
 ```
 
 ### FFmpeg Video Analytics based Microservice
 **Example:**
 ```bash
-docker stop video-analytics-serving-ffmpeg
+docker stop dlstreamer-pipeline-server-ffmpeg
 ```
 
 # Real Time Streaming Protocol (RTSP) Re-streaming
-> **Note:** RTSP Re-streaming supported only in DL Streamer based Microservice.
+> **Note:** RTSP Re-streaming supported only in Intel(R) DL Streamer based Microservice.
 
 VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
 
@@ -210,7 +210,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 
 # Selecting Pipelines and Models at Runtime
 
-The models and pipelines loaded by the Video Analytics Serving
+The models and pipelines loaded by the Intel(R) DL Streamer Pipeline Server
 microservice can be selected at runtime by volume mounting the
 appropriate directories when starting the container.
 
@@ -221,7 +221,7 @@ appropriate directories when starting the container.
 > service start-up. To make modifications the service must be
 > restarted.
 
-### Mounting Pipelines and Models into a DL Streamer based Image
+### Mounting Pipelines and Models into a Intel(R) DL Streamer based Image
 **Example:**
 
 ```bash
@@ -264,7 +264,7 @@ On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoo
 
 Configure your host by following the steps outlined in the OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
 
-> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Video Analytics Serving docker container using the following command:
+> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Intel(R) DL Streamer Pipeline Server docker container using the following command:
 ```bash
 ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino/inference_engine/external/97-myriad-usbboot.rules /tmp"
 ```
@@ -296,14 +296,14 @@ Developer mode:
 * Uses the docker option `--network=host`. All ports and network interfaces for the host are shared with the container.
 * Uses the docker option `--privileged`. Operates the container with elevated privileges.
 
-### DL Streamer based Image in Developer Mode
+### Intel(R) DL Streamer based Image in Developer Mode
 **Example:**
 
 ```bash
 docker/run.sh --dev
 ```
 ```
-vaserving@my-host:~$ python3 -m vaserving
+pipeline-server@my-host:~$ python3 -m pipeline-server
 ```
 
 ---

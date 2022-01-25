@@ -101,11 +101,11 @@ VA Serving comes with an [example configuration](../../vaclient/parameter_files/
     ```
     ./docker/run.sh -v /tmp:/tmp --enable-rtsp
 
-3. Run object-line-crossing pipeline with vaclient using example parameter file with additional parameter `rtsp-path`. Note that `rtsp-path` is set to `vaserving`, this path is    what will be used to view the rtsp stream:
+3. Run object-line-crossing pipeline with vaclient using example parameter file with additional parameter `rtsp-path`. Note that `rtsp-path` is set to `pipeline-server`, this path is    what will be used to view the rtsp stream:
     ```
-    vaclient/vaclient.sh run object_tracking/object_line_crossing https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --parameter-file vaclient/parameter_files/object-line-crossing.json --rtsp-path vaserving
+    vaclient/vaclient.sh run object_tracking/object_line_crossing https://github.com/intel-iot-devkit/sample-videos/blob/master/people-detection.mp4?raw=true --parameter-file vaclient/parameter_files/object-line-crossing.json --rtsp-path pipeline-server
     ```
 
-4. Open up a media player with network stream viewing (VLC for example) and connect to `rtsp:://<host ip>:8554/vaserving`. The stream is real time so you make need to rerun the pipeline request to see the stream. You will see people-detection.mp4 with an overlay of points. Each line x, has a start point (x_Start) and end point (x_End). At the midpoint between start and end, a count displays how many objects have crossed the line.
+4. Open up a media player with network stream viewing (VLC for example) and connect to `rtsp:://<host ip>:8554/pipeline-server`. The stream is real time so you make need to rerun the pipeline request to see the stream. You will see people-detection.mp4 with an overlay of points. Each line x, has a start point (x_Start) and end point (x_End). At the midpoint between start and end, a count displays how many objects have crossed the line.
 
     ![object_line_crossing_watermark](object_line_crossing_watermark.png)

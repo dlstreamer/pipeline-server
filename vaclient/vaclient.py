@@ -40,7 +40,7 @@ RTSP_TEMPLATE = {
         "path": ""
     }
 }
-SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the vaserving microservice is running"
+SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the pipeline-server microservice is running"
 
 def run(args):
     request = REQUEST_TEMPLATE
@@ -201,7 +201,7 @@ def wait_for_pipeline_running(instance_id,
     while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
         status = get_pipeline_status(instance_id)
         if status and status["state"] == "ERROR":
-            raise ValueError("Error in pipeline, please check vaserving log messages")
+            raise ValueError("Error in pipeline, please check pipeline-server log messages")
         time.sleep(SLEEP_FOR_STATUS)
         timeout_count += 1
         if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
@@ -216,7 +216,7 @@ def wait_for_pipeline_completion(instance_id):
         status = get_pipeline_status(instance_id)
         time.sleep(SLEEP_FOR_STATUS)
     if status and status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check vaserving log messages")
+        raise ValueError("Error in pipeline, please check pipeline-server log messages")
 
     return status
 

@@ -1,6 +1,6 @@
-# Video Analytics Serving EdgeX Bridge
+# Intel(R) DL Streamer Pipeline Server EdgeX Bridge
 
-This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Video Analytics Serving and [DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
+This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) DL Streamer Pipeline Server and [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
 
 | [Overview](#overview) | [Prerequisites](#prerequisites) | [Tutorial](#tutorial) | [Extend Sample](#extend-the-sample) | [Troubleshooting](#troubleshooting) | [Deploying](#deploying-edgex-aware-microservices) | [Script Arguments](./edgex_bridge.md#script-arguments) |
 
@@ -26,7 +26,7 @@ This section lists additional dependencies needed to complete this tutorial, bey
 
 ### Pipeline
 
-The EdgeX Bridge sample uses a DL Streamer based pipeline definition with a version that designates its purpose. The reference pipeline found beneath `./pipelines/object_detect/edgex_event_emitter` uses standard gstreamer elements for parsing, decoding, and converting incoming media files, gvadetect to detect objects within each 15th frame (producing results relative to the source's frame rate), gvametaconvert to produce json from detections, gvapython to call a custom python module to _transform_ labeled detections, and finally gvametapublish to publish results to the [edgex-device-mqtt](https://github.com/edgexfoundry/device-mqtt-go) device service.
+The EdgeX Bridge sample uses a Intel(R) DL Streamer based pipeline definition with a version that designates its purpose. The reference pipeline found beneath `./pipelines/object_detect/edgex_event_emitter` uses standard gstreamer elements for parsing, decoding, and converting incoming media files, gvadetect to detect objects within each 15th frame (producing results relative to the source's frame rate), gvametaconvert to produce json from detections, gvapython to call a custom python module to _transform_ labeled detections, and finally gvametapublish to publish results to the [edgex-device-mqtt](https://github.com/edgexfoundry/device-mqtt-go) device service.
 
 ### Object Detection Model
 
@@ -40,7 +40,7 @@ The list of objects that this network can detect are:
 
 ## Tutorial
 
-This self-contained tutorial walks through a working example to fetch and prepare EdgeX configuration to receive Video Analytics Serving object detection events. Confirm prerequisites are installed before we begin.
+This self-contained tutorial walks through a working example to fetch and prepare EdgeX configuration to receive Intel(R) DL Streamer Pipeline Server object detection events. Confirm prerequisites are installed before we begin.
 
    ```bash
    docker-compose --version
@@ -58,7 +58,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
 
    ```bash
    cd ~/dev
-   git clone https://github.com/intel/video-analytics-serving.git vasEdge
+   git clone https://github.com/intel/dlstreamer-pipeline-server.git vasEdge
    cd vasEdge/samples/edgex_bridge
    ```
 
@@ -77,7 +77,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
 
    > NOTE: This fetches the EdgeX `Hanoi` release of [EdgeX docker compose files](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/hanoi/compose-files/README.md) that we will use to bootstrap our launch of the EdgeX Framework. This script also pulls the base configuration from the device-mqtt container. When it completes you will find a  `./edgex` subfolder is created with these contents.
 
-1. Build the sample `video-analytics-serving-edgex` image:
+1. Build the sample `dlstreamer-pipeline-server-edgex` image:
 
    ```bash
    ./docker/build.sh
@@ -95,7 +95,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    ./start_edgex.sh
    ```
 
-   > NOTE: The first time this runs, each of the EdgeX microservice Docker images will automatically download to your host. The `edgex-video-analytics-serving` container will launch after the `edgex-device-mqtt` container reports it is healthy.
+   > NOTE: The first time this runs, each of the EdgeX microservice Docker images will automatically download to your host. The `edgex-dlstreamer-pipeline-server` container will launch after the `edgex-device-mqtt` container reports it is healthy.
 
 #### Inspect Results and EdgeX References
 
@@ -116,7 +116,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    22
    ```
 
-   With each analysis run we will see another **22** events loading in to EdgeX, each one ready for further processing by EdgeX Rules Engine and Application Services. You may easily trigger these by re-running `./start_edgex.sh` since the edgex-video-analytics-serving container exits after it completes processing of the .mp4/stream.
+   With each analysis run we will see another **22** events loading in to EdgeX, each one ready for further processing by EdgeX Rules Engine and Application Services. You may easily trigger these by re-running `./start_edgex.sh` since the edgex-dlstreamer-pipeline-server container exits after it completes processing of the .mp4/stream.
 
    > HINT: If you do get event count 0, check the [troubleshooting](#troubleshooting) section to inspect logs.
 
@@ -142,7 +142,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    > HINT: If you don't see immediate results, check for an error:
 
    ```bash
-   docker logs edgex-video-analytics-serving
+   docker logs edgex-dlstreamer-pipeline-server
    ```
 
 #### Render Pipeline Output
@@ -191,7 +191,7 @@ With this rendering client in place, launch using:
 
 ## Extend the Sample
 
-The `video-analytics-serving-edgex` image may be extended by updating sources on your host with the commands we reviewed in the tutorial. You may also choose to update and develop iteratively from within the image itself.
+The `dlstreamer-pipeline-server-edgex` image may be extended by updating sources on your host with the commands we reviewed in the tutorial. You may also choose to update and develop iteratively from within the image itself.
 
 ### Creative Mode
 
@@ -199,13 +199,13 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
 
    Refer to [Changing Object Detection Models](/docs/changing_object_detection_models.md) for creative guidance.
 
-   > NOTE: Each time you make changes to the pipeline definition you will need to run `./docker/build.sh` so the update is reflected in the `video-analytics-serving-edgex` image. If you prefer to make many _iterative_ changes, an alternative to this is to volume mount your local folder and instruct our container to use what currently persists on your host's pipeline.json.
+   > NOTE: Each time you make changes to the pipeline definition you will need to run `./docker/build.sh` so the update is reflected in the `dlstreamer-pipeline-server-edgex` image. If you prefer to make many _iterative_ changes, an alternative to this is to volume mount your local folder and instruct our container to use what currently persists on your host's pipeline.json.
 
    To mount to the pipelines folder on your host, allowing direct pipeline.json changes to take effect inside your container, uncomment the line in ./edgex/docker.compose.override`:
 
    ```suggestion:-0+0
    <snip>
-   #      - ./../pipelines:/home/video-analytics-serving/samples/edgex_bridge/pipelines
+   #      - ./../pipelines:/home/pipeline-server/samples/edgex_bridge/pipelines
    ```
 
 1. The `edgex_bridge.py` sample allows you to generate and run using other profile names, topics to extend the interactions you may need with your EdgeX applications. Refer to the reference section below for details.
@@ -265,7 +265,7 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
 
    ```suggestion:-0+0
    ...
-   image: video-analytics-serving-edgex:latest
+   image: dlstreamer-pipeline-server-edgex:latest
    ...
    command: "--source=https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --topic=vehicles_detected"
    ...
@@ -283,8 +283,8 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
    edgex-app-service-configurable-rules is up-to-date
    edgex-device-mqtt is up-to-date
    edgex-sys-mgmt-agent is up-to-date
-   Recreating edgex-video-analytics-serving ...
-   Recreating edgex-video-analytics-serving ... done
+   Recreating edgex-dlstreamer-pipeline-server ...
+   Recreating edgex-dlstreamer-pipeline-server ... done
    ```
 
    > TIP: You can optionally control the full set of commands by using an environment variable. This will allow more complete dynamic adjustment of runtime parameters.
@@ -318,7 +318,7 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
    Stopping edgex-core-consul                    ... done
    Stopping edgex-mqtt-broker                    ... done
    Removing edgex-kuiper                         ... done
-   Removing edgex-video-analytics-serving        ... done
+   Removing edgex-dlstreamer-pipeline-server        ... done
    Removing edgex-app-service-configurable-rules ... done
    Removing edgex-sys-mgmt-agent                 ... done
    Removing edgex-device-mqtt                    ... done
@@ -359,16 +359,16 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
 1. Check logs by issuing:
 
    ```bash
-   docker logs edgex-video-analytics-serving
+   docker logs edgex-dlstreamer-pipeline-server
    ```
 
 1. Manually inspect contents of the container by running this command:
 
    ```bash
-   docker run -it --entrypoint /bin/bash edgex-video-analytics-serving
+   docker run -it --entrypoint /bin/bash edgex-dlstreamer-pipeline-server
    ```
 
-1. To independently run edgex-video-analytics-serving in DEV mode, issue this command:
+1. To independently run edgex-dlstreamer-pipeline-server in DEV mode, issue this command:
 
    ```bash
    ./docker/run.sh --dev --user $UID:$GID
@@ -377,7 +377,7 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
    You will then be running within the bash shell of your container:
 
    ```console
-   vaserving@your-hostname:~$ _
+   pipeline-server@your-hostname:~$ _
    ```
 
    This provides you with a bash shell with a complete Python runtime development environment so you can update and run within the context of your
@@ -394,7 +394,7 @@ The `video-analytics-serving-edgex` image may be extended by updating sources on
 
 You will see the following results by probing EdgeX endpoints. These are useful for your integration with EdgeX Application Services.
 
-1. Remember this sample shows that the `edgex-video-analytics-serving` container is forwarding detection events through the `edgex-device-mqtt` device service which is registered with EdgeX and we can view details reported by edgex-core-metadata (which responds on port 48081):
+1. Remember this sample shows that the `edgex-dlstreamer-pipeline-server` container is forwarding detection events through the `edgex-device-mqtt` device service which is registered with EdgeX and we can view details reported by edgex-core-metadata (which responds on port 48081):
 
    ```bash
    curl -i --get http://localhost:48081/api/v1/deviceservice/name/edgex-device-mqtt
@@ -463,7 +463,7 @@ You will see the following results by probing EdgeX endpoints. These are useful 
       "profile": {
          "created": 1638752473481,
          "modified": 1638752473481,
-         "description": "Device profile for inference events published by Video Analytics Serving over MQTT.",
+         "description": "Device profile for inference events published by Intel(R) DL Streamer Pipeline Server over MQTT.",
          "id": "bbf57a53-be3c-4e0b-800e-d3a1257bb567",
          "name": "videoAnalytics-mqtt",
          "manufacturer": "VideoAnalyticsServing",

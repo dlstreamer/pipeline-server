@@ -1,5 +1,5 @@
 #!/bin/bash
-TARGET_IMAGE=${IMAGE:-video-analytics-serving-gstreamer:latest}
+TARGET_IMAGE=${IMAGE:-dlstreamer-pipeline-server-gstreamer:latest}
 TESTS_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $TESTS_DIR)
 RESULTS_DIR=${RESULTS_DIR:-"$TESTS_DIR/results/dockerbench"}

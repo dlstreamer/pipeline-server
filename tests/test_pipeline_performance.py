@@ -19,7 +19,7 @@ from tests.common import pipeline_processing
 TIMEOUT = 120
 HTTP_OK = 200
 states = ["QUEUED", "RUNNING", "ABORTED", "COMPLETED"]
-results_output_file = "/home/video-analytics-serving/tests/results/pytest/gstreamer/average_fps.txt"
+results_output_file = "/home/pipeline-server/tests/results/pytest/gstreamer/average_fps.txt"
 turbo_filepath_string = "/sys/devices/system/cpu/intel_pstate/no_turbo"
 
 @pytest.mark.performance

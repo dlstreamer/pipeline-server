@@ -69,7 +69,7 @@ avg_fps: 39.66
 However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, vaclient will terminate with an error message
 ```
 Pipeline instance = 2
-Error in pipeline, please check vaserving log messages
+Error in pipeline, please check pipeline-server log messages
 ```
 
 ### Starting Pipelines
