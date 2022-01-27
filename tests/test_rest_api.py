@@ -31,7 +31,6 @@ def test_rest_api(service, test_case, test_filename, generate):
         assert False, "Unknown Test Case Verb"
     if generate:
         test_case["status_code"] = response.status_code
-        test_case["result"] = json.loads(response.text)
         with open(test_filename+'.generated', "w") as test_output:
             json.dump(test_case, test_output, indent=4)
     else:

@@ -89,7 +89,7 @@ The corresponding vaclient output resembles:
 For example:
 
 ```code
-Starting pipeline action_recognition/general, instance = 1
+Starting pipeline action_recognition/general, instance = <uuid>
 Timestamp 0
 - surfing crowd (0.01)
 Timestamp 83333333

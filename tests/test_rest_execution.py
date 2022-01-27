@@ -10,6 +10,7 @@ import requests
 import pytest
 import urllib
 import time
+import uuid
 from tests.common import pipeline_processing
 
 TIMEOUT = 30
@@ -18,7 +19,6 @@ states = ["QUEUED", "RUNNING", "ABORTED", "COMPLETED"]
 states_negative = ["QUEUED", "ERROR"]
 
 def test_rest_execution(service, test_case, test_filename, generate):
-
     url = urllib.parse.urljoin(service.host, test_case['path'])
     start_test = test_case["start"]
     response = requests.post(url,
@@ -31,15 +31,17 @@ def test_rest_execution(service, test_case, test_filename, generate):
         return
     # Check response to POST
     assert response.status_code == HTTP_OK, "Status Code Mismatch"
-    instance = int(response.text)
-    assert type(instance) == int, "Response Type Mismatch"
-    assert instance > 0, "Invalid instance"
+    instance = response.text.replace('"','').strip('\n')
+    try:
+        uuid.UUID(instance)
+    except:
+        assert False, "Invalid instance"
 
     # Check get all instances call
     all_status_url = urllib.parse.urljoin(service.host, "pipelines/status")
     response = requests.get(all_status_url, timeout=TIMEOUT)
     statuses = json.loads(response.text)
-    assert len(statuses) == instance, "Invalid number of entries in all instances status"
+    assert len(statuses) > 0, "No entries in all instances status"
     response.close()
 
     # Check pipeline state transitions

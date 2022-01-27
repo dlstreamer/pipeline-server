@@ -256,7 +256,7 @@ def post(url, body, show_request=False):
             sys.exit(0)
         launch_response = requests.post(url, json=body, timeout=TIMEOUT)
         if launch_response.status_code == RESPONSE_SUCCESS:
-            instance_id = int(launch_response.text)
+            instance_id = json.loads(launch_response.text)
             return instance_id
         print("Got unsuccessful status code: {}".format(launch_response.status_code))
         print(launch_response.text)

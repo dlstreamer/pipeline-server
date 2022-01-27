@@ -45,7 +45,7 @@ If the pipeline request is successful, an instance id is created and vaclient wi
 Once pre-roll is completed and pipeline begins running, the output file is processed by vaclient and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, vaclient will output the average fps. More on `stop` below
 
 ```
-Pipeline instance = 1
+Pipeline instance = <uuid>
 Pipeline running
 <snip>
 Timestamp 48583333333
@@ -68,7 +68,7 @@ avg_fps: 39.66
 ```
 However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, vaclient will terminate with an error message
 ```
-Pipeline instance = 2
+Pipeline instance = <uuid>
 Error in pipeline, please check pipeline-server log messages
 ```
 
@@ -79,7 +79,7 @@ The `run` command is helpful for quickly showing inference results but `run` blo
 ```
 Similar to `run`, if the pipeline request is successful, an instance id is created and vaclient will print the instance. More on `instance_id` below.
 ```
-Pipeline instance = 1
+Pipeline instance = <uuid>
 ```
 Errors during pipeline execution are not flagged as vaclient exits after receiving instance id for a successful request. However, both `start` and `run` will flag invalid requests, for example:
 ```
@@ -94,14 +94,14 @@ Pipeline failed to start
 ```
 
 #### Instance ID
-On a successful start of a pipeline, VA Serving assigns a pipeline `instance_id` which is a unique number which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `1`
+On a successful start of a pipeline, VA Serving assigns a pipeline `instance_id` which is a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `0fe8f408ea2441bca8161e1190eefc51`
 ```
-Starting pipeline object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 0fe8f408ea2441bca8161e1190eefc51
 ```
 ### Stopping Pipelines
 Stopping a pipeline can be accomplished using the `stop` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 1
+./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
 Expected output: Average fps also printed for stopped pipeline.
 ```
@@ -112,7 +112,7 @@ avg_fps: 42.07
 ### Getting Pipeline Status
 Querying the current state of the pipeline is done using the `status` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 1
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
 vaclient will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` like so
 ```
@@ -123,7 +123,7 @@ RUNNING
 ### Waiting for a pipeline to finish
 If you wish to wait for a pipeline to finish running you can use the `wait` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 1
+./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
 The client will print the initial status of the pipeline. Then wait for completion and print the average fps.
 
@@ -135,13 +135,13 @@ This example starts two pipelines and then gets their status and request details
 ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
-Starting pipeline object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = 94cf72b718184615bfc181c6589b240c
 ```
 ```
 ./vaclient/vaclient.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 ```
-Starting pipeline object_classification/vehicle_attributes, instance = 2
+Starting pipeline object_classification/vehicle_attributes, instance = 978e09c561f14fa1b793e8b644f30031
 ```
 ```
 ./vaclient/vaclient.sh list-instances

@@ -160,7 +160,7 @@ The file path is specified in the `destination` section of the REST request and 
 ## Pipeline States
 ### Queued, Running and Completed
 The vaclient `run` command starts the pipeline. The underlying REST request returns a `pipeline instance` which is used to query the state of the pipeline.
-All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the vaclient `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` which is used by the `status` command to view pipeline state.
+All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the vaclient `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` (a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)) which is used by the `status` command to view pipeline state.
 > **NOTE:** The pipeline instance value depends on the number of pipelines started while the server is running so may differ from the value shown in the following examples.
 
 ```
@@ -168,11 +168,11 @@ All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate
 ```
 ```
 <snip>
-Starting pipeline object_detection/person_vehicle_bike, instance = 2
+Starting pipeline object_detection/person_vehicle_bike, instance = d83502e3ef314e8fbec8dc926eadd0c2
 ```
 You will need both the pipeline tuple and `instance` id for the status command. This command will display pipeline state:
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
 ```
 ```
 <snip>
@@ -180,7 +180,7 @@ RUNNING
 ```
 Then wait for a minute or so and try again. Pipeline will be completed.
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
 ```
 ```
 <snip>
@@ -194,17 +194,17 @@ Start the pipeline again, this time we'll stop it.
 ```
 ```
 <snip>
-Starting pipeline object_detection/person_vehicle_bike, instance = 3
+Starting pipeline object_detection/person_vehicle_bike, instance = 8ad2c85af4bd473e8a693aff562be316
 ```
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 8ad2c85a-f4bd473e8a693aff562be316
 ```
 ```
 <snip>
 RUNNING
 ```
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 3
+./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
 ```
 ```
 <snip>
@@ -213,7 +213,7 @@ Pipeline stopped
 avg_fps: 24.33
 ```
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 3
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
 ```
 ```
 <snip>
@@ -226,12 +226,12 @@ The error state covers a number of outcomes such as the request could not be sat
 ```
 ```
 <snip>
-Starting pipeline object_detection/person_vehicle_bike, instance = 4
+Starting pipeline object_detection/person_vehicle_bike, instance = 2bb2d219-310a4ee881faf258fbcc4355
 ```
 Note that VA Serving does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
 Checking on state a few seconds later will show the error.
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 4
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2bb2d219310a4ee881faf258fbcc4355
 ```
 ```
 <snip>
@@ -251,7 +251,7 @@ Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`
 ```
 If you see the error
 ```
-Starting pipeline object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
 Error in pipeline, please check vaserving log messages
 ```
 You probably forgot to enable RTSP in the server.
@@ -268,7 +268,7 @@ With vaclient it is easy to customize service requests. Here will use a vehicle 
 ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 ```
-Starting pipeline object_classification/vehicle_attributes, instance = 1
+Starting pipeline object_classification/vehicle_attributes, instance = <uuid>
 Pipeline running
 <snip>
 Timestamp 18080000000
@@ -301,7 +301,7 @@ but this time use the integrated GPU for detection inference by setting the `det
 ./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
 ```
 ```
-Starting pipeline object_classification/vehicle_attributes, instance = 2
+Starting pipeline object_classification/vehicle_attributes, instance = <uuid>
 ```
 > **Note:** The GPU inference plug-in dynamically builds OpenCL kernels when it is first loaded resulting in a ~30s delay before inference results are produced.
 

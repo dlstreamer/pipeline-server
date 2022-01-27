@@ -18,7 +18,6 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
         request['source']['uri'] = test_case['uri']
         instance_id = vaclient.start_pipeline(request, test_case['pipeline'], show_request=show_request)
         assert instance_id is not None
-        assert instance_id > 0
         time.sleep(test_case['sleep_time_sec'])
         status = vaclient.get_pipeline_status(instance_id)
         assert status['state'] == 'RUNNING'

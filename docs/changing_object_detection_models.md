@@ -69,7 +69,7 @@ In a second terminal window use [vaclient](/vaclient/README.md) to run the pipel
 ```
 ```
 <snip>
-Starting pipeline object_detection/person_vehicle_bike, instance = 1
+Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
 Timestamp 33519553
 - vehicle (0.53) [0.79, 0.71, 0.89, 0.88]
 Timestamp 67039106
@@ -252,7 +252,7 @@ You can see the `yolo-v2-tiny-tf` model in action as objects are now correctly d
 ./vaclient/vaclient.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
 ```
 ```
-Pipeline running: object_detection/yolo-v2-tiny-tf, instance = 1
+Pipeline running: object_detection/yolo-v2-tiny-tf, instance = <uuid>
 Timestamp 972067039
 - bottle (0.51) [0.09, 0.36, 0.18, 0.62]
 Timestamp 1005586592

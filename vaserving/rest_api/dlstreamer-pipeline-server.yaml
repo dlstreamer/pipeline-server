@@ -127,8 +127,8 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
+          format: uuid
         style: simple
       responses:
         200:
@@ -157,8 +157,8 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
+          format: uuid
         style: simple
       responses:
         200:
@@ -178,8 +178,8 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
+          format: uuid
         style: simple
       responses:
         200:
@@ -194,8 +194,7 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       responses:
         200:
@@ -229,8 +228,7 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
         style: simple
       responses:
         200:
@@ -250,8 +248,8 @@ paths:
         name: instance_id
         required: true
         schema:
-          format: int32
-          type: integer
+          type: string
+          format: uuid
         style: simple
       responses:
         200:

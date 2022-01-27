@@ -250,7 +250,7 @@ defined in the pipeline.json file for the requested pipeline.
       <tr>
         <td>version  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -312,7 +312,7 @@ Stop pipeline instance.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -378,7 +378,7 @@ Stop pipeline instance.
       <tr>
         <td>version  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -404,7 +404,7 @@ Stop pipeline instance.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -470,7 +470,7 @@ Return pipeline instance summary.
       <tr>
         <td>version  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -496,7 +496,7 @@ Return pipeline instance summary.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -549,7 +549,7 @@ Return pipeline instance summary.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -607,7 +607,7 @@ Return pipeline instance status.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -689,7 +689,7 @@ Return pipeline instance status.
       <tr>
         <td>version  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>
@@ -715,7 +715,7 @@ Return pipeline instance status.
       <tr>
         <td>instance_id  <strong>(required)</strong></td>
         <td>
-          integer
+          string
         </td>
         <td>path</td>
         <td><em>Any</em></td>

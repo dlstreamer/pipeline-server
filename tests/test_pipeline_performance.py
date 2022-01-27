@@ -69,9 +69,7 @@ def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
                                 timeout=TIMEOUT)
         # Check response to POST
         assert response.status_code == HTTP_OK, "Status Code Mismatch"
-        instance = int(response.text)
-        assert type(instance) == int, "Response Type Mismatch"
-        assert instance > 0, "Invalid instance"
+        instance = json.loads(response.text)
         # Check pipeline state transitions
         instance_url = urllib.parse.urljoin(service.host, "pipelines/status/{}".format(instance))
         pipeline_processing.wait_for_pipeline_status(instance_url, "COMPLETED", states, TIMEOUT)

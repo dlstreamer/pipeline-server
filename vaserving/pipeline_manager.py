@@ -10,6 +10,7 @@ import traceback
 from threading import Lock
 from collections import deque
 from collections import defaultdict
+import uuid
 import jsonschema
 from vaserving.common.utils import logging
 from vaserving.pipeline import Pipeline
@@ -25,12 +26,10 @@ class PipelineManager:
         self.pipeline_types = {}
         self.pipeline_instances = {}
         self.pipeline_state = {}
-        self.pipeline_id = 0
         self.pipelines = {}
         self.pipeline_queue = deque()
         self.pipeline_dir = pipeline_dir
         self.logger = logging.get_logger('PipelineManager', is_static=True)
-        self._create_lock = Lock()
         self._run_counter_lock = Lock()
         success = self._load_pipelines()
         if (not ignore_init_errors) and (not success):
@@ -257,13 +256,11 @@ class PipelineManager:
         if not self.is_input_valid(request, pipeline_config, "tags"):
             return None, "Invalid Tags"
 
-        with self._create_lock:
-            self.pipeline_id += 1
-            instance_id = self.pipeline_id
-            request["pipeline"] = {
-                "name": name,
-                "version": version
-            }
+        instance_id = uuid.uuid1().hex
+        request["pipeline"] = {
+            "name": name,
+            "version": version
+        }
         self.pipeline_instances[instance_id] = self.pipeline_types[pipeline_type](
             instance_id,
             pipeline_config,

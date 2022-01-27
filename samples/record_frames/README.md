@@ -214,13 +214,13 @@ samples/record_frames/run_client.sh --frame-store samples/record_frames/frame_st
 ```
 ```
 <snip>
-Starting pipeline object_detection/record_frames, instance = 1
-Frame store file location = /path/to/dlstreamer-pipeline-server/samples/record_frames/frame_store/%08d.jpg
+Starting pipeline object_detection/record_frames, instance = <uuid>
+Frame store file location = /path/to/samples/record_frames/frame_store/%08d.jpg
 Starting mqtt client
 Connected to broker
 Subscribing to topic pipeline-server
 Detected vehicle: frame_id = 174
-Frame path: /path/to/dlstreamer-pipeline-server/samples/record_frames/frame_store/00000174.jpg
+Frame path: /path/to/samples/record_frames/frame_store/00000174.jpg
 ```
 File `00000174.jpg` will then be displayed.
 ![](images/00000174.jpg)

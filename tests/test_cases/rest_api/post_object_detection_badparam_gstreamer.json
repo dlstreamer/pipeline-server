@@ -15,7 +15,7 @@
     },
     "path": "pipelines/object_detection/person_vehicle_bike",
     "sort_key": "name",
-    "result": 1,
     "status_code": 200,
+    "result":"uuid",
     "verb": "post"
 }
