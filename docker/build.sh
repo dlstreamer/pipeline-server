@@ -336,7 +336,7 @@ show_image_options() {
     echo "   Build Options: '${BUILD_OPTIONS}'"
     echo "   Build Arguments: '${BUILD_ARGS}'"
     echo "   Models: '${MODELS}'"
-    echo "   Docker Image for downloading models: '${OPEN_MODEL_ZOO_TOOLS_IMAGE}:${OPEN_MODEL_ZOO_VERSION}'"
+    echo "   Docker image for downloading models: '${OPEN_MODEL_ZOO_TOOLS_IMAGE}:${OPEN_MODEL_ZOO_VERSION}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"
     echo "   Target: '${TARGET}'"

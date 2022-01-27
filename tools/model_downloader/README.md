@@ -55,7 +55,7 @@ Example:
 * model-proc = model_name.json
 
 If a local model-proc is not specified, the tool will download the
-corresponding model-proc file from the DL streamer repository (if one
+corresponding model-proc file from the Intel(R) DL Streamer repository (if one
 exists).
 
 
