@@ -38,6 +38,12 @@
 			"post-messages": {
 				"element": "level",
 				"type": "boolean"
+			},
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
 			}
 		}
 	}

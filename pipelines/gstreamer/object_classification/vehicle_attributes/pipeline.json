@@ -9,6 +9,18 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
+			"classification-properties": {
+				"element": {
+					"name": "classification",
+					"format": "element-properties"
+				}
+			},
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
+			},
 			"detection-device": {
 				"element": {
 					"name": "detection",

@@ -13,6 +13,24 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
+			"classification-properties": {
+				"element": {
+					"name": "classification",
+					"format": "element-properties"
+				}
+			},
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
+			},
+			"tracking-properties": {
+				"element": {
+					"name": "tracking",
+					"format": "element-properties"
+				}
+			},
 			"object-line-crossing-config": {
 				"element": {
 					"name": "object-line-crossing",

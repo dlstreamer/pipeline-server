@@ -23,6 +23,12 @@
                         },
                         "type": "string"
                     },
+                    "classification-properties": {
+                        "element": {
+                            "name": "classification",
+                            "format": "element-properties"
+                        }
+                    },
                     "classification-threshold": {
                         "element": {
                             "name": "classification",
@@ -43,6 +49,12 @@
                             "property": "model-instance-id"
                         },
                         "type": "string"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     },
                     "detection-threshold": {
                         "element": {
@@ -95,6 +107,12 @@
                         "description": "Encoder inference device: [CPU, GPU]",
                         "element": "action_recognition",
                         "type": "string"
+                    },
+                    "action-recognition-properties": {
+                        "element": {
+                            "name": "action_recognition",
+                            "format": "element-properties"
+                        }
                     }
                 },
                 "type": "object"
@@ -133,6 +151,12 @@
                     "threshold": {
                         "element": "detection",
                         "type": "number"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     }
                 },
                 "type": "object"
@@ -158,6 +182,12 @@
                             "property": "model-instance-id"
                         },
                         "type": "string"
+                    },
+                    "classification-properties": {
+                        "element": {
+                            "name": "classification",
+                            "format": "element-properties"
+                        }
                     },
                     "classification-threshold": {
                         "element": {
@@ -186,6 +216,13 @@
                             "property": "threshold"
                         },
                         "type": "number"
+                    },
+
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     },
                     "inference-interval": {
                         "element": [
@@ -218,6 +255,12 @@
                         ],
                         "type": "string"
                     },
+                    "tracking-properties": {
+                        "element": {
+                            "name": "tracking",
+                            "format": "element-properties"
+                        }
+                    },
                     "tracking-type": {
                         "element": "tracking",
                         "type": "string"
@@ -247,6 +290,12 @@
                         },
                         "type": "string"
                     },
+                    "classification-properties": {
+                        "element": {
+                            "name": "classification",
+                            "format": "element-properties"
+                        }
+                    },
                     "classification-threshold": {
                         "element": {
                             "name": "classification",
@@ -274,6 +323,12 @@
                             "property": "threshold"
                         },
                         "type": "number"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     },
                     "inference-interval": {
                         "element": [
@@ -328,6 +383,12 @@
                         ],
                         "type": "string"
                     },
+                    "tracking-properties": {
+                        "element": {
+                            "name": "tracking",
+                            "format": "element-properties"
+                        }
+                    },
                     "tracking-type": {
                         "element": "tracking",
                         "type": "string"
@@ -356,6 +417,12 @@
                             "property": "model-instance-id"
                         },
                         "type": "string"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     },
                     "inference-interval": {
                         "element": "detection",
@@ -389,6 +456,12 @@
                             "property": "model-instance-id"
                         },
                         "type": "string"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
                     },
                     "inference-interval": {
                         "element": "detection",
