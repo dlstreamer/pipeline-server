@@ -87,10 +87,7 @@ Errors during pipeline execution are not flagged as vaclient exits after receivi
 ```
 The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
 ```
-Got unsuccessful status code: 400
-"Invalid Pipeline or Version"
-
-Pipeline failed to start
+Status 400 - "Invalid Pipeline or Version"
 ```
 
 #### Instance ID
@@ -103,7 +100,6 @@ Stopping a pipeline can be accomplished using the `stop` command along with the 
 ```
 ./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
-Expected output: Average fps also printed for stopped pipeline.
 ```
 Stopping Pipeline...
 Pipeline stopped
@@ -242,6 +238,26 @@ In the following example, passing in `--destination path /tmp/newfile.jsonl` wil
 ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl
 ```
 
+If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and vaclient will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
+```
+docker run -rm --network=host -d eclipse-mosquitto:1.6
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost --destination port 1883 --destination topic pipeline-server
+```
+```
+Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
+Pipeline running - instance_id = <uuid>
+Timestamp 3666666666
+- person (0.91) [0.75, 0.50, 0.81, 0.70]
+Timestamp 3750000000
+- person (0.91) [0.76, 0.50, 0.81, 0.68]
+Timestamp 3833333333
+- person (0.82) [0.76, 0.49, 0.82, 0.69]
+Timestamp 3916666666
+- person (0.70) [0.76, 0.48, 0.82, 0.69]
+Timestamp 4000000000
+- person (0.59) [0.76, 0.47, 0.83, 0.69]
+```
+For more details on destination types, see [customizing pipeline requests](../docs/customizing_pipeline_requests.md#metadata).
 #### --rtsp-path
 If you are utilizing RTSP restreaming, `--rtsp-path` can be used to update the `server_url` path. This updates the frame part of destination under the hood.
 For example, adding `--rtsp-path new_path` will able you to view the stream at `rtsp://<ip_address>:<port>/new_path`. More details on RTSP restreaming in [running_video_analytics_serving](../docs/running_video_analytics_serving.md) documentation.
@@ -267,6 +283,75 @@ A sample parameter file can look like
 The above file, say /tmp/sample_parameters.json may be used as follows:
 ```
 ./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+```
+
+#### --tag
+Specifies a key, value pair to update request with. This information is added to each frame's metadata.
+This example adds tags for direction and location of video capture
+```
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
+```
+
+#### --server-address
+This can be used with any command to specify a remote HTTP server address. Here we start a pipeline on remote server `http://remote-server.my-domain.com:8080`.
+```
+./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server=address http://remote-server.my-domain.com:8080
+```
+
+#### --status-only
+Use with `run` command to disable output of metadata and periodically display pipeline state and fps
+```
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --status-only
+```
+```
+Starting pipeline 0
+Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
+Pipeline 0 running - instance_id = <uuid>
+Pipeline status @ 6s
+- instance=<uuid>, state=RUNNING, 24fps
+Pipeline status @ 11s
+- instance=<uuid>, state=RUNNING, 21fps
+Pipeline status @ 16s
+- instance=<uuid>, state=RUNNING, 21fps
+Pipeline status @ 21s
+- instance=<uuid>, state=RUNNING, 20fps
+```
+
+#### --number-of-streams
+Takes an integer value that specifies the number of streams to start (default value is 1) using specified request.
+If number of streams is greater than one, "status only" display mode is used.
+```
+python3 vaclient run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --status-only --number-of-streams 4 --server-address http://hbruce-desk2.jf.intel.com:8080
+```
+```
+Starting pipeline 0
+Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
+Pipeline 0 running - instance_id = <uuid>
+Starting pipeline 1
+Starting pipeline object_detection/person_vehicle_bike, instance = f20d1e60806311ecad1c3417ebbc7e7a
+Pipeline 1 running - instance_id = f20d1e60806311ecad1c3417ebbc7e7a
+Starting pipeline 2
+Starting pipeline object_detection/person_vehicle_bike, instance = f2faeb04806311ecad1c3417ebbc7e7a
+Pipeline 2 running - instance_id = f2faeb04806311ecad1c3417ebbc7e7a
+Starting pipeline 3
+Starting pipeline object_detection/person_vehicle_bike, instance = f435a0fe806311ecad1c3417ebbc7e7a
+Pipeline 3 running - instance_id = f435a0fe806311ecad1c3417ebbc7e7a
+All 4 pipelines running.
+Pipeline status @ 11s
+- instance=<uuid>, state=RUNNING, 20fps
+- instance=f20d1e60806311ecad1c3417ebbc7e7a, state=RUNNING, 15fps
+- instance=f2faeb04806311ecad1c3417ebbc7e7a, state=RUNNING, 13fps
+- instance=f435a0fe806311ecad1c3417ebbc7e7a, state=RUNNING, 12fps
+Pipeline status @ 16s
+- instance=<uuid>, state=RUNNING, 17fps
+- instance=f20d1e60806311ecad1c3417ebbc7e7a, state=RUNNING, 14fps
+- instance=f2faeb04806311ecad1c3417ebbc7e7a, state=RUNNING, 12fps
+- instance=f435a0fe806311ecad1c3417ebbc7e7a, state=RUNNING, 12fps
+Pipeline status @ 21s
+- instance=<uuid>, state=RUNNING, 16fps
+- instance=f20d1e60806311ecad1c3417ebbc7e7a, state=RUNNING, 13fps
+- instance=f2faeb04806311ecad1c3417ebbc7e7a, state=RUNNING, 12fps
+- instance=f435a0fe806311ecad1c3417ebbc7e7a, state=RUNNING, 12fps
 ```
 
 #### --request-file
@@ -296,13 +381,6 @@ A sample request file can look like
 The above file, named for instance as /tmp/sample_request.json may be used as follows:
 ```
 ./vaclient/vaclient.sh start object_detection/person_vehicle_bike --request-file /tmp/sample_request.json
-```
-
-#### --tag
-Specifies a key, value pair to update request with. This information is added to each frame's metadata.
-This example adds tags for direction and location of video capture
-```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
 ```
 
 #### --show-request

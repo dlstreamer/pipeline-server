@@ -11,10 +11,9 @@ import time
 import os
 import sys
 import requests
-from results_watcher import ResultsWatcher
+import results_watcher
 from vaserving.pipeline import Pipeline
 
-SERVER_ADDRESS = "http://localhost:8080/"
 RESPONSE_SUCCESS = 200
 TIMEOUT = 30
 SLEEP_FOR_STATUS = 0.5
@@ -45,55 +44,83 @@ SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the p
 def run(args):
     request = REQUEST_TEMPLATE
     update_request_options(request, args)
+    watcher = None
+    instance_ids = []
+    status_only = args.status_only or args.streams > 1
     try:
-        watcher = None
-        started_instance_id = start_pipeline(request,
-                                             args.pipeline,
-                                             verbose=args.verbose,
-                                             show_request=args.show_request)
-        if started_instance_id is None:
-            sys.exit(1)
-        try:
-            if request['destination']['metadata']['type'] == 'file':
-                watcher = launch_results_watcher(request,
-                                                 started_instance_id,
-                                                 verbose=args.verbose)
-        except KeyError:
-            pass
-        print_fps(wait_for_pipeline_completion(started_instance_id))
+        for stream in range(args.streams):
+            if status_only:
+                print("Starting pipeline {}".format(stream))
+            started_instance_id = start_pipeline(args.server_address,
+                                                args.pipeline,
+                                                request,
+                                                verbose=args.verbose,
+                                                show_request=args.show_request)
+            instance_ids.append(started_instance_id)
+            if wait_for_pipeline_running(args.server_address, started_instance_id):
+                log_pipeline_running(started_instance_id, stream, args.verbose, status_only)
+                watcher = start_watcher(request, status_only)
+        if args.streams > 1:
+            print("All {} pipelines running.".format(args.streams))
+        status = wait_for_all_pipeline_completions(args.server_address, instance_ids, status_only=status_only)
+        if args.streams == 1:
+            print_fps(status)
     except KeyboardInterrupt:
         print()
-        if started_instance_id:
-            stop_pipeline(started_instance_id)
-            print_fps(wait_for_pipeline_completion(started_instance_id))
+        for instance_id in instance_ids:
+            stop_pipeline(args.server_address, instance_id)
+        print_fps(wait_for_all_pipeline_completions(args.server_address, instance_ids))
+    except Exception as exception:
+        raise RuntimeError(exception) from exception
     finally:
         if watcher:
             watcher.stop()
+    print("Done")
+
+def start_watcher(request, status_only):
+    watcher = None
+    if not status_only:
+        watcher = results_watcher.create(request)
+        if watcher:
+            watcher.start()
+        if not watcher or not watcher.watching():
+            print("No results will be displayed. {}".format(watcher.error_message))
+    return watcher
+
+
+def log_pipeline_running(instance_id, stream, verbose, status_only):
+    if verbose:
+        if status_only:
+            print("Pipeline {} running - instance_id = {}".format(stream, instance_id))
+        else:
+            print("Pipeline running - instance_id = {}".format(instance_id))
+
 
 def start(args):
     request = REQUEST_TEMPLATE
     update_request_options(request, args)
-    start_pipeline(request,
+    start_pipeline(args.server_address,
                    args.pipeline,
+                   request,
                    verbose=args.verbose,
                    show_request=args.show_request)
 
 def stop(args):
-    stop_pipeline(args.instance, args.show_request)
-    print_fps(get_pipeline_status(args.pipeline, args.instance))
+    stop_pipeline(args.server_address, args.instance, args.show_request)
+    print_fps(get_pipeline_status(args.server_address, args.pipeline, args.instance))
 
 def wait(args):
     try:
-        pipeline_status = get_pipeline_status(args.instance, args.show_request)
+        pipeline_status = get_pipeline_status(args.server_address, args.instance, args.show_request)
         if pipeline_status is not None and "state" in pipeline_status:
             print(pipeline_status["state"])
         else:
             print("Unable to fetch status")
-        print_fps(wait_for_pipeline_completion(args.instance))
+        print_fps(wait_for_pipeline_completion(args.server_address, args.instance))
     except KeyboardInterrupt:
         print()
         stop_pipeline(args.pipeline, args.instance)
-        print_fps(wait_for_pipeline_completion(args.instance))
+        print_fps(wait_for_pipeline_completion(args.server_address, args.instance))
 
 def status(args):
     pipeline_status = get_pipeline_status(args.instance, args.show_request)
@@ -103,21 +130,21 @@ def status(args):
         print("Unable to fetch status")
 
 def list_pipelines(args):
-    _list("pipelines", args.show_request)
+    _list(args.server_address, "pipelines", args.show_request)
 
 def list_models(args):
-    _list("models", args.show_request)
+    _list(args.server_address, "models", args.show_request)
 
 def list_instances(args):
-    url = urljoin(SERVER_ADDRESS, "pipelines/status")
+    url = urljoin(args.server_address, "pipelines/status")
     statuses = get(url, args.show_request)
     for status in statuses:
-        url = urljoin(SERVER_ADDRESS, "pipelines/{}".format(status["id"]))
+        url = urljoin(args.server_address, "pipelines/{}".format(status["id"]))
         response = requests.get(url, timeout=TIMEOUT)
         request_status = json.loads(response.text)
         response.close()
         pipeline = request_status["request"]["pipeline"]
-        print("{:02d}: {}/{}".format(status["id"], pipeline["name"], pipeline["version"]))
+        print("{}: {}/{}".format(status["id"], pipeline["name"], pipeline["version"]))
         print("state: {}".format(status["state"]))
         print("fps: {:.2f}".format(status["avg_fps"]))
         print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
@@ -132,7 +159,10 @@ def update_request_options(request,
     if hasattr(args, 'uri'):
         request["source"]["uri"] = args.uri
     if hasattr(args, 'destination') and args.destination:
-        request['destination']['metadata'].update(args.destination)
+        destination = request['destination']['metadata']
+        destination.update(args.destination)
+        if destination["type"] != "file":
+            del destination["path"]
     if hasattr(args, 'parameters') and args.parameters:
         request["parameters"] = dict(args.parameters)
     if hasattr(args, 'parameter_file') and args.parameter_file:
@@ -152,8 +182,9 @@ def update_request_options(request,
         with open(args.request_file, 'r') as request_file:
             request.update(json.load(request_file))
 
-def start_pipeline(request,
+def start_pipeline(server_address,
                    pipeline,
+                   request,
                    verbose=True,
                    show_request=False):
     """Launch requested pipeline"""
@@ -168,8 +199,7 @@ def start_pipeline(request,
     except OSError as error:
         raise OSError("Unable to delete destination metadata file {}".format(output_file)) from error
 
-    pipeline_url = urljoin(SERVER_ADDRESS,
-                           "pipelines/" + pipeline)
+    pipeline_url = urljoin(server_address, "pipelines/" + pipeline)
     instance_id = post(pipeline_url, request, show_request)
     if instance_id:
         if verbose:
@@ -182,10 +212,10 @@ def start_pipeline(request,
 
     return None
 
-def stop_pipeline(instance_id, show_request=False):
+def stop_pipeline(server_address, instance_id, show_request=False):
     if not show_request:
         print("Stopping Pipeline...")
-    stop_url = urljoin(SERVER_ADDRESS,
+    stop_url = urljoin(server_address,
                        "/".join(["pipelines",
                                  str(instance_id)]))
     status_code = delete(stop_url, show_request)
@@ -194,55 +224,69 @@ def stop_pipeline(instance_id, show_request=False):
     else:
         print("Pipeline NOT stopped")
 
-def wait_for_pipeline_running(instance_id,
+def wait_for_pipeline_running(server_address,
+                              instance_id,
                               timeout_sec = 30):
     status = {"state" : "QUEUED"}
     timeout_count = 0
     while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
-        status = get_pipeline_status(instance_id)
-        if status and status["state"] == "ERROR":
+        status = get_pipeline_status(server_address, instance_id)
+        if not status or status["state"] == "ERROR":
             raise ValueError("Error in pipeline, please check pipeline-server log messages")
         time.sleep(SLEEP_FOR_STATUS)
         timeout_count += 1
         if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
             print("Timed out waiting for RUNNING status")
             break
+    return Pipeline.State[status["state"]] == Pipeline.State.RUNNING
 
-    return status
-
-def wait_for_pipeline_completion(instance_id):
+def wait_for_pipeline_completion(server_address, instance_id):
     status = {"state" : "RUNNING"}
     while status and not Pipeline.State[status["state"]].stopped():
-        status = get_pipeline_status(instance_id)
+        status = get_pipeline_status(server_address, instance_id)
         time.sleep(SLEEP_FOR_STATUS)
     if status and status["state"] == "ERROR":
         raise ValueError("Error in pipeline, please check pipeline-server log messages")
 
     return status
 
-def get_pipeline_status(instance_id, show_request=False):
-    status_url = urljoin(SERVER_ADDRESS,
+def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=False):
+    status = {"state" : "RUNNING"}
+    stopped = False
+    num_streams = len(instance_ids)
+    while status and not stopped:
+        if num_streams > 1 or status_only:
+            time.sleep(10 *SLEEP_FOR_STATUS)
+            status = get_pipeline_status(server_address, instance_ids[0])
+            print("Pipeline status @ {}s".format(round(status["elapsed_time"])))
+            all_streams_stopped = True
+            for instance_id in instance_ids:
+                status = get_pipeline_status(server_address, instance_id)
+                if status:
+                    print("- instance={}, state={}, {}fps".format(
+                        instance_id, status["state"], round(status["avg_fps"])))
+                    if not Pipeline.State[status["state"]].stopped():
+                        all_streams_stopped = False
+            stopped = all_streams_stopped
+        else:
+            time.sleep(SLEEP_FOR_STATUS)
+            status = get_pipeline_status(server_address, instance_ids[0])
+            stopped = Pipeline.State[status["state"]].stopped()
+    if status and status["state"] == "ERROR":
+        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+
+    return status
+
+def get_pipeline_status(server_address, instance_id, show_request=False):
+    status_url = urljoin(server_address,
                          "/".join(["pipelines",
                                    "status",
                                    str(instance_id)]))
     return get(status_url, show_request)
 
-def launch_results_watcher(request, pipeline_instance_id, verbose=True):
-    status = wait_for_pipeline_running(pipeline_instance_id)
-    watcher = None
-    if Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
-        if verbose:
-            print("Pipeline running")
-        if os.path.exists(request['destination']['metadata']['path']):
-            watcher = ResultsWatcher(request['destination']['metadata']['path'])
-            watcher.watch()
-        else:
-            print("Can not find results file {}. Are you missing a volume mount?"\
-                .format(request['destination']['metadata']['path']))
-    return watcher
 
-def _list(list_name, show_request=False):
-    url = urljoin(SERVER_ADDRESS, list_name)
+def _list(server_address, list_name, show_request=False):
+    url = urljoin(server_address, list_name)
     response = get(url, show_request)
     if response is None:
         print("Got empty response retrieving {}".format(list_name))
@@ -258,11 +302,9 @@ def post(url, body, show_request=False):
         if launch_response.status_code == RESPONSE_SUCCESS:
             instance_id = json.loads(launch_response.text)
             return instance_id
-        print("Got unsuccessful status code: {}".format(launch_response.status_code))
-        print(launch_response.text)
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
-    return None
+    raise RuntimeError("Status {} - {}".format(launch_response.status_code, launch_response.text))
 
 def get(url, show_request=False):
     try:
