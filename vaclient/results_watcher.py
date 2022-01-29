@@ -24,7 +24,8 @@ class ResultsWatcher(ABC):
         self._display = True
 
     def __del__(self):
-        self.stop()
+        if self._watching:
+            self.stop()
 
     @abstractmethod
     def start(self):
@@ -39,7 +40,6 @@ class ResultsWatcher(ABC):
 
     def error_message(self):
         return self._error_message
-
 
     @staticmethod
     def print_results(results):
@@ -140,8 +140,12 @@ class MqttWatcher(ResultsWatcher):
     def __init__(self, destination):
         super().__init__()
         self._client = mqtt.Client("Intel(R) DL Streamer Results Watcher", userdata=destination)
-        self._broker_address = destination["host"]
-        self._broker_port = int(destination["port"])
+        broker_address = destination["host"].split(':')
+        self._host = broker_address[0]
+        if len(broker_address) == 2:
+            self._port = int(broker_address[1])
+        else:
+            self._port = 1883
         self._topic = destination["topic"]
         self._client.on_connect = self.on_connect
         self._client.on_message = self.on_message
@@ -153,14 +157,14 @@ class MqttWatcher(ResultsWatcher):
             self._watching = True
             self._started_event.set()
         else:
-            print("Error {} connecting to broker {}:{}".format(return_code, self._broker_address, self._broker_port))
+            print("Error {} connecting to broker {}:{}".format(return_code, self._host, self._port))
 
     def on_message(self, _unused_client, _unused_user_data, msg):
         result = json.loads(msg.payload)
         ResultsWatcher.print_results(result)
 
     def start(self):
-        self._client.connect(self._broker_address, self._broker_port)
+        self._client.connect(self._host, self._port)
         self._client.loop_start()
         self._started_event.wait()
 

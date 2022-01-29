@@ -80,11 +80,14 @@ def run(args):
 def start_watcher(request, status_only):
     watcher = None
     if not status_only:
+        error_message = ""
         watcher = results_watcher.create(request)
         if watcher:
             watcher.start()
+            if not watcher.watching():
+                error_message = watcher.error_message
         if not watcher or not watcher.watching():
-            print("No results will be displayed. {}".format(watcher.error_message))
+            print("No results will be displayed. {}".format(error_message))
     return watcher
 
 

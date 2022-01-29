@@ -241,7 +241,7 @@ In the following example, passing in `--destination path /tmp/newfile.jsonl` wil
 If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and vaclient will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
 ```
 docker run -rm --network=host -d eclipse-mosquitto:1.6
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost --destination port 1883 --destination topic pipeline-server
+./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost:1883 --destination topic pipeline-server
 ```
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
