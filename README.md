@@ -245,14 +245,14 @@ First start VA Serving with RTSP enabled. By default, the RTSP stream will use p
 ```
 docker/run.sh --enable-rtsp -v /tmp:/tmp
 ```
-Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`. In this case the RTSP endpoint would be `rtsp://localhost:8554/vaserving`
+Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`. In this case the RTSP endpoint would be `rtsp://localhost:8554/pipeline-server`
 ```
 ./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path pipeline-server
 ```
 If you see the error
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
-Error in pipeline, please check vaserving log messages
+Error in pipeline, please check pipeline-server log messages
 ```
 You probably forgot to enable RTSP in the server.
 
@@ -314,7 +314,7 @@ As the previous example has shown, the vaclient application works by converting 
 The `--show-request` option displays the REST verb, uri and body in the request.
 Let's repeat the previous GPU inference example, adding RTSP output and show the underlying request.
 ```
-./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path vaserving --show-request
+./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path pipeline-server --show-request
 ```
 ```
 <snip>
