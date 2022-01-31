@@ -1,0 +1,26 @@
+{
+    "options": {},
+    "pipeline": {
+        "name": "object_detection",
+        "version": "person_vehicle_bike"
+    },
+    "request": {
+        "source": {
+            "type": "uri",
+            "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
+        },
+        "destination": {
+            "type": "file",
+            "path": "/tmp/results.json",
+            "format": "json"
+        },
+        "parameters": {
+            "detection-properties": {
+                "device": "BPU"
+            }
+        }
+    },
+    "golden_results": false,
+    "expect_error": true,
+    "regex": "Error on Pipeline [0-9a-z]+: 'BPU'"
+}

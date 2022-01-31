@@ -494,7 +494,7 @@ The JSON schema for a GStreamer pipeline parameter can include an
     **Example:**
 
     The following snippet defines `detection-properties` which can be used to pass
-    GStreamer element properties for the `detection` element without explicitly defining each one.
+    GStreamer element properties for the `detection` element without explicitly defining each one. This can be enabled by setting `format` as `element-properties` for the parameter.
     > **Note:** The property names are expected to match the GStreamer properties for the corresponding element.
 
     ```json
@@ -503,7 +503,7 @@ The JSON schema for a GStreamer pipeline parameter can include an
             "detection-properties" : {
                 "element": {
                     "name": "detection",
-                    "property": "properties"
+                    "format": "element-properties"
                 }
             }
     }

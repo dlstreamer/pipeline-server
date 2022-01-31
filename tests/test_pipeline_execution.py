@@ -14,6 +14,7 @@ from tests.common import results_processing
 from queue import Queue
 import re
 import pytest
+
 if os.environ['FRAMEWORK'] == "gstreamer":
     import gi
     from gstgva.util import libgst, gst_buffer_data, GVAJSONMeta
@@ -86,25 +87,25 @@ def get_results_app(test_case, results):
     thread.start()
     return thread
 
-def wait_for_pipeline_completion(pipeline, VAServing, abort=False, sleep_duration=PAUSE):
+def wait_for_pipeline_completion(pipeline, VAServing, expected_states=[Pipeline.State.QUEUED, Pipeline.State.COMPLETED], sleep_duration=PAUSE):
     status = pipeline.status()
     transitions = [status]
     while (not status.state.stopped()):
         if (status.state != transitions[-1].state):
             transitions.append(status)
         time.sleep(sleep_duration)
-        if abort:
+        if len(expected_states) == 1 and expected_states[0] == Pipeline.State.ABORTED:
             pipeline.stop()
         status = pipeline.status()
     transitions.append(status)
-    if abort:
-        assert transitions[-1].state == Pipeline.State.ABORTED
+    if len(expected_states) == 1:
+        assert transitions[-1].state == expected_states[0]
     else:
-        assert transitions[0].state == Pipeline.State.QUEUED
-        assert transitions[-1].state == Pipeline.State.COMPLETED
+        assert transitions[0].state == expected_states[0]
+        assert transitions[-1].state == expected_states[1]
     VAServing.stop()
 
-def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance, skip_sources):
+def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance, skip_sources, capsys):
     if skip_sources:
         for source in skip_sources:
             if re.search("[a-z_]+{}[a-z_]+".format(source), test_filename):
@@ -143,7 +144,6 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     results_processing.clear_results(_test_case)
     results = []
     src_type = _test_case["request"]["source"]["type"]
-    print("src_type = {}".format(src_type))
     if src_type in ["uri", "gst", "webcam"]:
         thread = results_processing.get_results_fifo(_test_case, results)
     elif src_type == "application":
@@ -152,15 +152,18 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
         thread = get_results_app(_test_case, results)
 
     pipeline.start(_test_case["request"])
-    abort = _test_case.get("abort")
-    if abort:
+
+    if _test_case.get("abort"):
         abort_delay = _test_case["abort"]["delay"]
-        wait_for_pipeline_completion(pipeline, VAServing, abort, abort_delay)
-    wait_for_pipeline_completion(pipeline, VAServing, abort)
+        wait_for_pipeline_completion(pipeline, VAServing, [Pipeline.State.ABORTED], abort_delay)
+    elif _test_case.get("expect_error"):
+        wait_for_pipeline_completion(pipeline, VAServing, [Pipeline.State.ERROR])
+    else:
+        wait_for_pipeline_completion(pipeline, VAServing)
 
     if (thread):
         thread.join()
-    else:
+    elif not _test_case.get("expect_error"):
         results_processing.get_results_file(_test_case, results)
     if generate:
         test_case["result"] = results
