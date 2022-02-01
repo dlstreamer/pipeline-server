@@ -11,6 +11,9 @@ docker stop $(docker ps -q -f name=dlstreamer-pipeline-server) 2> /dev/null || e
 echo "Removing pipeline server containers"
 docker rm $(docker ps -q -f name=dlstreamer-pipeline-server) 2> /dev/null || echo "No containers to remove"
 
+# Give docker time to recognize container is stopped/removed
+sleep 2
+
 function show_help {
   echo "usage: ./stop.sh"
   echo "  [ --remove : remove pipeline server images ]"
