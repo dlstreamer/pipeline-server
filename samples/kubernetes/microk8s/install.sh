@@ -10,6 +10,7 @@
 
 WORK_DIR=$(dirname $(readlink -f "$0"))
 SCRIPT_NAME=$(basename -- "$0")
+UPDATE_NO_PROXY=${UPDATE_NO_PROXY:-false} # updates no_proxy in /etc/environment and /etc/bash.bashrc with cluster info
 
 if [ "$EUID" -ne 0 ]; then
   echo "This script must be run as root/sudo"
@@ -35,63 +36,66 @@ function launch { $@
 #
 # CAUTION: Unreliable to parse IP address or make assumptions.
 #          Order is not guaranteed and multi-NIC systems.
-ADD_HOSTNAME=$HOSTNAME
-ADD_IP_ADDR=$(hostname -I | cut -d' ' -f1)
-echo "Is your host IP address $ADD_IP_ADDR? If not you must modify the install.sh script to add the correct value."
-read -n 1 -s -r -p "Press any key to continue"
-echo "."
 
-# Local host loopbacks defined in /etc/hosts
-ADD_LOOPBACKS=localhost,127.0.1.1,127.0.0.1
-# Docker k8s network nodes
-ADD_CLUSTER_NODES=10.1.0.0/16,10.152.183.0/24
+if [ "$UPDATE_NO_PROXY" == "true" ]; then
+    ADD_HOSTNAME=$HOSTNAME
+    ADD_IP_ADDR=$(hostname -I | cut -d' ' -f1)
+    echo "Is your host IP address $ADD_IP_ADDR? If not you must modify the install.sh script to add the correct value."
+    read -n 1 -s -r -p "Press any key to continue"
+    echo "."
 
-# Assign Hostname once
-if [[ "$no_proxy" != *"$ADD_HOSTNAME"* ]]; then
-  echo "Adding HostName [$ADD_HOSTNAME] to no_proxy."
-  no_proxy=$no_proxy,$ADD_HOSTNAME
-fi
-if [[ "$NO_PROXY" != *"$ADD_HOSTNAME"* ]]; then
-  echo "Adding HostName [$ADD_HOSTNAME] to NO_PROXY."
-  NO_PROXY=$NO_PROXY,$ADD_HOSTNAME
-fi
+    # Local host loopbacks defined in /etc/hosts
+    ADD_LOOPBACKS=localhost,127.0.1.1,127.0.0.1
+    # Docker k8s network nodes
+    ADD_CLUSTER_NODES=10.1.0.0/16,10.152.183.0/24
 
-# Assign IP Address once
-if [[ "$no_proxy" != *"$ADD_IP_ADDR"* ]]; then
-  echo "Adding IP Address [$ADD_IP_ADDR] to no_proxy."
-  no_proxy=$no_proxy,$ADD_IP_ADDR
-fi
-if [[ "$NO_PROXY" != *"$ADD_IP_ADDR"* ]]; then
-  echo "Adding IP Address [$ADD_IP_ADDR] to NO_PROXY."
-  NO_PROXY=$NO_PROXY,$ADD_IP_ADDR
-fi
+    # Assign Hostname once
+    if [[ "$no_proxy" != *"$ADD_HOSTNAME"* ]]; then
+      echo "Adding HostName [$ADD_HOSTNAME] to no_proxy."
+      no_proxy=$no_proxy,$ADD_HOSTNAME
+    fi
+    if [[ "$NO_PROXY" != *"$ADD_HOSTNAME"* ]]; then
+      echo "Adding HostName [$ADD_HOSTNAME] to NO_PROXY."
+      NO_PROXY=$NO_PROXY,$ADD_HOSTNAME
+    fi
 
-# Assign Loopbacks once
-if [[ "$no_proxy" != *"$ADD_LOOPBACKS"* ]]; then
-  echo "Adding Loopbacks [$ADD_LOOPBACKS] to no_proxy."
-  no_proxy=$no_proxy,$ADD_LOOPBACKS
-fi
-if [[ "$NO_PROXY" != *"$ADD_LOOPBACKS"* ]]; then
-  echo "Adding Loopbacks [$ADD_LOOPBACKS] to NO_PROXY."
-  NO_PROXY=$NO_PROXY,$ADD_LOOPBACKS
-fi
+    # Assign IP Address once
+    if [[ "$no_proxy" != *"$ADD_IP_ADDR"* ]]; then
+      echo "Adding IP Address [$ADD_IP_ADDR] to no_proxy."
+      no_proxy=$no_proxy,$ADD_IP_ADDR
+    fi
+    if [[ "$NO_PROXY" != *"$ADD_IP_ADDR"* ]]; then
+      echo "Adding IP Address [$ADD_IP_ADDR] to NO_PROXY."
+      NO_PROXY=$NO_PROXY,$ADD_IP_ADDR
+    fi
 
-# Assign ClusterNodes once
-if [[ "$no_proxy" != *"$ADD_CLUSTER_NODES"* ]]; then
-  echo "Adding ClusterNodes [$ADD_CLUSTER_NODES] to no_proxy."
-  no_proxy=$no_proxy,${ADD_CLUSTER_NODES}
-fi
-if [[ "$NO_PROXY" != *"$ADD_CLUSTER_NODES"* ]]; then
-  echo "Adding ClusterNodes [$ADD_CLUSTER_NODES] to NO_PROXY."
-  NO_PROXY=$NO_PROXY,${ADD_CLUSTER_NODES}
-fi
+    # Assign Loopbacks once
+    if [[ "$no_proxy" != *"$ADD_LOOPBACKS"* ]]; then
+      echo "Adding Loopbacks [$ADD_LOOPBACKS] to no_proxy."
+      no_proxy=$no_proxy,$ADD_LOOPBACKS
+    fi
+    if [[ "$NO_PROXY" != *"$ADD_LOOPBACKS"* ]]; then
+      echo "Adding Loopbacks [$ADD_LOOPBACKS] to NO_PROXY."
+      NO_PROXY=$NO_PROXY,$ADD_LOOPBACKS
+    fi
 
-# Add to /etc/environment so vars are picked up immediately
-# and persists across reboots. Takes affect for all users on this host.
-echo "no_proxy=$(echo $no_proxy)" >> /etc/environment
-echo "NO_PROXY=$(echo $NO_PROXY)" >> /etc/environment
-echo "no_proxy=$(echo $no_proxy)" >> /etc/bash.bashrc
-echo "NO_PROXY=$(echo $NO_PROXY)" >> /etc/bash.bashrc
+    # Assign ClusterNodes once
+    if [[ "$no_proxy" != *"$ADD_CLUSTER_NODES"* ]]; then
+      echo "Adding ClusterNodes [$ADD_CLUSTER_NODES] to no_proxy."
+      no_proxy=$no_proxy,${ADD_CLUSTER_NODES}
+    fi
+    if [[ "$NO_PROXY" != *"$ADD_CLUSTER_NODES"* ]]; then
+      echo "Adding ClusterNodes [$ADD_CLUSTER_NODES] to NO_PROXY."
+      NO_PROXY=$NO_PROXY,${ADD_CLUSTER_NODES}
+    fi
+
+    # Add to /etc/environment so vars are picked up immediately
+    # and persists across reboots. Takes affect for all users on this host.
+    echo "no_proxy=$(echo $no_proxy)" >> /etc/environment
+    echo "NO_PROXY=$(echo $NO_PROXY)" >> /etc/environment
+    echo "no_proxy=$(echo $no_proxy)" >> /etc/bash.bashrc
+    echo "NO_PROXY=$(echo $NO_PROXY)" >> /etc/bash.bashrc
+fi
 
 # Enable traffic forwarding
 launch iptables -P FORWARD ACCEPT
@@ -100,8 +104,10 @@ launch iptables -P FORWARD ACCEPT
 # Installation
 # ===============================
 launch snap install microk8s --classic --channel=1.21/stable
+
 echo "Assigning $SUDO_USER to microk8s group"
 launch usermod -a -G microk8s $SUDO_USER
+
 # Create and assign current user as owner for cache
 mkdir -p ~/.kube
 launch chown -f -R $SUDO_USER ~/.kube

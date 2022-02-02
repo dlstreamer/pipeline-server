@@ -26,16 +26,6 @@ if [ ${PIPESTATUS[1]} != 0 ]; then
   echo "NOT A MEMBER OF microk8s GROUP! You may need to run ./install.sh, newgrp microk8s, logout/relaunch your terminal, reboot ( or start a new session using  su - \$USER )"
   exit
 fi
-if [[ ! -z "$HTTP_PROXY" ]] || [[ ! -z "$HTTPS_PROXY" ]] || [[ ! -z "$http_proxy" ]] || [[ ! -z "$https_proxy" ]]; then
-  echo "Proxy server configuration was detected."
-  echo $no_proxy | grep "10.1.0.0"
-  if [ ${PIPESTATUS[1]} != 0 ]; then
-    echo "Assignments for network environment are missing! Check if these are being overridden by ~/.bashrc, /etc/bash.bashrc or equivalents. Re-run install.sh, logout/relaunch your terminal, reboot ( or start a new session using  su - \$USER )"
-    exit
-  fi
-else
-  echo "No proxy server configuration was detected."
-fi
 
 # ===============================
 # Install Add-ons

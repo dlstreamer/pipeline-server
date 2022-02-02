@@ -9,17 +9,17 @@ if [ "$ADD_PROXY_ENV" == "true" ]; then
     PROXY_CONFIG=
     NEWLINE=$'\n'
 
-    if [ ! -z "$http_proxy" ]; then
+    if [[ ! -z "$http_proxy" && -z $(grep -R http_proxy $PIPELINE_SERVER_YAML) ]]; then
         PROXY_CONFIG=${PROXY_CONFIG}"            - name: http_proxy"${NEWLINE}
         PROXY_CONFIG=${PROXY_CONFIG}"              value: "${http_proxy}${NEWLINE}
     fi
 
-    if [ ! -z "$https_proxy" ]; then
+    if [[ ! -z "$https_proxy" && -z $(grep -R https_proxy $PIPELINE_SERVER_YAML) ]]; then
         PROXY_CONFIG=${PROXY_CONFIG}"            - name: https_proxy"${NEWLINE}
         PROXY_CONFIG=${PROXY_CONFIG}"              value: "${https_proxy}${NEWLINE}
     fi
 
-    if [ ! -z "$no_proxy" ]; then
+    if [[ ! -z "$no_proxy" && -z $(grep -R no_proxy $PIPELINE_SERVER_YAML) ]]; then
         PROXY_CONFIG=${PROXY_CONFIG}"            - name: no_proxy"${NEWLINE}
         PROXY_CONFIG=${PROXY_CONFIG}"              value: "${no_proxy}${NEWLINE}
     fi
