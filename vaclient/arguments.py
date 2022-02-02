@@ -45,7 +45,7 @@ def add_common_arguments(parser):
 
 def add_instance_arguments(parser):
     parser.add_argument('pipeline', type=str, help='Pipeline name/version tuple')
-    parser.add_argument('instance', type=int, help='Pipeline instance id')
+    parser.add_argument('instance', type=str, help='Pipeline instance id')
 
 def add_request_arguments(parser):
     parser.add_argument('pipeline', type=str, help='Pipeline in the form of name/version tuple')

@@ -126,9 +126,9 @@ def wait(args):
         print_fps(wait_for_pipeline_completion(args.server_address, args.instance))
 
 def status(args):
-    pipeline_status = get_pipeline_status(args.instance, args.show_request)
+    pipeline_status = get_pipeline_status(args.server_address, args.instance, args.show_request)
     if pipeline_status is not None and "state" in pipeline_status:
-        print(pipeline_status["state"])
+        print("{} ({}fps)".format(pipeline_status["state"], round(pipeline_status["avg_fps"])))
     else:
         print("Unable to fetch status")
 

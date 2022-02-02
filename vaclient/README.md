@@ -110,10 +110,10 @@ Querying the current state of the pipeline is done using the `status` command al
 ```
 ./vaclient/vaclient.sh status object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
-vaclient will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` like so
+vaclient will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` and also fps.
 ```
 <snip>
-RUNNING
+RUNNING (30fps)
 ```
 
 ### Waiting for a pipeline to finish
@@ -410,25 +410,25 @@ As mentioned before, `--show-request` option which will print out the HTTP reque
 
 ##### Status
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 1 --show-request
+./vaclient/vaclient.sh status object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
-GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1/status
+GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c/status
 ```
 ##### Wait
 ```
-./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 1 --show-request
+./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
-GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1/status
+GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c/status
 ```
 ##### Stop
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 1 --show-request
+./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
-DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/1
+DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c
 ```
