@@ -9,11 +9,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 RUN pip3 install --upgrade pip --no-cache-dir paho-mqtt==1.5.1
 
-COPY ./cpu-available.sh /usr/bin/cpu-available.sh
-RUN chmod +x /usr/bin/cpu-available.sh
-RUN echo "cpu-available            3333/tcp" >> /etc/services
-COPY ./cpu-available /etc/xinetd.d/cpu-available
-RUN chmod 644 /etc/xinetd.d/cpu-available
+COPY ./fps_health_check.py /usr/bin/fps_health_check.py
+RUN chmod +x /usr/bin/fps_health_check.py
+RUN echo "fps-health-check            3333/tcp" >> /etc/services
+COPY ./fps-health-check /etc/xinetd.d/fps-health-check
+RUN chmod 644 /etc/xinetd.d/fps-health-check
 
 
 COPY ./node-id.sh /usr/bin/node-id.sh

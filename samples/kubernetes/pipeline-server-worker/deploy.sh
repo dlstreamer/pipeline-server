@@ -45,3 +45,19 @@ echo "Using $PIPELINE_SERVER_YAML to deploy pipeline server"
 launch microk8s kubectl apply -f $PIPELINE_SERVER_YAML
 
 sleep 10
+
+not_running=0
+for (( i=0; i<25; ++i)); do
+    not_running=$(microk8s kubectl get pods | grep "pipeline-server" | grep -vE 'Running' | wc -l)
+    echo "Waiting for Pipeline Server instances to start......."
+    if [ $not_running == 0 ]; then
+        echo "All Pipeline Server instances are up and running"
+        break
+    else
+        sleep 10
+    fi
+done
+if [ $not_running != 0 ]; then
+    echo "Failed to deploy Pipeline Server, not all Services are in running state"
+    exit 1
+fi

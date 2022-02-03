@@ -23,6 +23,8 @@ spec:
             - containerPort: 3333
             - containerPort: 4444
           env:
+            - name: TARGET_FPS
+              value: "30"
 
 ---
 apiVersion: v1

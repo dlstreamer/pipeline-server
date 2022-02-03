@@ -2,7 +2,7 @@
 
 SCRIPT_DIR=$(dirname $(readlink -f "$0"))
 WORK_DIR="$SCRIPT_DIR/docker"
-BASE_IMAGE=${BASE_IMAGE:-amr-registry.caas.intel.com/media-analytics/video-analytics-serving:haproxy1}
+BASE_IMAGE=${BASE_IMAGE:-intel/dlstreamer-pipeline-server:0.7.1}
 
 PIPELINE_SERVER_WORKER_IMAGE=${PIPELINE_SERVER_WORKER_IMAGE:-"localhost:32000/dlstreamer-pipeline-server-worker:latest"}
 
