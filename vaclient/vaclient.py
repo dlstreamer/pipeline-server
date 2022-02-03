@@ -10,6 +10,7 @@ import json
 import time
 import os
 import sys
+from html.parser import HTMLParser
 import requests
 import results_watcher
 from vaserving.pipeline import Pipeline
@@ -41,6 +42,18 @@ RTSP_TEMPLATE = {
 }
 SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the pipeline-server microservice is running"
 
+def html_handle_data(self, data):
+    self.text += data
+
+HTMLParser.handle_data = html_handle_data
+
+def html_to_text(html: str):
+    parser = HTMLParser()
+    parser.text = ''
+    parser.feed(html)
+    return parser.text.strip()
+
+#pylint: disable=too-many-branches
 def run(args):
     request = REQUEST_TEMPLATE
     update_request_options(request, args)
@@ -50,18 +63,23 @@ def run(args):
     try:
         for stream in range(args.streams):
             if status_only:
-                print("Starting pipeline {}".format(stream))
-            started_instance_id = start_pipeline(args.server_address,
-                                                args.pipeline,
-                                                request,
-                                                verbose=args.verbose,
-                                                show_request=args.show_request)
-            instance_ids.append(started_instance_id)
-            if wait_for_pipeline_running(args.server_address, started_instance_id):
-                log_pipeline_running(started_instance_id, stream, args.verbose, status_only)
-                watcher = start_watcher(request, status_only)
-        if args.streams > 1:
-            print("All {} pipelines running.".format(args.streams))
+                print("Starting pipeline {}".format(stream+1))
+            try:
+                started_instance_id = start_pipeline(args.server_address,
+                                                    args.pipeline,
+                                                    request,
+                                                    verbose=args.verbose,
+                                                    show_request=args.show_request)
+                instance_ids.append(started_instance_id)
+                if wait_for_pipeline_running(args.server_address, started_instance_id):
+                    log_pipeline_running(started_instance_id, stream+1, args.verbose, status_only)
+                    watcher = start_watcher(request, status_only)
+            except Exception as exception:
+                if args.streams > 1:
+                    print(exception)
+                else:
+                    raise RuntimeError(exception) from exception
+        log_all_pipelines_running(args.streams, len(instance_ids))
         status = wait_for_all_pipeline_completions(args.server_address, instance_ids, status_only=status_only)
         if args.streams == 1:
             print_fps(status)
@@ -98,6 +116,9 @@ def log_pipeline_running(instance_id, stream, verbose, status_only):
         else:
             print("Pipeline running - instance_id = {}".format(instance_id))
 
+def log_all_pipelines_running(num_requested, num_running):
+    if num_requested > 1:
+        print("{} pipelines running.".format(num_running))
 
 def start(args):
     request = REQUEST_TEMPLATE
@@ -109,8 +130,8 @@ def start(args):
                    show_request=args.show_request)
 
 def stop(args):
-    stop_pipeline(args.server_address, args.instance, args.show_request)
-    print_fps(get_pipeline_status(args.server_address, args.instance))
+    if stop_pipeline(args.server_address, args.instance, args.show_request):
+        print_fps(get_pipeline_status(args.server_address, args.instance))
 
 def wait(args):
     try:
@@ -224,8 +245,9 @@ def stop_pipeline(server_address, instance_id, show_request=False):
     status_code = delete(stop_url, show_request)
     if status_code == RESPONSE_SUCCESS:
         print("Pipeline stopped")
-    else:
-        print("Pipeline NOT stopped")
+        return True
+    print("Pipeline NOT stopped")
+    return False
 
 def wait_for_pipeline_running(server_address,
                               instance_id,
@@ -257,19 +279,23 @@ def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=
     status = {"state" : "RUNNING"}
     stopped = False
     num_streams = len(instance_ids)
+    if num_streams == 0:
+        return None
     while status and not stopped:
         if num_streams > 1 or status_only:
-            time.sleep(10 *SLEEP_FOR_STATUS)
-            status = get_pipeline_status(server_address, instance_ids[0])
-            print("Pipeline status @ {}s".format(round(status["elapsed_time"])))
+            time.sleep(10 * SLEEP_FOR_STATUS)
             all_streams_stopped = True
+            first_pipeline = True
             for instance_id in instance_ids:
                 status = get_pipeline_status(server_address, instance_id)
                 if status:
+                    if first_pipeline:
+                        print("Pipeline status @ {}s".format(round(status["elapsed_time"])))
                     print("- instance={}, state={}, {}fps".format(
                         instance_id, status["state"], round(status["avg_fps"])))
                     if not Pipeline.State[status["state"]].stopped():
                         all_streams_stopped = False
+                first_pipeline = False
             stopped = all_streams_stopped
         else:
             time.sleep(SLEEP_FOR_STATUS)
@@ -277,7 +303,6 @@ def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=
             stopped = Pipeline.State[status["state"]].stopped()
     if status and status["state"] == "ERROR":
         raise ValueError("Error in pipeline, please check pipeline-server log messages")
-
     return status
 
 def get_pipeline_status(server_address, instance_id, show_request=False):
@@ -307,7 +332,7 @@ def post(url, body, show_request=False):
             return instance_id
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
-    raise RuntimeError("Status {} - {}".format(launch_response.status_code, launch_response.text))
+    raise RuntimeError(html_to_text(launch_response.text))
 
 def get(url, show_request=False):
     try:
@@ -318,7 +343,7 @@ def get(url, show_request=False):
         if status_response.status_code == RESPONSE_SUCCESS:
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
-        print(status_response.text)
+        print(html_to_text(status_response.text))
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
@@ -330,7 +355,7 @@ def delete(url, show_request=False):
             sys.exit(0)
         stop_response = requests.delete(url, timeout=TIMEOUT)
         if stop_response.status_code != RESPONSE_SUCCESS:
-            print("Unsuccessful status code {} - {}".format(stop_response.status_code, stop_response.text))
+            print(html_to_text(stop_response.text))
         return stop_response.status_code
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
