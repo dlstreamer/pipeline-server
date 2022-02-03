@@ -110,7 +110,7 @@ def start(args):
 
 def stop(args):
     stop_pipeline(args.server_address, args.instance, args.show_request)
-    print_fps(get_pipeline_status(args.server_address, args.pipeline, args.instance))
+    print_fps(get_pipeline_status(args.server_address, args.instance))
 
 def wait(args):
     try:
