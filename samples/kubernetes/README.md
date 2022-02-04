@@ -10,7 +10,7 @@ This sample demonstrates deployment of Intel(R) DL Streamer Pipeline Server to K
 - MQTT: [MQTT](https://hub.docker.com/_/eclipse-mosquitto) is an open source message bus.
 - Node : Physical or virtual machine
 - Leader: A Node which acts as controller and used as cluster entrypoint. `leader` can also be used as `worker`, meaning it can perform the function of the worker in addition to the leader. There can only be one leader in a cluster.
-- Worker: An additional node attached to leaders cluster to increase efficiency.
+- Worker: An additional node attached to leader’s cluster to increase efficiency.
 - Pod : A pod is a service container that runs jobs.
 - leader-ip : Host IP Address of Leader Node.
 
@@ -193,13 +193,25 @@ vcplab002    Ready    <none>   84s   v1.21.5-3+83e2bb7ee39726
 ## Step3: Build and Deploy
 
 Follow the steps below to build and deploy Pipeline Server, HAProxy and MQTT. The HAProxy service is a single Docker container instance that is responsible for load balancing (e.g., when it receives HTTP requests).
-HAProxy is responsible for passing requests to Pipeline servers based on CPU utilization.
+HAProxy is responsible for passing requests to Pipeline Servers. Once a server either reaches `MAX_RUNNING_PIPELINES` or has a pipeline instance running with fps below `TARGET_FPS`, it becomes unavailable for new requests. Once all the Pipeline Servers in the cluster become unavailable, user receives `503 Service Unavailable` error. Both `MAX_RUNNING_PIPELINES` and `TARGET_FPS` are set in `pipeline-server-worker/pipeline-server.yaml`.
 
 > Note: Pipeline Server pod(s) must be up and running before building and deploying HAProxy.
 
+### MQTT
+
+This will enable listening to metadata using MQTT broker.
+
+```bash
+./mqtt/deploy.sh
+```
+
+```text
+MQTT instance is up and running
+```
+
 ### Pipeline Server Worker
 
-By default replicas in `pipeline-server-worker/pipeline-server.yaml` set to `1` in `line 8`, update this number to number of `nodes` and issue below command.
+By default `replicas` in `pipeline-server-worker/pipeline-server.yaml` is set to `1` in `line 8`, update this number to number of `nodes` and issue below command.
 
 This command adds host system proxy settings to `pipeline-server-worker/pipeline-server.yaml` and deploys it.
 
@@ -210,7 +222,11 @@ This command adds host system proxy settings to `pipeline-server-worker/pipeline
 ./pipeline-server-worker/deploy.sh
 ```
 
-Wait for Pipeline Server to running.
+```text
+All Pipeline Server instances are up and running
+```
+
+Check Status
 
 ```bash
 microk8s kubectl get pods
@@ -218,6 +234,7 @@ microk8s kubectl get pods
 
 ```text
 NAME                                          READY   STATUS
+mqtt-deployment-7d85664dc7-f976h              1/1     Running
 pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
 ```
 
@@ -230,27 +247,11 @@ This will enable REST Requests can be sent through port 31000
 ./haproxy/deploy.sh
 ```
 
-Wait for HAProxy to running.
-
-```bash
-microk8s kubectl get pods
-```
-
 ```text
-NAME                                          READY   STATUS
-pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
-haproxy-deployment-7d79cf66f5-4d92n           1/1     Running
+HAProxy Service started
 ```
 
-### MQTT
-
-This will enable listening to metadata using mosquitto broker.
-
-```bash
-./mqtt/deploy.sh
-```
-
-Check all Services are up and running, wait until they are set to running.
+Check status of all pods
 
 ```bash
 microk8s kubectl get pods
@@ -283,12 +284,6 @@ Send the REST request : Using the Leader node IP address and 31000 port to reque
             "host": "<leader-ip>:31020",
             "topic": "inference-results"
         }
-    },
-    "parameters":{
-        "detection-properties": {
-            "cpu-throughput-streams": 1,
-            "ie-config":"CPU_THREADS_NUM=1,CPU_BIND_THREAD=NO"
-        }
     }
   }'
 ```
@@ -313,22 +308,25 @@ Send the REST request : Using the Leader node IP address and 31000 port to reque
 ## Add New worker node to Cluster
 
 1. Run [Step1](#step1-install-microk8s-and-dependencies) and [Step2](#step2-add-a-node-to-cluster) on new node.
-2. `On Leader Node` increase replicas and deploy Pipeline Server.
+2. Increase Pipeline Server replicas and deploy.
 
-    `On Leader Node` Increase replicas number in `pipeline-server-worker/perline-server.yaml` at `line 8` by 1 and issue below command to add new Pipeline Server pod.
-
-    ```bash
-    microk8s kubectl apply -f pipeline-server-worker/pipeline-server.yaml
-    ```
-
-    Wait for new Pipeline Server instance to add and set to Running.
+    `On Leader Node`, increase `replicas` number in `pipeline-server-worker/perline-server.yaml` at `line 8` by 1 and issue below command to add new Pipeline Server pod.
 
     ```bash
-    microk8s kubectl get pods | grep 'pipeline-server`
+    ./pipeline-server-worker/deploy.sh
     ```
 
     ```text
-    NAME                                          READY   STATUS
+    All Pipeline Server instances are up and running
+    ```
+
+    Check Status
+
+    ```bash
+    microk8s kubectl get pods | grep 'pipeline-server'
+    ```
+
+    ```text
     pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
     pipeline-server-deployment-7479f5d494-2knop   1/1     Running
     ```
@@ -340,7 +338,11 @@ Send the REST request : Using the Leader node IP address and 31000 port to reque
     ./haproxy/deploy.sh
     ```
 
-    Wait for HAProxy to running.
+    ```text
+    HAProxy Service started
+    ```
+
+    Check status of all pods
 
     ```bash
     microk8s kubectl get pods
