@@ -1,39 +1,42 @@
 # VA Client Command Reference
-vaclient is a python app intended to be a reference for using VA Serving REST API. vaclient is included in the main container and can be easily launched using the accompanying run script, `vaclient.sh`.
+vaclient is a python app intended to be a reference for using Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server REST API. vaclient is included in Pipeline Server's REST container and can be easily launched using the accompanying run script, `vaclient.sh`.
 
 >**Note:**
-This document assumes you are familiar with VA Serving. See the main [README](../README.md) for details on building and running the service.
+This document assumes you are familiar with Intel(R) DL Streamer Pipeline Server and have built the image locally and Pipeline Server REST instance is running for VA Client to connect to. See the main [README](../README.md) for details on building and running the service.
 
 ## Basic Usage
-### Listing Supported Pipelines and Models
-To see which models and pipelines are loaded by the service run the following commands. Both models and pipelines are displayed in the tuplet form of name/version.
-> **Note:** Results will vary depending on your service configuration
+### Listing Supported Models and Pipelines
+To see which models and pipelines are loaded by the service run the following commands.
+> **Note:** Results will vary depending on your service configuration but the format of models and pipelines are displayed in the tuplet form of name/version as seen below.
 
-First models:
+Listing models:
 ```
  ./vaclient/vaclient.sh list-models
 ```
 ```
 <snip>
- - emotion_recognition/1
- - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
+ - action_recognition/encoder
+ - action_recognition/decoder
+ - emotion_recognition/1
  - audio_detection/environment
+ - object_detection/person_vehicle_bike
  - face_detection_retail/1
- ```
+```
 
-Now pipelines:
+Listing pipelines:
 ```
 ./vaclient/vaclient.sh list-pipelines
 ```
 ```
 <snip>
- - audio_detection/environment
  - object_classification/vehicle_attributes
- - video_decode/app_dst
- - object_detection/app_src_dst
- - object_detection/person_vehicle_bike
+ - action_recognition/general
+ - audio_detection/environment
  - object_tracking/person_vehicle_bike
+ - object_tracking/object_line_crossing
+ - object_detection/person_vehicle_bike
+ - object_detection/object_zone_count
 ```
 
 ### Running Pipelines
