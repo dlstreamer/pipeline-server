@@ -1,5 +1,9 @@
+'''
+* Copyright (C) 2022 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+'''
 
-#! /usr/bin/python
 import sys
 import json
 import os
