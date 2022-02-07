@@ -1,6 +1,6 @@
 # Intel(R) DL Streamer Pipeline Server EdgeX Bridge
 
-This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) DL Streamer Pipeline Server and [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
+This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server and [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
 
 | [Overview](#overview) | [Prerequisites](#prerequisites) | [Tutorial](#tutorial) | [Extend Sample](#extend-the-sample) | [Troubleshooting](#troubleshooting) | [Deploying](#deploying-edgex-aware-microservices) | [Script Arguments](./edgex_bridge.md#script-arguments) |
 
@@ -12,11 +12,11 @@ This sample is composed of sections that walk you through a step-by-step tutoria
 
 EdgeX Foundry consists of vendor-neutral open-source middleware that provides a common framework to assemble and deploy solutions that utilize edge-based sensors and interoperates with operational technology and information technology systems. Especially suited for industrial IoT computing, EdgeX consists of a core set of loosely coupled microservices organized in different layers. At the [_South Side_](https://en.wikipedia.org/wiki/EdgeX_Foundry) the framework provides extensive integration of devices and software by use of a number of available device services. Each EdgeX device service is able to support a range of devices so long as they conform to a particular protocol. EdgeX also includes a [device-sdk](https://github.com/edgexfoundry/device-sdk-go/) to create new device services as needed.
 
-In this sample VA Serving outputs to [MQTT](https://en.wikipedia.org/wiki/MQTT), a popular IoT messaging protocol. These messages are received as [events](https://nexus.edgexfoundry.org/content/sites/docs/snapshots/master/256/docs/_build/html/Ch-WalkthroughReading.html) by a dynamically configured and listening EdgeX deployment.
+In this sample the Pipeline Server outputs to [MQTT](https://en.wikipedia.org/wiki/MQTT), a popular IoT messaging protocol. These messages are received as [events](https://nexus.edgexfoundry.org/content/sites/docs/snapshots/master/256/docs/_build/html/Ch-WalkthroughReading.html) by a dynamically configured and listening EdgeX deployment.
 
 ### Prerequisites
 
-This section lists additional dependencies needed to complete this tutorial, beyond the [primary VA Serving prerequisites](/README.md#prerequisites).
+This section lists additional dependencies needed to complete this tutorial, beyond the [primary Pipeline Server prerequisites](/README.md#prerequisites).
 
 * EdgeX requires [Docker Compose](https://docs.docker.com/compose/install/#install-compose-on-linux-systems) to launch its containers. Please install the latest for your platform.
 
@@ -26,7 +26,7 @@ This section lists additional dependencies needed to complete this tutorial, bey
 
 ### Pipeline
 
-The EdgeX Bridge sample uses a Intel(R) DL Streamer based pipeline definition with a version that designates its purpose. The reference pipeline found beneath `./pipelines/object_detect/edgex_event_emitter` uses standard gstreamer elements for parsing, decoding, and converting incoming media files, gvadetect to detect objects within each 15th frame (producing results relative to the source's frame rate), gvametaconvert to produce json from detections, gvapython to call a custom python module to _transform_ labeled detections, and finally gvametapublish to publish results to the [edgex-device-mqtt](https://github.com/edgexfoundry/device-mqtt-go) device service.
+The EdgeX Bridge sample uses a Intel(R) DL Streamer based pipeline definition with a version that designates its purpose. The reference pipeline found beneath `./pipelines/object_detection/edgex_event_emitter` uses standard gstreamer elements for parsing, decoding, and converting incoming media files, gvadetect to detect objects within every 6th frame (producing results relative to the source's frame rate), gvametaconvert to produce json from detections, gvapython to call a custom python module to _transform_ labeled detections, and finally gvametapublish to publish results to the [edgex-device-mqtt](https://github.com/edgexfoundry/device-mqtt-go) device service.
 
 ### Object Detection Model
 
@@ -40,7 +40,7 @@ The list of objects that this network can detect are:
 
 ## Tutorial
 
-This self-contained tutorial walks through a working example to fetch and prepare EdgeX configuration to receive Intel(R) DL Streamer Pipeline Server object detection events. Confirm prerequisites are installed before we begin.
+This self-contained tutorial walks through a working example to fetch and prepare EdgeX configuration to receive the Pipeline Server object detection events. Confirm prerequisites are installed before we begin.
 
    ```bash
    docker-compose --version
@@ -58,8 +58,8 @@ This self-contained tutorial walks through a working example to fetch and prepar
 
    ```bash
    cd ~/dev
-   git clone https://github.com/intel/dlstreamer-pipeline-server.git vasEdge
-   cd vasEdge/samples/edgex_bridge
+   git clone https://github.com/intel/dlstreamer-pipeline-server.git pipelineServerEdge
+   cd pipelineServerEdge/samples/edgex_bridge
    ```
 
 1. Fetch the EdgeX developer scripts repository:
@@ -72,7 +72,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    Should show contents similar to this:
 
    ```code
-     developer-scripts  docker-compose.yml  res
+     docker-compose.yml  edgex-compose  res
    ```
 
    > NOTE: This fetches the EdgeX `Hanoi` release of [EdgeX docker compose files](https://github.com/edgexfoundry/developer-scripts/blob/master/releases/hanoi/compose-files/README.md) that we will use to bootstrap our launch of the EdgeX Framework. This script also pulls the base configuration from the device-mqtt container. When it completes you will find a  `./edgex` subfolder is created with these contents.
@@ -83,7 +83,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    ./docker/build.sh
    ```
 
-   > NOTE: This also generates the needed EdgeX resources to augment the `./edgex` project subfolder located on your host (created in step 2). To do this the build script has invoked the [edgex_bridge.py](./edgex_bridge.md) entrypoint, passing in the `--generate` parameter. In this way, the sample will inform EdgeX to listen for VA Serving events as they are emitted to the MQTT broker.
+   > NOTE: This also generates the needed EdgeX resources to augment the `./edgex` project subfolder located on your host (created in step 2). To do this the build script has invoked the [edgex_bridge.py](./edgex_bridge.md) entrypoint, passing in the `--generate` parameter. In this way, the sample will inform EdgeX to listen for Pipeline Server events as they are emitted to the MQTT broker.
 
    Default values are applied for a single microservice to start you off with entrypoint parameters available for your expansion. You may expand on this example later by creating distinctly named microservices that each run a custom pipeline, or opt to dynamically handle other conditional workloads and use cases.
 
@@ -120,10 +120,10 @@ This self-contained tutorial walks through a working example to fetch and prepar
 
    > HINT: If you do get event count 0, check the [troubleshooting](#troubleshooting) section to inspect logs.
 
-1. You are able to explore the event data within EdgeX, by issuing this command. For example, filtering to retrieve three (3) vehicle detection events by the registered `videoAnalytics-mqtt` device:
+1. You are able to explore the event data within EdgeX, by issuing this command. For example, filtering to retrieve three (3) vehicle detection events by the registered `pipelineServer-mqtt` device:
 
    ```bash
-   curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/3
+   curl -i --get http://localhost:48080/api/v1/event/device/pipelineServer-mqtt/3
    ```
 
    Example Response:
@@ -134,7 +134,7 @@ This self-contained tutorial walks through a working example to fetch and prepar
    Date: Fri, 31 Dec 2021 00:00:00 GMT
    Transfer-Encoding: chunked
 
-   [{"id":"921cc81b-4b64-4f47-9879-8f9c6b3faea3","device":"videoAnalytics-mqtt","created":1617597629183,"origin":1617597629182450826,"readings":[{"id":"7b425176-f1ad-4a3c-8fb2-7386332504ff","created":1617597629183,"origin":1617597629182322723,"device":"videoAnalytics-mqtt","name":"videoAnalyticsData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.37493348121643066,\"x_min\":0.15006685256958008,\"y_max\":0.9955933094024658,\"y_min\":0.611812949180603},\"confidence\":0.9992963075637817,\"label\":\"vehicle\",\"label_id\":2},\"h\":166,\"roi_type\":\"vehicle\",\"w\":173,\"x\":115,\"y\":264}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":27360000000}","valueType":"String"}]},{"id":"5a56d236-484d-4487-aeab-bff5d6bd5b11","device":"videoAnalytics-mqtt","created":1617597628962,"origin":1617597628962439835,"readings":[{"id":"8de761e4-3bf1-4e3e-bbdf-7b2c2572c83e","created":1617597628962,"origin":1617597628962338556,"device":"videoAnalytics-mqtt","name":"videoAnalyticsData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.39165395498275757,\"x_min\":0.14272361993789673,\"y_max\":1.0,\"y_min\":0.29326608777046204},\"confidence\":0.9970927238464355,\"label\":\"vehicle\",\"label_id\":2},\"h\":305,\"roi_type\":\"vehicle\",\"w\":191,\"x\":110,\"y\":127}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26880000000}","valueType":"String"}]},{"id":"396b61e2-4214-4fc6-85c4-da9ff91233b6","device":"videoAnalytics-mqtt","created":1617597628224,"origin":1617597628223052310,"readings":[{"id":"027ab64f-e471-430c-950d-b4ec8092682b","created":1617597628224,"origin":1617597628222903913,"device":"videoAnalytics-mqtt","name":"videoAnalyticsData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.400143027305603,\"x_min\":0.1788042187690735,\"y_max\":0.7343284487724304,\"y_min\":0.01967310905456543},\"confidence\":0.9986555576324463,\"label\":\"vehicle\",\"label_id\":2},\"h\":309,\"roi_type\":\"vehicle\",\"w\":170,\"x\":137,\"y\":8}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26400000000}","valueType":"String"}]}]
+   [{"id":"921cc81b-4b64-4f47-9879-8f9c6b3faea3","device":"pipelineServer-mqtt","created":1617597629183,"origin":1617597629182450826,"readings":[{"id":"7b425176-f1ad-4a3c-8fb2-7386332504ff","created":1617597629183,"origin":1617597629182322723,"device":"pipelineServer-mqtt","name":"pipelineServerData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.37493348121643066,\"x_min\":0.15006685256958008,\"y_max\":0.9955933094024658,\"y_min\":0.611812949180603},\"confidence\":0.9992963075637817,\"label\":\"vehicle\",\"label_id\":2},\"h\":166,\"roi_type\":\"vehicle\",\"w\":173,\"x\":115,\"y\":264}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":27360000000}","valueType":"String"}]},{"id":"5a56d236-484d-4487-aeab-bff5d6bd5b11","device":"pipelineServer-mqtt","created":1617597628962,"origin":1617597628962439835,"readings":[{"id":"8de761e4-3bf1-4e3e-bbdf-7b2c2572c83e","created":1617597628962,"origin":1617597628962338556,"device":"pipelineServer-mqtt","name":"pipelineServerData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.39165395498275757,\"x_min\":0.14272361993789673,\"y_max\":1.0,\"y_min\":0.29326608777046204},\"confidence\":0.9970927238464355,\"label\":\"vehicle\",\"label_id\":2},\"h\":305,\"roi_type\":\"vehicle\",\"w\":191,\"x\":110,\"y\":127}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26880000000}","valueType":"String"}]},{"id":"396b61e2-4214-4fc6-85c4-da9ff91233b6","device":"pipelineServer-mqtt","created":1617597628224,"origin":1617597628223052310,"readings":[{"id":"027ab64f-e471-430c-950d-b4ec8092682b","created":1617597628224,"origin":1617597628222903913,"device":"pipelineServer-mqtt","name":"pipelineServerData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.400143027305603,\"x_min\":0.1788042187690735,\"y_max\":0.7343284487724304,\"y_min\":0.01967310905456543},\"confidence\":0.9986555576324463,\"label\":\"vehicle\",\"label_id\":2},\"h\":309,\"roi_type\":\"vehicle\",\"w\":170,\"x\":137,\"y\":8}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26400000000}","valueType":"String"}]}]
    ```
 
    > Notice these events show what type of object was detected, when it was found, where it was located in the frame, and from what source it originated.
@@ -195,61 +195,73 @@ The `dlstreamer-pipeline-server-edgex` image may be extended by updating sources
 
 ### Creative Mode
 
-1. You may customize the sample pipeline to use other models or perform other runtime behaviors.
-
-   Refer to [Changing Object Detection Models](/docs/changing_object_detection_models.md) for creative guidance.
+1. You may customize the sample pipeline to use other models or perform other runtime behaviors. Refer to [Changing Object Detection Models](/docs/changing_object_detection_models.md) for creative guidance.
 
    > NOTE: Each time you make changes to the pipeline definition you will need to run `./docker/build.sh` so the update is reflected in the `dlstreamer-pipeline-server-edgex` image. If you prefer to make many _iterative_ changes, an alternative to this is to volume mount your local folder and instruct our container to use what currently persists on your host's pipeline.json.
 
-   To mount to the pipelines folder on your host, allowing direct pipeline.json changes to take effect inside your container, uncomment the line in ./edgex/docker.compose.override`:
-
-   ```suggestion:-0+0
-   <snip>
-   #      - ./../pipelines:/home/pipeline-server/samples/edgex_bridge/pipelines
-   ```
-
-1. The `edgex_bridge.py` sample allows you to generate and run using other profile names, topics to extend the interactions you may need with your EdgeX applications. Refer to the reference section below for details.
+1.  The `edgex_bridge.py` sample allows you to generate and run using other profile names, topics to extend the interactions you may need with your EdgeX applications. Refer to the reference section below for details.
 
 1. The `object_detection/edgex_event_emitter` pipeline is a reference that you can use as a starting point to construct or update other pipelines. Of primary interest will be the gvapython element and parameters which invoke the `extensions/edgex_transform.py` while the pipeline executes.
 
 1. The `extensions/edgex_transform.py` may be modified to inspect detection and tensor values preparing event payloads with tailored data set(s) before they are sent to EdgeX. This is especially useful when processing media or EdgeX application layers on constrained edge devices.
 
-1. Change to a [mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/mobilenet-ssd/model.yml) model and pass in a new source, representing a camera watching bottles being added or removed, such as "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true"
+Below is a sample exercise:
+   - Change to a [mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/blob/master/models/public/mobilenet-ssd/model.yml) model: In the `Run Model Downloader` step in [Changing Object Detection Models](/docs/changing_object_detection_models.md), you may use a model download YAML similar to
+     ```yaml
+     - model: mobilenet-ssd
+       alias: object_detection
+       version: bottle_watcher
+       precision: [FP16,FP32]
+     ```
+   - You may edit the existing `samples/edgex-bridge/pipelines/pipeline.json`, updating model in the template section:
+     ```json
+      "template": ["{auto_source} ! decodebin",
+                  " ! gvadetect model={models[object_detection][bottle_watcher][network]} name=detection",
+                  " ! gvametaconvert name=metaconvert",
+                  " ! gvapython name=edgexbridge module=/home/pipeline-server/samples/edgex_bridge/extensions/edgex_transform.py class=Bridge",
+                  " ! gvametapublish name=destination",
+                  " ! appsink name=appsink"]
+     ```
+   - To pass in a new source, representing a camera watching bottles being added or removed, such as "https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true", you can update `docker/build.sh` like so
+     ```
+     launch "$SAMPLE_DIR/docker/run.sh --generate --user $UID --entrypoint-args \
+     --source=https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true"
+     ```
 
-   After you launch ./docker/build.sh and start_edgex.sh, you will find these events emitted:
+   - After you launch `./docker/build.sh` and `start_edgex.sh`, you will find these events emitted:
 
-   ```bash
-   curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/2
-   ```
+      ```bash
+      curl -i --get http://localhost:48080/api/v1/event/device/pipelineServer-mqtt/2
+      ```
 
-   ```shell
-   HTTP/1.1 200 OK
-   Content-Type: application/json
-   Date: Fri, 31 Dec 2021 00:00:00 GMT
-   Content-Length: 1652
+      ```shell
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+      Date: Fri, 31 Dec 2021 00:00:00 GMT
+      Content-Length: 1652
 
-   [{"id":"373b6f53-6c25-4fd2-8794-a947361286cc","device":"videoAnalytics-mqtt","created":1616987952909,"origin":1616987952909364616,"readings":[{"id":"edfc69ba-860b-45b6-89f0-58fc6a924bc7","created":1616987952909,"origin":1616987952909324668,"device":"videoAnalytics-mqtt","name":"videoAnalyticsData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9018613696098328,\"x_min\":0.7940059304237366,\"y_max\":0.8923144340515137,\"y_min\":0.3036338984966278},\"confidence\":0.6951693892478943,\"label\":\"bottle\",\"label_id\":5},\"h\":212,\"roi_type\":\"bottle\",\"w\":69,\"x\":508,\"y\":109}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":39821229050}","valueType":"String"}]},{"id":"2864f434-696f-4a86-b3da-c7a96feb9ac0","device":"videoAnalytics-mqtt","created":1616987952909,"origin":1616987952909342261,"readings":[{"id":"4a2aad7f-a26f-4121-b4c9-12fc15774980","created":1616987952909,"origin":1616987952909267268,"device":"videoAnalytics-mqtt","name":"videoAnalyticsData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9021463990211487,\"x_min\":0.7939692139625549,\"y_max\":0.8923394680023193,\"y_min\":0.3034985065460205},\"confidence\":0.6987365484237671,\"label\":\"bottle\",\"label_id\":5},\"h\":212,\"roi_type\":\"bottle\",\"w\":69,\"x\":508,\"y\":109}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":39787709497}","valueType":"String"}]}]
-   ```
+      [{"id":"373b6f53-6c25-4fd2-8794-a947361286cc","device":"pipelineServer-mqtt","created":1616987952909,"origin":1616987952909364616,"readings":[{"id":"edfc69ba-860b-45b6-89f0-58fc6a924bc7","created":1616987952909,"origin":1616987952909324668,"device":"pipelineServer-mqtt","name":"pipelineServerData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9018613696098328,\"x_min\":0.7940059304237366,\"y_max\":0.8923144340515137,\"y_min\":0.3036338984966278},\"confidence\":0.6951693892478943,\"label\":\"bottle\",\"label_id\":5},\"h\":212,\"roi_type\":\"bottle\",\"w\":69,\"x\":508,\"y\":109}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":39821229050}","valueType":"String"}]},{"id":"2864f434-696f-4a86-b3da-c7a96feb9ac0","device":"pipelineServer-mqtt","created":1616987952909,"origin":1616987952909342261,"readings":[{"id":"4a2aad7f-a26f-4121-b4c9-12fc15774980","created":1616987952909,"origin":1616987952909267268,"device":"pipelineServer-mqtt","name":"pipelineServerData","value":"{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9021463990211487,\"x_min\":0.7939692139625549,\"y_max\":0.8923394680023193,\"y_min\":0.3034985065460205},\"confidence\":0.6987365484237671,\"label\":\"bottle\",\"label_id\":5},\"h\":212,\"roi_type\":\"bottle\",\"w\":69,\"x\":508,\"y\":109}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":39787709497}","valueType":"String"}]}]
+      ```
 
-1. Add an application service to consume events and trigger other actions based on insights.
+   - Add an application service to consume events and trigger other actions based on insights.
 
-   > TIP: You can also monitor the MQTT broker when troubleshooting connectivity by subscribing with a client right on your host.
+      > TIP: You can also monitor the MQTT broker when troubleshooting connectivity by subscribing with a client right on your host.
 
-   ```bash
-   sudo apt-get update && sudo apt-get install mosquitto-clients
+      ```bash
+      sudo apt-get update && sudo apt-get install mosquitto-clients
 
-   mosquitto_sub -t edgex_bridge/objects_detected
-   ```
+      mosquitto_sub -t edgex_bridge/objects_detected
+      ```
 
-   This will reveal events received by the EdgeX MQTT Broker as they scroll by.
+      This will reveal events received by the EdgeX MQTT Broker as they scroll by.
 
-   ```bash
-   ...
-   {"name": "videoAnalytics-mqtt", "cmd": "videoAnalyticsData", "method": "get", "videoAnalyticsData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9158562421798706,\"x_min\":0.7758536338806152,\"y_max\":0.5335087776184082,\"y_min\":0.002240896224975586},\"confidence\":0.5367399454116821,\"label\":\"bottle\",\"label_id\":5},\"h\":191,\"roi_type\":\"bottle\",\"w\":90,\"x\":497,\"y\":1}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":31910614525}"}
+      ```bash
+      ...
+      {"name": "pipelineServer-mqtt", "cmd": "pipelineServerData", "method": "get", "pipelineServerData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9158562421798706,\"x_min\":0.7758536338806152,\"y_max\":0.5335087776184082,\"y_min\":0.002240896224975586},\"confidence\":0.5367399454116821,\"label\":\"bottle\",\"label_id\":5},\"h\":191,\"roi_type\":\"bottle\",\"w\":90,\"x\":497,\"y\":1}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":31910614525}"}
 
-   {"name": "videoAnalytics-mqtt", "cmd": "videoAnalyticsData", "method": "get", "videoAnalyticsData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.1857132911682129,\"x_min\":0.08316642045974731,\"y_max\":0.9017078876495361,\"y_min\":0.29972949624061584},\"confidence\":0.5077442526817322,\"label\":\"bottle\",\"label_id\":5},\"h\":217,\"roi_type\":\"bottle\",\"w\":66,\"x\":53,\"y\":108}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":33184357542}"}
-   ...
-   ```
+      {"name": "pipelineServer-mqtt", "cmd": "pipelineServerData", "method": "get", "pipelineServerData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.1857132911682129,\"x_min\":0.08316642045974731,\"y_max\":0.9017078876495361,\"y_min\":0.29972949624061584},\"confidence\":0.5077442526817322,\"label\":\"bottle\",\"label_id\":5},\"h\":217,\"roi_type\":\"bottle\",\"w\":66,\"x\":53,\"y\":108}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":33184357542}"}
+      ...
+      ```
 
 #### Runtime Modifications
 
@@ -304,7 +316,7 @@ The `dlstreamer-pipeline-server-edgex` image may be extended by updating sources
    ```
 
    ```console
-   /vasEdge/samples/edgex_bridge$ ./stop_edgex.sh
+   /pipelineServerEdge/samples/edgex_bridge$ ./stop_edgex.sh
    Stopping edgex-kuiper                         ... done
    Stopping edgex-app-service-configurable-rules ... done
    Stopping edgex-sys-mgmt-agent                 ... done
@@ -346,7 +358,7 @@ The `dlstreamer-pipeline-server-edgex` image may be extended by updating sources
 
 ## Troubleshooting
 
-1. You may wish to modify the `docker-compose.override.yml` directly or apply similar techniques to generate and run the VA Serving container whenever EdgeX is started; e.g., modifying command string to configure with different camera sources as input.
+1. You may wish to modify the `docker-compose.override.yml` directly or apply similar techniques to generate and run the Pipeline Server container whenever EdgeX is started; e.g., modifying command string to configure with different camera sources as input.
 
    For example, if you encounter permission issues consider assigning `user` in the docker-compose.override.yml but keep in mind that it will be re-generated when you next run ./docker/build.sh. Update `edgex_bridge.py` if you want to make your changes permanent.
 
@@ -381,7 +393,7 @@ The `dlstreamer-pipeline-server-edgex` image may be extended by updating sources
    ```
 
    This provides you with a bash shell with a complete Python runtime development environment so you can update and run within the context of your
-   container. Files updated on your host (source code, models, pipelines, media content, etc.) beneath the vasEdge folder (created in step 1) automatically get reflected in runs of the sample application. This allow you to:
+   container. Files updated on your host (source code, models, pipelines, media content, etc.) beneath the pipelineServerEdge folder (created in step 1) automatically get reflected in runs of the sample application. This allow you to:
 
    - Modify files using your favorite IDE or editor
    - Immediately invoke the container's entrypoint or other commands without needing to rebuild the image.
@@ -412,7 +424,7 @@ You will see the following results by probing EdgeX endpoints. These are useful 
 1. Confirm our designated device profile is registered with EdgeX:
 
    ```bash
-   curl -i --get http://localhost:48081/api/v1/device/name/videoAnalytics-mqtt
+   curl -i --get http://localhost:48081/api/v1/device/name/pipelineServer-mqtt
    ```
 
    ```shell
@@ -422,21 +434,21 @@ You will see the following results by probing EdgeX endpoints. These are useful 
       "origin": 1638752473485,
       "description": "MQTT device that receives media analytics events.",
       "id": "c4889695-0ba5-4482-829e-ce008365a439",
-      "name": "videoAnalytics-mqtt",
+      "name": "pipelineServer-mqtt",
       "adminState": "UNLOCKED",
       "operatingState": "ENABLED",
       "protocols": {
          "mqtt": {
-            "ClientId": "videoAnalytics-pub",
+            "ClientId": "pipelineServer-pub",
             "Host": "localhost",
             "Password": "",
             "Port": "1883",
             "Schema": "tcp",
-            "Topic": "videoAnalyticsTopic",
+            "Topic": "pipelineServerTopic",
             "User": ""
          }
       },
-      "labels": ["MQTT", "VideoAnalyticsServing"],
+      "labels": ["MQTT", "PipelineServer"],
       "service": {
          "created": 1638752473466,
          "modified": 1638752473466,
@@ -465,13 +477,13 @@ You will see the following results by probing EdgeX endpoints. These are useful 
          "modified": 1638752473481,
          "description": "Device profile for inference events published by Intel(R) DL Streamer Pipeline Server over MQTT.",
          "id": "bbf57a53-be3c-4e0b-800e-d3a1257bb567",
-         "name": "videoAnalytics-mqtt",
-         "manufacturer": "VideoAnalyticsServing",
+         "name": "pipelineServer-mqtt",
+         "manufacturer": "PipelineServer",
          "model": "MQTT-2",
-         "labels": ["MQTT", "VideoAnalyticsServing"],
+         "labels": ["MQTT", "PipelineServer"],
          "deviceResources": [{
             "description": "Inference with one or more detections on an analyzed media frame.",
-            "name": "videoAnalyticsData",
+            "name": "pipelineServerData",
             "properties": {
                "value": {
                   "type": "String",
@@ -484,12 +496,12 @@ You will see the following results by probing EdgeX endpoints. These are useful 
             }
          }],
          "deviceCommands": [{
-            "name": "videoAnalyticsData",
+            "name": "pipelineServerData",
             "get": [{
                "operation": "get",
-               "object": "videoAnalyticsData",
-               "deviceResource": "videoAnalyticsData",
-               "parameter": "videoAnalyticsData"
+               "object": "pipelineServerData",
+               "deviceResource": "pipelineServerData",
+               "parameter": "pipelineServerData"
             }]
          }]
       }
@@ -510,12 +522,12 @@ You will see the following results by probing EdgeX endpoints. These are useful 
    [
       {
          "id": "de0f3609-baeb-492c-a5bf-12ee58c75b2e",
-         "name": "videoAnalytics-mqtt",
+         "name": "pipelineServer-mqtt",
          "adminState": "UNLOCKED",
          "operatingState": "ENABLED",
          "labels": [
                "MQTT",
-               "VideoAnalyticsServing"
+               "PipelineServer"
          ]
       }
    ]
@@ -526,7 +538,7 @@ You will see the following results by probing EdgeX endpoints. These are useful 
 In addition to event counts, we can probe for incoming event details by querying EdgeX Core Data (listening on port 48080). These can be configured in EdgeX to persist or disappear upon handling; e.g., after they are processed by EdgeX Rules Engine or EdgeX Application Services.
 
 ```bash
-curl -i --get http://localhost:48080/api/v1/event/device/videoAnalytics-mqtt/100
+curl -i --get http://localhost:48080/api/v1/event/device/pipelineServer-mqtt/100
 ```
 
 ```shell
@@ -536,15 +548,15 @@ Date: Fri, 31 Dec 2021 00:00:00 GMT
 Transfer-Encoding: chunked
 [{
   "id": "0470f72d-25be-4437-8598-1d80c31a01e7",
-  "device": "videoAnalytics-mqtt",
+  "device": "pipelineServer-mqtt",
   "created": 1638759383162,
   "origin": 1638759383162549862,
   "readings": [{
     "id": "c41bc60d-941f-4396-903d-216b328fa693",
     "created": 1638759383162,
     "origin": 1638759383162498797,
-    "device": "videoAnalytics-mqtt",
-    "name": "videoAnalyticsData",
+    "device": "pipelineServer-mqtt",
+    "name": "pipelineServerData",
     "value": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.3749333620071411,\"x_min\":0.15006709098815918,\"y_max\":0.9955933094024658,\"y_min\":0.611812949180603},\"confidence\":0.9992963075637817,\"label\":\"vehicle\",\"label_id\":2},\"h\":166,\"roi_type\":\"vehicle\",\"w\":173,\"x\":115,\"y\":264}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":27360000000}",
     "valueType": "String"
   }]
@@ -552,15 +564,15 @@ Transfer-Encoding: chunked
 <snip>
 {
   "id": "b1c9f516-c0c6-4c1f-bf66-dcfb6be09ec4",
-  "device": "videoAnalytics-mqtt",
+  "device": "pipelineServer-mqtt",
   "created": 1638759381056,
   "origin": 1638759381055267583,
   "readings": [{
     "id": "0f07fb5f-281f-44fd-9fd4-69607943c752",
     "created": 1638759381056,
     "origin": 1638759381055194798,
-    "device": "videoAnalytics-mqtt",
-    "name": "videoAnalyticsData",
+    "device": "pipelineServer-mqtt",
+    "name": "pipelineServerData",
     "value": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.633696436882019,\"x_min\":0.3582877814769745,\"y_max\":1.0,\"y_min\":0.7601467967033386},\"confidence\":0.5017350316047668,\"label\":\"vehicle\",\"label_id\":2},\"h\":104,\"roi_type\":\"vehicle\",\"w\":212,\"x\":275,\"y\":328}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":4800000000}",
     "valueType": "String"
   }]
@@ -581,18 +593,18 @@ level=INFO app=edgex-core-data source=event.go:349 msg="Scrubbing events.  Delet
 
 #### EdgeX Commands
 
-The EdgeX videoAnalyticsData command receives the VA Serving events. These will hold values of detections/classifications that otherwise match standard VA Serving pipeline results. Examples:
+The EdgeX pipelineServerData command receives the Pipeline Server events. These will hold values of detections/classifications that otherwise match standard the Pipeline Server pipeline results. Examples:
 
 - Vehicles detected by `person-vehicle-bike-detection-crossroad-0078` currently defined in `./models_list/models.list.yml`
 
   ```bash
-  {"name": "videoAnalytics-mqtt", "cmd": "videoAnalyticsData", "method": "get", "videoAnalyticsData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.39165401458740234,\"x_min\":0.1427236944437027,\"y_max\":1.0,\"y_min\":0.2932662069797516},\"confidence\":0.9970927238464355,\"label\":\"vehicle\",\"label_id\":2},\"h\":305,\"roi_type\":\"vehicle\",\"w\":191,\"x\":110,\"y\":127}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26880000000}"}
+  {"name": "pipelineServer-mqtt", "cmd": "pipelineServerData", "method": "get", "pipelineServerData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.39165401458740234,\"x_min\":0.1427236944437027,\"y_max\":1.0,\"y_min\":0.2932662069797516},\"confidence\":0.9970927238464355,\"label\":\"vehicle\",\"label_id\":2},\"h\":305,\"roi_type\":\"vehicle\",\"w\":191,\"x\":110,\"y\":127}],\"resolution\":{\"height\":432,\"width\":768},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":26880000000}"}
   ```
 
 - Bottles detected by mobilenet-ssd:
 
   ```bash
-  {"name": "videoAnalytics-mqtt", "cmd": "videoAnalyticsData", "method": "get", "videoAnalyticsData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9158562421798706,\"x_min\":0.7758536338806152,\"y_max\":0.5335087776184082,\"y_min\":0.002240896224975586},\"confidence\":0.5367399454116821,\"label\":\"bottle\",\"label_id\":5},\"h\":191,\"roi_type\":\"bottle\",\"w\":90,\"x\":497,\"y\":1}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":31910614525}"}
+  {"name": "pipelineServer-mqtt", "cmd": "pipelineServerData", "method": "get", "pipelineServerData": "{\"objects\":[{\"detection\":{\"bounding_box\":{\"x_max\":0.9158562421798706,\"x_min\":0.7758536338806152,\"y_max\":0.5335087776184082,\"y_min\":0.002240896224975586},\"confidence\":0.5367399454116821,\"label\":\"bottle\",\"label_id\":5},\"h\":191,\"roi_type\":\"bottle\",\"w\":90,\"x\":497,\"y\":1}],\"resolution\":{\"height\":360,\"width\":640},\"source\":\"https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true\",\"tags\":{},\"timestamp\":31910614525}"}
   ```
 
 ## Deploying EdgeX Aware Microservices

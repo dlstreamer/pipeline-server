@@ -18,17 +18,17 @@ optional arguments:
                         results. (default: localhost:1883)
   --edgexdevice EDGEXDEVICE
                         Device name registered with edgex-device-mqtt.
-                        (default: videoAnalytics-mqtt)
+                        (default: pipelineServer-mqtt)
   --edgexcommand EDGEXCOMMAND
                         EdgeX command declared in the device profile.
-                        (default: videoAnalyticsData)
+                        (default: pipelineServerData)
   --edgexresource EDGEXRESOURCE
                         EdgeX device resource declared in the device profile.
-                        (default: videoAnalyticsData)
+                        (default: pipelineServerData)
   --topic TOPIC         destination topic associated with EdgeX Core Data
                         (default: objects_detected)
   --generate            Generate EdgeX device profile for device-mqtt. Also populates docker.compose.override.yml
-  --rtsp-path           Instructs VA Serving to render frames to RTSP at the supplied URI path segment (e.g., edgex_event_emitter).
+  --rtsp-path           Instructs Intel(R) DL Streamer Pipeline Server to render frames to RTSP at the supplied URI path segment (e.g., edgex_event_emitter).
                         (default: None)
   --analytics-image     Analytics image name to use for uService deployment to Docker compose.
                         (default: dlstreamer-pipeline-server-edgex:latest)

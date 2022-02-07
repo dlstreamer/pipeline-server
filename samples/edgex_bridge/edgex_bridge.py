@@ -30,17 +30,17 @@ def parse_args(args=None):
                         action="store",
                         dest="edgexdevice",
                         help="Device name registered with edgex-device-mqtt.",
-                        default="videoAnalytics-mqtt")
+                        default="pipelineServer-mqtt")
     parser.add_argument("--edgexcommand",
                         action="store",
                         dest="edgexcommand",
                         help="EdgeX command declared in the device profile.",
-                        default="videoAnalyticsData")
+                        default="pipelineServerData")
     parser.add_argument("--edgexresource",
                         action="store",
                         dest="edgexresource",
                         help="EdgeX device resource declared in the device profile.",
-                        default="videoAnalyticsData")
+                        default="pipelineServerData")
     parser.add_argument("--topic",
                         action="store",
                         dest="topic",
@@ -106,13 +106,13 @@ if __name__ == "__main__":
 
         if args.generate_profile:
             TEMPLATE = "name: \"{edgexdevice}\"\n" \
-            "manufacturer: \"VideoAnalyticsServing\"\n"\
+            "manufacturer: \"PipelineServer\"\n"\
             "model: \"MQTT-2\"\n"\
-            "description: \"Device profile for inference events published by Video Analytics "\
+            "description: \"Device profile for inference events published by Intel(R) DL Streamer Pipeline Server"\
             "Serving over MQTT.\"\n"\
             "labels:\n"\
             "- \"MQTT\"\n"\
-            "- \"VideoAnalyticsServing\"\n"\
+            "- \"PipelineServer\"\n"\
             "\n"\
             "deviceResources:\n"\
             "- name: \"{edgexresource}\"\n"\
@@ -144,7 +144,7 @@ if __name__ == "__main__":
                 "Name = '{edgexdevice}'\n"\
                 "Profile = '{edgexdevice}'\n"\
                 "Description = 'MQTT device that receives media analytics events.'\n"\
-                "Labels = ['MQTT', 'VideoAnalyticsServing']\n"\
+                "Labels = ['MQTT', 'PipelineServer']\n"\
                 "[DeviceList.Protocols]\n"\
                 "  [DeviceList.Protocols.mqtt]\n"\
                 "  Schema = 'tcp'\n"\
