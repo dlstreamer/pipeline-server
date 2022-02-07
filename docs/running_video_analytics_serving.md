@@ -1,7 +1,7 @@
 # Running Intel(R) DL Streamer Pipeline Server
 | [Intel(R) DL Streamer Pipeline Server Microservice](#dlstreamer-pipeline-server-microservice) | [Interacting with the Microservice](#interacting-with-the-microservice) | [Real Time Streaming Protocol (RTSP) Re-streaming](#real-time-streaming-protocol-rtsp-re-streaming) | [Selecting Pipelines and Models at Runtime](#selecting-pipelines-and-models-at-runtime) | [Developer Mode](#developer-mode) | [Enabling Hardware Accelerators](#enabling-hardware-accelerators) |
 
-Intel(R) DL Streamer Pipeline Server docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server docker images can be started using standard `docker run` and `docker compose` commands. For convenience a simplified run script is provided to pass common options to `docker
 run` such as proxies, device mounts, and to expose the default microservice port (8080).
 
 The following sections give an overview of the way the
@@ -13,7 +13,7 @@ image is run as well as common customization and interaction patterns.
 
 # Intel(R) DL Streamer Pipeline Server Microservice
 
-The default image of Intel(R) DL Streamer Pipeline Server includes a microservice
+The default image of the Pipeline Server includes a microservice
 that exposes a RESTful interface on port
 8080.  The microservice has endpoints to list, start, stop, and get
 the status of media analytics pipelines.
@@ -41,7 +41,7 @@ the status of media analytics pipelines.
 # Interacting with the Microservice
 
 The following examples demonstrate how to start and issue requests to
-a Intel(R) DL Streamer Pipeline Server Microservice either using the `Intel(R) DL Streamer`
+a Pipeline Server Microservice either using the `Intel(R) DL Streamer`
 based image or the `FFmpeg` based image.
 
 > **Note:** The following examples assume that the Video Analytics
@@ -53,7 +53,7 @@ based image or the `FFmpeg` based image.
 > **Note:** Both the `Intel(R) DL Streamer` based microservice and the `FFmpeg`
 > based microservice use the same default port: `8080` and only one
 > can be started at a time. To change the port please see the command
-> line options for the Intel(R) DL Streamer Pipeline Server microservice.
+> line options for the Pipeline Server microservice.
 >
 
 ## Starting the Microservice
@@ -155,7 +155,7 @@ docker stop dlstreamer-pipeline-server-ffmpeg
 # Real Time Streaming Protocol (RTSP) Re-streaming
 > **Note:** RTSP Re-streaming supported only in Intel(R) DL Streamer based Microservice.
 
-VA Serving contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
+The Pipeline Server contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
 
 ### Enable RTSP in service
 ```bash
@@ -210,7 +210,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 
 # Selecting Pipelines and Models at Runtime
 
-The models and pipelines loaded by the Intel(R) DL Streamer Pipeline Server
+The models and pipelines loaded by the Pipeline Server
 microservice can be selected at runtime by volume mounting the
 appropriate directories when starting the container.
 
@@ -235,7 +235,7 @@ The run script automatically gives docker access (i.e. device, volume mount and 
 * HDDL-R cards
 
 You also need to specify the inference device in the parameters section
-of the VA Serving request. Example for GPU below
+of the Pipeline Server request. Example for GPU below
 ```json
 "parameters": {
    "device": "GPU"
@@ -264,7 +264,7 @@ On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoo
 
 Configure your host by following the steps outlined in the OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_linux.html#additional-NCS-steps)
 
-> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Intel(R) DL Streamer Pipeline Server docker container using the following command:
+> **Note:** These steps require the file `97-myriad-usbboot.rules` which can be extracted from the Pipeline Server docker container using the following command:
 ```bash
 ./docker/run.sh -v ${PWD}:/tmp --entrypoint cp --entrypoint-args "/opt/intel/openvino/inference_engine/external/97-myriad-usbboot.rules /tmp"
 ```

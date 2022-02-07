@@ -7,7 +7,7 @@
 | [Rebuild Microservice](#step-6-rebuild-microservice-with-new-model-and-pipeline)
 | [Further Reading](#further-reading)
 
-Intel(R) DL Streamer Pipeline Server pipeline definitions are designed to make
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server pipeline definitions are designed to make
 pipeline customization and model selection easy. This tutorial
 provides step by step instructions for changing the object detection
 reference pipeline to use a different object detection model.
@@ -92,7 +92,7 @@ In the original terminal window, stop the service using `CTRL-C`.
 
 ## Step 2. Download New Model
 
-On start-up Intel(R) DL Streamer Pipeline Server discovers models that have been
+On start-up the Pipeline Server discovers models that have been
 downloaded and makes them available for reference within pipelines.
 
 Models can be downloaded either as part of the normal Video Analytics
@@ -171,7 +171,7 @@ cp -r pipelines/gstreamer/object_detection/person_vehicle_bike pipelines/gstream
 
 #### Edit the Pipeline Template
 
-Intel(R) DL Streamer Pipeline Server pipeline definition files contain a template
+The Pipeline Server pipeline definition files contain a template
 that specifies which model to use. The template needs to be updated to
 select a different model.
 

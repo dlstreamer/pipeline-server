@@ -111,8 +111,8 @@ Expected output:
 
 ## Running a Pipeline
 
-VA Serving includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
-> **Note:** Any RESTful tool or library can be used to send requests to the VA Serving service. We are using vaclient as it simplifies interaction with the service.
+The Pipeline Server includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
+> **Note:** Any RESTful tool or library can be used to send requests to the Pipeline Server service. We are using vaclient as it simplifies interaction with the service.
 
 > **Note:**  The microservice has to be up and running before the sample client is invoked.
 
@@ -265,7 +265,7 @@ The error state covers a number of outcomes such as the request could not be sat
 Starting pipeline object_detection/person_vehicle_bike, instance = 2bb2d219-310a4ee881faf258fbcc4355
 ```
 
-Note that VA Serving does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
+Note that the Pipeline Server does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
 Checking on state a few seconds later will show the error.
 
 ```bash
@@ -279,11 +279,10 @@ ERROR (0fps)
 
 ## Real Time Streaming Protocol (RTSP)
 
-RTSP allows you to connect to a server and display a video stream. VA Serving includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/). For this example we'll assume VA Serving and vlc are running on the same host.
+RTSP allows you to connect to a server and display a video stream. The Pipeline Server includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/). For this example we'll assume the Pipeline Server and vlc are running on the same host.
 
-First start VA Serving with RTSP enabled. By default, the RTSP stream will use port 8554.
-
-```bash
+First start the Pipeline Server with RTSP enabled. By default, the RTSP stream will use port 8554.
+```
 docker/run.sh --enable-rtsp -v /tmp:/tmp
 ```
 
@@ -366,7 +365,7 @@ vaclient's fps measurement is useful when assessing pipeline performance with di
 
 ## View REST Request
 
-As the previous example has shown, the vaclient application works by converting command line arguments into VA Serving REST requests.
+As the previous example has shown, the vaclient application works by converting command line arguments into Pipeline Server REST requests.
 The `--show-request` option displays the REST verb, uri and body in the request.
 Let's repeat the previous GPU inference example, adding RTSP output and show the underlying request.
 
@@ -462,7 +461,7 @@ curl localhost:8080/pipelines/object_classification/vehicle_attributes -X POST -
 
 # Changing Pipeline Model
 
-Intel(R) DL Streamer Pipeline Server makes pipeline customization and model selection a simple task. The [Changing Object Detection Models Tutorial](docs/changing_object_detection_models.md) provides step by step instructions for changing the object detection reference pipeline to use a model better suited to a different video source.
+The Pipeline Server makes pipeline customization and model selection a simple task. The [Changing Object Detection Models Tutorial](docs/changing_object_detection_models.md) provides step by step instructions for changing the object detection reference pipeline to use a model better suited to a different video source.
 
 # Further Reading
 

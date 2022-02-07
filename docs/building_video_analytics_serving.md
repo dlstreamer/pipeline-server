@@ -1,7 +1,7 @@
 # Building Intel(R) DL Streamer Pipeline Server
 | [Build Stages](#build-stages) | [Default Build Commands and Image Names](#default-build-commands-and-image-names)  | [Selecting Pipelines and Models at Build Time](#selecting-pipelines-and-models-at-build-time) | [Supported Base Images](#supported-base-images) |
 
-The Intel(R) DL Streamer Pipeline Server docker image is designed to be customized
+The Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server docker image is designed to be customized
 to support different base images, models, pipelines, and application
 requirements. The following sections give an overview of the way the
 image is built as well as common customization patterns.
@@ -12,7 +12,7 @@ image is built as well as common customization patterns.
 
 
 # Build Stages
-Intel(R) DL Streamer Pipeline Server docker images are built in stages. Each stage
+The Pipeline Server docker images are built in stages. Each stage
 can be customized to meet an application's requirements.
 
 | Stage | Description |
@@ -44,7 +44,7 @@ can be customized to meet an application's requirements.
 
 # Selecting Pipelines and Models at Build Time
 
-By default the Intel(R) DL Streamer Pipeline Server build scripts include a set of sample pipelines and models for object detection, classification, tracking and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the --pipelines and --models flags.
+By default the Pipeline Server build scripts include a set of sample pipelines and models for object detection, classification, tracking and audio event detection. Developers can select a different set of pipelines and models by specifying their location at build time through the --pipelines and --models flags.
 
 > **Note:** Selected pipeline definitions must match the media
 > framework supported in the media analytics base image.
@@ -57,7 +57,7 @@ By default the Intel(R) DL Streamer Pipeline Server build scripts include a set 
 ./docker/build.sh --framework gstreamer --pipelines /path/to/my-pipelines --models /path/to/my-models
 ```
 
-VA Serving includes by default the models listed in `models.list.yml` in the models folder. These models are downloaded and converted to IR format during the build using the [model download tool](../tools/model_downloader/README.md).
+The Pipeline Server includes by default the models listed in `models.list.yml` in the models folder. These models are downloaded and converted to IR format during the build using the [model download tool](../tools/model_downloader/README.md).
 The above example shows a directory being passed as argument to `--models` option. When its a directory name, the models are expected to be there. You can also pass a yml file as input with a list of models you wish to be included from Open Model Zoo.
 
 **Example:**

@@ -56,9 +56,9 @@ If a tracked object crosses any of the lines, an event of type `object-zone-coun
 }
 ```
 ## Example Run
-VA Serving comes with an [example configuration](../../vaclient/parameter_files/object-zone-count.json) for object-zone-count
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server comes with an [example configuration](../../vaclient/parameter_files/object-zone-count.json) for object-zone-count
 
-1. [Build](../../README.md#building-the-microservice) & [Run](../../README.md#running-the-microservice) VA Serving
+1. [Build](../../README.md#building-the-microservice) & [Run](../../README.md#running-the-microservice) the Pipeline Server
 
 2. Run object-zone-count pipeline with vaclient using example parameter file:
     ```
@@ -85,7 +85,7 @@ VA Serving comes with an [example configuration](../../vaclient/parameter_files/
         "enable_watermark": true
     }
     ```
-2. Rebuild and Run VA Serving with additional flag `--enable-rtsp`
+2. Rebuild and Run the Pipeline Server with additional flag `--enable-rtsp`
     ```
     ./docker/run.sh -v /tmp:/tmp --enable-rtsp
 

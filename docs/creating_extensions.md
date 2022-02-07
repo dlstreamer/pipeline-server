@@ -5,11 +5,11 @@
 
 # Extensions
 
-Extensions are a simple way to add functionality to a Intel(R) DL Streamer pipeline using its [python bindings](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/Python) and [GVAPython element](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvapython). By extending pipelines using `gvapython` a developer can access frames and analyze and/or update metadata such as detected objects or JSON messages. The Intel(R) DL Streamer [gvapython samples](https://github.com/openvinotoolkit/dlstreamer_gst/blob/master/samples/gst_launch/gvapython/face_detection_and_classification/README.md) provide more examples of the full breadth of capabilities.
+Extensions are a simple way to add functionality to a Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server pipeline using its [python bindings](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/Python) and [GVAPython element](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvapython). By extending pipelines using `gvapython` a developer can access frames and analyze and/or update metadata such as detected objects or JSON messages. The Intel(R) DL Streamer [gvapython samples](https://github.com/openvinotoolkit/dlstreamer_gst/blob/master/samples/gst_launch/gvapython/face_detection_and_classification/README.md) provide more examples of the full breadth of capabilities.
 
-An extension is a GVA Python script that is called during pipeline execution. The script is given a frame and any VA Serving parameters defined by the pipeline request.
+An extension is a GVA Python script that is called during pipeline execution. The script is given a frame and any Pipeline Server parameters defined by the pipeline request.
 The extension must be added after the last element that generates data it requires. Below are some examples that cover how extensions can be used to process inference results.
-> Note: Make sure to either build VA Serving container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Intel(R) DL Streamer Pipeline Server](running_video_analytics_serving.md#developer-mode)
+> Note: Make sure to either build the Pipeline Server container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Intel(R) DL Streamer Pipeline Server](running_video_analytics_serving.md#developer-mode)
 
 ## Example: Processing Inference Results
 
@@ -56,7 +56,7 @@ The pipeline can be run with VA Client as follows:
 vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
-As process_frame runs once per frame, VA Serving output would resemble
+As process_frame runs once per frame, the Pipeline Server output would resemble
 ```bash
 {"levelname": "INFO", "asctime": "2021-08-31 23:12:44,838", "message": "Setting Pipeline 1 State to RUNNING", "module": "gstreamer_pipeline"}
 Object count 1 exceeded threshold 0
@@ -172,7 +172,7 @@ class ObjectCounter:
   ```bash
    vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
   ```
-  VA Serving output shows count_threshold is set to 1 per parameter file
+  The Pipeline Server output shows count_threshold is set to 1 per parameter file
   ```bash
   <snip>
   {"levelname": "INFO", "asctime": "2021-09-01 16:28:30,037", "message": "Setting Pipeline 1 State to RUNNING", "module": "gstreamer_pipeline"}
@@ -192,7 +192,7 @@ The following sections build on the previous extension example that detects when
 
 Events are a type of metadata that can be added and read from a frame using methods from the [`gva_event_meta`](/extensions/gva_event_meta/gva_event_meta.py) module. They illustrate how to add and publish additional information using the underlying Intel(R) DL Streamer python bindings.
 
-Events are also used to publish results of the new set of Intel(R) DL Streamer Pipeline Server spatial analytics extensions: [object_line_crossing](/extensions/spatial_analytics/object_line_crossing.md)
+Events are also used to publish results of the new set of Pipeline Server spatial analytics extensions: [object_line_crossing](/extensions/spatial_analytics/object_line_crossing.md)
 and [object_zone_count](/extensions/spatial_analytics/object_zone_count.md).
 
 ## Event Schema

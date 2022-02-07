@@ -33,7 +33,7 @@ All command line options are optional. Details of key options and their default 
 This is the image that docker builds on. It must contain the full set of framework dependencies needed for either [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst) or [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch) and must match the framework selected with the `--framework` option. If a base image is not defined you must provide the location of the Dockerfile to build the base image (see `--base-build-context` and `--base-build-dockerfile`).
 
 ## Framework (--framework)
-VA Serving can use either `gstreamer` or `ffmpeg` for pipeline construction. Select framework with `--framework` option. Default is `gstreamer`.
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server can use either `gstreamer` or `ffmpeg` for pipeline construction. Select framework with `--framework` option. Default is `gstreamer`.
 
 ## Model Directory/File List (--models)
 This option can be used to specify path to models directory or a model list file. When its a directory, models used by pipelines are expected to be in this directory. When its a file, the models listed in the file are downloaded and converted to IR format if needed by the [model download tool](../tools/model_downloader/README.md) during build time. If nothing is specified, default models listed in the file `models_list/models.list.yml` are downloaded, converted to IR format if needed and included in the image. If set to `NONE` no models are included and the user must ensure models are made available at runtime by volume mounting.
@@ -41,14 +41,14 @@ This option can be used to specify path to models directory or a model list file
 ## Open Model Zoo Image (--open-model-zoo-image)
 This option can be used to specify the OpenVINO<sup>&#8482;</sup> base image to be used for downloading models from Open Model Zoo.
 
-For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo image as per the table in [section](building_video_analytics_serving.md#supported-base-images).
+For GStreamer, the Pipeline Server build script will automatically choose the Open Model Zoo image as per the table in [section](building_video_analytics_serving.md#supported-base-images).
 
 For FFmpeg, you **must** specify the Open Model Zoo image to build with (i.e., when using `--framework ffmpeg` provide the image corresponding to the table in [section](building_video_analytics_serving.md#supported-base-images)).
 
 ## Open Model Zoo Version (--open-model-zoo-version)
 This option can be used to specify the version of OpenVINO<sup>&#8482;</sup> base image to be used for downloading models from Open Model Zoo.
 
-For GStreamer, the VA Serving build script will automatically choose the Open Model Zoo version as per the table in [section](building_video_analytics_serving.md#supported-base-images).
+For GStreamer, the Pipeline Server build script will automatically choose the Open Model Zoo version as per the table in [section](building_video_analytics_serving.md#supported-base-images).
 
 For FFmpeg, you **must** specify the Open Model Zoo version to build with (i.e., when using `--framework ffmpeg` provide the version corresponding to the table in [section](building_video_analytics_serving.md#supported-base-images)).
 
@@ -58,7 +58,7 @@ This option instructs the [model download tool](../tools/model_downloader/README
 If you have previously built for a different framework, you **must** download these again (or archive your models directory to different name), because the version of Open Model Zoo used by `--framework gstreamer` produces different output than when building with `--framework ffmpeg`.
 
 ## Pipeline Directory (--pipelines)
-Path to VA Serving pipelines. Path must be within docker build context which defaults to the root of the dlstreamer-pipeline-server project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
+Path to the Pipeline Server pipelines. Path must be within docker build context which defaults to the root of the dlstreamer-pipeline-server project. If not specified, [sample pipelines](../pipelines/gstreamer) are included in the image. If set to `NONE` no pipelines are included and the user must ensure pipelines are made available at runtime by [volume mounting](running_video_analytics_serving.md#selecting-pipelines-and-models-at-runtime).
 
 ## Base Build Context (--base-build-context)
 This option is used in conjunction with `--base-build-dockerfile` to specify the docker build file and its context. It must be a git repo URL, path to tarball or path to locally cloned folder.
@@ -67,19 +67,19 @@ This option is used in conjunction with `--base-build-dockerfile` to specify the
 This option is used in conjunction with `--base-build-context` to specify the docker build file and its context. Default values are framework dependent. If framework is `gstreamer` the dockerfile for `Intel(R) DL Streamer` is selected, otherwise the dockerfile is set for the `FFmpeg Video Analytics` image.
 
 ## Build Option (--build-option)
-Specify a docker build option when building the VA Serving image.
+Specify a docker build option when building the Pipeline Server image.
 
 ## Base Build Option (--base-build-option)
 Specify a docker build option when building the base image.
 
 ## Build Arg (--build-arg)
-Specify a docker build argument when building the VA Serving image.
+Specify a docker build argument when building the Pipeline Server image.
 
 ## Base Build Arg (--base-build-arg)
 Specify and docker build argument when building the base image.
 
 ## Image Tag (--tag)
-Set tag of VA Serving image you build. Default value is `framework` based.
+Set tag of the Pipeline Server image you build. Default value is `framework` based.
 * For `gstreamer` framework: `dlstreamer-pipeline-server-gstreamer`
 * For `ffmpeg` framework: `dlstreamer-pipeline-server-ffmpeg`
 

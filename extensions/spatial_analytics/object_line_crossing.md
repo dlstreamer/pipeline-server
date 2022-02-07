@@ -65,9 +65,9 @@ The algorithm to calculate line crossing is based on the following article:
 https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 
 ## Example Run
-VA Serving comes with an [example configuration](../../vaclient/parameter_files/object-line-crossing.json) for object-line-crossing
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server comes with an [example configuration](../../vaclient/parameter_files/object-line-crossing.json) for object-line-crossing
 
-1. [Build](../../README.md#building-the-microservice) & [Run](../../README.md#running-the-microservice) VA Serving
+1. [Build](../../README.md#building-the-microservice) & [Run](../../README.md#running-the-microservice) the Pipeline Server
 
 2. Run object-line-crossing pipeline with vaclient using example parameter file:
     ```
@@ -97,7 +97,7 @@ VA Serving comes with an [example configuration](../../vaclient/parameter_files/
         "enable_watermark": true
     }
     ```
-2. Rebuild and Run VA Serving with additional flag `--enable-rtsp`
+2. Rebuild and Run the Pipeline Server with additional flag `--enable-rtsp`
     ```
     ./docker/run.sh -v /tmp:/tmp --enable-rtsp
 
