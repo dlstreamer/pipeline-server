@@ -518,6 +518,40 @@
             "version": "app_src_dst"
         },
         {
+            "type": "GStreamer",
+            "description": "Vehicle Detection based on vehicle-detection-0202",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
+                    }
+                }
+            },
+            "name": "object_detection",
+            "version": "vehicle"
+        },
+        {
+            "type": "GStreamer",
+            "description": "Person Detection based on person-detection-retail-0013",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "detection-properties": {
+                        "element": {
+                            "name": "detection",
+                            "format": "element-properties"
+                        }
+                    }
+                }
+            },
+            "name": "object_detection",
+            "version": "person"
+        },
+        {
             "description": "Decode Pipeline",
             "name": "video_decode",
             "type": "GStreamer",

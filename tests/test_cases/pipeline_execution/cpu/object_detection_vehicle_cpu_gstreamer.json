@@ -1,0 +1,3659 @@
+{
+    "options": {},
+    "pipeline": {
+        "name": "object_detection",
+        "version": "vehicle"
+    },
+    "request": {
+        "source": {
+            "type": "uri",
+            "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
+        },
+        "destination": {
+            "type": "file",
+            "path": "/tmp/object_detection_vehicle_cpu_gstreamer.json",
+            "format": "json-lines"
+        },
+        "parameters": {
+            "detection-properties": {
+                "device": "CPU",
+                "model-instance-id": "object_detection_vehicle_cpu_gstreamer"
+            }
+        }
+    },
+    "numerical_tolerance": 0.3,
+    "result": [
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.34132200479507446,
+                            "x_min": 0.1277530938386917,
+                            "y_max": 1.0,
+                            "y_min": 0.8740528225898743
+                        },
+                        "confidence": 0.5262379050254822,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 54,
+                    "roi_type": "vehicle",
+                    "w": 164,
+                    "x": 98,
+                    "y": 378
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3415306285023689,
+                            "x_min": 0.1183849647641182,
+                            "y_max": 1.0,
+                            "y_min": 0.8467586040496826
+                        },
+                        "confidence": 0.8895061612129211,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 66,
+                    "roi_type": "vehicle",
+                    "w": 171,
+                    "x": 91,
+                    "y": 366
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3507336974143982,
+                            "x_min": 0.11562882363796234,
+                            "y_max": 1.0,
+                            "y_min": 0.8145142793655396
+                        },
+                        "confidence": 0.8459423780441284,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 80,
+                    "roi_type": "vehicle",
+                    "w": 181,
+                    "x": 89,
+                    "y": 352
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3546679988503456,
+                            "x_min": 0.11187718063592911,
+                            "y_max": 0.9900726079940796,
+                            "y_min": 0.7844947576522827
+                        },
+                        "confidence": 0.8148163557052612,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 89,
+                    "roi_type": "vehicle",
+                    "w": 186,
+                    "x": 86,
+                    "y": 339
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.355216346681118,
+                            "x_min": 0.11746206134557724,
+                            "y_max": 1.0,
+                            "y_min": 0.7631190419197083
+                        },
+                        "confidence": 0.9558621644973755,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 102,
+                    "roi_type": "vehicle",
+                    "w": 183,
+                    "x": 90,
+                    "y": 330
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.35763242840766907,
+                            "x_min": 0.11481735110282898,
+                            "y_max": 1.0,
+                            "y_min": 0.7428088188171387
+                        },
+                        "confidence": 0.926587700843811,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 111,
+                    "roi_type": "vehicle",
+                    "w": 186,
+                    "x": 88,
+                    "y": 321
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36408109962940216,
+                            "x_min": 0.1114393025636673,
+                            "y_max": 1.0,
+                            "y_min": 0.7136543393135071
+                        },
+                        "confidence": 0.9588958621025085,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 124,
+                    "roi_type": "vehicle",
+                    "w": 194,
+                    "x": 86,
+                    "y": 308
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3665727600455284,
+                            "x_min": 0.11704912036657333,
+                            "y_max": 1.0,
+                            "y_min": 0.6872220039367676
+                        },
+                        "confidence": 0.9688697457313538,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 135,
+                    "roi_type": "vehicle",
+                    "w": 192,
+                    "x": 90,
+                    "y": 297
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3713763952255249,
+                            "x_min": 0.11778914928436279,
+                            "y_max": 1.0,
+                            "y_min": 0.6613257527351379
+                        },
+                        "confidence": 0.9875999689102173,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 146,
+                    "roi_type": "vehicle",
+                    "w": 195,
+                    "x": 90,
+                    "y": 286
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 14916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3720667213201523,
+                            "x_min": 0.11070786416530609,
+                            "y_max": 1.0,
+                            "y_min": 0.6450920701026917
+                        },
+                        "confidence": 0.995625376701355,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 153,
+                    "roi_type": "vehicle",
+                    "w": 201,
+                    "x": 85,
+                    "y": 279
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.37235404551029205,
+                            "x_min": 0.11378546059131622,
+                            "y_max": 1.0,
+                            "y_min": 0.6163185238838196
+                        },
+                        "confidence": 0.9955680966377258,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 166,
+                    "roi_type": "vehicle",
+                    "w": 199,
+                    "x": 87,
+                    "y": 266
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.37065884470939636,
+                            "x_min": 0.1155705451965332,
+                            "y_max": 1.0,
+                            "y_min": 0.5922684669494629
+                        },
+                        "confidence": 0.9959413409233093,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 176,
+                    "roi_type": "vehicle",
+                    "w": 196,
+                    "x": 89,
+                    "y": 256
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3727561980485916,
+                            "x_min": 0.1134033352136612,
+                            "y_max": 1.0,
+                            "y_min": 0.5775719881057739
+                        },
+                        "confidence": 0.992070734500885,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 182,
+                    "roi_type": "vehicle",
+                    "w": 199,
+                    "x": 87,
+                    "y": 250
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3673747777938843,
+                            "x_min": 0.12386341392993927,
+                            "y_max": 0.9985613226890564,
+                            "y_min": 0.555249035358429
+                        },
+                        "confidence": 0.9881659746170044,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 192,
+                    "roi_type": "vehicle",
+                    "w": 187,
+                    "x": 95,
+                    "y": 240
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.366728276014328,
+                            "x_min": 0.13167092204093933,
+                            "y_max": 1.0,
+                            "y_min": 0.5335620641708374
+                        },
+                        "confidence": 0.9903311729431152,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 202,
+                    "roi_type": "vehicle",
+                    "w": 181,
+                    "x": 101,
+                    "y": 230
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36283859610557556,
+                            "x_min": 0.13806846737861633,
+                            "y_max": 1.0,
+                            "y_min": 0.5192201137542725
+                        },
+                        "confidence": 0.9882426857948303,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 208,
+                    "roi_type": "vehicle",
+                    "w": 173,
+                    "x": 106,
+                    "y": 224
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.35830405354499817,
+                            "x_min": 0.14137312769889832,
+                            "y_max": 1.0,
+                            "y_min": 0.49831563234329224
+                        },
+                        "confidence": 0.9897017478942871,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 217,
+                    "roi_type": "vehicle",
+                    "w": 167,
+                    "x": 109,
+                    "y": 215
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3573519289493561,
+                            "x_min": 0.14768287539482117,
+                            "y_max": 1.0,
+                            "y_min": 0.48438742756843567
+                        },
+                        "confidence": 0.9953035116195679,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 223,
+                    "roi_type": "vehicle",
+                    "w": 161,
+                    "x": 113,
+                    "y": 209
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3521944284439087,
+                            "x_min": 0.14803355932235718,
+                            "y_max": 0.988128662109375,
+                            "y_min": 0.4608043432235718
+                        },
+                        "confidence": 0.9956942796707153,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 228,
+                    "roi_type": "vehicle",
+                    "w": 157,
+                    "x": 114,
+                    "y": 199
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3508753776550293,
+                            "x_min": 0.1558539718389511,
+                            "y_max": 0.9426819682121277,
+                            "y_min": 0.4612939953804016
+                        },
+                        "confidence": 0.9984038472175598,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 208,
+                    "roi_type": "vehicle",
+                    "w": 150,
+                    "x": 120,
+                    "y": 199
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.34489545226097107,
+                            "x_min": 0.15972039103507996,
+                            "y_max": 0.9317914545536041,
+                            "y_min": 0.4301295578479767
+                        },
+                        "confidence": 0.9983591437339783,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 217,
+                    "roi_type": "vehicle",
+                    "w": 142,
+                    "x": 123,
+                    "y": 186
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 15916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3391873836517334,
+                            "x_min": 0.16258366405963898,
+                            "y_max": 0.9055061340332031,
+                            "y_min": 0.4160470962524414
+                        },
+                        "confidence": 0.9985522627830505,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 211,
+                    "roi_type": "vehicle",
+                    "w": 136,
+                    "x": 125,
+                    "y": 180
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3407365679740906,
+                            "x_min": 0.1614856868982315,
+                            "y_max": 0.8801704049110413,
+                            "y_min": 0.4251670241355896
+                        },
+                        "confidence": 0.9977911710739136,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 197,
+                    "roi_type": "vehicle",
+                    "w": 138,
+                    "x": 124,
+                    "y": 184
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.33876121044158936,
+                            "x_min": 0.16030307114124298,
+                            "y_max": 0.8567698001861572,
+                            "y_min": 0.3952242136001587
+                        },
+                        "confidence": 0.9972564578056335,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 199,
+                    "roi_type": "vehicle",
+                    "w": 137,
+                    "x": 123,
+                    "y": 171
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.33740752935409546,
+                            "x_min": 0.154819056391716,
+                            "y_max": 0.8353524804115295,
+                            "y_min": 0.38950783014297485
+                        },
+                        "confidence": 0.9943705201148987,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 193,
+                    "roi_type": "vehicle",
+                    "w": 140,
+                    "x": 119,
+                    "y": 168
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.33031153678894043,
+                            "x_min": 0.1508132815361023,
+                            "y_max": 0.8153316974639893,
+                            "y_min": 0.36151206493377686
+                        },
+                        "confidence": 0.9853646159172058,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 196,
+                    "roi_type": "vehicle",
+                    "w": 138,
+                    "x": 116,
+                    "y": 156
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3298845887184143,
+                            "x_min": 0.13879379630088806,
+                            "y_max": 0.7953994274139404,
+                            "y_min": 0.35375821590423584
+                        },
+                        "confidence": 0.9901776909828186,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 191,
+                    "roi_type": "vehicle",
+                    "w": 147,
+                    "x": 107,
+                    "y": 153
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3315165042877197,
+                            "x_min": 0.13862203061580658,
+                            "y_max": 0.7691504955291748,
+                            "y_min": 0.3294403851032257
+                        },
+                        "confidence": 0.9853416681289673,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 190,
+                    "roi_type": "vehicle",
+                    "w": 148,
+                    "x": 106,
+                    "y": 142
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.32718682289123535,
+                            "x_min": 0.12712396681308746,
+                            "y_max": 0.7570253610610962,
+                            "y_min": 0.3212674558162689
+                        },
+                        "confidence": 0.9941331744194031,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 188,
+                    "roi_type": "vehicle",
+                    "w": 154,
+                    "x": 98,
+                    "y": 139
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.32204169780015945,
+                            "x_min": 0.11739809066057205,
+                            "y_max": 0.7378182411193848,
+                            "y_min": 0.30915188789367676
+                        },
+                        "confidence": 0.9956810474395752,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 185,
+                    "roi_type": "vehicle",
+                    "w": 157,
+                    "x": 90,
+                    "y": 134
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.31862085312604904,
+                            "x_min": 0.10826360434293747,
+                            "y_max": 0.719451367855072,
+                            "y_min": 0.29969197511672974
+                        },
+                        "confidence": 0.9965510368347168,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 181,
+                    "roi_type": "vehicle",
+                    "w": 162,
+                    "x": 83,
+                    "y": 129
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.31718843430280685,
+                            "x_min": 0.09971200674772263,
+                            "y_max": 0.7033379077911377,
+                            "y_min": 0.2931705713272095
+                        },
+                        "confidence": 0.9970494508743286,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 177,
+                    "roi_type": "vehicle",
+                    "w": 167,
+                    "x": 77,
+                    "y": 127
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.31042802333831787,
+                            "x_min": 0.09611882269382477,
+                            "y_max": 0.6859895586967468,
+                            "y_min": 0.2867383360862732
+                        },
+                        "confidence": 0.99716717004776,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 172,
+                    "roi_type": "vehicle",
+                    "w": 165,
+                    "x": 74,
+                    "y": 124
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 16916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.30448033660650253,
+                            "x_min": 0.0852714404463768,
+                            "y_max": 0.670753538608551,
+                            "y_min": 0.28039366006851196
+                        },
+                        "confidence": 0.9983592629432678,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 169,
+                    "roi_type": "vehicle",
+                    "w": 168,
+                    "x": 65,
+                    "y": 121
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2978084608912468,
+                            "x_min": 0.07147803157567978,
+                            "y_max": 0.6594095230102539,
+                            "y_min": 0.2753213047981262
+                        },
+                        "confidence": 0.9982122182846069,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 166,
+                    "roi_type": "vehicle",
+                    "w": 174,
+                    "x": 55,
+                    "y": 119
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2889711484313011,
+                            "x_min": 0.06492724269628525,
+                            "y_max": 0.6469576358795166,
+                            "y_min": 0.26923149824142456
+                        },
+                        "confidence": 0.9990646243095398,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 163,
+                    "roi_type": "vehicle",
+                    "w": 172,
+                    "x": 50,
+                    "y": 116
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.28548071533441544,
+                            "x_min": 0.05410493165254593,
+                            "y_max": 0.6331942677497864,
+                            "y_min": 0.26451271772384644
+                        },
+                        "confidence": 0.9991996884346008,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 159,
+                    "roi_type": "vehicle",
+                    "w": 178,
+                    "x": 42,
+                    "y": 114
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.27873843163251877,
+                            "x_min": 0.041438452899456024,
+                            "y_max": 0.6205576658248901,
+                            "y_min": 0.25872376561164856
+                        },
+                        "confidence": 0.9993281364440918,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 156,
+                    "roi_type": "vehicle",
+                    "w": 182,
+                    "x": 32,
+                    "y": 112
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.26808905601501465,
+                            "x_min": 0.029344916343688965,
+                            "y_max": 0.6089608073234558,
+                            "y_min": 0.2568467855453491
+                        },
+                        "confidence": 0.9997721314430237,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 152,
+                    "roi_type": "vehicle",
+                    "w": 183,
+                    "x": 23,
+                    "y": 111
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2608029320836067,
+                            "x_min": 0.02105037122964859,
+                            "y_max": 0.6013486981391907,
+                            "y_min": 0.25175315141677856
+                        },
+                        "confidence": 0.9994163513183594,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 151,
+                    "roi_type": "vehicle",
+                    "w": 184,
+                    "x": 16,
+                    "y": 109
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.25298696756362915,
+                            "x_min": 0.0110711008310318,
+                            "y_max": 0.5929760932922363,
+                            "y_min": 0.25001853704452515
+                        },
+                        "confidence": 0.9991642236709595,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 148,
+                    "roi_type": "vehicle",
+                    "w": 186,
+                    "x": 9,
+                    "y": 108
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.24836426228284836,
+                            "x_min": 0.001363597810268402,
+                            "y_max": 0.5836291313171387,
+                            "y_min": 0.24892225861549377
+                        },
+                        "confidence": 0.9987383484840393,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 145,
+                    "roi_type": "vehicle",
+                    "w": 190,
+                    "x": 1,
+                    "y": 108
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.24069984257221222,
+                            "x_min": 0.0017677098512649536,
+                            "y_max": 0.5755294561386108,
+                            "y_min": 0.2466006875038147
+                        },
+                        "confidence": 0.9985125660896301,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 142,
+                    "roi_type": "vehicle",
+                    "w": 183,
+                    "x": 1,
+                    "y": 107
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.23013310134410858,
+                            "x_min": 0.0009946376085281372,
+                            "y_max": 0.5703245401382446,
+                            "y_min": 0.24441540241241455
+                        },
+                        "confidence": 0.9974729418754578,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 141,
+                    "roi_type": "vehicle",
+                    "w": 176,
+                    "x": 1,
+                    "y": 106
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.21887104213237762,
+                            "x_min": 0.0014127641916275024,
+                            "y_max": 0.561265230178833,
+                            "y_min": 0.24792173504829407
+                        },
+                        "confidence": 0.9975095987319946,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 135,
+                    "roi_type": "vehicle",
+                    "w": 167,
+                    "x": 1,
+                    "y": 107
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 17916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.20858246833086014,
+                            "x_min": 0.0,
+                            "y_max": 0.5542417764663696,
+                            "y_min": 0.2432488203048706
+                        },
+                        "confidence": 0.9974014759063721,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 134,
+                    "roi_type": "vehicle",
+                    "w": 160,
+                    "x": 0,
+                    "y": 105
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1973552107810974,
+                            "x_min": 0.0,
+                            "y_max": 0.5484062284231186,
+                            "y_min": 0.2422332614660263
+                        },
+                        "confidence": 0.9951422214508057,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 132,
+                    "roi_type": "vehicle",
+                    "w": 152,
+                    "x": 0,
+                    "y": 105
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.18647929280996323,
+                            "x_min": 0.0,
+                            "y_max": 0.5390703678131104,
+                            "y_min": 0.2427290976047516
+                        },
+                        "confidence": 0.9828762412071228,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 128,
+                    "roi_type": "vehicle",
+                    "w": 143,
+                    "x": 0,
+                    "y": 105
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.18194643408060074,
+                            "x_min": 0.0002888515591621399,
+                            "y_max": 0.5400876998901367,
+                            "y_min": 0.24028950929641724
+                        },
+                        "confidence": 0.9480734467506409,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 130,
+                    "roi_type": "vehicle",
+                    "w": 140,
+                    "x": 0,
+                    "y": 104
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.16770221292972565,
+                            "x_min": 0.0011929124593734741,
+                            "y_max": 0.5351697355508804,
+                            "y_min": 0.2466966062784195
+                        },
+                        "confidence": 0.8907939195632935,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 125,
+                    "roi_type": "vehicle",
+                    "w": 128,
+                    "x": 1,
+                    "y": 107
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1578347161412239,
+                            "x_min": 0.0006775632500648499,
+                            "y_max": 0.530915841460228,
+                            "y_min": 0.2355933040380478
+                        },
+                        "confidence": 0.5631131529808044,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 128,
+                    "roi_type": "vehicle",
+                    "w": 121,
+                    "x": 1,
+                    "y": 102
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.15033835172653198,
+                            "x_min": 0.0015725046396255493,
+                            "y_max": 0.5296227335929871,
+                            "y_min": 0.23756831884384155
+                        },
+                        "confidence": 0.6327775716781616,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 126,
+                    "roi_type": "vehicle",
+                    "w": 114,
+                    "x": 1,
+                    "y": 103
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.13592730462551117,
+                            "x_min": 0.0,
+                            "y_max": 0.5290209054946899,
+                            "y_min": 0.24165120720863342
+                        },
+                        "confidence": 0.6457204818725586,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 124,
+                    "roi_type": "vehicle",
+                    "w": 104,
+                    "x": 0,
+                    "y": 104
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1278209611773491,
+                            "x_min": 0.0006827935576438904,
+                            "y_max": 0.5292530506849289,
+                            "y_min": 0.2446688860654831
+                        },
+                        "confidence": 0.5502476096153259,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 123,
+                    "roi_type": "vehicle",
+                    "w": 98,
+                    "x": 1,
+                    "y": 106
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1171894483268261,
+                            "x_min": 0.001243244856595993,
+                            "y_max": 0.5268727540969849,
+                            "y_min": 0.24550506472587585
+                        },
+                        "confidence": 0.5932789444923401,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 122,
+                    "roi_type": "vehicle",
+                    "w": 89,
+                    "x": 1,
+                    "y": 106
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.10581892356276512,
+                            "x_min": 0.0009127669036388397,
+                            "y_max": 0.5259366482496262,
+                            "y_min": 0.23972414433956146
+                        },
+                        "confidence": 0.6319453120231628,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 124,
+                    "roi_type": "vehicle",
+                    "w": 81,
+                    "x": 1,
+                    "y": 104
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.09380718693137169,
+                            "x_min": 0.0005764774978160858,
+                            "y_max": 0.5227847099304199,
+                            "y_min": 0.23684874176979065
+                        },
+                        "confidence": 0.5968654155731201,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 124,
+                    "roi_type": "vehicle",
+                    "w": 72,
+                    "x": 0,
+                    "y": 102
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 18916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.08359125629067421,
+                            "x_min": 0.0022785402834415436,
+                            "y_max": 0.5211524963378906,
+                            "y_min": 0.25004059076309204
+                        },
+                        "confidence": 0.5536654591560364,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 117,
+                    "roi_type": "vehicle",
+                    "w": 62,
+                    "x": 2,
+                    "y": 108
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 19000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.996696949005127,
+                            "x_min": 0.9006489515304565,
+                            "y_max": 0.24953648447990417,
+                            "y_min": 0.1295483112335205
+                        },
+                        "confidence": 0.6284326314926147,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 52,
+                    "roi_type": "vehicle",
+                    "w": 74,
+                    "x": 692,
+                    "y": 56
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 28750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2845136597752571,
+                            "x_min": 0.10763955861330032,
+                            "y_max": 0.9958394765853882,
+                            "y_min": 0.9074702262878418
+                        },
+                        "confidence": 0.867813766002655,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 38,
+                    "roi_type": "vehicle",
+                    "w": 136,
+                    "x": 83,
+                    "y": 392
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 43750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.29467737674713135,
+                            "x_min": 0.10489010810852051,
+                            "y_max": 1.0,
+                            "y_min": 0.8840649724006653
+                        },
+                        "confidence": 0.971972644329071,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 50,
+                    "roi_type": "vehicle",
+                    "w": 146,
+                    "x": 81,
+                    "y": 382
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 43833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.30247655510902405,
+                            "x_min": 0.09502136707305908,
+                            "y_max": 1.0,
+                            "y_min": 0.8567336201667786
+                        },
+                        "confidence": 0.9685277938842773,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 62,
+                    "roi_type": "vehicle",
+                    "w": 159,
+                    "x": 73,
+                    "y": 370
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 43916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3078618422150612,
+                            "x_min": 0.08495817333459854,
+                            "y_max": 0.9981480836868286,
+                            "y_min": 0.8284046649932861
+                        },
+                        "confidence": 0.9384934306144714,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 73,
+                    "roi_type": "vehicle",
+                    "w": 171,
+                    "x": 65,
+                    "y": 358
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3138856887817383,
+                            "x_min": 0.08411340415477753,
+                            "y_max": 0.9948301911354065,
+                            "y_min": 0.8012143969535828
+                        },
+                        "confidence": 0.9912325739860535,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 84,
+                    "roi_type": "vehicle",
+                    "w": 176,
+                    "x": 65,
+                    "y": 346
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3155469223856926,
+                            "x_min": 0.08548050373792648,
+                            "y_max": 0.9982274174690247,
+                            "y_min": 0.7834474444389343
+                        },
+                        "confidence": 0.9971334934234619,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 93,
+                    "roi_type": "vehicle",
+                    "w": 177,
+                    "x": 66,
+                    "y": 338
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3265853002667427,
+                            "x_min": 0.08915404230356216,
+                            "y_max": 0.9955997467041016,
+                            "y_min": 0.7554439306259155
+                        },
+                        "confidence": 0.9961079955101013,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 104,
+                    "roi_type": "vehicle",
+                    "w": 182,
+                    "x": 68,
+                    "y": 326
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3297797217965126,
+                            "x_min": 0.09160340577363968,
+                            "y_max": 0.9956187605857849,
+                            "y_min": 0.7273325324058533
+                        },
+                        "confidence": 0.9935755133628845,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 116,
+                    "roi_type": "vehicle",
+                    "w": 183,
+                    "x": 70,
+                    "y": 314
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.33409302681684494,
+                            "x_min": 0.09312628954648972,
+                            "y_max": 0.9984248876571655,
+                            "y_min": 0.7029621601104736
+                        },
+                        "confidence": 0.9921687245368958,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 128,
+                    "roi_type": "vehicle",
+                    "w": 185,
+                    "x": 72,
+                    "y": 304
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3348406255245209,
+                            "x_min": 0.09839513897895813,
+                            "y_max": 0.9938512444496155,
+                            "y_min": 0.6870418190956116
+                        },
+                        "confidence": 0.9915595650672913,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 133,
+                    "roi_type": "vehicle",
+                    "w": 182,
+                    "x": 76,
+                    "y": 297
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3387671783566475,
+                            "x_min": 0.10117513686418533,
+                            "y_max": 0.9999852180480957,
+                            "y_min": 0.6623376607894897
+                        },
+                        "confidence": 0.9913088083267212,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 146,
+                    "roi_type": "vehicle",
+                    "w": 182,
+                    "x": 78,
+                    "y": 286
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3444279804825783,
+                            "x_min": 0.10647053271532059,
+                            "y_max": 0.9961000084877014,
+                            "y_min": 0.6486485600471497
+                        },
+                        "confidence": 0.9931595325469971,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 150,
+                    "roi_type": "vehicle",
+                    "w": 183,
+                    "x": 82,
+                    "y": 280
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.34749191254377365,
+                            "x_min": 0.09927945584058762,
+                            "y_max": 1.0,
+                            "y_min": 0.6195470094680786
+                        },
+                        "confidence": 0.994907557964325,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 164,
+                    "roi_type": "vehicle",
+                    "w": 191,
+                    "x": 76,
+                    "y": 268
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3538203239440918,
+                            "x_min": 0.10282397270202637,
+                            "y_max": 0.996228039264679,
+                            "y_min": 0.597618043422699
+                        },
+                        "confidence": 0.9947925209999084,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 172,
+                    "roi_type": "vehicle",
+                    "w": 193,
+                    "x": 79,
+                    "y": 258
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3582657426595688,
+                            "x_min": 0.10331515967845917,
+                            "y_max": 1.0,
+                            "y_min": 0.5845668911933899
+                        },
+                        "confidence": 0.9956350922584534,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 179,
+                    "roi_type": "vehicle",
+                    "w": 196,
+                    "x": 79,
+                    "y": 253
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 44916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3578300476074219,
+                            "x_min": 0.11205027997493744,
+                            "y_max": 1.0,
+                            "y_min": 0.5613088607788086
+                        },
+                        "confidence": 0.9973686933517456,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 190,
+                    "roi_type": "vehicle",
+                    "w": 189,
+                    "x": 86,
+                    "y": 242
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3581470623612404,
+                            "x_min": 0.11258519440889359,
+                            "y_max": 1.0,
+                            "y_min": 0.5402153730392456
+                        },
+                        "confidence": 0.9988476037979126,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 199,
+                    "roi_type": "vehicle",
+                    "w": 189,
+                    "x": 86,
+                    "y": 233
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.35962584614753723,
+                            "x_min": 0.11469563841819763,
+                            "y_max": 1.0,
+                            "y_min": 0.525752067565918
+                        },
+                        "confidence": 0.9973202347755432,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 205,
+                    "roi_type": "vehicle",
+                    "w": 188,
+                    "x": 88,
+                    "y": 227
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3677487373352051,
+                            "x_min": 0.12577545642852783,
+                            "y_max": 0.9999309182167053,
+                            "y_min": 0.5046811699867249
+                        },
+                        "confidence": 0.9977633953094482,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 214,
+                    "roi_type": "vehicle",
+                    "w": 186,
+                    "x": 97,
+                    "y": 218
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36397215723991394,
+                            "x_min": 0.13051903247833252,
+                            "y_max": 0.9986694753170013,
+                            "y_min": 0.4875471293926239
+                        },
+                        "confidence": 0.9989000558853149,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 221,
+                    "roi_type": "vehicle",
+                    "w": 179,
+                    "x": 100,
+                    "y": 211
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3630606532096863,
+                            "x_min": 0.1367846578359604,
+                            "y_max": 0.9981326758861542,
+                            "y_min": 0.4728566110134125
+                        },
+                        "confidence": 0.9993348717689514,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 227,
+                    "roi_type": "vehicle",
+                    "w": 174,
+                    "x": 105,
+                    "y": 204
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36770379543304443,
+                            "x_min": 0.14399926364421844,
+                            "y_max": 0.9877162873744965,
+                            "y_min": 0.4572232663631439
+                        },
+                        "confidence": 0.9997925162315369,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 229,
+                    "roi_type": "vehicle",
+                    "w": 172,
+                    "x": 111,
+                    "y": 198
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36869463324546814,
+                            "x_min": 0.15083244442939758,
+                            "y_max": 0.9604783058166504,
+                            "y_min": 0.4350661039352417
+                        },
+                        "confidence": 0.9996923208236694,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 227,
+                    "roi_type": "vehicle",
+                    "w": 167,
+                    "x": 116,
+                    "y": 188
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3720818758010864,
+                            "x_min": 0.15574491024017334,
+                            "y_max": 0.9276314079761505,
+                            "y_min": 0.41684892773628235
+                        },
+                        "confidence": 0.9997751116752625,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 221,
+                    "roi_type": "vehicle",
+                    "w": 166,
+                    "x": 120,
+                    "y": 180
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3718997538089752,
+                            "x_min": 0.1625952422618866,
+                            "y_max": 0.8972659111022949,
+                            "y_min": 0.4036012887954712
+                        },
+                        "confidence": 0.9997431635856628,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 213,
+                    "roi_type": "vehicle",
+                    "w": 161,
+                    "x": 125,
+                    "y": 174
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3728335201740265,
+                            "x_min": 0.16677501797676086,
+                            "y_max": 0.8713500499725342,
+                            "y_min": 0.38436833024024963
+                        },
+                        "confidence": 0.9996943473815918,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 210,
+                    "roi_type": "vehicle",
+                    "w": 158,
+                    "x": 128,
+                    "y": 166
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.370741605758667,
+                            "x_min": 0.1760879009962082,
+                            "y_max": 0.8470300436019897,
+                            "y_min": 0.36381685733795166
+                        },
+                        "confidence": 0.999675989151001,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 209,
+                    "roi_type": "vehicle",
+                    "w": 149,
+                    "x": 135,
+                    "y": 157
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 45916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36901652812957764,
+                            "x_min": 0.18123175203800201,
+                            "y_max": 0.8169557452201843,
+                            "y_min": 0.35139113664627075
+                        },
+                        "confidence": 0.9997126460075378,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 201,
+                    "roi_type": "vehicle",
+                    "w": 144,
+                    "x": 139,
+                    "y": 152
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3668400049209595,
+                            "x_min": 0.18567323684692383,
+                            "y_max": 0.792556881904602,
+                            "y_min": 0.33150720596313477
+                        },
+                        "confidence": 0.9995468258857727,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 199,
+                    "roi_type": "vehicle",
+                    "w": 139,
+                    "x": 143,
+                    "y": 143
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.36431601643562317,
+                            "x_min": 0.1869708001613617,
+                            "y_max": 0.7585939764976501,
+                            "y_min": 0.320187509059906
+                        },
+                        "confidence": 0.9992497563362122,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 189,
+                    "roi_type": "vehicle",
+                    "w": 136,
+                    "x": 144,
+                    "y": 138
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3632781505584717,
+                            "x_min": 0.19197450578212738,
+                            "y_max": 0.7331698536872864,
+                            "y_min": 0.30365318059921265
+                        },
+                        "confidence": 0.9990286827087402,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 186,
+                    "roi_type": "vehicle",
+                    "w": 132,
+                    "x": 147,
+                    "y": 131
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.358803391456604,
+                            "x_min": 0.19371575117111206,
+                            "y_max": 0.708424985408783,
+                            "y_min": 0.28628402948379517
+                        },
+                        "confidence": 0.9985246062278748,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 182,
+                    "roi_type": "vehicle",
+                    "w": 127,
+                    "x": 149,
+                    "y": 124
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3565460741519928,
+                            "x_min": 0.1919439136981964,
+                            "y_max": 0.6725904941558838,
+                            "y_min": 0.2690829634666443
+                        },
+                        "confidence": 0.9984595775604248,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 174,
+                    "roi_type": "vehicle",
+                    "w": 126,
+                    "x": 147,
+                    "y": 116
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3504592180252075,
+                            "x_min": 0.19148266315460205,
+                            "y_max": 0.6535736918449402,
+                            "y_min": 0.2541949152946472
+                        },
+                        "confidence": 0.9982467889785767,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 173,
+                    "roi_type": "vehicle",
+                    "w": 122,
+                    "x": 147,
+                    "y": 110
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.34750548005104065,
+                            "x_min": 0.19043704867362976,
+                            "y_max": 0.6278355866670609,
+                            "y_min": 0.2409779578447342
+                        },
+                        "confidence": 0.9982757568359375,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 167,
+                    "roi_type": "vehicle",
+                    "w": 121,
+                    "x": 146,
+                    "y": 104
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3414592742919922,
+                            "x_min": 0.18512840569019318,
+                            "y_max": 0.6028737276792526,
+                            "y_min": 0.22529076039791107
+                        },
+                        "confidence": 0.9982261061668396,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 163,
+                    "roi_type": "vehicle",
+                    "w": 120,
+                    "x": 142,
+                    "y": 97
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.34118860960006714,
+                            "x_min": 0.18239080905914307,
+                            "y_max": 0.5985730141401291,
+                            "y_min": 0.20710192620754242
+                        },
+                        "confidence": 0.9985401630401611,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 169,
+                    "roi_type": "vehicle",
+                    "w": 122,
+                    "x": 140,
+                    "y": 89
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.339959979057312,
+                            "x_min": 0.17124317586421967,
+                            "y_max": 0.5770822912454605,
+                            "y_min": 0.19143308699131012
+                        },
+                        "confidence": 0.9988330006599426,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 167,
+                    "roi_type": "vehicle",
+                    "w": 130,
+                    "x": 132,
+                    "y": 83
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.335296094417572,
+                            "x_min": 0.1614728569984436,
+                            "y_max": 0.5643178820610046,
+                            "y_min": 0.1913447380065918
+                        },
+                        "confidence": 0.9952242374420166,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 161,
+                    "roi_type": "vehicle",
+                    "w": 133,
+                    "x": 124,
+                    "y": 83
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 46916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.33125412464141846,
+                            "x_min": 0.15478025376796722,
+                            "y_max": 0.5431014746427536,
+                            "y_min": 0.17914067208766937
+                        },
+                        "confidence": 0.9983886480331421,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 157,
+                    "roi_type": "vehicle",
+                    "w": 136,
+                    "x": 119,
+                    "y": 77
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3272162079811096,
+                            "x_min": 0.1483408659696579,
+                            "y_max": 0.5178792029619217,
+                            "y_min": 0.16576804220676422
+                        },
+                        "confidence": 0.9991278052330017,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 152,
+                    "roi_type": "vehicle",
+                    "w": 137,
+                    "x": 114,
+                    "y": 72
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.32491883635520935,
+                            "x_min": 0.13235408067703247,
+                            "y_max": 0.49472787976264954,
+                            "y_min": 0.1643488109111786
+                        },
+                        "confidence": 0.9993507266044617,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 143,
+                    "roi_type": "vehicle",
+                    "w": 148,
+                    "x": 102,
+                    "y": 71
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.317853718996048,
+                            "x_min": 0.12091442942619324,
+                            "y_max": 0.48066990077495575,
+                            "y_min": 0.15564684569835663
+                        },
+                        "confidence": 0.9990766048431396,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 140,
+                    "roi_type": "vehicle",
+                    "w": 151,
+                    "x": 93,
+                    "y": 67
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.3127935528755188,
+                            "x_min": 0.10291489958763123,
+                            "y_max": 0.46310117840766907,
+                            "y_min": 0.14949145913124084
+                        },
+                        "confidence": 0.9997898936271667,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 135,
+                    "roi_type": "vehicle",
+                    "w": 161,
+                    "x": 79,
+                    "y": 65
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.30358123779296875,
+                            "x_min": 0.08941783010959625,
+                            "y_max": 0.44799378514289856,
+                            "y_min": 0.14771339297294617
+                        },
+                        "confidence": 0.9993053674697876,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 130,
+                    "roi_type": "vehicle",
+                    "w": 164,
+                    "x": 69,
+                    "y": 64
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2961984649300575,
+                            "x_min": 0.07627979665994644,
+                            "y_max": 0.4398441016674042,
+                            "y_min": 0.14085283875465393
+                        },
+                        "confidence": 0.9996054768562317,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 129,
+                    "roi_type": "vehicle",
+                    "w": 169,
+                    "x": 59,
+                    "y": 61
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.28725188970565796,
+                            "x_min": 0.06337115168571472,
+                            "y_max": 0.4266505241394043,
+                            "y_min": 0.1378604769706726
+                        },
+                        "confidence": 0.9993728995323181,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 125,
+                    "roi_type": "vehicle",
+                    "w": 172,
+                    "x": 49,
+                    "y": 60
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2771942541003227,
+                            "x_min": 0.04660361260175705,
+                            "y_max": 0.4157182574272156,
+                            "y_min": 0.13344264030456543
+                        },
+                        "confidence": 0.9996943473815918,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 122,
+                    "roi_type": "vehicle",
+                    "w": 177,
+                    "x": 36,
+                    "y": 58
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.26751866936683655,
+                            "x_min": 0.03422212600708008,
+                            "y_max": 0.4073527008295059,
+                            "y_min": 0.13043738901615143
+                        },
+                        "confidence": 0.9998036026954651,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 120,
+                    "roi_type": "vehicle",
+                    "w": 179,
+                    "x": 26,
+                    "y": 56
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2582091689109802,
+                            "x_min": 0.016795948147773743,
+                            "y_max": 0.4009846895933151,
+                            "y_min": 0.12998972833156586
+                        },
+                        "confidence": 0.9997280240058899,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 117,
+                    "roi_type": "vehicle",
+                    "w": 185,
+                    "x": 13,
+                    "y": 56
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.24439316242933273,
+                            "x_min": 0.003994934260845184,
+                            "y_max": 0.39141060411930084,
+                            "y_min": 0.12342007458209991
+                        },
+                        "confidence": 0.9993475079536438,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 116,
+                    "roi_type": "vehicle",
+                    "w": 185,
+                    "x": 3,
+                    "y": 53
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 47916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.23766756802797318,
+                            "x_min": 0.0003948584198951721,
+                            "y_max": 0.3847464770078659,
+                            "y_min": 0.11703960597515106
+                        },
+                        "confidence": 0.9996887445449829,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 116,
+                    "roi_type": "vehicle",
+                    "w": 182,
+                    "x": 0,
+                    "y": 51
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.2241588681936264,
+                            "x_min": 0.0,
+                            "y_max": 0.3830167353153229,
+                            "y_min": 0.12215110659599304
+                        },
+                        "confidence": 0.998634397983551,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 113,
+                    "roi_type": "vehicle",
+                    "w": 172,
+                    "x": 0,
+                    "y": 53
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48083333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.21041268110275269,
+                            "x_min": 0.0,
+                            "y_max": 0.3779143840074539,
+                            "y_min": 0.12252528965473175
+                        },
+                        "confidence": 0.9971352815628052,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 110,
+                    "roi_type": "vehicle",
+                    "w": 162,
+                    "x": 0,
+                    "y": 53
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48166666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1999988853931427,
+                            "x_min": 0.0029823482036590576,
+                            "y_max": 0.36911415308713913,
+                            "y_min": 0.12159650772809982
+                        },
+                        "confidence": 0.9958156943321228,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 107,
+                    "roi_type": "vehicle",
+                    "w": 151,
+                    "x": 2,
+                    "y": 53
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48250000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.19125453382730484,
+                            "x_min": 0.0022690072655677795,
+                            "y_max": 0.3686504364013672,
+                            "y_min": 0.1247686892747879
+                        },
+                        "confidence": 0.989516019821167,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 105,
+                    "roi_type": "vehicle",
+                    "w": 145,
+                    "x": 2,
+                    "y": 54
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48333333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.17307469248771667,
+                            "x_min": 0.0,
+                            "y_max": 0.3678136542439461,
+                            "y_min": 0.12181983143091202
+                        },
+                        "confidence": 0.9688693881034851,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 106,
+                    "roi_type": "vehicle",
+                    "w": 133,
+                    "x": 0,
+                    "y": 53
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48416666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1642323061823845,
+                            "x_min": 0.0001377388834953308,
+                            "y_max": 0.360923208296299,
+                            "y_min": 0.11831650882959366
+                        },
+                        "confidence": 0.8994203209877014,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 105,
+                    "roi_type": "vehicle",
+                    "w": 126,
+                    "x": 0,
+                    "y": 51
+                },
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9523851275444031,
+                            "x_min": 0.8571570515632629,
+                            "y_max": 0.23901237547397614,
+                            "y_min": 0.1192016750574112
+                        },
+                        "confidence": 0.6125302314758301,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 52,
+                    "roi_type": "vehicle",
+                    "w": 73,
+                    "x": 658,
+                    "y": 51
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48500000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.14908847212791443,
+                            "x_min": 6.344914436340332e-05,
+                            "y_max": 0.36849236488342285,
+                            "y_min": 0.1246023029088974
+                        },
+                        "confidence": 0.8166989684104919,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 105,
+                    "roi_type": "vehicle",
+                    "w": 114,
+                    "x": 0,
+                    "y": 54
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48583333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.13545063138008118,
+                            "x_min": 0.0002723485231399536,
+                            "y_max": 0.3625607490539551,
+                            "y_min": 0.12735578417778015
+                        },
+                        "confidence": 0.8734658360481262,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 102,
+                    "roi_type": "vehicle",
+                    "w": 104,
+                    "x": 0,
+                    "y": 55
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48666666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.1268741860985756,
+                            "x_min": 0.0008193925023078918,
+                            "y_max": 0.3607259690761566,
+                            "y_min": 0.13061654567718506
+                        },
+                        "confidence": 0.7049188017845154,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 99,
+                    "roi_type": "vehicle",
+                    "w": 97,
+                    "x": 1,
+                    "y": 56
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48750000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.11083635687828064,
+                            "x_min": 0.0007647126913070679,
+                            "y_max": 0.3613561987876892,
+                            "y_min": 0.1319139152765274
+                        },
+                        "confidence": 0.6997778415679932,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 99,
+                    "roi_type": "vehicle",
+                    "w": 85,
+                    "x": 1,
+                    "y": 57
+                },
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.9895060062408447,
+                            "x_min": 0.8915916681289673,
+                            "y_max": 0.24094948172569275,
+                            "y_min": 0.12583968043327332
+                        },
+                        "confidence": 0.6453414559364319,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 50,
+                    "roi_type": "vehicle",
+                    "w": 75,
+                    "x": 685,
+                    "y": 54
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48833333333
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.10215211287140846,
+                            "x_min": 0.00013311579823493958,
+                            "y_max": 0.35837578773498535,
+                            "y_min": 0.13377071917057037
+                        },
+                        "confidence": 0.7715175747871399,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 97,
+                    "roi_type": "vehicle",
+                    "w": 78,
+                    "x": 0,
+                    "y": 58
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 48916666666
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.08274662122130394,
+                            "x_min": 0.0,
+                            "y_max": 0.3556240200996399,
+                            "y_min": 0.13389454782009125
+                        },
+                        "confidence": 0.7273096442222595,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 96,
+                    "roi_type": "vehicle",
+                    "w": 64,
+                    "x": 0,
+                    "y": 58
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 49000000000
+        },
+        {
+            "objects": [
+                {
+                    "detection": {
+                        "bounding_box": {
+                            "x_max": 0.07425572723150253,
+                            "x_min": 0.0027710720896720886,
+                            "y_max": 0.3576625883579254,
+                            "y_min": 0.14373579621315002
+                        },
+                        "confidence": 0.5342479348182678,
+                        "label": "vehicle",
+                        "label_id": 0
+                    },
+                    "h": 92,
+                    "roi_type": "vehicle",
+                    "w": 55,
+                    "x": 2,
+                    "y": 62
+                }
+            ],
+            "resolution": {
+                "height": 432,
+                "width": 768
+            },
+            "source": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+            "tags": {},
+            "timestamp": 49083333333
+        }
+    ]
+}

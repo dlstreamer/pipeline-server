@@ -6,7 +6,9 @@ EXPECTED=' - action_recognition/decoder
  - emotion_recognition/1
  - face_detection_retail/1
  - object_classification/vehicle_attributes
- - object_detection/person_vehicle_bike'
+ - object_detection/person
+ - object_detection/person_vehicle_bike
+ - object_detection/vehicle'
 
 # Run server and wait for init to complete
 $SOURCE_DIR/docker/run.sh --non-interactive &

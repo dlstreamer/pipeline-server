@@ -5,7 +5,9 @@ EXPECTED=' - action_recognition/general
  - object_classification/vehicle_attributes
  - object_detection/app_src_dst
  - object_detection/object_zone_count
+ - object_detection/person
  - object_detection/person_vehicle_bike
+ - object_detection/vehicle
  - object_tracking/object_line_crossing
  - object_tracking/person_vehicle_bike
  - video_decode/app_dst'

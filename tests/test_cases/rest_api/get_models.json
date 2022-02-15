@@ -94,6 +94,32 @@
             },
             "type": "IntelDLDT",
             "version": 1
+        },
+        {
+            "description": "object_detection",
+            "name": "object_detection",
+            "networks": {
+                "model-proc": "/home/pipeline-server/models/object_detection/person/person-detection-retail-0013.json",
+                "networks": {
+                    "FP16": "/home/pipeline-server/models/object_detection/person/FP16/person-detection-retail-0013.xml",
+                    "FP32": "/home/pipeline-server/models/object_detection/person/FP32/person-detection-retail-0013.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "person"
+        },
+        {
+            "description": "object_detection",
+            "name": "object_detection",
+            "networks": {
+                "model-proc": "/home/pipeline-server/models/object_detection/vehicle/vehicle-detection-0202.json",
+                "networks": {
+                    "FP16": "/home/pipeline-server/models/object_detection/vehicle/FP16/vehicle-detection-0202.xml",
+                    "FP32": "/home/pipeline-server/models/object_detection/vehicle/FP32/vehicle-detection-0202.xml"
+                }
+            },
+            "type": "IntelDLDT",
+            "version": "vehicle"
         }
     ],
     "status_code": 200,
