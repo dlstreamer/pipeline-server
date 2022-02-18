@@ -379,7 +379,7 @@ Update the number of replicas in the Pipeline Server deployment configuration [`
 
 ### Step 3: Redeploy Pipeline Server
 
-Using the node selected as the `leader`, redploy the pipeline server instances.
+Using the node selected as the `leader`, redeploy the pipeline server instances.
 
 #### Command
 
@@ -758,7 +758,7 @@ microk8s kubectl describe nodes <node-name>
 microk8s kubectl get po -A -o wide | awk '{print $6,"\t",$4,"\t",$8,"\t",$2}'
 
 # Deletes pod, after deleting pod, kubernetes may automatically start new on based on replicas
-microk8s kubectl delete pod name <pod-name>
+microk8s kubectl delete pod <pod-name>
 
 # Add Service to kubernetes cluster using yaml file
 microk8s kubectl apply -f <file.yaml>
