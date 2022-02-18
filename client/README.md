@@ -1,8 +1,8 @@
-# VA Client Command Reference
-vaclient is a python app intended to be a reference for using Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server REST API. vaclient is included in Pipeline Server's REST container and can be easily launched using the accompanying run script, `vaclient.sh`.
+# Pipeline Client Command Reference
+pipeline_client is a python app intended to be a reference for using Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server REST API. pipeline_client is included in Pipeline Server's REST container and can be easily launched using the accompanying run script, `pipeline_client.sh`.
 
 >**Note:**
-This document assumes you are familiar with Intel(R) DL Streamer Pipeline Server and have built the image locally and Pipeline Server REST instance is running for VA Client to connect to. See the main [README](../README.md) for details on building and running the service.
+This document assumes you are familiar with Intel(R) DL Streamer Pipeline Server and have built the image locally and Pipeline Server REST instance is running for Pipeline Client to connect to. See the main [README](../README.md) for details on building and running the service.
 
 ## Basic Usage
 ### Listing Supported Models and Pipelines
@@ -11,7 +11,7 @@ To see which models and pipelines are loaded by the service run the following co
 
 Listing models:
 ```
- ./vaclient/vaclient.sh list-models
+ ./client/pipeline_client.sh list-models
 ```
 ```
 <snip>
@@ -26,7 +26,7 @@ Listing models:
 
 Listing pipelines:
 ```
-./vaclient/vaclient.sh list-pipelines
+./client/pipeline_client.sh list-pipelines
 ```
 ```
 <snip>
@@ -40,12 +40,12 @@ Listing pipelines:
 ```
 
 ### Running Pipelines
-vaclient can be used to send pipeline start requests using the `run` command. With the `run` command you will need to enter two additional arguments the `pipeline` (in the form of pipeline_name/pipeline_version) you wish to use and the `uri` pointing to the media of your choice.
+pipeline_client can be used to send pipeline start requests using the `run` command. With the `run` command you will need to enter two additional arguments the `pipeline` (in the form of pipeline_name/pipeline_version) you wish to use and the `uri` pointing to the media of your choice.
 ```
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
-If the pipeline request is successful, an instance id is created and vaclient will print the instance. More on `instance_id` below.
-Once pre-roll is completed and pipeline begins running, the output file is processed by vaclient and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, vaclient will output the average fps. More on `stop` below
+If the pipeline request is successful, an instance id is created and pipeline_client will print the instance. More on `instance_id` below.
+Once pre-roll is completed and pipeline begins running, the output file is processed by pipeline_client and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, pipeline_client will output the average fps. More on `stop` below
 
 ```
 Pipeline instance = <uuid>
@@ -69,7 +69,7 @@ Timestamp 49250000000
 - vehicle (0.64) [0.00, 0.14, 0.05, 0.34] {}
 avg_fps: 39.66
 ```
-However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, vaclient will terminate with an error message
+However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, pipeline_client will terminate with an error message
 ```
 Pipeline instance = <uuid>
 Error in pipeline, please check pipeline-server log messages
@@ -78,15 +78,15 @@ Error in pipeline, please check pipeline-server log messages
 ### Starting Pipelines
 The `run` command is helpful for quickly showing inference results but `run` blocks until completion. If you want to do your own processing and only want to kickoff a pipeline, this can be done with the `start` command. `start` arguments are the same as `run`, you'll need to provide the `pipeline` and `uri`. Run the following command:
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
-Similar to `run`, if the pipeline request is successful, an instance id is created and vaclient will print the instance. More on `instance_id` below.
+Similar to `run`, if the pipeline request is successful, an instance id is created and pipeline_client will print the instance. More on `instance_id` below.
 ```
 Pipeline instance = <uuid>
 ```
-Errors during pipeline execution are not flagged as vaclient exits after receiving instance id for a successful request. However, both `start` and `run` will flag invalid requests, for example:
+Errors during pipeline execution are not flagged as pipeline_client exits after receiving instance id for a successful request. However, both `start` and `run` will flag invalid requests, for example:
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bke https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bke https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
 ```
@@ -94,14 +94,14 @@ Status 400 - "Invalid Pipeline or Version"
 ```
 
 #### Instance ID
-On a successful start of a pipeline, VA Serving assigns a pipeline `instance_id` which is a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `0fe8f408ea2441bca8161e1190eefc51`
+On a successful start of a pipeline, Pipeline Server assigns a pipeline `instance_id` which is a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) which can be used to reference the pipeline in subsequent requests. In this example, the `instance_id` is `0fe8f408ea2441bca8161e1190eefc51`
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = 0fe8f408ea2441bca8161e1190eefc51
 ```
 ### Stopping Pipelines
 Stopping a pipeline can be accomplished using the `stop` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
+./client/pipeline_client.sh stop object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
 ```
 Stopping Pipeline...
@@ -111,9 +111,9 @@ avg_fps: 42.07
 ### Getting Pipeline Status
 Querying the current state of the pipeline is done using the `status` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
-vaclient will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` and also fps.
+pipeline_client will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` and also fps.
 ```
 <snip>
 RUNNING (30fps)
@@ -122,7 +122,7 @@ RUNNING (30fps)
 ### Waiting for a pipeline to finish
 If you wish to wait for a pipeline to finish running you can use the `wait` command along with the `pipeline` and `instance id`:
 ```
-./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
+./client/pipeline_client.sh wait object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
 The client will print the initial status of the pipeline. Then wait for completion and print the average fps.
 
@@ -131,19 +131,19 @@ Querying the current state of the pipeline is done using the `list-instances` co
 
 This example starts two pipelines and then gets their status and request details.
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = 94cf72b718184615bfc181c6589b240c
 ```
 ```
-./vaclient/vaclient.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 ```
 Starting pipeline object_classification/vehicle_attributes, instance = 978e09c561f14fa1b793e8b644f30031
 ```
 ```
-./vaclient/vaclient.sh list-instances
+./client/pipeline_client.sh list-instances
 ```
 ```
 01: object_detection/person_vehicle_bike
@@ -186,22 +186,22 @@ parameters: {
 See [customizing pipeline requests](../docs/customizing_pipeline_requests.md) to further understand how pipeline request options can be customized.
 
 ### --quiet
-This optional argument is meant to handle logging verbosity common across all commands to vaclient.
+This optional argument is meant to handle logging verbosity common across all commands to pipeline_client.
 > **Note**: If specified, --quiet needs to be placed ahead of the specific command i.e start, run etc.
 
 #### Start
-vaclient output will just be the pipeline instance.
+pipeline_client output will just be the pipeline instance.
 ```
-./vaclient/vaclient.sh --quiet start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh --quiet start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
 <snip>
 2
 ```
 #### Run
-vaclient output will be the pipeline instance followed by inference results.
+pipeline_client output will be the pipeline instance followed by inference results.
 ```
-./vaclient/vaclient.sh --quiet run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh --quiet run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
 <snip>
@@ -213,7 +213,7 @@ Timestamp 1666666666
 ```
 
 ### Run/Start Arguments
-This section summarizes all the arguments for vaclient `run` and `start` commands.
+This section summarizes all the arguments for pipeline_client `run` and `start` commands.
 
 #### pipeline (required)
 Positional argument (first) that specifies the pipeline to be launched in the form of `pipeline name/pipeline version`.
@@ -223,7 +223,7 @@ Positional argument (second) that specifies the location of the content to play/
 > Note: uri argument can be skipped only if passed in via --request-file
 
 #### --destination
-By default, vaclient uses a generic template for destination:
+By default, pipeline_client uses a generic template for destination:
 ```json
 {
 "destination": {
@@ -236,15 +236,15 @@ By default, vaclient uses a generic template for destination:
 ```
 Destination configuration can be updated with `--destination`. This argument affects only metadata part of the destination.
 In the following example, passing in `--destination path /tmp/newfile.jsonl` will update the filepath for saving inference result.
-> **Note**: You may need to volume mount this new location when running VA Serving.
+> **Note**: You may need to volume mount this new location when running Pipeline Server.
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl
 ```
 
-If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and vaclient will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
+If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and pipeline_client will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
 ```
 docker run -rm --network=host -d eclipse-mosquitto:1.6
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost:1883 --destination topic pipeline-server
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost:1883 --destination topic pipeline-server
 ```
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
@@ -263,17 +263,17 @@ Timestamp 4000000000
 For more details on destination types, see [customizing pipeline requests](../docs/customizing_pipeline_requests.md#metadata).
 #### --rtsp-path
 If you are utilizing RTSP restreaming, `--rtsp-path` can be used to update the `server_url` path. This updates the frame part of destination under the hood.
-For example, adding `--rtsp-path new_path` will able you to view the stream at `rtsp://<ip_address>:<port>/new_path`. More details on RTSP restreaming in [running_video_analytics_serving](../docs/running_video_analytics_serving.md) documentation.
+For example, adding `--rtsp-path new_path` will able you to view the stream at `rtsp://<ip_address>:<port>/new_path`. More details on RTSP restreaming in [running_pipeline_server](../docs/running_pipeline_server.md) documentation.
 
 #### --parameter
-By default, vaclient relies on pipeline parameter defaults. This can be updated with `--parameter` option. See [Defining Pipelines](../docs/defining_pipelines.md) to know how parameters are defined. The following example adds `--parameter detection-device GPU`
+By default, pipeline_client relies on pipeline parameter defaults. This can be updated with `--parameter` option. See [Defining Pipelines](../docs/defining_pipelines.md) to know how parameters are defined. The following example adds `--parameter detection-device GPU`
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter detection-device GPU
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter detection-device GPU
 ```
 
 #### --parameter-file
 Specifies a JSON file that contains parameters in key, value pairs. Parameters from this file take precedence over those set by `--parameter`.
-> **Note**: As vaclient volume mounts /tmp, the parameter file may be placed there.
+> **Note**: As pipeline_client volume mounts /tmp, the parameter file may be placed there.
 
 A sample parameter file can look like
 ```json
@@ -285,26 +285,26 @@ A sample parameter file can look like
 ```
 The above file, say /tmp/sample_parameters.json may be used as follows:
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
 ```
 
 #### --tag
 Specifies a key, value pair to update request with. This information is added to each frame's metadata.
 This example adds tags for direction and location of video capture
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
 ```
 
 #### --server-address
 This can be used with any command to specify a remote HTTP server address. Here we start a pipeline on remote server `http://remote-server.my-domain.com:8080`.
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server=address http://remote-server.my-domain.com:8080
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server=address http://remote-server.my-domain.com:8080
 ```
 
 #### --status-only
 Use with `run` command to disable output of metadata and periodically display pipeline state and fps
 ```
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --status-only
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --status-only
 ```
 ```
 Starting pipeline 0
@@ -324,7 +324,7 @@ Pipeline status @ 21s
 Takes an integer value that specifies the number of streams to start (default value is 1) using specified request.
 If number of streams is greater than one, "status only" display mode is used.
 ```
-python3 vaclient run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --status-only --number-of-streams 4 --server-address http://hbruce-desk2.jf.intel.com:8080
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --status-only --number-of-streams 4 --server-address http://hbruce-desk2.jf.intel.com:8080
 ```
 ```
 Starting pipeline 0
@@ -360,7 +360,7 @@ Pipeline status @ 21s
 #### --request-file
 Specifies a JSON file that contains the complete request i.e source, destination, tags and parameters.
 See [Customizing Pipeline Requests](../docs/customizing_pipeline_requests.md) for examples of requests in JSON format.
-> **Note**: As vaclient volume mounts /tmp, the request file may be placed there.
+> **Note**: As pipeline_client volume mounts /tmp, the request file may be placed there.
 
 A sample request file can look like
 ```json
@@ -383,14 +383,14 @@ A sample request file can look like
 ```
 The above file, named for instance as /tmp/sample_request.json may be used as follows:
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike --request-file /tmp/sample_request.json
+./client/pipeline_client.sh start object_detection/person_vehicle_bike --request-file /tmp/sample_request.json
 ```
 
 #### --show-request
-All vaclient commands can be used with the `--show-request` option which will print out the HTTP request and exit i.e it will not be sent to VA Serving.
+All pipeline_client commands can be used with the `--show-request` option which will print out the HTTP request and exit i.e it will not be sent to the Pipeline Server.
 This example shows the result of `--show-request` when the pipeline is started with options passed in
 ```
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl --parameter detection-device GPU --tag direction east --tag camera_location parking_lot --show-request
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl --parameter detection-device GPU --tag direction east --tag camera_location parking_lot --show-request
 ```
 ```
 <snip>
@@ -400,7 +400,7 @@ Body:{'source': {'uri': 'https://github.com/intel-iot-devkit/sample-videos/blob/
 See [View REST request](../README.md#view-rest-request) to see how the output from `--show-request` can be mapped to a curl command.
 
 ### Status/Wait/Stop Arguments
-This section summarizes all the arguments for vaclient `status`, `wait` and `stop` commands.
+This section summarizes all the arguments for pipeline_client `status`, `wait` and `stop` commands.
 
 #### pipeline (required)
 Positional argument (first) that specifies the pipeline to wait on/query status of/stop as indicated in the form of `pipeline name/pipeline version`
@@ -413,7 +413,7 @@ As mentioned before, `--show-request` option which will print out the HTTP reque
 
 ##### Status
 ```
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
@@ -421,7 +421,7 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b
 ```
 ##### Wait
 ```
-./vaclient/vaclient.sh wait object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh wait object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
@@ -429,7 +429,7 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b
 ```
 ##### Stop
 ```
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh stop object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>

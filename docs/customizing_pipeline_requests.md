@@ -5,7 +5,7 @@ Pipeline requests are initiated to exercise the Intel(R) Deep Learning Streamer 
 
 ## Request Format
 
-> Note: This document shows curl requests. Requests can also be sent via vaclient using the --request-file option see [VA Client Command Options](../vaclient/README.md#command-options)
+> Note: This document shows curl requests. Requests can also be sent via pipeline_client using the --request-file option see [Pipeline Client Command Options](../client/README.md#command-options)
 
 Pipeline requests sent to Pipeline Server REST API are JSON documents that have the following attributes:
 
@@ -327,7 +327,7 @@ Steps to run Kafka:
 
 4. Launch pipeline with parameters to emit on the Kafka topic we are listening for:
    ```
-   ./vaclient/vaclient.sh start object_detection/person_vehicle_bike  \
+   ./client/pipeline_client.sh start object_detection/person_vehicle_bike  \
    https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true  \
    --destination type kafka  \
    --destination host localhost \
@@ -365,7 +365,7 @@ RTSP is a type of frame destination supported. The following are available prope
 - sync-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
 - sync-with-destination (default True): block processing pipeline if rtsp pipeline is blocked.
 
-For more information, see [RTSP re-streaming](running_video_analytics_serving.md#real-time-streaming-protocol-rtsp-re-streaming)
+For more information, see [RTSP re-streaming](running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming)
 
 ## Parameters
 Pipeline parameters as specified in the pipeline definition file, can be set in the REST request.

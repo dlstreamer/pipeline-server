@@ -44,11 +44,10 @@ The following examples demonstrate how to start and issue requests to
 a Pipeline Server Microservice either using the `Intel(R) DL Streamer`
 based image or the `FFmpeg` based image.
 
-> **Note:** The following examples assume that the Video Analytics
-> Serving image has already been built. For more information and
+> **Note:** The following examples assume that the Pipeline Server image has already been built. For more information and
 > instructions on building please see the [Getting Started
 > Guide](../README.md) or [Building Intel(R) DL Streamer Pipeline Server Docker
-> Images](../docs/building_video_analytics_serving.md)
+> Images](../docs/building_pipeline_server.md)
 
 > **Note:** Both the `Intel(R) DL Streamer` based microservice and the `FFmpeg`
 > based microservice use the same default port: `8080` and only one
@@ -312,7 +311,7 @@ Developer mode:
 docker/run.sh --dev
 ```
 ```
-pipeline-server@my-host:~$ python3 -m pipeline-server
+pipeline-server@my-host:~$ python3 -m server
 ```
 
 ---

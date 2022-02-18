@@ -60,8 +60,7 @@ the template property is specific to the underlying framework
 (`GStreamer` or `FFmpeg`). Templates use the `source`,
 `destination` and `parameters` sections of an incoming pipeline
 `request` to customize the source, destination and behavior of a
-pipeline implemented in an underlying framework. The Video Analytics
-Serving `pipeline_manager` and framework specific modules
+pipeline implemented in an underlying framework. The Pipeline Server `pipeline_manager` and framework specific modules
 `gstreamer_pipeline` and `ffmpeg_pipeline` provide default handling
 for typical `source` and `destination` options.
 
@@ -74,8 +73,7 @@ for typical `source` and `destination` options.
 
 GStreamer templates use the [GStreamer Pipeline
 Description](https://gstreamer.freedesktop.org/documentation/tools/gst-launch.html?gi-language=c#pipeline-description)
-syntax to concatenate elements into a pipeline. The Video Analytics
-Serving `pipeline_manager` and `gstreamer_pipeline` modules
+syntax to concatenate elements into a pipeline. The Pipeline Server `pipeline_manager` and `gstreamer_pipeline` modules
 parse the template, configure the `source`, `destination`, and
 `appsink` elements and then construct the pipeline based on incoming
 requests.
@@ -250,8 +248,7 @@ gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={
 ```
 
 The `model` and `model-proc` properties reference file paths to the
-deep learning model as discovered and populated by the Video Analytics
-Serving `model_manager` module. The `model_manager` module provides a
+deep learning model as discovered and populated by the Pipeline Server `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
@@ -719,8 +716,7 @@ Parameter Resolution:
 ```
 ### Reserved Parameters
 
-The following parameters have built-in handling within the Video
-Analytics Serving modules and should only be included in pipeline
+The following parameters have built-in handling within the Pipeline Server modules and should only be included in pipeline
 definitions wishing to trigger that handling.
 
 #### bus-messages

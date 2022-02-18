@@ -603,14 +603,14 @@ These examples will show the following with a target of 30fps per stream:
 - Running two streams on a single node and seeing both of them processing below target fps showing a stream density of 2 cannot be met.
 - Adding a second node to cluster and seeing two streams exceeding target fps, thus doubling stream density to 2.
 
-The examples require [vaclient](../../vaclient/README.md) so the container `dlstreamer-pipeline-server-gstreamer` must be built as per [these instructions](../../README.md#building-the-microservice).
+The examples require [pipeline_client](../../client/README.md) so the container `dlstreamer-pipeline-server-gstreamer` must be built as per [these instructions](../../README.md#building-the-microservice).
 
 ### Single node with MQTT
 
 Start stream as follows
 
 ```text
-vaclient/vaclient.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
 ```
 
 Output should be like this (with different instance id and timestamps)
@@ -646,7 +646,7 @@ Done
 For two streams, we won't use MQTT but will measure fps to see if both streams can be processed at 30fps (i.e. can we attain a stream density of 2). Note the use of [model-instance-id](../../docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) so pipelines can share resources.
 
 ```text
-vaclient/vaclient.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id person-vehicle-bike-cpu --number-of-streams 2
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id person-vehicle-bike-cpu --number-of-streams 2
 ```
 
 ```text
@@ -702,7 +702,7 @@ First add a second node as per [Adding Nodes to Existing Deployment](#adding-nod
 Now we run two streams and monitor fps using the same request as before. This time the work should be shared across the two nodes so we anticipate a higher fps for both streams.
 
 ```bash
-vaclient/vaclient.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id cpu --number-of-streams 2 
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id cpu --number-of-streams 2 
 ```
 
 ```text

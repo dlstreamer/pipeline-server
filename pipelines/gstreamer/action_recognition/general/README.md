@@ -79,7 +79,7 @@ Below is a sample of the inference results i.e metadata (json format):
 }
 ```
 
-The corresponding vaclient output resembles:
+The corresponding pipeline_client output resembles:
 
 ```code
  Timestamp <timestamp>

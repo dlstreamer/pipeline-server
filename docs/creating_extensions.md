@@ -9,7 +9,7 @@ Extensions are a simple way to add functionality to a Intel(R) Deep Learning Str
 
 An extension is a GVA Python script that is called during pipeline execution. The script is given a frame and any Pipeline Server parameters defined by the pipeline request.
 The extension must be added after the last element that generates data it requires. Below are some examples that cover how extensions can be used to process inference results.
-> Note: Make sure to either build the Pipeline Server container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Intel(R) DL Streamer Pipeline Server](running_video_analytics_serving.md#developer-mode)
+> Note: Make sure to either build the Pipeline Server container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Intel(R) DL Streamer Pipeline Server](running_pipeline_server.md#developer-mode)
 
 ## Example: Processing Inference Results
 
@@ -51,9 +51,9 @@ The extension must be added after the last element that generates data it requir
 ```
 ### Output
 
-The pipeline can be run with VA Client as follows:
+The pipeline can be run with Pipeline Client as follows:
 ```bash
-vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
 As process_frame runs once per frame, the Pipeline Server output would resemble
@@ -147,9 +147,9 @@ class ObjectCounter:
 
 ### Output
 
-- Running VA Client as shown (parameter-file is optional for extension parameters if defaults are set in pipeline JSON)
+- Running Pipeline Client as shown (parameter-file is optional for extension parameters if defaults are set in pipeline JSON)
   ```bash
-   vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+  ./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
   ```
   Output reflects the default count_threshold i.e 0
   ```bash
@@ -159,7 +159,7 @@ class ObjectCounter:
   Object count 1 exceeded threshold 0
   <snip>
   ```
-- Running VA Client with the following parameter file
+- Running Pipeline Client with the following parameter file
   ```json
   {
       "parameters": {
@@ -170,7 +170,7 @@ class ObjectCounter:
   }
   ```
   ```bash
-   vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+  ./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
   ```
   The Pipeline Server output shows count_threshold is set to 1 per parameter file
   ```bash
@@ -337,9 +337,9 @@ Another optional field (unused here) is `related_objects` as shown in [line cros
 
 ### Output
 
-VA Client can be launched as follows, as no parameter-file is given, the default count_threshold is picked up i.e 1.
+Pipeline Client can be launched as follows, as no parameter-file is given, the default count_threshold is picked up i.e 1.
 ```bash
- vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 Output snippet is shown, events are fired for object count > 1:
 ```bash

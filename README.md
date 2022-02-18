@@ -6,13 +6,12 @@
 | [Further Reading](#further-reading)
 | [Known Issues](#known-issues) |
 
-Intel(R) Deep Learning Streamer Pipeline Server (Intel(R) DL Streamer Pipeline Server) is a python package and microservice for
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server is a python package and microservice for
 deploying optimized media analytics pipelines. It supports pipelines
 defined in
 [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)*
 or [FFmpeg](https://ffmpeg.org/)* and provides APIs to discover, start,
-stop, customize and monitor pipeline execution. Video Analytics
-Serving is based on [OpenVINO<sup>&#8482;</sup> Toolkit DL
+stop, customize and monitor pipeline execution. Intel(R) DL Streamer Pipeline Server is based on [OpenVINO<sup>&#8482;</sup> Toolkit DL
 Streamer](https://github.com/opencv/gst-video-analytics) and [FFmpeg
 Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 
@@ -111,16 +110,16 @@ Expected output:
 
 ## Running a Pipeline
 
-The Pipeline Server includes a sample client [vaclient](./vaclient/README.md) that can connect to the service and make requests. We will use vaclient to explain how to use the key microservice features.
-> **Note:** Any RESTful tool or library can be used to send requests to the Pipeline Server service. We are using vaclient as it simplifies interaction with the service.
+The Pipeline Server includes a sample client [pipeline_client](./client/README.md) that can connect to the service and make requests. We will use pipeline_client to explain how to use the key microservice features.
+> **Note:** Any RESTful tool or library can be used to send requests to the Pipeline Server service. We are using pipeline_client as it simplifies interaction with the service.
 
 > **Note:**  The microservice has to be up and running before the sample client is invoked.
 
-Before running a pipeline, we need to know what pipelines are available. We do this using vaclient's `list-pipeline` command.
+Before running a pipeline, we need to know what pipelines are available. We do this using pipeline_client's `list-pipeline` command.
 In new shell run the following command:
 
 ```bash
-./vaclient/vaclient.sh list-pipelines
+./client/pipeline_client.sh list-pipelines
  ```
 
  ```text
@@ -139,12 +138,12 @@ In new shell run the following command:
 Pipelines are displayed as a name/version tuple. The name reflects the action and version supplies more details of that action. Let's go with `object_detection/person_vehicle_bike`. Now we need to choose a media source. We recommend the [IoT Devkit sample videos](https://github.com/intel-iot-devkit/sample-videos) to get started. As the pipeline version indicates support for detecting people, person-bicycle-car-detection.mp4 would be a good choice.
 > **Note:** Make sure to include `raw=true` parameter in the Github URL as shown in our examples. Failure to do so will result in a pipeline execution error.
 
-vaclient offers a `run` command that takes two additional arguments the `pipeline` and the `uri` for the media source. The `run` command displays inference results until either the media is exhausted or `CTRL+C` is pressed.
+pipeline_client offers a `run` command that takes two additional arguments the `pipeline` and the `uri` for the media source. The `run` command displays inference results until either the media is exhausted or `CTRL+C` is pressed.
 
 Inference result bounding boxes are displayed in the format `label (confidence) [top left width height] {meta-data}` provided applicable data is present. At the end of the pipeline run, the average fps is shown.
 
 ```bash
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
 ```text
@@ -174,12 +173,12 @@ The file path is specified in the `destination` section of the REST request and 
 
 ### Queued, Running and Completed
 
-The vaclient `run` command starts the pipeline. The underlying REST request returns a `pipeline instance` which is used to query the state of the pipeline.
-All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the vaclient `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` (a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)) which is used by the `status` command to view pipeline state.
+The pipeline_client `run` command starts the pipeline. The underlying REST request returns a `pipeline instance` which is used to query the state of the pipeline.
+All being well it will go into `QUEUED` then `RUNNING` state. We can interrogate the pipeline status by using the pipeline_client `start` command that kicks off the pipeline like `run` and then exits displaying the `pipeline instance` (a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier)) which is used by the `status` command to view pipeline state.
 > **NOTE:** The pipeline instance value depends on the number of pipelines started while the server is running so may differ from the value shown in the following examples.
 
 ```bash
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
 ```text
@@ -190,7 +189,7 @@ Starting pipeline object_detection/person_vehicle_bike, instance = d83502e3ef314
 You will need both the pipeline tuple and `instance` id for the status command. This command will display pipeline state:
 
 ```bash
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
+./client/pipeline_client.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
 ```
 
 ```text
@@ -201,7 +200,7 @@ RUNNING (49fps)
 Then wait for a minute or so and try again. Pipeline will be completed.
 
 ```bash
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
+./client/pipeline_client.sh status object_detection/person_vehicle_bike d83502e3ef314e8fbec8dc926eadd0c2
 ```
 
 ```text
@@ -215,7 +214,7 @@ If a pipeline is stopped, rather than allowed to complete, it goes into the ABOR
 Start the pipeline again, this time we'll stop it.
 
 ```bash
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
 ```text
@@ -224,7 +223,7 @@ Starting pipeline object_detection/person_vehicle_bike, instance = 8ad2c85af4bd4
 ```
 
 ```bash
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 8ad2c85a-f4bd473e8a693aff562be316
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 8ad2c85a-f4bd473e8a693aff562be316
 ```
 
 ```text
@@ -233,7 +232,7 @@ RUNNING (50fps)
 ```
 
 ```bash
-./vaclient/vaclient.sh stop object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
+./client/pipeline_client.sh stop object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
 ```
 
 ```text
@@ -244,7 +243,7 @@ avg_fps: 24.33
 ```
 
 ```bash
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
 ```
 
 ```text
@@ -257,7 +256,7 @@ ABORTED (47fps)
 The error state covers a number of outcomes such as the request could not be satisfied, a pipeline dependency was missing or an initialization problem. We can create an error condition by supplying a valid but unreachable uri.
 
 ```bash
-./vaclient/vaclient.sh start object_detection/person_vehicle_bike http://bad-uri
+./client/pipeline_client.sh start object_detection/person_vehicle_bike http://bad-uri
 ```
 
 ```text
@@ -269,7 +268,7 @@ Note that the Pipeline Server does not report an error at this stage as it goes 
 Checking on state a few seconds later will show the error.
 
 ```bash
-./vaclient/vaclient.sh status object_detection/person_vehicle_bike 2bb2d219310a4ee881faf258fbcc4355
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 2bb2d219310a4ee881faf258fbcc4355
 ```
 
 ```text
@@ -289,7 +288,7 @@ docker/run.sh --enable-rtsp -v /tmp:/tmp
 Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`. In this case the RTSP endpoint would be `rtsp://localhost:8554/pipeline-server`
 
 ```bash
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path pipeline-server
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path pipeline-server
 ```
 
 If you see the error
@@ -310,10 +309,10 @@ Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL 
 
 ## Change Pipeline and Source Media
 
-With vaclient it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the Iot Devkit video `car-detection.mp4`. Note how vaclient now displays classification metadata including type and color of vehicle.
+With pipeline_client it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the Iot Devkit video `car-detection.mp4`. Note how pipeline_client now displays classification metadata including type and color of vehicle.
 
 ```bash
-./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 
 ```text
@@ -350,7 +349,7 @@ Inference accelerator devices can be easily selected using the device parameter.
 but this time use the integrated GPU for detection inference by setting the `detection-device` parameter.
 
 ```bash
-./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
+./client/pipeline_client.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --parameter detection-model-instance-id person_vehicle_bike_detection_gpu
 ```
 
 ```text
@@ -361,16 +360,16 @@ Starting pipeline object_classification/vehicle_attributes, instance = <uuid>
 
 > **Note:** The `detection-model-instance-id` parameter caches the GPU model with a unique id. For more information read about [model instance ids](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements).
 
-vaclient's fps measurement is useful when assessing pipeline performance with different accelerators.
+pipeline_client's fps measurement is useful when assessing pipeline performance with different accelerators.
 
 ## View REST Request
 
-As the previous example has shown, the vaclient application works by converting command line arguments into Pipeline Server REST requests.
+As the previous example has shown, the pipeline_client application works by converting command line arguments into Pipeline Server REST requests.
 The `--show-request` option displays the REST verb, uri and body in the request.
 Let's repeat the previous GPU inference example, adding RTSP output and show the underlying request.
 
 ```bash
-./vaclient/vaclient.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path pipeline-server --show-request
+./client/pipeline_client.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true --parameter detection-device GPU --rtsp-path pipeline-server --show-request
 ```
 
 ```text
@@ -418,7 +417,7 @@ They are easier to understand when the json is pretty-printed
 
 1. Media source: type is `uri` and the uri is the car-detection.mp4 video
 2. Destinations:
-   * metadata: this is the inference results, they are sent to file `/tmp/results.jsonl` in `json-lines` format. vaclient parses this file to display the inference results and metadata.
+   * metadata: this is the inference results, they are sent to file `/tmp/results.jsonl` in `json-lines` format. pipeline_client parses this file to display the inference results and metadata.
    * frames: this the watermarked frames. Here they are sent to the RTSP server and available over given endpoint `pipeline-server`.
 3. Parameters set pipeline properties. See the [Defining Pipelines](docs/defining_pipelines.md) document for more details on parameters.
 
@@ -467,7 +466,7 @@ The Pipeline Server makes pipeline customization and model selection a simple ta
 
 | **Documentation** | **Reference Guides** | **Tutorials** |
 | ------------    | ------------------ | ----------- |
-| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Intel(R) DL Streamer Pipeline Server](docs/building_video_analytics_serving.md) <br/> **-** [Running Intel(R) DL Streamer Pipeline Server](docs/running_video_analytics_serving.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Intel(R) DL Streamer Pipeline Server Architecture Diagram](docs/images/video_analytics_service_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [VA Client Reference](vaclient/README.md)| **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) <br/> **-** [Kubernetes Deployment with Load Balancing](samples/kubernetes/README.md)
+| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Intel(R) DL Streamer Pipeline Server](docs/building_pipeline_server.md) <br/> **-** [Running Intel(R) DL Streamer Pipeline Server](docs/running_pipeline_server.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Intel(R) DL Streamer Pipeline Server Architecture Diagram](docs/images/pipeline_server_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [Pipeline Client Reference](client/README.md)| **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) <br/> **-** [Kubernetes Deployment with Load Balancing](samples/kubernetes/README.md)
 
 ## Related Links
 
