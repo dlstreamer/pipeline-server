@@ -5,7 +5,7 @@
 '''
 
 import time
-from vaserving.pipeline import Pipeline
+from server.pipeline import Pipeline
 
 PAUSE = 0.1
 
@@ -35,19 +35,19 @@ def wait_for_pipeline_state(pipeline_manager, pipelines, target_states):
     print("Pipelines {} in {:.2f}s".format(target_states, time.time() - start_time))
     assert not timed_out, "Timed out waiting for pipeline states to reach {}".format(target_states)
 
-def test_pipeline_instances(VAServing, test_case, test_filename, generate, numerical_tolerance, skip_sources):
-    VAServing.start(test_case["options"])
+def test_pipeline_instances(PipelineServer, test_case, test_filename, generate, numerical_tolerance, skip_sources):
+    PipelineServer.start(test_case["options"])
     pipelines = []
     for tc in test_case["pipelines"]:
-        pipeline = VAServing.pipeline(tc["name"], tc["version"])
+        pipeline = PipelineServer.pipeline(tc["name"], tc["version"])
         assert pipeline is not None, "Failed to Load Pipeline!"
         pipeline.start(tc["request"])
         pipelines.append(pipeline)
-    wait_for_pipeline_state(VAServing.pipeline_manager, test_case["pipelines"], [Pipeline.State.RUNNING])
+    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case["pipelines"], [Pipeline.State.RUNNING])
     abort_delay = test_case["abort"]["delay"]
     print("Pipelines running - stop in {}s".format(abort_delay))
     time.sleep(abort_delay)
     for pipeline in pipelines:
         pipeline.stop()
-    wait_for_pipeline_state(VAServing.pipeline_manager, test_case["pipelines"], [Pipeline.State.COMPLETED, Pipeline.State.ABORTED])
-    VAServing.stop()
+    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case["pipelines"], [Pipeline.State.COMPLETED, Pipeline.State.ABORTED])
+    PipelineServer.stop()

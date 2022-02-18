@@ -13,7 +13,7 @@ import sys
 from html.parser import HTMLParser
 import requests
 import results_watcher
-from vaserving.pipeline import Pipeline
+from server.pipeline import Pipeline
 
 RESPONSE_SUCCESS = 200
 TIMEOUT = 30

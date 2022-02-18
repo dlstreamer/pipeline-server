@@ -9,7 +9,7 @@ gi.require_version('GstRtspServer', '1.0')
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst, GstRtspServer
-from vaserving.common.utils import logging
+from server.common.utils import logging
 # pylint: enable=wrong-import-position
 
 class GStreamerRtspFactory(GstRtspServer.RTSPMediaFactory):

@@ -14,16 +14,16 @@ from collections import namedtuple
 import os
 import sys
 import re
-from vaserving.vaserving import VAServing as _VAServing
+from server.pipeline_server import PipelineServer as _PipelineServer
 import signal
 
 TIMEOUT = 30
 MAX_CONNECTION_ATTEMPTS = 5
 CONNECTED_SOURCES = ["webcam", "mic"]
 
-class VAServingService:
+class PipelineServerService:
 
-    VASERVING_ARGS = ["python3", "-m", "vaserving","--enable-rtsp","true"]
+    PIPELINE_SERVER_ARGS = ["python3", "-m", "server","--enable-rtsp","true"]
 
     def kill(self, timeout=10):
         graceful_exit = True
@@ -49,7 +49,7 @@ class VAServingService:
 
     def kill_all(self):
         for proc in psutil.process_iter():
-            if "vaserving" in proc.cmdline():
+            if "server" in proc.cmdline():
                 proc.kill()
 
     def get_log_message(self, line):
@@ -64,7 +64,7 @@ class VAServingService:
     def __init__(self):
         self.kill_all()
         self.host = "http://localhost:8080"
-        self._process = subprocess.Popen(VAServingService.VASERVING_ARGS,
+        self._process = subprocess.Popen(PipelineServerService.PIPELINE_SERVER_ARGS,
                                          stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE,
                                          bufsize=1,
@@ -88,11 +88,11 @@ class VAServingService:
                                 attempts -= 1
                             else:
                                 return
-                        raise Exception("VA Serving Not Launched")
+                        raise Exception("Pipeline Server Not Launched")
             except Exception as error:
                 self._process.kill()
                 self._process = None
-                assert False, "VA Serving Not Launched"
+                assert False, "Pipeline Server Not Launched"
                 raise
             self._process.poll()
         if self._process.returncode != 0:
@@ -233,21 +233,21 @@ def pytest_generate_tests(metafunc):
     if "pipeline_performance" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "pipeline_performance")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
-    if "vaclient" in metafunc.function.__name__:
-        test_cases, test_names = load_test_cases(metafunc, "vaclient")
+    if "pipeline_client" in metafunc.function.__name__:
+        test_cases, test_names = load_test_cases(metafunc, "pipeline_client")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)
 
     print(metafunc.fixturenames)
     print(metafunc.function, flush=True)
 
 @pytest.fixture()
-def VAServing(request):
-    _VAServing.stop()
-    yield _VAServing
-    _VAServing.stop()
+def PipelineServer(request):
+    _PipelineServer.stop()
+    yield _PipelineServer
+    _PipelineServer.stop()
 
 @pytest.fixture(scope="session")
 def service(request):
-    proxy = VAServingService()
+    proxy = PipelineServerService()
     yield proxy
     proxy.kill()

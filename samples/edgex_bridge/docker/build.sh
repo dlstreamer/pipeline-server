@@ -68,7 +68,7 @@ function launch { echo $@
     return $exit_code
 }
 
-# Build Intel(R) DL Streamer Pipeline Server
+# Build Pipeline Server
 launch "$SAMPLE_DIR/../../docker/build.sh
   --framework gstreamer
   --create-service true $BASE_IMAGE $OMZ_VERSION
@@ -78,7 +78,7 @@ launch "$SAMPLE_DIR/../../docker/build.sh
   $PASS_THROUGH_PARAMS"
 
 # Build EdgeX Bridge Extension and override entrypoint defined by FINAL_STAGE
-# in Intel(R) DL Streamer Pipeline Server parent image Dockerfile
+# in the Pipeline Server parent image Dockerfile
 launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS
   --build-arg BASE=$TAG_BASE
   $PASS_THROUGH_PARAMS -t $TAG $SAMPLE_DIR "

@@ -7,8 +7,8 @@
 from collections import namedtuple
 from enum import Enum, auto
 from gstgva.video_frame import VideoFrame
-from vaserving.app_destination import AppDestination
-from vaserving.gstreamer_pipeline import GStreamerPipeline
+from server.app_destination import AppDestination
+from server.gstreamer_pipeline import GStreamerPipeline
 
 GvaSample = namedtuple('GvaSample', ['sample', 'video_frame'])
 GvaSample.__new__.__defaults__ = (None, None)

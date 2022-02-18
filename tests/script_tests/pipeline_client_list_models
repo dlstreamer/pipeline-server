@@ -1,24 +1,22 @@
 #!/bin/bash
 
-EXPECTED=' - action_recognition/general
+EXPECTED=' - action_recognition/decoder
+ - action_recognition/encoder
  - audio_detection/environment
+ - emotion_recognition/1
+ - face_detection_retail/1
  - object_classification/vehicle_attributes
- - object_detection/app_src_dst
- - object_detection/object_zone_count
  - object_detection/person
  - object_detection/person_vehicle_bike
- - object_detection/vehicle
- - object_tracking/object_line_crossing
- - object_tracking/person_vehicle_bike
- - video_decode/app_dst'
+ - object_detection/vehicle'
 
 # Run server and wait for init to complete
 $SOURCE_DIR/docker/run.sh --non-interactive &
 sleep 5
 
-# Run client with list-pipelines
+# Run client with list-models
 # tr is used to delete carriage return
-OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh list-pipelines | egrep '^ - ' | sort | tr -d "\r")
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh list-models | egrep '^ - ' | sort | tr -d "\r")
 RETURN_CODE=$?
 
 # Stop server

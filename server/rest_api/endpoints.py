@@ -5,8 +5,8 @@
 '''
 from http import HTTPStatus
 import connexion
-from vaserving.common.utils import logging
-from vaserving.vaserving import VAServing
+from server.common.utils import logging
+from server.pipeline_server import PipelineServer
 
 
 logger = logging.get_logger('Default Controller', is_static=True)
@@ -25,7 +25,7 @@ def models_get():  # noqa: E501
     """
     try:
         logger.debug("GET on /models")
-        return VAServing.model_manager.get_loaded_models()
+        return PipelineServer.model_manager.get_loaded_models()
     except Exception as error:
         logger.error('pipelines_name_version_get %s', error)
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -41,7 +41,7 @@ def pipelines_get():  # noqa: E501
     """
     try:
         logger.debug("GET on /pipelines")
-        return VAServing.pipeline_manager.get_loaded_pipelines()
+        return PipelineServer.pipeline_manager.get_loaded_pipelines()
     except Exception as error:
         logger.error('pipelines_name_version_get %s', error)
         return ('Unexpected error', HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -62,7 +62,7 @@ def pipelines_name_version_get(name, version):  # noqa: E501
     try:
         logger.debug(
             "GET on /pipelines/{name}/{version}".format(name=name, version=version))
-        result = VAServing.pipeline_manager.get_pipeline_parameters(
+        result = PipelineServer.pipeline_manager.get_pipeline_parameters(
             name, version)
         if result:
             return result
@@ -89,7 +89,7 @@ def pipelines_name_version_instance_id_delete(name, version, instance_id):  # no
     try:
         logger.debug("DELETE on /pipelines/{name}/{version}/{id}".format(
             name=name, version=str(version), id=instance_id))
-        result = VAServing.pipeline_manager.stop_instance(
+        result = PipelineServer.pipeline_manager.stop_instance(
             instance_id, name, version)
         if result:
             result['state'] = result['state'].name
@@ -112,7 +112,7 @@ def pipelines_instance_id_delete(instance_id):  # noqa: E501
     """
     try:
         logger.debug("DELETE on /pipelines/{id}".format(id=instance_id))
-        result = VAServing.pipeline_manager.stop_instance(instance_id)
+        result = PipelineServer.pipeline_manager.stop_instance(instance_id)
         if result:
             result['state'] = result['state'].name
             return result
@@ -139,7 +139,7 @@ def pipelines_name_version_instance_id_get(name, version, instance_id):  # noqa:
     try:
         logger.debug("GET on /pipelines/{name}/{version}/{id}".format(
             name=name, version=version, id=instance_id))
-        result = VAServing.pipeline_manager.get_instance_parameters(
+        result = PipelineServer.pipeline_manager.get_instance_parameters(
             name, version, instance_id)
         if result:
             return result
@@ -161,7 +161,7 @@ def pipelines_instance_id_get(instance_id):  # noqa: E501
     """
     try:
         logger.debug("GET on /pipelines/{id}".format(id=instance_id))
-        result = VAServing.pipeline_manager.get_instance_summary(instance_id)
+        result = PipelineServer.pipeline_manager.get_instance_summary(instance_id)
         if result:
             return result
         return (bad_request_response, HTTPStatus.BAD_REQUEST)
@@ -188,7 +188,7 @@ def pipelines_name_version_instance_id_status_get(name, version, instance_id):  
         logger.debug("GET on /pipelines/{name}/{version}/{id}/status".format(name=name,
                                                                              version=version,
                                                                              id=instance_id))
-        result = VAServing.pipeline_manager.get_instance_status(
+        result = PipelineServer.pipeline_manager.get_instance_status(
             instance_id, name, version)
         if result:
             result['state'] = result['state'].name
@@ -207,7 +207,7 @@ def pipelines_status_get_all():  # noqa: E501
     """
     try:
         logger.debug("GET on /pipelines/status")
-        results = VAServing.pipeline_manager.get_all_instance_status()
+        results = PipelineServer.pipeline_manager.get_all_instance_status()
         for result in results:
             result['state'] = result['state'].name
         return results
@@ -228,7 +228,7 @@ def pipelines_instance_id_status_get(instance_id):  # noqa: E501
     """
     try:
         logger.debug("GET on /pipelines/status/{id}".format(id=instance_id))
-        result = VAServing.pipeline_manager.get_instance_status(instance_id)
+        result = PipelineServer.pipeline_manager.get_instance_status(instance_id)
         if result:
             result['state'] = result['state'].name
             return result
@@ -258,7 +258,7 @@ def pipelines_name_version_post(name, version):  # noqa: E501
         "POST on /pipelines/{name}/{version}".format(name=name, version=str(version)))
     if connexion.request.is_json:
         try:
-            pipeline_id, err = VAServing.pipeline_instance(
+            pipeline_id, err = PipelineServer.pipeline_instance(
                 name, version, connexion.request.get_json())
             if pipeline_id is not None:
                 return pipeline_id

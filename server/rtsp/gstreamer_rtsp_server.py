@@ -12,8 +12,8 @@ gi.require_version('GstRtspServer', '1.0')
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst, GstRtspServer, GLib
-from vaserving.common.utils import logging
-from vaserving.rtsp.gstreamer_rtsp_factory import GStreamerRtspFactory
+from server.common.utils import logging
+from server.rtsp.gstreamer_rtsp_factory import GStreamerRtspFactory
 # pylint: enable=wrong-import-position
 
 Stream = namedtuple('stream', ['source', 'caps'])

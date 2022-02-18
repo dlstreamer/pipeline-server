@@ -24,7 +24,7 @@ USER root
 
 # Dependencies for OpenVINO
 ARG BASE=dlstreamer-pipeline-server-gstreamer-base
-ENV VA_SERVING_BASE=${BASE}
+ENV PIPELINE_SERVER_BASE=${BASE}
 SHELL ["/bin/bash", "-c"]
 
 # Creating user pipeline-server and adding it to groups "video" and "users" to use GPU and VPU
@@ -36,7 +36,7 @@ RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]
        /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \
     fi
 
-RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     intel-media-va-driver-non-free \
@@ -46,7 +46,7 @@ RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; the
     fi
 
 # Install boost library required for HDDL plugin
-RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then \
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     libboost-program-options1.71.0 && \
@@ -60,7 +60,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;
 
-RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     python3 \
@@ -74,9 +74,9 @@ COPY ./requirements.txt /
 RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
-# Intel(R) DL Streamer Pipeline Server Python Modules
-COPY ./vaserving /home/pipeline-server/vaserving
-COPY ./vaclient /home/pipeline-server/vaclient
+# Pipeline Server Python Modules
+COPY ./server /home/pipeline-server/server
+COPY ./client /home/pipeline-server/client
 COPY --chown=pipeline-server ./tools /home/pipeline-server/tools
 
 # Copy GVA Python extensions
@@ -128,8 +128,8 @@ FROM ${PIPELINES_COMMAND} as dlstreamer-pipeline-server-with-models-and-pipeline
 # Final stage is controlled by the FINAL_STAGE build argument.
 
 FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline-server-library
-ONBUILD RUN rm -rf /home/pipeline-server/vaserving/__main__.py
-ONBUILD RUN rm -rf /home/pipeline-server/vaserving/rest_api
+ONBUILD RUN rm -rf /home/pipeline-server/server/__main__.py
+ONBUILD RUN rm -rf /home/pipeline-server/server/rest_api
 
 FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline-server-service
 
@@ -137,7 +137,7 @@ FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline
 ONBUILD COPY ./requirements.service.txt /
 ONBUILD RUN pip3 install  --no-cache-dir -r /requirements.service.txt
 ONBUILD RUN rm -f /requirements.service.txt
-ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
+ONBUILD ENTRYPOINT ["python3", "-m", "server"]
 
 FROM ${FINAL_STAGE} as deploy
 

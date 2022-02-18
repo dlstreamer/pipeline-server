@@ -7,10 +7,10 @@
 
 VOLUME_MOUNT="-v /tmp:/tmp "
 IMAGE="dlstreamer-pipeline-server-gstreamer"
-VASERVING_ROOT=/home/pipeline-server
+PIPELINE_SERVER_ROOT=/home/pipeline-server
 ENTRYPOINT="python3"
-ENTRYPOINT_ARGS="$VASERVING_ROOT/vaclient $@"
-LOCAL_VACLIENT_DIR=$(dirname $(readlink -f "$0"))
-ROOT_DIR=$(dirname $LOCAL_VACLIENT_DIR)
+ENTRYPOINT_ARGS="$PIPELINE_SERVER_ROOT/client $@"
+LOCAL_CLIENT_DIR=$(dirname $(readlink -f "$0"))
+ROOT_DIR=$(dirname $LOCAL_CLIENT_DIR)
 
 "$ROOT_DIR/docker/run.sh" $INTERACTIVE --name \"\" --network host --image  $IMAGE $VOLUME_MOUNT --entrypoint $ENTRYPOINT --entrypoint-args "$ENTRYPOINT_ARGS"

@@ -7,7 +7,7 @@
 import os
 import json
 import time
-from vaserving.pipeline import Pipeline
+from server.pipeline import Pipeline
 from threading import Thread
 import copy
 from tests.common import results_processing
@@ -24,12 +24,12 @@ if os.environ['FRAMEWORK'] == "gstreamer":
     gi.require_version('GstApp', '1.0')
     from gi.repository import Gst, GstApp
     # pylint: enable=wrong-import-order, wrong-import-position
-    from vaserving.vaserving import VAServing
-    from vaserving.app_source import AppSource
-    from vaserving.app_destination import AppDestination
-    from vaserving.gstreamer_app_source import GStreamerAppSource
-    from vaserving.gstreamer_app_source import GvaFrameData
-    from vaserving.gstreamer_app_destination import GStreamerAppDestination
+    from server.pipeline_server import PipelineServer
+    from server.app_source import AppSource
+    from server.app_destination import AppDestination
+    from server.gstreamer_app_source import GStreamerAppSource
+    from server.gstreamer_app_source import GvaFrameData
+    from server.gstreamer_app_destination import GStreamerAppDestination
 
 PAUSE = 0.1
 
@@ -40,7 +40,7 @@ def _get_results_app(test_case, results):
     decode_cfg = test_case["decode"]
     print(decode_cfg)
     decode_cfg["destination"]["output"] = decode_output
-    pipeline = VAServing.pipeline(decode_cfg["pipeline"]["name"],
+    pipeline = PipelineServer.pipeline(decode_cfg["pipeline"]["name"],
                                   decode_cfg["pipeline"]["version"])
     pipeline.start(decode_cfg)
     sequence_number = 0
@@ -87,7 +87,7 @@ def get_results_app(test_case, results):
     thread.start()
     return thread
 
-def wait_for_pipeline_completion(pipeline, VAServing, expected_states=[Pipeline.State.QUEUED, Pipeline.State.COMPLETED], sleep_duration=PAUSE):
+def wait_for_pipeline_completion(pipeline, PipelineServer, expected_states=[Pipeline.State.QUEUED, Pipeline.State.COMPLETED], sleep_duration=PAUSE):
     status = pipeline.status()
     transitions = [status]
     while (not status.state.stopped()):
@@ -103,9 +103,9 @@ def wait_for_pipeline_completion(pipeline, VAServing, expected_states=[Pipeline.
     else:
         assert transitions[0].state == expected_states[0]
         assert transitions[-1].state == expected_states[1]
-    VAServing.stop()
+    PipelineServer.stop()
 
-def test_pipeline_execution(VAServing, test_case, test_filename, generate, numerical_tolerance, skip_sources, capsys):
+def test_pipeline_execution(PipelineServer, test_case, test_filename, generate, numerical_tolerance, skip_sources, capsys):
     if skip_sources:
         for source in skip_sources:
             if re.search("[a-z_]+{}[a-z_]+".format(source), test_filename):
@@ -125,21 +125,21 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
     if "numerical_tolerance" in _test_case:
         numerical_tolerance = _test_case["numerical_tolerance"]
 
-    VAServing.start(_test_case["options"])
-    pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
+    PipelineServer.start(_test_case["options"])
+    pipeline = PipelineServer.pipeline(_test_case["pipeline"]["name"],
                                   _test_case["pipeline"]["version"])
     assert pipeline is not None, "Failed to Load Pipeline!"
 
     if _test_case.get("check_second_pipeline_queued", None):
         pipeline.start(_test_case["request"])
-        pipeline1 = VAServing.pipeline(_test_case["pipeline"]["name"],
+        pipeline1 = PipelineServer.pipeline(_test_case["pipeline"]["name"],
                                        _test_case["pipeline"]["version"])
         pipeline1.start(_test_case["request"])
         assert pipeline1 is not None, "Failed to Load second Pipeline!"
         while not pipeline.status().state.stopped():
             assert pipeline1.status().state == Pipeline.State.QUEUED, \
                 "Concurrent pipeline execution detected when max_running_pipelines set to 1"
-        wait_for_pipeline_completion(pipeline1, VAServing)
+        wait_for_pipeline_completion(pipeline1, PipelineServer)
         return
     results_processing.clear_results(_test_case)
     results = []
@@ -155,11 +155,11 @@ def test_pipeline_execution(VAServing, test_case, test_filename, generate, numer
 
     if _test_case.get("abort"):
         abort_delay = _test_case["abort"]["delay"]
-        wait_for_pipeline_completion(pipeline, VAServing, [Pipeline.State.ABORTED], abort_delay)
+        wait_for_pipeline_completion(pipeline, PipelineServer, [Pipeline.State.ABORTED], abort_delay)
     elif _test_case.get("expect_error"):
-        wait_for_pipeline_completion(pipeline, VAServing, [Pipeline.State.ERROR])
+        wait_for_pipeline_completion(pipeline, PipelineServer, [Pipeline.State.ERROR])
     else:
-        wait_for_pipeline_completion(pipeline, VAServing)
+        wait_for_pipeline_completion(pipeline, PipelineServer)
 
     if (thread):
         thread.join()

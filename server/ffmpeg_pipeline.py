@@ -20,8 +20,8 @@ import json
 import os
 from datetime import datetime, timedelta
 
-from vaserving.pipeline import Pipeline
-from vaserving.common.utils import logging
+from server.pipeline import Pipeline
+from server.common.utils import logging
 
 
 if shutil.which('ffmpeg') is None:

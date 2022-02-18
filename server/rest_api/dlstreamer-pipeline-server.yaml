@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  description: Intel(R) DL Streamer Pipeline Server API
-  title: Intel(R) DL Streamer Pipeline Server API
+  description: Intel(R) Deep Learning Streamer Pipeline Server (Intel(R) DL Streamer Pipeline Server) API
+  title: Pipeline Server API
   version: 0.0.3
 servers:
 - url: /
@@ -19,7 +19,7 @@ paths:
                   $ref: '#/components/schemas/Model'
                 type: array
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines:
     get:
       description: Return supported pipelines
@@ -33,7 +33,7 @@ paths:
                   $ref: '#/components/schemas/Pipeline'
                 type: array
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/{name}/{version}:
     get:
       description: Return pipeline description.
@@ -60,7 +60,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Pipeline'
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
     post:
       description: Start new pipeline instance.
       operationId: pipelines_name_version_post
@@ -88,7 +88,7 @@ paths:
       responses:
         200:
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/status:
     get:
       description: Returns all pipeline instance status.
@@ -102,7 +102,7 @@ paths:
                   $ref: '#/components/schemas/PipelineInstanceStatus'
                 type: array
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/{name}/{version}/{instance_id}:
     delete:
       description: Stop pipeline instance.
@@ -133,7 +133,7 @@ paths:
       responses:
         200:
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
     get:
       description: Return pipeline instance summary.
       operationId: pipelines_name_version_instance_id_get
@@ -167,7 +167,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PipelineInstanceSummary'
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/{instance_id}:
     delete:
       description: Stop pipeline instance.
@@ -184,7 +184,7 @@ paths:
       responses:
         200:
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
     get:
       description: Return pipeline instance summary.
       operationId: pipelines_instance_id_get
@@ -203,7 +203,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PipelineInstanceSummary'
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/{name}/{version}/{instance_id}/status:
     get:
       description: Return pipeline instance status.
@@ -237,7 +237,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PipelineInstanceStatus'
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
   /pipelines/status/{instance_id}:
     get:
       description: Return pipeline instance status.
@@ -258,7 +258,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PipelineInstanceStatus'
           description: Success
-      x-openapi-router-controller: vaserving.rest_api.endpoints
+      x-openapi-router-controller: server.rest_api.endpoints
 components:
   schemas:
     AnyValue: {}

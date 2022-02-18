@@ -26,7 +26,7 @@ turbo_filepath_string = "/sys/devices/system/cpu/intel_pstate/no_turbo"
 def test_pipeline_performance(service, test_case, test_filename, generate):
 
     iterations = 1
-    va_serving_avg_fps = []
+    pipeline_server_avg_fps = []
     gst_launch_avg_fps = []
 
     if "fps_percentage_diff_limit" in test_case:
@@ -41,8 +41,8 @@ def test_pipeline_performance(service, test_case, test_filename, generate):
         iterations = test_case["iterations"]
     check_turbo_is_disabled()
     run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps)
-    run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case)
-    check_results(gst_launch_avg_fps, va_serving_avg_fps, fps_percentage_diff_limit)
+    run_ps_pipeline(iterations, pipeline_server_avg_fps, service, test_case)
+    check_results(gst_launch_avg_fps, pipeline_server_avg_fps, fps_percentage_diff_limit)
 
 def run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps):
     for i in range(iterations):
@@ -57,13 +57,13 @@ def run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps):
         time_elapsed = time.time() - start_gst_time
         print("##teamcity[buildStatisticValue key='gst_launch_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 
-def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
+def run_ps_pipeline(iterations, pipeline_server_avg_fps, service, test_case):
 
     url = urllib.parse.urljoin(service.host, test_case['path'])
     start_test = test_case["start"]
     for i in range(iterations):
-        start_vas_time = time.time()
-        print("Initiating vas_launch iteration #{iter}".format(iter=i), flush=True)
+        start_ps_time = time.time()
+        print("Initiating ps_launch iteration #{iter}".format(iter=i), flush=True)
         response = requests.post(url,
                                 json=start_test["body"],
                                 timeout=TIMEOUT)
@@ -74,20 +74,20 @@ def run_vas_pipeline(iterations, va_serving_avg_fps, service, test_case):
         instance_url = urllib.parse.urljoin(service.host, "pipelines/status/{}".format(instance))
         pipeline_processing.wait_for_pipeline_status(instance_url, "COMPLETED", states, TIMEOUT)
         #   Get avg_fps
-        va_serving_avg_fps.append(pipeline_processing.get_pipeline_avg_fps(instance_url))
-        time_elapsed = time.time() - start_vas_time
-        print("##teamcity[buildStatisticValue key='va_serving_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
+        pipeline_server_avg_fps.append(pipeline_processing.get_pipeline_avg_fps(instance_url))
+        time_elapsed = time.time() - start_ps_time
+        print("##teamcity[buildStatisticValue key='pipeline_server_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 
-def check_results(gst_launch_avg_fps, va_serving_avg_fps, fps_percentage_diff_limit):
+def check_results(gst_launch_avg_fps, pipeline_server_avg_fps, fps_percentage_diff_limit):
     gst_launch_overall_avg_fps = statistics.mean(gst_launch_avg_fps)
-    va_serving_overall_avg_fps = statistics.mean(va_serving_avg_fps)
-    fps_percentage_diff = abs(va_serving_overall_avg_fps - gst_launch_overall_avg_fps) / gst_launch_overall_avg_fps * 100
-    print("##teamcity[buildStatisticValue key='va_serving_avg_fps' value='{}']".format(round(va_serving_overall_avg_fps,3)))
+    pipeline_server_overall_avg_fps = statistics.mean(pipeline_server_avg_fps)
+    fps_percentage_diff = abs(pipeline_server_overall_avg_fps - gst_launch_overall_avg_fps) / gst_launch_overall_avg_fps * 100
+    print("##teamcity[buildStatisticValue key='pipeline_server_avg_fps' value='{}']".format(round(pipeline_server_overall_avg_fps,3)))
     print("##teamcity[buildStatisticValue key='gst_launch_avg_fps' value='{}']".format(round(gst_launch_overall_avg_fps,3)))
     print("##teamcity[buildStatisticValue key='fps_percentage_diff' value='{}']".format(round(fps_percentage_diff,3)))
     try:
         with open(results_output_file, 'a+') as output_file:
-            artifact_result = "va_serving_avg_fps={}\n".format(round(va_serving_overall_avg_fps,3)) + \
+            artifact_result = "pipeline_server_avg_fps={}\n".format(round(pipeline_server_overall_avg_fps,3)) + \
                               "gst_launch_avg_fps={}\n".format(round(gst_launch_overall_avg_fps,3)) + \
                               "fps_percentage_diff={}\n".format(round(fps_percentage_diff,3))
             output_file.write(artifact_result)

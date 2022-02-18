@@ -17,12 +17,12 @@ gi.require_version('GstApp', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import GLib, Gst, GstApp  # pylint: disable=unused-import
 from gstgva.util import GVAJSONMeta
-from vaserving.app_destination import AppDestination
-from vaserving.app_source import AppSource
-from vaserving.common.utils import logging
-from vaserving.pipeline import Pipeline
-from vaserving.rtsp.gstreamer_rtsp_destination import GStreamerRtspDestination # pylint: disable=unused-import
-from vaserving.rtsp.gstreamer_rtsp_server import GStreamerRtspServer
+from server.app_destination import AppDestination
+from server.app_source import AppSource
+from server.common.utils import logging
+from server.pipeline import Pipeline
+from server.rtsp.gstreamer_rtsp_destination import GStreamerRtspDestination # pylint: disable=unused-import
+from server.rtsp.gstreamer_rtsp_server import GStreamerRtspServer
 # pylint: enable=wrong-import-position
 
 class GStreamerPipeline(Pipeline):
@@ -113,7 +113,7 @@ class GStreamerPipeline(Pipeline):
         if (GStreamerPipeline._rtsp_server):
             GStreamerPipeline._rtsp_server.stop()
             # Explicit delete frees GstreamerRtspServer resources.
-            # Avoids hang or segmentation fault on vaserving.stop()
+            # Avoids hang or segmentation fault on pipeline_server.stop()
             del GStreamerPipeline._rtsp_server
             GStreamerPipeline._rtsp_server = None
         if (GStreamerPipeline._mainloop):

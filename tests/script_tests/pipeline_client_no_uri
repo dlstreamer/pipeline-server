@@ -19,7 +19,7 @@ cat > /tmp/sample_request.json << EOF
 
 EOF
 
-OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/person_vehicle_bike --request-file /tmp/sample_request.json --show-request)
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh run object_detection/person_vehicle_bike --request-file /tmp/sample_request.json --show-request)
 RETURN_CODE=$?
 
 if [[ $RETURN_CODE != 0 ]]; then

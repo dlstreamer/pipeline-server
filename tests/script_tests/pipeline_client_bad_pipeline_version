@@ -7,7 +7,7 @@ $SOURCE_DIR/docker/run.sh --non-interactive &
 sleep 5
 
 # Run client with bad option
-OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/123 https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true)
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh run object_detection/123 https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true)
 RETURN_CODE=$?
 
 # Stop server

@@ -7,7 +7,7 @@ $SOURCE_DIR/docker/run.sh --non-interactive &
 sleep 5
 
 # Run client with threshold as string
-OUTPUT=$($SOURCE_DIR/vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true --parameter inference-interval 2 --parameter threshold invalid )
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true --parameter inference-interval 2 --parameter threshold invalid )
 RETURN_CODE=$?
 
 # Stop server

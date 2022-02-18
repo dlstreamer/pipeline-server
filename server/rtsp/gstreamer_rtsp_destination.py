@@ -8,8 +8,8 @@ import gi
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst
-from vaserving.common.utils import logging
-from vaserving.app_destination import AppDestination
+from server.common.utils import logging
+from server.app_destination import AppDestination
 # pylint: enable=wrong-import-position
 
 class GStreamerRtspDestination(AppDestination):

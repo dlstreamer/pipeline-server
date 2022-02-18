@@ -11,7 +11,7 @@ from collections import namedtuple
 import pytest
 import urllib
 
-def test_initialization(VAServing, test_case, test_filename, generate):
+def test_initialization(PipelineServer, test_case, test_filename, generate):
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
     test_model_dir = os.path.join(os.path.dirname(test_filename),
                                   "{0}_models".format(test_prefix))
@@ -33,11 +33,11 @@ def test_initialization(VAServing, test_case, test_filename, generate):
             exception_class = __builtins__[test_case["exception"]["type"]]
 
         with pytest.raises(exception_class) as exception:
-            VAServing.start(test_case["options"])
+            PipelineServer.start(test_case["options"])
 
         if("value" in test_case["exception"]):
             assert(str(exception.value) == test_case["exception"]["value"])
     else:
-        VAServing.start(test_case["options"])
+        PipelineServer.start(test_case["options"])
 
-    VAServing.stop()
+    PipelineServer.stop()

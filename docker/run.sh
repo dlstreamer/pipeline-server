@@ -33,7 +33,7 @@ ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n
 
 show_options() {
     echo ""
-    echo "Running Intel(R) DL Streamer Pipeline Server Image: '${IMAGE}'"
+    echo "Running Pipeline Server Image: '${IMAGE}'"
     echo "   Models: '${MODELS}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"

@@ -8,7 +8,7 @@ import os
 import math
 import json
 from threading import Thread
-from vaserving.common.utils import logging
+from server.common.utils import logging
 
 def parse_gstreamer_results(output_file):
     results = []

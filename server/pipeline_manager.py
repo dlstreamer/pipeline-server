@@ -12,9 +12,9 @@ from collections import deque
 from collections import defaultdict
 import uuid
 import jsonschema
-from vaserving.common.utils import logging
-from vaserving.pipeline import Pipeline
-from vaserving import schema
+from server.common.utils import logging
+from server.pipeline import Pipeline
+from server import schema
 
 class PipelineManager:
 
@@ -39,14 +39,14 @@ class PipelineManager:
     def _import_pipeline_types(self):
         pipeline_types = {}
         try:
-            from vaserving.gstreamer_pipeline import GStreamerPipeline  # pylint: disable=import-error
+            from server.gstreamer_pipeline import GStreamerPipeline  # pylint: disable=import-error
             pipeline_types['GStreamer'] = GStreamerPipeline
         except Exception as error:
             pipeline_types['GStreamer'] = None
             self.logger.info(
                 "GStreamer Pipelines Not Enabled: %s\n", error)
         try:
-            from vaserving.ffmpeg_pipeline import FFmpegPipeline  # pylint: disable=import-error
+            from server.ffmpeg_pipeline import FFmpegPipeline  # pylint: disable=import-error
             pipeline_types['FFmpeg'] = FFmpegPipeline
         except Exception as error:
             pipeline_types['FFmpeg'] = None

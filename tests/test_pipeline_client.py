@@ -8,42 +8,42 @@ import pytest
 import re
 import time
 import sys
-sys.path.append('/home/pipeline-server/vaclient') # Temp fix before PYTHONPATH updated
-import vaclient
+sys.path.append('/home/pipeline-server/client') # Temp fix before PYTHONPATH updated
+import pipeline_client
 
 SERVER_ADDRESS = "http://localhost:8080"
 
-def test_vaclient(service, test_case, test_filename, generate, capsys):
+def test_pipeline_client(service, test_case, test_filename, generate, capsys):
     show_request = test_case.get('show_request', False)
     if test_case['test_function'] == 'run':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
-        request = vaclient.REQUEST_TEMPLATE
+        request = pipeline_client.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
-        instance_id = vaclient.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
+        instance_id = pipeline_client.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
         assert instance_id is not None
         time.sleep(test_case['sleep_time_sec'])
-        status = vaclient.get_pipeline_status(server_address, instance_id)
+        status = pipeline_client.get_pipeline_status(server_address, instance_id)
         assert status['state'] == 'RUNNING'
-        vaclient.stop_pipeline(server_address, instance_id)
-        status = vaclient.get_pipeline_status(server_address, instance_id)
+        pipeline_client.stop_pipeline(server_address, instance_id)
+        status = pipeline_client.get_pipeline_status(server_address, instance_id)
         assert status['state'] == 'ABORTED'
     elif test_case['test_function'] == 'run_with_bad_detection_device':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
-        request = vaclient.REQUEST_TEMPLATE
+        request = pipeline_client.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
         request.update({'parameters' : {'detection-device' : test_case['detection_device']}})
-        instance_id = vaclient.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
+        instance_id = pipeline_client.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
         with pytest.raises(ValueError):
-            vaclient.wait_for_pipeline_completion(server_address, instance_id)
+            pipeline_client.wait_for_pipeline_completion(server_address, instance_id)
             captured = capsys.readouterr()
             assert test_case['expected_output'] in captured.out
         del request['parameters']
     elif test_case['test_function'] == 'start_pipeline':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
-        request = vaclient.REQUEST_TEMPLATE
+        request = pipeline_client.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
         try:
-            instance_id = vaclient.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
+            instance_id = pipeline_client.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
             assert instance_id == test_case['expected_id']
             captured = capsys.readouterr()
             assert test_case['expected_output'] in captured.out
@@ -51,38 +51,38 @@ def test_vaclient(service, test_case, test_filename, generate, capsys):
             assert test_case['expected_output'] in str(exception)
     elif test_case['test_function'] == 'stop_pipeline':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
-        vaclient.stop_pipeline(server_address, test_case['instance_id'])
+        pipeline_client.stop_pipeline(server_address, test_case['instance_id'])
         captured = capsys.readouterr()
         assert test_case['expected_output'] in captured.out
     elif test_case['test_function'] == 'list_pipelines':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
         if show_request:
             with pytest.raises(SystemExit):
-                vaclient._list(server_address, 'pipelines', True)
+                pipeline_client._list(server_address, 'pipelines', True)
             captured = capsys.readouterr()
             assert test_case['expected_output'] in captured.out
         else:
-            vaclient._list(server_address, 'pipelines')
+            pipeline_client._list(server_address, 'pipelines')
             captured = capsys.readouterr()
             assert re.fullmatch(test_case['regex'], captured.out) is not None
     elif test_case['test_function'] == 'list_models':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
         if test_case['show_request']:
             with pytest.raises(SystemExit):
-                vaclient._list(server_address, 'models', True)
+                pipeline_client._list(server_address, 'models', True)
             captured = capsys.readouterr()
             assert test_case['expected_output'] in captured.out
         else:
-            vaclient._list(server_address, 'models')
+            pipeline_client._list(server_address, 'models')
             captured = capsys.readouterr()
             assert re.fullmatch(test_case['regex'], captured.out) is not None
     elif test_case['test_function'] == 'tags':
         server_address = test_case.get('server_address', SERVER_ADDRESS)
-        request = vaclient.REQUEST_TEMPLATE
+        request = pipeline_client.REQUEST_TEMPLATE
         request['source']['uri'] = test_case['uri']
         request['tags'] = test_case['tags']
         with pytest.raises(SystemExit):
-            vaclient.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
+            pipeline_client.start_pipeline(server_address, test_case['pipeline'], request, show_request=show_request)
         captured = capsys.readouterr()
         print("")
         print(test_case['expected_output'])

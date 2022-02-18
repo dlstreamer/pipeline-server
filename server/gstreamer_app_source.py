@@ -16,9 +16,9 @@ gi.require_version('GstApp', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst
 from gstgva.util import GVAJSONMeta
-from vaserving.app_source import AppSource
-from vaserving.gstreamer_app_destination import GvaSample
-from vaserving.gstreamer_pipeline import GStreamerPipeline
+from server.app_source import AppSource
+from server.gstreamer_app_destination import GvaSample
+from server.gstreamer_pipeline import GStreamerPipeline
 # pylint: enable=wrong-import-position
 
 fields = ['data',

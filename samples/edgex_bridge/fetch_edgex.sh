@@ -2,7 +2,7 @@
 # This script builds a docker-compose file for EdgeX
 # and fetches a configuration template for device-mqtt-go.
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-VAS_SOURCE=$SCRIPT_DIR/../..
+PS_SOURCE=$SCRIPT_DIR/../..
 EDGEX_PROJECT=$SCRIPT_DIR/edgex
 mkdir -p $EDGEX_PROJECT
 cd $EDGEX_PROJECT
@@ -48,4 +48,4 @@ if ! cp "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}/docker-compose-hanoi-no-secty-mqtt.
     exit $?
 fi
 echo "Successfully fetched repo and produced compose file."
-cd $VAS_SOURCE
+cd $PS_SOURCE

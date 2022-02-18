@@ -6,7 +6,7 @@
 
 import traceback
 from extensions.gva_event_meta import gva_event_meta
-from vaserving.common.utils import logging
+from server.common.utils import logging
 
 def print_message(message):
     print("", flush=True)

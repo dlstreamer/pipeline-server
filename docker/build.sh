@@ -328,7 +328,7 @@ show_base_options() {
 
 show_image_options() {
     echo ""
-    echo "Building Intel(R) DL Streamer Pipeline Server Image: '${TAG}'"
+    echo "Building Pipeline Server Image: '${TAG}'"
     echo ""
     echo "   Base: '${BASE_IMAGE}'"
     echo "   Build Context: '${SOURCE_DIR}'"

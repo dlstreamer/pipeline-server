@@ -11,7 +11,7 @@ from collections import namedtuple
 import pytest
 import urllib
 import time
-from vaserving.pipeline import Pipeline
+from server.pipeline import Pipeline
 from threading import Thread
 import copy
 import tempfile
@@ -37,7 +37,7 @@ def start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
     return False
 
 @pytest.mark.stability
-def test_pipeline_stability(VAServing, test_case, test_filename, generate, numerical_tolerance, stability_duration):
+def test_pipeline_stability(PipelineServer, test_case, test_filename, generate, numerical_tolerance, stability_duration):
     duration_met = False
     _test_case = copy.deepcopy(test_case)
     test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
@@ -59,7 +59,7 @@ def test_pipeline_stability(VAServing, test_case, test_filename, generate, numer
         stability_duration = 600
     if "relaunch_on_complete" in _test_case:
         relaunch_on_complete = _test_case["relaunch_on_complete"]
-    VAServing.start(_test_case["options"])
+    PipelineServer.start(_test_case["options"])
     start_time = time.time()
     if relaunch_on_complete:
         num_loops = 1
@@ -67,7 +67,7 @@ def test_pipeline_stability(VAServing, test_case, test_filename, generate, numer
             while not duration_met:
                 _test_case["request"]["destination"]["path"] = temp_dir + "/stability" + \
                     str(num_loops) + ".json"
-                pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
+                pipeline = PipelineServer.pipeline(_test_case["pipeline"]["name"],
                                               _test_case["pipeline"]["version"])
                 results_processing.clear_results(_test_case)
                 results = []
@@ -89,8 +89,8 @@ def test_pipeline_stability(VAServing, test_case, test_filename, generate, numer
                                                           "Inference Result Mismatch"
                     num_loops = num_loops + 1
     else:
-        pipeline = VAServing.pipeline(_test_case["pipeline"]["name"],
+        pipeline = PipelineServer.pipeline(_test_case["pipeline"]["name"],
                                       _test_case["pipeline"]["version"])
         duration_met = start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
-    VAServing.stop()
+    PipelineServer.stop()
     assert duration_met

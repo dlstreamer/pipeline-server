@@ -9,7 +9,7 @@ from collections import defaultdict
 import os
 import fnmatch
 import string
-from vaserving.common.utils import logging
+from server.common.utils import logging
 
 
 class ModelsDict(MutableMapping):

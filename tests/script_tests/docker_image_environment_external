@@ -1,6 +1,6 @@
 #!/bin/bash
 EXPECTED=""
-IMAGE_TO_INSPECT=intel/video-analytics-serving:latest
+IMAGE_TO_INSPECT=intel/dlstreamer-pipeline-server:latest
 
 docker pull $IMAGE_TO_INSPECT
 OUTPUT=$(set -o pipefail; docker inspect $IMAGE_TO_INSPECT | grep -i proxy)

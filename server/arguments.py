@@ -56,7 +56,7 @@ def parse_options(args=None):
         result = parser.parse_args(args)
         parse_network_preference(result)
     except Exception:
-        print("Unrecognized argument passed to VAServing")
+        print("Unrecognized argument passed to PipelineServer")
         parser.print_help()
         raise
     return result

@@ -30,7 +30,7 @@
 import sys
 import json
 import argparse
-import vaclient
+import pipeline_client
 
 
 def get_typed_value(value):
@@ -64,7 +64,7 @@ def add_request_arguments(parser):
     parser.add_argument('--number-of-streams', type=int, default=1, dest="streams", help='Set number of streams')
     parser.add_argument("--status-only", action='store_true', help='Only show status')
 
-def parse_args(program_name="Intel(R) DL Streamer Pipeline Server Client"):
+def parse_args(program_name="Pipeline Client"):
     """Process command line options"""
     #pylint: disable=too-many-statements
     parser = argparse.ArgumentParser(
@@ -75,40 +75,40 @@ def parse_args(program_name="Intel(R) DL Streamer Pipeline Server Client"):
 
     parser_run = subparsers.add_parser('run', help='Start specified pipeline with specified source. \
         Meta-data will be displayed as pipeline runs. Once pipeline ends the average fps is displayed')
-    parser_run.set_defaults(command=vaclient.run)
+    parser_run.set_defaults(command=pipeline_client.run)
     add_request_arguments(parser_run)
     add_common_arguments(parser_run)
 
     parser_start = subparsers.add_parser('start', help='start specified pipeline')
-    parser_start.set_defaults(command=vaclient.start)
+    parser_start.set_defaults(command=pipeline_client.start)
     add_request_arguments(parser_start)
     add_common_arguments(parser_start)
 
     parser_status = subparsers.add_parser('status', help='Print status of specified pipeline')
-    parser_status.set_defaults(command=vaclient.status)
+    parser_status.set_defaults(command=pipeline_client.status)
     add_instance_arguments(parser_status)
     add_common_arguments(parser_status)
 
     parser_wait = subparsers.add_parser('wait', help='Connect to a running pipeline and wait until completion')
-    parser_wait.set_defaults(command=vaclient.wait)
+    parser_wait.set_defaults(command=pipeline_client.wait)
     add_instance_arguments(parser_wait)
     add_common_arguments(parser_wait)
 
     parser_stop = subparsers.add_parser('stop', help='Stop a specified pipeline')
-    parser_stop.set_defaults(command=vaclient.stop)
+    parser_stop.set_defaults(command=pipeline_client.stop)
     add_instance_arguments(parser_stop)
     add_common_arguments(parser_stop)
 
     parser_list_pipelines = subparsers.add_parser('list-pipelines', help='List loaded pipelines')
-    parser_list_pipelines.set_defaults(command=vaclient.list_pipelines)
+    parser_list_pipelines.set_defaults(command=pipeline_client.list_pipelines)
     add_common_arguments(parser_list_pipelines)
 
     parser_list_models = subparsers.add_parser('list-models', help='List loaded models')
-    parser_list_models.set_defaults(command=vaclient.list_models)
+    parser_list_models.set_defaults(command=pipeline_client.list_models)
     add_common_arguments(parser_list_models)
 
     parser_list_instances = subparsers.add_parser('list-instances', help='List active pipeline instances')
-    parser_list_instances.set_defaults(command=vaclient.list_instances)
+    parser_list_instances.set_defaults(command=pipeline_client.list_instances)
     add_common_arguments(parser_list_instances)
 
     parser.add_argument("--quiet", action="store_false",

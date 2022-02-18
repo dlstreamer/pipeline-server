@@ -7,20 +7,20 @@ import os
 import time
 from collections import defaultdict
 from collections import namedtuple
-from vaserving.arguments import parse_options
-from vaserving.pipeline_manager import PipelineManager
-from vaserving.model_manager import ModelManager
-from vaserving.common.utils import logging
+from server.arguments import parse_options
+from server.pipeline_manager import PipelineManager
+from server.model_manager import ModelManager
+from server.common.utils import logging
 
-# Allow non-PascalCase class name for __VAServing
+# Allow non-PascalCase class name for __PipelineServer
 #pylint: disable=invalid-name
 
-class __VAServing:
+class __PipelineServer:
 
     class ModelProxy:
-        def __init__(self, vaserving, model, logger):
+        def __init__(self, pipeline_server, model, logger):
             self._model = model
-            self._vaserving = vaserving
+            self._pipeline_server = pipeline_server
             self._logger = logger
 
         def name(self):
@@ -34,9 +34,9 @@ class __VAServing:
 
     class PipelineProxy:
 
-        def __init__(self, vaserving, pipeline, logger, instance=None):
+        def __init__(self, pipeline_server, pipeline, logger, instance=None):
             self._pipeline = pipeline
-            self._vaserving = vaserving
+            self._pipeline_server = pipeline_server
             self._instance = instance
             self._logger = logger
             self._status_named_tuple = None
@@ -48,7 +48,7 @@ class __VAServing:
             return self._pipeline["version"]
 
         def stop(self):
-            return self._vaserving.pipeline_manager.stop_instance(self._instance)
+            return self._pipeline_server.pipeline_manager.stop_instance(self._instance)
 
         def wait(self, timeout=None):
             status = self.status()
@@ -66,7 +66,7 @@ class __VAServing:
         def status(self):
 
             if (self._instance):
-                result = self._vaserving.pipeline_manager.get_instance_status(self._instance)
+                result = self._pipeline_server.pipeline_manager.get_instance_status(self._instance)
 
                 if 'avg_pipeline_latency' not in result:
                     result['avg_pipeline_latency'] = None
@@ -98,7 +98,7 @@ class __VAServing:
             self._set_or_update(request, "destination", destination)
             self._set_or_update(request, "parameters", parameters)
             self._set_or_update(request, "tags", tags)
-            self._instance, err = self._vaserving.pipeline_instance(
+            self._instance, err = self._pipeline_server.pipeline_instance(
                 self.name(), self.version(), request)
 
             if (not self._instance):
@@ -106,7 +106,7 @@ class __VAServing:
             return self._instance
 
     def __init__(self):
-        self._logger = logging.get_logger("VAServing", is_static=True)
+        self._logger = logging.get_logger("PipelineServer", is_static=True)
         self.options = None
         self.model_manager = None
         self.pipeline_manager = None
@@ -165,7 +165,7 @@ class __VAServing:
 
         if (self.options) and (self.options.framework == "gstreamer") and (not self._stopped):
             try:
-                from vaserving.gstreamer_pipeline import GStreamerPipeline
+                from server.gstreamer_pipeline import GStreamerPipeline
                 GStreamerPipeline.mainloop_quit()
             except Exception as exception:
                 self._logger.warning("Failed in quitting GStreamer main loop: %s",
@@ -204,7 +204,7 @@ class __VAServing:
         if (not self._stopped):
             return self.pipeline_manager.create_instance(name, version, request, self.options)
 
-        return None, "VA Serving Stopped"
+        return None, "Pipeline Server Stopped"
 
 
-VAServing = __VAServing()
+PipelineServer = __PipelineServer()
