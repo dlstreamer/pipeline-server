@@ -19,6 +19,10 @@ def set_default_log_level(level):
     LOG_LEVEL = level
 
 
+def is_debug_level(logger):
+    return logger.isEnabledFor(logging.DEBUG)
+
+
 def _set_log_level(logger, level):
     try:
         logger.setLevel(level)

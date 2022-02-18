@@ -32,6 +32,12 @@ class GStreamerPipeline(Pipeline):
                                    "GstGvaInference",
                                    "GvaAudioDetect",
                                    "GstGvaActionRecognitionBin"]
+    GVA_ELEMENT_ENUM_TYPES = ["GstGVAMetaPublishFileFormat",
+                              "InferenceRegionType",
+                              "GstGVAMetaconvertFormatType",
+                              "GstGVAMetaPublishMethod",
+                              "GstGVAActionRecognitionBinBackend"]
+
     SOURCE_ALIAS = "auto_source"
     GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
 
@@ -528,6 +534,8 @@ class GStreamerPipeline(Pipeline):
 
                 self._set_application_source()
                 self._set_application_destination()
+                self._log_launch_string()
+
                 self.pipeline.set_state(Gst.State.PLAYING)
                 self.start_time = time.time()
             except Exception as error:
@@ -535,6 +543,48 @@ class GStreamerPipeline(Pipeline):
                     id=self.identifier, err=error))
                 # Context is already within _create_delete_lock
                 self._delete_pipeline(Pipeline.State.ERROR)
+
+    def _log_launch_string(self):
+        if not self._gst_launch_string or not logging.is_debug_level(self._logger):
+            return
+        try:
+            elements = [value.strip()
+                        for value in self._gst_launch_string.split("!")]
+            for idx, element_str in enumerate(elements):
+                element_name = element_str.split(" ")[0]
+                properties_str = self._get_element_properties_string(
+                    element_name)
+                if properties_str:
+                    elements[idx] = "{} {}".format(
+                        element_name, properties_str)
+
+            self._logger.debug(
+                "Gst launch string is only for debugging purposes, may not be accurate")
+            self._logger.debug(
+                "gst-launch-1.0 {}".format(" ! ".join(elements)))
+        except Exception as error:
+            self._logger.debug("Unable to log Gst launch string {id}: {err}".format(
+                id=self.identifier, err=error))
+
+    def _get_element_properties_string(self, element_name, add_defaults=False):
+        properties_str = ""
+        for element in self.pipeline.iterate_elements():
+            if element_name in element.__gtype__.name.lower():
+                for paramspec in element.list_properties():
+                    # Skipping adding of caps and params that aren't writable
+                    if paramspec.name == 'caps' or paramspec.flags != 227:
+                        continue
+                    if add_defaults or paramspec.default_value != element.get_property(paramspec.name):
+                        property_value = element.get_property(
+                            paramspec.name)
+                        if element.find_property(paramspec.name).value_type.name \
+                                in self.GVA_ELEMENT_ENUM_TYPES:
+                            property_value = property_value.value_nick
+                        properties_str = "{} {}={}".format(
+                            properties_str, paramspec.name, property_value)
+                break
+
+        return properties_str
 
     def _set_application_destination(self):
         self.appsink_element = None
