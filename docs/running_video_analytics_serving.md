@@ -275,6 +275,15 @@ Configure your host by downloading the [HDDL driver package](https://storage.ope
 
 > The HDDL plug-in in the container communicates with the daemon on the host, so the daemon must be started before running the container.
 
+## Mixed Device
+Based on enabled hardware `MULTI`, `HETERO` and `AUTO` plugins are also supported.
+
+* `MULTI`: The Multi-Device plugin automatically assigns inference requests to available computational devices to execute the requests in parallel. Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_MULTI.html). Example Inference Device `MULTI:CPU,GPU`
+
+* `HETERO`: The heterogeneous plugin enables computing the inference of one network on several devices.Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_HETERO.html). Example Inference Device `HETERO:CPU,GPU`
+
+* `AUTO`: Use `AUTO` as the device name to delegate selection of an actual accelerator to OpenVINO<sup>&#8482;</sup>. Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_AUTO.html). Example Inference Device `AUTO`
+
 # Developer Mode
 
 The run script includes a `--dev` flag which starts the

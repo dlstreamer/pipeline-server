@@ -1,0 +1,35 @@
+{
+    "path": "pipelines/object_classification/vehicle_attributes",
+    "start" : {
+        "body": {
+            "source": {
+                "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+                "type": "uri"
+            },
+            "destination": {
+                "type": "file",
+                "path": "/tmp/rest_object_classification",
+                "format": "json-lines"
+            },
+            "parameters": {
+                "detection-properties": {
+                    "device": "MULTI:GPU,CPU",
+                    "model-instance-id": "detection_rest_object_classification_cpu_gpu_gstreamer"
+                },
+                "classification-properties": {
+                    "device": "HETERO:CPU,GPU",
+                    "model-instance-id": "classification_rest_object_classification_cpu_gpu_gstreamer"
+                }
+            }
+        }
+    },
+    "check_running" : {
+        "timeout": 60.0
+    },
+    "abort" : {
+        "delay" : 0.5
+    },
+    "check_stopped" : {
+        "timeout": 0.5
+    }
+}

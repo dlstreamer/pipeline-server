@@ -846,7 +846,8 @@ dictionary and standard Python dictionary indexing with the following
 hierarchy: `models[model-name][version][precision][file-type]`.
 
 The default precision for a given model and inference device
-(`CPU`:`FP32`,`GPU`:`FP16`,`HDDL`:`FP16`) can also be referenced
+(`CPU`:`FP32`,`HDDL`:`FP16`,`GPU`:`FP16`,`VPU`:`FP16`,`MYRIAD`:`FP16`,
+`MULTI`:`FP16`,`HETERO`:`FP16`,`AUTO`:`FP16`) can also be referenced
 without specifying the precision:
 `models[model-name][version][file-type]`.
 

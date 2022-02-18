@@ -55,7 +55,11 @@ class ModelManager:
                                        'GPU': ["FP16"],
                                        'VPU': ["FP16"],
                                        'MYRIAD': ["FP16"],
-                                       'KMB': ["U8"]}
+                                       'KMB': ["U8"],
+                                       'MULTI': ["FP16"],
+                                       'HETERO': ["FP16"],
+                                       'AUTO': ["FP16"],
+                                       'DEFAULT': ["FP16"]}
 
         success = self.load_models(self.model_dir, self.network_preference)
         if (not ignore_init_errors) and (not success):
@@ -106,6 +110,14 @@ class ModelManager:
 
     def get_default_network_for_device(self, device, model):
         if "VA_DEVICE_DEFAULT" in model:
+            if device not in self.network_preference:
+                mixed_device = [device_type for device_type in [
+                    "HETERO", "AUTO", "MULTI"] if device.startswith(device_type)]
+                if mixed_device and mixed_device[0] in self.network_preference:
+                    device = mixed_device[0]
+                elif 'DEFAULT' in self.network_preference:
+                    device = 'DEFAULT'
+
             for preference in self.network_preference[device]:
                 ret = self.get_network(model, preference)
                 if ret:
