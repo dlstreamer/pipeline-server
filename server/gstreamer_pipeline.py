@@ -16,7 +16,6 @@ gi.require_version('Gst', '1.0')
 gi.require_version('GstApp', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import GLib, Gst, GstApp  # pylint: disable=unused-import
-from gstgva.util import GVAJSONMeta
 from server.app_destination import AppDestination
 from server.app_source import AppSource
 from server.common.utils import logging
@@ -703,21 +702,7 @@ class GStreamerPipeline(Pipeline):
         return Gst.FlowReturn.OK
 
     def on_sample(self, sink):
-        self._logger.debug("Received Sample from Pipeline {id}".format(
-            id=self.identifier))
-        sample = sink.emit("pull-sample")
-        try:
-
-            buf = sample.get_buffer()
-
-            for meta in GVAJSONMeta.iterate(buf):
-                json_object = json.loads(meta.get_message())
-                self._logger.debug(json.dumps(json_object))
-
-        except Exception as error:
-            self._logger.error("Error on Pipeline {id}: {err}".format(
-                id=self.identifier, err=error))
-            return Gst.FlowReturn.ERROR
+        _ = sink.emit("pull-sample")
 
         self.frame_count += 1
         return Gst.FlowReturn.OK
