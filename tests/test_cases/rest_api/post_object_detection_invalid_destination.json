@@ -1,0 +1,22 @@
+{
+    "body": {
+        "source": {
+            "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/head-pose-face-detection-male.mp4?raw=true",
+            "type": "uri"
+        },
+        "destination": {
+            "type": "mqtt",
+            "format": "json-lines"
+        }
+    },
+    "path": "pipelines/object_detection/person_vehicle_bike",
+    "sort_key": "name",
+    "status_code": 400,
+    "result": {
+        "detail": "{'metadata': {'type': 'mqtt', 'format': 'json-lines'}} is not valid under any of the given schemas - 'destination'",
+        "status": 400,
+        "title": "Bad Request",
+        "type": "about:blank"
+    },
+    "verb": "post"
+}

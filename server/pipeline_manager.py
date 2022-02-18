@@ -249,8 +249,13 @@ class PipelineManager:
 
         if not self.is_input_valid(request, pipeline_config, "parameters"):
             return None, "Invalid Parameters"
-        if not self.is_input_valid(request, pipeline_config, "destination"):
-            return None, "Invalid Destination"
+        if "destination" in request:
+            destination_section = request.get("destination")
+            destination_config = pipeline_config.get("destination", {})
+            for destination in destination_section:
+                if not self.is_input_valid(destination_section, destination_config, destination) or \
+                        not isinstance(destination_section[destination], dict):
+                    return None, "Invalid Destination"
         if not self.is_input_valid(request, pipeline_config, "source"):
             return None, "Invalid Source"
         if not self.is_input_valid(request, pipeline_config, "tags"):
