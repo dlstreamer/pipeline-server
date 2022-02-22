@@ -34,7 +34,7 @@ the status of media analytics pipelines.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/run.sh`|**Intel(R) DL Streamer** docker [file](https://github.com/opencv/gst-video-analytics/blob/preview/audio-detect/docker/Dockerfile) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
+| `./docker/run.sh`|**Intel(R) DL Streamer** docker [file](https://github.com/openvinotoolkit/docker_ci/tree/master/dockerfiles/ubuntu20) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
 | `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
 
 
