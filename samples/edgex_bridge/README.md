@@ -1,6 +1,6 @@
 # Intel(R) Deep Learning Streamer Pipeline Server EdgeX Bridge
 
-This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server and [Intel(R) DL Streamer](https://github.com/openvinotoolkit/dlstreamer_gst). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
+This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server and [Intel(R) DL Streamer](https://github.com/dlstreamer/dlstreamer). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
 
 | [Overview](#overview) | [Prerequisites](#prerequisites) | [Tutorial](#tutorial) | [Extend Sample](#extend-the-sample) | [Troubleshooting](#troubleshooting) | [Deploying](#deploying-edgex-aware-microservices) | [Script Arguments](./edgex_bridge.md#script-arguments) |
 
