@@ -13,7 +13,7 @@ PIPELINE=object_detection/record_frames
 MEDIA=https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 BROKER_ADDR=localhost
 BROKER_PORT=1883
-TOPIC=vaserving
+TOPIC=pipeline-server
 SPECIFIER="%08d"
 
 while [[ "$#" -gt 0 ]]; do

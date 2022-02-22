@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt-deployment
+  labels:
+    app: mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mqtt
+  template:
+    metadata:
+      labels:
+        app: mqtt
+    spec:
+      containers:
+        - name: mqtt
+          image: eclipse-mosquitto:1.6
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 1883
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-svc
+  labels:
+    app: mqtt
+spec:
+  type: NodePort
+  ports:
+    - port: 1883
+      targetPort: 1883
+      nodePort: 31020
+      protocol: TCP
+      name: mqtt1
+  selector:
+    app: mqtt

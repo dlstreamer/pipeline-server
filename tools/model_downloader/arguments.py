@@ -15,7 +15,7 @@ def parse_args(args=None):
                         help='input file with model names and properties')
     parser.add_argument('--model-proc-version', default="v1.3",
                         dest="dl_streamer_version",
-                        help='DL Streamer version for model proc files')
+                        help='Intel(R) DL Streamer Framework version for model proc files')
     parser.add_argument("--force", required=False, dest="force", action="store_true",
                         default=False, help='force download and conversion of existing models')
 

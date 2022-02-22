@@ -5,11 +5,11 @@
 
 # Extensions
 
-Extensions are a simple way to add functionality to a DL Streamer pipeline using its [python bindings](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/Python) and [GVAPython element](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvapython). By extending pipelines using `gvapython` a developer can access frames and analyze and/or update metadata such as detected objects or JSON messages. The DL Streamer [gvapython samples](https://github.com/openvinotoolkit/dlstreamer_gst/blob/master/samples/gst_launch/gvapython/face_detection_and_classification/README.md) provide more examples of the full breadth of capabilities.
+Extensions are a simple way to add functionality to a Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server pipeline using its [python bindings](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/Python) and [GVAPython element](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvapython). By extending pipelines using `gvapython` a developer can access frames and analyze and/or update metadata such as detected objects or JSON messages. The Intel(R) DL Streamer [gvapython samples](https://github.com/openvinotoolkit/dlstreamer_gst/blob/master/samples/gst_launch/gvapython/face_detection_and_classification/README.md) provide more examples of the full breadth of capabilities.
 
-An extension is a GVA Python script that is called during pipeline execution. The script is given a frame and any VA Serving parameters defined by the pipeline request.
+An extension is a GVA Python script that is called during pipeline execution. The script is given a frame and any Pipeline Server parameters defined by the pipeline request.
 The extension must be added after the last element that generates data it requires. Below are some examples that cover how extensions can be used to process inference results.
-> Note: Make sure to either build VA Serving container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Video Analytics Serving](running_video_analytics_serving.md#developer-mode)
+> Note: Make sure to either build the Pipeline Server container with `docker/build.sh` after editing extension code and/or pipeline per [Build script reference](build_script_reference.md) or use --dev mode during run as outlined in [Running Intel(R) DL Streamer Pipeline Server](running_video_analytics_serving.md#developer-mode)
 
 ## Example: Processing Inference Results
 
@@ -43,7 +43,7 @@ The extension must be added after the last element that generates data it requir
 <snip>
 "template": ["uridecodebin name=source",
             " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-            " ! gvapython class=ObjectCounter module=/home/video-analytics-serving/extensions/object_counter.py name=object-counter",
+            " ! gvapython class=ObjectCounter module=/home/pipeline-server/extensions/object_counter.py name=object-counter",
             " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
             " ! appsink name=appsink"
         ]
@@ -56,7 +56,7 @@ The pipeline can be run with VA Client as follows:
 vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 
-As process_frame runs once per frame, VA Serving output would resemble
+As process_frame runs once per frame, the Pipeline Server output would resemble
 ```bash
 {"levelname": "INFO", "asctime": "2021-08-31 23:12:44,838", "message": "Setting Pipeline 1 State to RUNNING", "module": "gstreamer_pipeline"}
 Object count 1 exceeded threshold 0
@@ -94,7 +94,7 @@ class ObjectCounter:
     "template": [
         "uridecodebin name=source",
         " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-        " ! gvapython class=ObjectCounter module=/home/video-analytics-serving/extensions/object_counter.py name=object-counter",
+        " ! gvapython class=ObjectCounter module=/home/pipeline-server/extensions/object_counter.py name=object-counter",
         " ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
         " ! appsink name=appsink"
     ],
@@ -172,7 +172,7 @@ class ObjectCounter:
   ```bash
    vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
   ```
-  VA Serving output shows count_threshold is set to 1 per parameter file
+  The Pipeline Server output shows count_threshold is set to 1 per parameter file
   ```bash
   <snip>
   {"levelname": "INFO", "asctime": "2021-09-01 16:28:30,037", "message": "Setting Pipeline 1 State to RUNNING", "module": "gstreamer_pipeline"}
@@ -190,9 +190,9 @@ The following sections build on the previous extension example that detects when
 
 > Note: Events are a preview feature and related aspects like their schema are subject to change.
 
-Events are a type of metadata that can be added and read from a frame using methods from the [`gva_event_meta`](/extensions/gva_event_meta/gva_event_meta.py) module. They illustrate how to add and publish additional information using the underlying DL Streamer python bindings.
+Events are a type of metadata that can be added and read from a frame using methods from the [`gva_event_meta`](/extensions/gva_event_meta/gva_event_meta.py) module. They illustrate how to add and publish additional information using the underlying Intel(R) DL Streamer python bindings.
 
-Events are also used to publish results of the new set of Video Analytics Serving spatial analytics extensions: [object_line_crossing](/extensions/spatial_analytics/object_line_crossing.md)
+Events are also used to publish results of the new set of Pipeline Server spatial analytics extensions: [object_line_crossing](/extensions/spatial_analytics/object_line_crossing.md)
 and [object_zone_count](/extensions/spatial_analytics/object_zone_count.md).
 
 ## Event Schema
@@ -251,7 +251,7 @@ class ObjectCounter:
 
 ### Pipeline
 
-The extension must be added after the last element that generates data it requires. Following the event based extension example, as events are not part of the DL Streamer message schema we also add an extension called [`gva_event_convert`](/extensions/gva_event_meta/gva_event_convert.py) after [`gvametaconvert`](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvametaconvert) and before [`gvametapublish`](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvametapublish). This reusable extension adds an event list to the published result.
+The extension must be added after the last element that generates data it requires. Following the event based extension example, as events are not part of the Intel(R) DL Streamer message schema we also add an extension called [`gva_event_convert`](/extensions/gva_event_meta/gva_event_convert.py) after [`gvametaconvert`](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvametaconvert) and before [`gvametapublish`](https://github.com/openvinotoolkit/dlstreamer_gst/wiki/gvametapublish). This reusable extension adds an event list to the published result.
 
 A pipeline using a sample object counting extension would look like this:
 
@@ -265,9 +265,9 @@ and the pipeline JSON would look like this:
     "template": [
         "uridecodebin name=source",
         " ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-        " ! gvapython class=ObjectCounter module=/home/video-analytics-serving/extensions/object_counter.py name=object-counter",
+        " ! gvapython class=ObjectCounter module=/home/pipeline-server/extensions/object_counter.py name=object-counter",
         " ! gvametaconvert name=metaconvert",
-        " ! gvapython module=/home/video-analytics-serving/extensions/gva_event_meta/gva_event_convert.py",
+        " ! gvapython module=/home/pipeline-server/extensions/gva_event_meta/gva_event_convert.py",
         " ! gvametapublish name=destination",
         " ! appsink name=appsink"
     ],
@@ -359,7 +359,7 @@ Event: event-type: object_count_exceeded, num_objects: 2
 
 # References
 
-- For details on frame inference data classes i.e video frame, regions of interest, tensors see [DL Streamer gstgva Python classes]( https://github.com/openvinotoolkit/dlstreamer_gst/tree/master/python/gstgva).
+- For details on frame inference data classes i.e video frame, regions of interest, tensors see [Intel(R) DL Streamer gstgva Python classes]( https://github.com/openvinotoolkit/dlstreamer_gst/tree/master/python/gstgva).
 
 - For details on more advanced extensions, see the [line crossing](/extensions/spatial_analytics/object_line_crossing.py) and [zone counting](/extensions/spatial_analytics/object_zone_count.py). These include more complex parameters, guidance on how to break down algorithmic implementation to simplify event generation and how to use watermarking for visualizing output.
 

@@ -19,10 +19,10 @@ Third party programs and their corresponding required notices and/or license ter
     Copyright (c) 2017-2020 Ingy döt Net
     Copyright (c) 2006-2016 Kirill Simonov
 
-   rfc3339-validator
+   rfc3339-validator (MIT)
     Copyright (c) 2019, Nicolas Aimetti
 
-   rfc3986-validator
+   rfc3986-validator (MIT)
     Copyright (c) 2019, Nicolas Aimetti
 
    setuptools
@@ -37,18 +37,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 -------------------------------------------------------------
 
 
-2. aclnet
+2.  DL Audio Model (aclnet.bin, aclnet.mapping, aclnet.xml)
+    aclnet
     https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/public/aclnet
-    Copyright (c) 2020 Intel Corporation
+     Copyright (c) 2020 Intel Corporation
 
+   person-detection-retail-0013
    person-vehicle-bike-detection-crossroad-0078
    vehicle-attributes-recognition-barrier-0039
+   vehicle-detection-0202
    action-recognition-0001-decoder
    action-recognition-0001-encoder
    emotions-recognition-retail-0003
    face-detection-retail-0004
     https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel
     Copyright (c) 2021 Intel Corporation
+
+   Kafka-Python
+    Copyright 2016, Dana Powers, David Arthur, and Contributors
    
    Requests
     Copyright 2019 Kenneth Reitz
@@ -60,9 +66,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     Copyright: 2009-2011 Facebook
 
    Zalando Connexion
-    Copyright 2015 Zalando SE   
-   Requests
-    Copyright 2019 Kenneth Reitz
+    Copyright 2015 Zalando SE
 
 Apache 2.0 License
    
@@ -353,7 +357,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------
 
-5. jemalloc (BSD2)
+5. python-psutil 
+    Copyright (c) 2009, Jay Loden, Dave Daeschler, Giampaolo Rodola'
+    All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+ * Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+ * Neither the name of the psutil authors nor the names of its contributors
+   may be used to endorse or promote products derived from this software without
+   specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-------------------------------------------------------------
+
+6. jemalloc (BSD2)
   
 Unless otherwise specified, files in the jemalloc source distribution are
 subject to the following license:
@@ -384,7 +419,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 -------------------------------------------------------------
 
-6. Python Paho MQTT Client
+7. Python Paho MQTT Client (Eclipse Distribution License 1.0 (BSD))
 
 Eclipse Distribution License - v 1.0
 Copyright (c) 2007, Eclipse Foundation, Inc. and its licensors.
@@ -402,7 +437,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 -------------------------------------------------------------
 
-7. python-dateutil
+8. python-dateutil
 
 Copyright 2017- Paul Ganssle <paul@ganssle.io>
 Copyright 2017- dateutil contributors (see AUTHORS file)
@@ -460,7 +495,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 The above BSD License Applies to all code, even that also covered by Apache 2.0.
 
 -------------------------------------------------------------
-8. Media-Driver
+9. Media-Driver
     Copyright (c) 2007-2017 Intel Corporation
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -498,7 +533,7 @@ notice, this list of conditions and the following disclaimer. * Redistributions 
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------
-9. Boost C++ libraries
+10. Boost C++ libraries
 
 Boost Software License - Version 1.0 - August 17th, 2003
 
@@ -525,7 +560,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 -------------------------------------------------------------
-10. Open SSL
+11. Open SSL
 
  LICENSE ISSUES
   ==============
@@ -652,7 +687,7 @@ DEALINGS IN THE SOFTWARE.
  */
 
 -------------------------------------------------------------
-11. libusb
+12. libusb
     Copyright © 2001 Johannes Erdfelt <johannes@erdfelt.com>
     Copyright © 2007-2009 Daniel Drake <dsd@gentoo.org>
     Copyright © 2010-2012 Peter Stuge <peter@stuge.se>
@@ -1219,14 +1254,14 @@ SOFTWARE.
 
 * Docker Base Images
 
-   OpenVINO Runtime Base Image
+   OpenVINO(TM) Runtime Base Image
    https://hub.docker.com/r/openvino/ubuntu18_runtime
    https://hub.docker.com/r/openvino/ubuntu20_runtime
    https://github.com/openvinotoolkit/docker_ci
     Copyright (C) 2019-2021 Intel Corporation
     All rights reserved.
     
-   OpenVINO Data Runtime Base Image
+   OpenVINO(TM) Data Runtime Base Image
    https://hub.docker.com/r/openvino/ubuntu18_data_runtime
    https://hub.docker.com/r/openvino/ubuntu20_data_runtime
    https://github.com/openvinotoolkit/docker_ci

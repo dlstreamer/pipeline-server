@@ -38,8 +38,8 @@ Developer mode is covered in a later section.
 
 ### Image (--image)
 The image name. If not specified the default image name is:
-* `video-analytics-serving-gstreamer`, for the `gstreamer` framework
-* `video-analytics-serving-ffmpeg`, for the `ffmpeg` framework
+* `dlstreamer-pipeline-server-gstreamer`, for the `gstreamer` framework
+* `dlstreamer-pipeline-server-ffmpeg`, for the `ffmpeg` framework
 
 ### Framework (--framework)
 This argument is used as follows:

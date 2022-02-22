@@ -20,6 +20,12 @@
 				"description": "Encoder inference device: [CPU, GPU]",
 				"type": "string",
 				"default": "CPU"
+			},
+			"action-recognition-properties": {
+				"element": {
+					"name": "action_recognition",
+					"format": "element-properties"
+				}
 			}
 		}
 	}

@@ -9,7 +9,8 @@ MODELS="models_list/models.list.yml"
 BASE_IMAGE=
 OMZ_VERSION=
 # Name the image we will build and add to EdgeX Foundry startup
-TAG="edgex-video-analytics-serving:1.3.0"
+TAG_BASE="dlstreamer-pipeline-server-edgex-base:latest"
+TAG="dlstreamer-pipeline-server-edgex:latest"
 
 #Get options passed into script, passing through parameters supported by the parent build script.
 while [[ "$#" -gt 0 ]]; do
@@ -67,20 +68,21 @@ function launch { echo $@
     return $exit_code
 }
 
-# Build VA Serving
-launch "$SAMPLE_DIR/../../docker/build.sh 
-  --framework gstreamer 
-  --create-service true $BASE_IMAGE $OMZ_VERSION 
-  --models $SAMPLE_DIR/$MODELS 
-  --pipelines samples/edgex_bridge/$PIPELINES 
+# Build Intel(R) DL Streamer Pipeline Server
+launch "$SAMPLE_DIR/../../docker/build.sh
+  --framework gstreamer
+  --create-service true $BASE_IMAGE $OMZ_VERSION
+  --models $SAMPLE_DIR/$MODELS
+  --pipelines samples/edgex_bridge/$PIPELINES
+  --tag $TAG_BASE
   $PASS_THROUGH_PARAMS"
 
-# Build EdgeX Bridge Extension and override entrypoint defined by FINAL_STAGE 
-# in VA Serving parent image Dockerfile
-echo $SAMPLE_DIR/..
-launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS 
+# Build EdgeX Bridge Extension and override entrypoint defined by FINAL_STAGE
+# in Intel(R) DL Streamer Pipeline Server parent image Dockerfile
+launch "docker build -f $WORK_DIR/Dockerfile $SAMPLE_BUILD_ARGS
+  --build-arg BASE=$TAG_BASE
   $PASS_THROUGH_PARAMS -t $TAG $SAMPLE_DIR "
-export IMAGE_NAME=$TAG 
+export IMAGE_NAME=$TAG
 
 # Generate configurations needed by EdgeX for integration. This includes all of the
 # necessary runtime characteristics of our edgex-video-analytics microservice, topic to emit events on, and

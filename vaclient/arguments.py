@@ -39,8 +39,32 @@ def get_typed_value(value):
     except ValueError:
         return value
 
+def add_common_arguments(parser):
+    parser.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    parser.add_argument("--server-address", type=str, default="http://localhost:8080", help='Server address')
 
-def parse_args(program_name="Video Analytics Serving Client"):
+def add_instance_arguments(parser):
+    parser.add_argument('pipeline', type=str, help='Pipeline name/version tuple')
+    parser.add_argument('instance', type=str, help='Pipeline instance id')
+
+def add_request_arguments(parser):
+    parser.add_argument('pipeline', type=str, help='Pipeline in the form of name/version tuple')
+    parser.add_argument('uri', type=str, nargs="?", default=None, help='Location of the content to play/analyze')
+    parser.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+        help='Update destination information with key and value pair')
+    parser.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
+    parser.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
+        dest='parameters', help='Update request parameter with key and value pair')
+    parser.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
+        with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
+    parser.add_argument('--request-file', type=str, dest='request_file', \
+        help='Update any/all sections of request with values from file')
+    parser.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
+        dest='tags', help='Update request tags with key and value pair')
+    parser.add_argument('--number-of-streams', type=int, default=1, dest="streams", help='Set number of streams')
+    parser.add_argument("--status-only", action='store_true', help='Only show status')
+
+def parse_args(program_name="Intel(R) DL Streamer Pipeline Server Client"):
     """Process command line options"""
     #pylint: disable=too-many-statements
     parser = argparse.ArgumentParser(
@@ -52,66 +76,40 @@ def parse_args(program_name="Video Analytics Serving Client"):
     parser_run = subparsers.add_parser('run', help='Start specified pipeline with specified source. \
         Meta-data will be displayed as pipeline runs. Once pipeline ends the average fps is displayed')
     parser_run.set_defaults(command=vaclient.run)
-    parser_run.add_argument('pipeline', type=str, help='Vaserving pipeline which to run instance of. \
-        In the form of pipeline_name/pipeline_version')
-    parser_run.add_argument('uri', type=str, nargs="?", default=None, help='Location of the content to play/analyze')
-    parser_run.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        help='Update destination information with key and value pair')
-    parser_run.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
-    parser_run.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
-        dest='parameters', help='Update request parameter with key and value pair')
-    parser_run.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
-        with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
-    parser_run.add_argument('--request-file', type=str, dest='request_file', \
-        help='Update any/all sections of request with values from file')
-    parser_run.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        dest='tags', help='Update request tags with key and value pair')
-    parser_run.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_request_arguments(parser_run)
+    add_common_arguments(parser_run)
 
     parser_start = subparsers.add_parser('start', help='start specified pipeline')
     parser_start.set_defaults(command=vaclient.start)
-    parser_start.add_argument('pipeline', type=str, help='Vaserving pipeline which to run instance of. \
-        In the form of pipeline_name/pipeline_version')
-    parser_start.add_argument('uri', type=str, nargs="?", default=None, help='Location of the content to play/analyze')
-    parser_start.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        help='Update destination information with key and value pair')
-    parser_start.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
-    parser_start.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
-        dest='parameters', help='Update request parameter with key and value pair')
-    parser_start.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
-        with key and value pairs from file. Parameters from this file take precedence over those set by --parameter')
-    parser_start.add_argument('--request-file', type=str, dest='request_file', \
-        help='Update any/all sections of request with values from file')
-    parser_start.add_argument('--tag', action='append', nargs=2, metavar=('key', 'value'), type=str, \
-        dest='tags', help='Update request tags with key and value pair')
-    parser_start.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_request_arguments(parser_start)
+    add_common_arguments(parser_start)
 
     parser_status = subparsers.add_parser('status', help='Print status of specified pipeline')
     parser_status.set_defaults(command=vaclient.status)
-    parser_status.add_argument('pipeline', type=str, \
-        help='Vaserving pipeline_name/pipeline_version which to get status of')
-    parser_status.add_argument('instance', type=int, help='Pipeline instance id which to get status of.')
-    parser_status.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_instance_arguments(parser_status)
+    add_common_arguments(parser_status)
 
     parser_wait = subparsers.add_parser('wait', help='Connect to a running pipeline and wait until completion')
     parser_wait.set_defaults(command=vaclient.wait)
-    parser_wait.add_argument('pipeline', type=str, help='Vaserving pipeline_name/pipeline_version which to wait on')
-    parser_wait.add_argument('instance', type=int, help='Pipeline instance id which to wait on')
-    parser_wait.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_instance_arguments(parser_wait)
+    add_common_arguments(parser_wait)
 
     parser_stop = subparsers.add_parser('stop', help='Stop a specified pipeline')
     parser_stop.set_defaults(command=vaclient.stop)
-    parser_stop.add_argument('pipeline', type=str, help='Vaserving pipeline_name/pipeline_version which to stop')
-    parser_stop.add_argument('instance', type=int, help='Pipeline instance id which to stop')
-    parser_stop.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_instance_arguments(parser_stop)
+    add_common_arguments(parser_stop)
 
-    parser_list_pipelines = subparsers.add_parser('list-pipelines', help='List pipelines that are loaded by vaserving')
+    parser_list_pipelines = subparsers.add_parser('list-pipelines', help='List loaded pipelines')
     parser_list_pipelines.set_defaults(command=vaclient.list_pipelines)
-    parser_list_pipelines.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_common_arguments(parser_list_pipelines)
 
-    parser_list_models = subparsers.add_parser('list-models', help='List models that are loaded by vaserving')
+    parser_list_models = subparsers.add_parser('list-models', help='List loaded models')
     parser_list_models.set_defaults(command=vaclient.list_models)
-    parser_list_models.add_argument("--show-request", action='store_true', help='Print HTTP requests and exit')
+    add_common_arguments(parser_list_models)
+
+    parser_list_instances = subparsers.add_parser('list-instances', help='List active pipeline instances')
+    parser_list_instances.set_defaults(command=vaclient.list_instances)
+    add_common_arguments(parser_list_instances)
 
     parser.add_argument("--quiet", action="store_false",
                         dest="verbose", default=True,

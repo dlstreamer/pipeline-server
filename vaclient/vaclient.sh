@@ -6,8 +6,8 @@
 #
 
 VOLUME_MOUNT="-v /tmp:/tmp "
-IMAGE="video-analytics-serving-gstreamer"
-VASERVING_ROOT=/home/video-analytics-serving
+IMAGE="dlstreamer-pipeline-server-gstreamer"
+VASERVING_ROOT=/home/pipeline-server
 ENTRYPOINT="python3"
 ENTRYPOINT_ARGS="$VASERVING_ROOT/vaclient $@"
 LOCAL_VACLIENT_DIR=$(dirname $(readlink -f "$0"))

@@ -2,9 +2,9 @@
 	"type": "GStreamer",
 	"template": ["{auto_source} ! decodebin",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-				" ! gvapython name=object-zone-count class=ObjectZoneCount module=/home/video-analytics-serving/extensions/spatial_analytics/object_zone_count.py",
+				" ! gvapython name=object-zone-count class=ObjectZoneCount module=/home/pipeline-server/extensions/spatial_analytics/object_zone_count.py",
 				" ! gvametaconvert name=metaconvert",
-				" ! gvapython module=/home/video-analytics-serving/extensions/gva_event_meta/gva_event_convert.py",
+				" ! gvapython module=/home/pipeline-server/extensions/gva_event_meta/gva_event_convert.py",
 				" ! gvametapublish name=destination",
 				" ! appsink name=appsink"
 			],
@@ -12,6 +12,12 @@
 	"parameters": {
 		"type": "object",
 		"properties": {
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
+			},
 			"detection-device": {
 				"element": {
 					"name": "detection",

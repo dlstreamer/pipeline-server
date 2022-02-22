@@ -30,7 +30,7 @@ def parse_args(args=None, program_name="App Source and Destination Sample"):
     parser.add_argument("--uri", action="store",
                         dest="input_uri",
                         required=False,
-                        default="file:///home/video-analytics-serving/samples/classroom.mp4")
+                        default="file:///home/pipeline-server/samples/classroom.mp4")
 
     parser.add_argument("--mode", action="store",
                         dest="source_mode",

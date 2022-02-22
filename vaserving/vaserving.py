@@ -48,9 +48,7 @@ class __VAServing:
             return self._pipeline["version"]
 
         def stop(self):
-            return self._vaserving.pipeline_manager.stop_instance(self.name(),
-                                                                  self.version(),
-                                                                  self._instance)
+            return self._vaserving.pipeline_manager.stop_instance(self._instance)
 
         def wait(self, timeout=None):
             status = self.status()
@@ -68,9 +66,7 @@ class __VAServing:
         def status(self):
 
             if (self._instance):
-                result = self._vaserving.pipeline_manager.get_instance_status(self.name(),
-                                                                              self.version(),
-                                                                              self._instance)
+                result = self._vaserving.pipeline_manager.get_instance_status(self._instance)
 
                 if 'avg_pipeline_latency' not in result:
                     result['avg_pipeline_latency'] = None

@@ -14,8 +14,8 @@ VOLUME_MOUNT=
 MODE=SERVICE
 PORTS=
 DEVICES=
-DEFAULT_GSTREAMER_IMAGE="video-analytics-serving-gstreamer"
-DEFAULT_FFMPEG_IMAGE="video-analytics-serving-ffmpeg"
+DEFAULT_GSTREAMER_IMAGE="dlstreamer-pipeline-server-gstreamer"
+DEFAULT_FFMPEG_IMAGE="dlstreamer-pipeline-server-ffmpeg"
 ENTRYPOINT=
 ENTRYPOINT_ARGS=
 PRIVILEGED=
@@ -33,7 +33,7 @@ ENVIRONMENT=$(env | cut -f1 -d= | grep -E '_(proxy)$' | sed 's/^/-e / ' | tr '\n
 
 show_options() {
     echo ""
-    echo "Running Video Analytics Serving Image: '${IMAGE}'"
+    echo "Running Intel(R) DL Streamer Pipeline Server Image: '${IMAGE}'"
     echo "   Models: '${MODELS}'"
     echo "   Pipelines: '${PIPELINES}'"
     echo "   Framework: '${FRAMEWORK}'"
@@ -297,7 +297,7 @@ if [ -z "$NAME" ]; then
 fi
 
 if [ "${MODE}" == "DEV" ]; then
-    VOLUME_MOUNT+="-v $SOURCE_DIR:/home/video-analytics-serving/ "
+    VOLUME_MOUNT+="-v $SOURCE_DIR:/home/pipeline-server/ "
     VOLUME_MOUNT+="-v /tmp:/tmp "
     VOLUME_MOUNT+="-v /dev:/dev "
     if [ -z "$NETWORK" ]; then
@@ -332,11 +332,11 @@ if [ ! -z "$ENABLE_RTSP" ]; then
 fi
 
 if [ ! -z "$MODELS" ]; then
-    VOLUME_MOUNT+="-v $MODELS:/home/video-analytics-serving/models "
+    VOLUME_MOUNT+="-v $MODELS:/home/pipeline-server/models "
 fi
 
 if [ ! -z "$PIPELINES" ]; then
-    VOLUME_MOUNT+="-v $PIPELINES:/home/video-analytics-serving/pipelines "
+    VOLUME_MOUNT+="-v $PIPELINES:/home/pipeline-server/pipelines "
 fi
 
 if [ ! -z "$VOLUME_MOUNT" ]; then

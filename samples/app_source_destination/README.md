@@ -1,6 +1,6 @@
 # App Source and Destination Sample
 
-VA Serving source and destination definitions support a type `application` which allows programmatic interaction with the vaserving library.
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server source and destination definitions support a type `application` which allows programmatic interaction with the Pipeline Server library.
 
 ## Source
 The source will be given access to a queue instantiated by the application. The source must be aware of the frame type so it can be converted to a GStreamer object
@@ -45,7 +45,13 @@ The destination will signal end of stream (EOS) by sending a null result.
 
 
 ## Pipeline
-Here is a sample pipeline. To be ready for `application` source and destination the template must define source to be `appsrc` and sink to be `appsink`.
+This sample makes use of two pipelines:
+* `/pipelines/video_decode/app_dst`
+* `/pipelines/object_detection/app_src_dst`
+
+Notice these use `{autosource}` in the pipeline template as a dynamic way to establish the `appsrc` element with name `source` to prepare it to receive `application` source. Similarly `appsink` is declared in the pipeline template and named `destination`. With these two elements defined in your pipeline template, you may use this capability in a modular manner appropriate to your use case.
+
+This results in an equivalent pipeline template as follows:
 ```json
 {
     "type": "GStreamer",
@@ -57,7 +63,7 @@ Here is a sample pipeline. To be ready for `application` source and destination 
 ```
 
 ## Sample Code
-The sample shows how to programmatically supply frames to VA Serving GStreamer pipelines and receive resulting frames and meta-data.
+The sample shows how to programmatically supply frames to Intel(R) DL Streamer Pipeline Server GStreamer pipelines and receive resulting frames and meta-data.
 It uses a neat trick of using one pipeline (`video_decode/app_dst`) to decode the source media
 and another (`object_detection/app_src_dst`) to receive the resulting frames and produce inference meta-data.
 The destination queue from `video_decode/app_dst` feeds into source queue for `object_detection/app_src_dst` which outputs into a result queue
@@ -93,4 +99,42 @@ Frame: sequence_number:2 timestamp:1617945883.7937195
         Detection: Region = Rect(x=1150, y=570, w=243, h=364), Label = person
         Detection: Region = Rect(x=448, y=495, w=176, h=206), Label = person
 <snip>
+```
+
+## Using the Sample
+
+For next steps try modifying the input parameters to this sample.
+
+Once you get familiar with how it works use this technique to connect destinations to sources as appropriate for your usage.
+
+### Script Arguments
+
+The `./samples/app_source_destination/app_source_destination.py` script accepts the following command line parameters.
+
+```code
+usage: app_source_destination.py [-h] [--uri SOURCE]
+                       [--mode pull|push]
+                       [--pipeline PIPELINE_NAME]
+                       [--version PIPELINE_VERSION]
+                       [--parameters PIPELINE_PARAMETERS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --source SOURCE       URI describing the source media to use as input.
+
+  --uri                 URI describing the source media to use as input.
+                        (default: "file:///home/pipeline-server/samples/classroom.mp4")
+
+  --mode                Value of either "pull" or "push" to indicate to push to destination or pull from source.
+                        (default: "pull")
+
+  --pipeline            Pipeline name to run.
+                        (default: "object_detection")
+
+  --version             Pipeline version to run.
+                        (default: "app_src_dst")
+
+  --parameters          Key/value pairs to pass to pipeline. JSON declares support in pipeline.
+                        (default: None)
+
 ```

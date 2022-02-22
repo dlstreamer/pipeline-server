@@ -13,36 +13,37 @@ CONFIG_TARGET=$EDGEX_PROJECT/res/device-mqtt-go
 mkdir -p $CONFIG_TARGET
 docker create --rm --name dev_mqtt \
     -v $CONFIG_TARGET:/tmp \
-    nexus3.edgexfoundry.org:10004/docker-device-mqtt-go:master \
+    edgexfoundry/docker-device-mqtt-go:1.3.1 \
     /bin/sh
 docker cp dev_mqtt:/res/configuration.toml $EDGEX_PROJECT/res/device-mqtt-go/configuration.toml.edgex
 docker rm -f dev_mqtt
 
 # Fetch EdgeX launch instructions
-EDGEX_DIR_REPO_DEVELOPER_SCRIPTS="$EDGEX_PROJECT/developer-scripts/"
-EDGEX_VERSION_TAG="v1.3.1"
+EDGEX_DIR_REPO_DEVELOPER_SCRIPTS="$EDGEX_PROJECT/edgex-compose/"
+EDGEX_VERSION_TAG="hanoi"
 if ! rm -Rf "$EDGEX_DIR_REPO_DEVELOPER_SCRIPTS"; then
     echo "ERROR removing existing $EDGEX_DIR_REPO_DEVELOPER_SCRIPTS folder!"
     exit $?
 fi
 
-if ! git clone -c advice.detachedHead=false -b $EDGEX_VERSION_TAG https://github.com/edgexfoundry/developer-scripts.git $EDGEX_DIR_REPO_DEVELOPER_SCRIPTS; then
+if ! git clone -b $EDGEX_VERSION_TAG https://github.com/edgexfoundry/edgex-compose.git $EDGEX_DIR_REPO_DEVELOPER_SCRIPTS; then
     echo "ERROR cloning EdgeX repository!"
     exit $?
 fi
 
+# TODO: Add ds-camera
 cd "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}compose-builder/"
-if ! make compose no-secty mqtt-broker ds-mqtt ; then
+if ! make compose no-secty mqtt-broker ds-mqtt mqtt-bus ; then
     echo "ERROR making EdgeX compose file!"
     exit $?
 fi
 
-if [ ! -f "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}releases/hanoi/compose-files/docker-compose-hanoi-no-secty-mqtt.yml" ] ; then
+if [ ! -f "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}/docker-compose-hanoi-no-secty-mqtt.yml" ] ; then
     echo "Generated compose file not found in expected output location!"
     exit $?
 fi
 
-if ! cp "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}releases/hanoi/compose-files/docker-compose-hanoi-no-secty-mqtt.yml" "$EDGEX_PROJECT/docker-compose.yml" ; then
+if ! cp "${EDGEX_DIR_REPO_DEVELOPER_SCRIPTS}/docker-compose-hanoi-no-secty-mqtt.yml" "$EDGEX_PROJECT/docker-compose.yml" ; then
     echo "ERROR copying generated EdgeX compose file!"
     exit $?
 fi

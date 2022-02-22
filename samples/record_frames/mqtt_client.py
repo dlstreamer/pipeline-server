@@ -47,7 +47,7 @@ def get_arguments():
     parser.add_argument('--topic',
                         action='store',
                         type=str,
-                        default='vaserving',
+                        default='pipeline-server',
                         help='Set MQTT topic')
     parser.add_argument('--broker-address',
                         action='store',
@@ -68,7 +68,7 @@ def get_arguments():
 
 if __name__ == "__main__":
     args = get_arguments()
-    client = mqtt.Client("VA Serving Frame Retrieval", userdata=args)
+    client = mqtt.Client("Pipeline Server Frame Retrieval", userdata=args)
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(args.broker_address, args.broker_port)

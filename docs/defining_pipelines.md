@@ -4,7 +4,7 @@
 Media analytics pipelines are directed graphs of audio/video
 processing, computer vision, and deep learning inference
 operations. The following sections explain how media analytics
-pipelines are defined and loaded by Video Analytics Serving.
+pipelines are defined and loaded by Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server.
 
 # Pipeline Definition Files
 Pipeline definition files are JSON documents containing a single
@@ -21,7 +21,7 @@ top-level object with four sections.
 
 Pipeline definition files are stored in a hierarchical directory
 structure that determines their name and version. On startup, the
-Video Analytics Serving `pipeline_manager` searches the configured
+ Pipeline Server `pipeline_manager` searches the configured
 pipeline directory and loads all pipeline definitions that are found.
 
 The hierarchical directory structure is made up of three levels:
@@ -45,7 +45,7 @@ pipelines/gstreamer
             └── pipeline.json
 ```
 
-> **Note:** When a Video Analytics Serving application needs to support
+> **Note:** When a Pipeline Server application needs to support
 > multiple frameworks their pipelines are typically stored in separate
 > top-level directories and built into separate docker images.
 
@@ -231,7 +231,7 @@ section of a pipeline definition. More details on parameters can be
 found in the [Pipeline Parameters](#pipeline-parameters) section.
 
 Certain element names also trigger special default handling by the
-Video Analytics Serving modules. For example in the `object_detection/person_vehicle_bike`
+Pipeline Server modules. For example in the `object_detection/person_vehicle_bike`
 sample template the special element name `source` results in the
 `urisourcebin`'s `uri` property getting automatically set to the
 source uri of an incoming request.
@@ -256,7 +256,7 @@ python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
 
-#### Model Persistance in OpenVINO GStreamer Elements
+#### Model Persistance in OpenVINO<sup>&#8482;</sup> GStreamer Elements
 
 `model-instance-id` is an optional property that will hold the model in memory instead
 of releasing it when the pipeline completes. This improves load time and reduces memory
@@ -271,7 +271,7 @@ then that ID must not be used to run the model on the GPU. The same caveat appli
 When using a pipeline with elements that target different accelerators, the model-instance-id
 property must be parameterized so that a unique id can be provided for each
 accelerator. As an example if you have different detection and classification models,
-they must have different parameter names so that VA Serving can distinguish between them.
+they must have different parameter names so that the Pipeline Server can distinguish between them.
 Here is a pipeline definition snippet showing `model-instance-id` properties of `gvadetect` and `gvaclassify` elements mapped to parameters `detection-model-instance-id` and `classification-model-instance-id` respectively.
 
 ```
@@ -298,7 +298,7 @@ targets the same hardware device and video format.
 #### More Information
 
 For more information and examples of media analytics pipelines created
-with DL Streamer please see the DL Streamer [tutorial](https://github.com/opencv/gst-video-analytics/wiki/GStreamer%20Video%20Analytics%20Tutorial).
+with Intel(R) DL Streamer please see the Intel(R) DL Streamer [tutorial](https://github.com/dlstreamer/dlstreamer/wiki/DL-Streamer-Tutorial).
 
 ### FFmpeg Templates
 
@@ -494,7 +494,7 @@ The JSON schema for a GStreamer pipeline parameter can include an
     **Example:**
 
     The following snippet defines `detection-properties` which can be used to pass
-    GStreamer element properties for the `detection` element without explicitly defining each one.
+    GStreamer element properties for the `detection` element without explicitly defining each one. This can be enabled by setting `format` as `element-properties` for the parameter.
     > **Note:** The property names are expected to match the GStreamer properties for the corresponding element.
 
     ```json
@@ -503,7 +503,7 @@ The JSON schema for a GStreamer pipeline parameter can include an
             "detection-properties" : {
                 "element": {
                     "name": "detection",
-                    "property": "properties"
+                    "format": "element-properties"
                 }
             }
     }
@@ -752,7 +752,7 @@ to the bus such as
 
 ## OpenVINO<sup>&#8482;</sup> Toolkit's Intermediate Representation
 
-Video Analytics Serving applications and pipelines use deep learning
+The Pipeline Server applications and pipelines use deep learning
 models in the OpenVINO<sup>&#8482;</sup> Toolkit's [Intermediate
 Representation](https://docs.openvinotoolkit.org/latest/_docs_MO_DG_IR_and_opsets.html)
 format (`IR`). A model in the `IR` format is represented by two files:
@@ -780,21 +780,21 @@ Zoo](https://github.com/openvinotoolkit/open_model_zoo).
 ## Model-Proc Files
 
 In addition to the `.xml` and `.bin` files that are part of a model's
-`IR` format, `DL Streamer` elements and `FFmpeg Video Analytics`
+`IR` format, `Intel(R) DL Streamer` elements and `FFmpeg Video Analytics`
 filters make use of an additional JSON file specifying the input and
 output processing instructions for a model. Processing instructions
 include details such as the expected color format and resolution of
 the input as well labels to associate with a models outputs.
-Video Analytics Serving automatically looks for this file in the path
+The Pipeline Server automatically looks for this file in the path
 `models/model-alias/model-version/*.json`. Note that the model manager will
 fail to load if there are multiple ".json" model-proc files in this directory.
 
-### DL Streamer
-For more information on DL Streamer `model-proc` files and samples for
-common models please see the DL Streamer
-[documentation](https://github.com/opencv/gst-video-analytics/wiki/Model-preparation)
+### Intel(R) DL Streamer
+For more information on Intel(R) DL Streamer `model-proc` files and samples for
+common models please see the Intel(R) DL Streamer
+[documentation](https://github.com/dlstreamer/dlstreamer/wiki/Model-preparation)
 and
-[samples](https://github.com/opencv/gst-video-analytics/tree/master/samples/model_proc).
+[samples](https://github.com/dlstreamer/dlstreamer/tree/master/samples/model_proc).
 
 ### FFmpeg Video Analytics
 For `model-proc` files for use with `FFmpeg Video Analytics` please
@@ -805,7 +805,7 @@ see the following [samples](https://github.com/VCDP/FFmpeg-patch/tree/ffmpeg4.2_
 Model files are stored in a hierarchical directory structure that
 determines their name, version and precision.
 
-On startup, the Video Analytics Serving `model_manager` searches
+On startup, the Pipeline Server `model_manager` searches
 the configured model directory and creates a dictionary storing the
 location of each model and their associated collateral
 (i.e. `<model-name>.bin`, `<model-name>.xml`, `<model-name>.json`)

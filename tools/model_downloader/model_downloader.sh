@@ -13,7 +13,7 @@ FORCE=
 RUN_PREFIX=
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"${CACHE_PREFIX}openvino/ubuntu20_data_dev"}
 OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.2"}
-NAME="video-analytics-serving-model-downloader"
+NAME="dlstreamer-pipeline-server-model-downloader"
 
 DL_STREAMER_VERSION=
 MODE=
@@ -26,7 +26,7 @@ show_help() {
   echo "  [--output absolute path where to save models]"
   echo "  [--model-list input file with model names and properties]"
   echo "  [--force force download and conversion of existing models]"
-  echo "  [--open-model-zoo-version specify the version of openvino image to be used for downloading models from Open Model Zoo]"
+  echo "  [--open-model-zoo-version specify the version of OpenVINO(TM) image to be used for downloading models from Open Model Zoo]"
   echo "  [--dry-run print commands without executing]"
   exit 0
 }
@@ -99,7 +99,7 @@ done
 
 YML_DIR=$(dirname "${MODEL_LIST}")
 YML_FILE_NAME=$(basename "${MODEL_LIST}")
-VOLUME_MOUNT+="-v $TOOLS_DIR:/home/video-analytics-serving/tools -v $YML_DIR:/models_yml -v $OUTPUT_DIR:/output"
+VOLUME_MOUNT+="-v $TOOLS_DIR:/home/pipeline-server/tools -v $YML_DIR:/models_yml -v $OUTPUT_DIR:/output"
 
 case $OPEN_MODEL_ZOO_VERSION in
     2020.4)
@@ -130,4 +130,4 @@ if [ ! -d "$OUTPUT_DIR/models" ]; then
     echo "Created output models folder as UID: $UID"
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/video-analytics-serving/tools/model_downloader/requirements.txt ; python3 -u /home/video-analytics-serving/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/pipeline-server/tools/model_downloader/requirements.txt ; python3 -u /home/pipeline-server/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""

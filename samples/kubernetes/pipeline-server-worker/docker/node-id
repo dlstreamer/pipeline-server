@@ -1,0 +1,15 @@
+# default: on
+# description: node-id socket server
+service node-id
+{
+port = 4444
+socket_type = stream
+flags = REUSE
+wait = no
+user = root
+server = /usr/bin/node-id.sh
+log_on_success += USERID
+log_on_failure += USERID
+disable = no
+protocol = tcp
+}

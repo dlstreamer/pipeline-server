@@ -5,7 +5,7 @@
 				" ! videoconvert name=videoconvert",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
 				" ! gvametaconvert name=metaconvert",
-				" ! gvapython name=gvapython module=/home/video-analytics-serving/extensions/add_frame_id.py class=FrameCounter",
+				" ! gvapython name=gvapython module=/home/pipeline-server/extensions/add_frame_id.py class=FrameCounter",
 				" ! gvametapublish name=destination",
 				" ! appsink name=appsink",
 				" t. ! queue ! videoconvert ! jpegenc ! multifilesink name=filesink"

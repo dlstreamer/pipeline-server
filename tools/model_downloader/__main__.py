@@ -37,7 +37,7 @@ def main():
         )
     else:
         print(
-            "Intel(R) distribution of OpenVINO(TM) Toolkit tools not "
+            "Intel(R) Distribution of OpenVINO(TM) Toolkit tools not "
             "found. Please check if all dependent tools are installed and try again."
         )
         sys.exit(1)
