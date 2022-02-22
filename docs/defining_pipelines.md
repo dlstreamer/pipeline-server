@@ -298,7 +298,7 @@ targets the same hardware device and video format.
 #### More Information
 
 For more information and examples of media analytics pipelines created
-with Intel(R) DL Streamer please see the Intel(R) DL Streamer [tutorial](https://github.com/opencv/gst-video-analytics/wiki/GStreamer%20Video%20Analytics%20Tutorial).
+with Intel(R) DL Streamer please see the Intel(R) DL Streamer [tutorial](https://github.com/dlstreamer/dlstreamer/wiki/DL-Streamer-Tutorial).
 
 ### FFmpeg Templates
 
@@ -792,9 +792,9 @@ fail to load if there are multiple ".json" model-proc files in this directory.
 ### Intel(R) DL Streamer
 For more information on Intel(R) DL Streamer `model-proc` files and samples for
 common models please see the Intel(R) DL Streamer
-[documentation](https://github.com/opencv/gst-video-analytics/wiki/Model-preparation)
+[documentation](https://github.com/dlstreamer/dlstreamer/wiki/Model-preparation)
 and
-[samples](https://github.com/opencv/gst-video-analytics/tree/master/samples/model_proc).
+[samples](https://github.com/dlstreamer/dlstreamer/tree/master/samples/model_proc).
 
 ### FFmpeg Video Analytics
 For `model-proc` files for use with `FFmpeg Video Analytics` please
