@@ -1,5 +1,0 @@
-{
-	"type": "GStreamer",
-	"template":"identity ! identity",
-	"description":"Identity"
-}
