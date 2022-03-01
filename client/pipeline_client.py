@@ -256,13 +256,15 @@ def wait_for_pipeline_running(server_address,
     timeout_count = 0
     while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
         status = get_pipeline_status(server_address, instance_id)
-        if not status or status["state"] == "ERROR":
-            raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        if not status or Pipeline.State[status["state"]].stopped():
+            break
         time.sleep(SLEEP_FOR_STATUS)
         timeout_count += 1
         if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
             print("Timed out waiting for RUNNING status")
             break
+    if not status or status["state"] == "ERROR":
+        raise ValueError("Error in pipeline, please check pipeline-server log messages")
     return Pipeline.State[status["state"]] == Pipeline.State.RUNNING
 
 def wait_for_pipeline_completion(server_address, instance_id):
