@@ -14,7 +14,8 @@
 		"properties": {
 			"device": {
 				"element": "detection",
-				"type": "string"
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
 			},
 			"bus-messages": {
 				"description": "Prints GstBus messages as logger info",

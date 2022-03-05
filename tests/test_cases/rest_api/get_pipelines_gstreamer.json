@@ -523,10 +523,17 @@
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "detection-properties": {
+                    "detection-device": {
                         "element": {
                             "name": "detection",
-                            "format": "element-properties"
+                            "property": "device"
+                        },
+                        "type": "string"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "format": "element-properties",
+                            "name": "detection"
                         }
                     }
                 }
@@ -540,10 +547,17 @@
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "detection-properties": {
+                    "detection-device": {
                         "element": {
                             "name": "detection",
-                            "format": "element-properties"
+                            "property": "device"
+                        },
+                        "type": "string"
+                    },
+                    "detection-properties": {
+                        "element": {
+                            "format": "element-properties",
+                            "name": "detection"
                         }
                     }
                 }

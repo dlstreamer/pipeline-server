@@ -20,7 +20,8 @@
 					"name": "detection",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
 			},
 			"detection-model-instance-id": {
 				"element": {

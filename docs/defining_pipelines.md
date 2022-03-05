@@ -334,7 +334,7 @@ Pipeline parameters enable developers to customize pipelines based on
 incoming requests. Parameters are an optional section within a
 pipeline definition and are used to specify which pipeline properties
 are configurable and what values are valid. Developers can also
-specify default values for each parameter.
+specify default values for each parameter or set to read from environment variable.
 
 ### Defining Parameters as JSON Schema
 
@@ -399,7 +399,7 @@ on how to associate a parameter with one or more GStreamer element
 properties.
 
 The JSON schema for a GStreamer pipeline parameter can include an
-`element` section in one of three forms.
+`element` section in one of the below forms.
 
 1. **Simple String**. <br/> <br/>
    The string indicates the `name` of an element in
@@ -518,6 +518,65 @@ The JSON schema for a GStreamer pipeline parameter can include an
             "device": "CPU"
         }
     }
+    ```
+
+#### Parameters and default value
+
+Parameters default value in pipeline definitions can be set in section in one of two forms(setting value or by environment variable) below.
+
+1. **Set default value directly**
+
+    A default value can be set for the element property using `default` key. 
+
+   **Example:**
+
+   The following snippet defines the parameter `detection-device`
+   which sets the `device` property of `detection` with default value `GPU`
+
+   ```json
+   "parameters": {
+   "type": "object",
+   "properties": {
+        "detection-device": {
+            "element": {
+                "name":"detection",
+                "property":"device"
+            },
+            "type": "string",
+            "default": "GPU"
+            }
+        }
+    }
+    ```
+
+1. **Read default value from environment variable**
+
+    A default value can be set using environment variable for the element property using `default` key. 
+
+   **Example:**
+
+   The following snippet defines the parameter `detection-device`
+   which sets the `device` property of the `detection` with default value from environment variable `DETECTION_DEVICE`. If the environment variable is not set, pipeline server won't set a default and the element's built-in default will be used by the underlying framework.
+
+   ```json
+   "parameters": {
+   "type": "object",
+   "properties": {
+        "detection-device": {
+            "element": {
+                "name":"detection",
+                "property":"device"
+            },
+            "type": "string",
+            "default": "{env[DETECTION_DEVICE]}"
+            }
+        }
+    }
+    ```
+
+    Set `DETECTION_DEVICE` environment variable at Pipeline Server start.
+    ```bash
+    ./docker/run.sh -e DETECTION_DEVICE=GPU
     ```
 
 #### Parameters and FFmpeg Filters

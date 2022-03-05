@@ -15,6 +15,14 @@
 					"name": "detection",
 					"format": "element-properties"
 				}
+			},
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
 			}
 		}
 	}

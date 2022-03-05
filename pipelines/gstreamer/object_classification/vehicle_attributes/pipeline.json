@@ -26,14 +26,16 @@
 					"name": "detection",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
 			},
 			"classification-device": {
 				"element": {
 					"name": "classification",
 					"property": "device"
 				},
-				"type": "string"
+				"type": "string",
+				"default": "{env[CLASSIFICATION_DEVICE]}"
 			},
 			"inference-interval": {
 				"element":

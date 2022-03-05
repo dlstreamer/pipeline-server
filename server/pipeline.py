@@ -33,11 +33,17 @@ class Pipeline:
         pass
 
     @staticmethod
+    def get_config_section(config, config_section):
+        for key in config_section:
+            config = config.get(key, {})
+
+        return config
+
+    @staticmethod
     def get_section_and_config(request, config, request_section, config_section):
         for key in request_section:
             request = request.get(key, {})
 
-        for key in config_section:
-            config = config.get(key, {})
+        config = Pipeline.get_config_section(config, config_section)
 
         return request, config

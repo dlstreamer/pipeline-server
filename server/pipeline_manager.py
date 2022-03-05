@@ -6,6 +6,7 @@
 
 import os
 import json
+import string
 import traceback
 from threading import Lock
 from collections import deque
@@ -60,7 +61,7 @@ class PipelineManager:
 
     def _load_pipelines(self):
         # TODO: refactor
-        # pylint: disable=too-many-branches,too-many-nested-blocks
+        # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-statements
         self.log_banner("Loading Pipelines")
         error_occurred = False
         self.pipeline_types = self._import_pipeline_types()
@@ -112,6 +113,7 @@ class PipelineManager:
                                                              version,
                                                              config['type'],
                                                              path))
+                                        self._update_defaults_from_env(pipelines[pipeline][version])
                                     else:
                                         del pipelines[pipeline][version]
                                         self.logger.error("Pipeline %s with type %s not supported",
@@ -134,6 +136,34 @@ class PipelineManager:
         self.pipelines = pipelines
         self.log_banner("Completed Loading Pipelines")
         return not error_occurred
+
+    def _update_defaults_from_env(self, config):
+        config = Pipeline.get_config_section(
+            config, ["parameters", "properties"])
+        for key in config:
+            if "default" in config[key]:
+                default_value = config[key]["default"]
+                if not isinstance(default_value, str):
+                    continue
+                try:
+                    env_value = string.Formatter().vformat(
+                        default_value, [], {'env': os.environ})
+                    if config[key]["type"] != "string":
+                        env_value = self._get_typed_value(env_value)
+                    config[key]["default"] = env_value
+                    self.logger.debug(
+                        "Setting {}={} using {}".format(key, env_value, default_value))
+                except Exception as env_key:
+                    self.logger.debug(
+                        "ENV variable {} is not set, "
+                        "element will use its default value for property {}".format(env_key, key))
+                    del config[key]["default"]
+
+    def _get_typed_value(self, value):
+        try:
+            return json.loads(value)
+        except ValueError:
+            return value
 
     def warn_if_mounted(self):
         if os.path.islink(self.pipeline_dir):
@@ -193,7 +223,7 @@ class PipelineManager:
         section, config = Pipeline.get_section_and_config(
             request, config, request_section, config_section)
         for key in config:
-            if (key not in section) and ("default" in config[key]):
+            if key not in section and "default" in config[key]:
                 section[key] = config[key]["default"]
 
         if (len(section) != 0):
