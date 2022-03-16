@@ -90,7 +90,7 @@ Errors during pipeline execution are not flagged as pipeline_client exits after 
 ```
 The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
 ```
-Status 400 - "Invalid Pipeline or Version"
+"Invalid Pipeline or Version"
 ```
 
 #### Instance ID
@@ -133,12 +133,14 @@ This example starts two pipelines and then gets their status and request details
 ```
 ./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
+Output:
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = 94cf72b718184615bfc181c6589b240c
 ```
 ```
 ./client/pipeline_client.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
+Output:
 ```
 Starting pipeline object_classification/vehicle_attributes, instance = 978e09c561f14fa1b793e8b644f30031
 ```
@@ -196,7 +198,7 @@ pipeline_client output will just be the pipeline instance.
 ```
 ```
 <snip>
-2
+280ff2c4a54611ec8b900242ac110002
 ```
 #### Run
 pipeline_client output will be the pipeline instance followed by inference results.
@@ -205,7 +207,7 @@ pipeline_client output will be the pipeline instance followed by inference resul
 ```
 ```
 <snip>
-1
+280ff2c4a54611ec8b900242ac110002
 Timestamp 1500000000
 - person (0.54) [0.67, 0.88, 0.74, 1.00]
 Timestamp 1666666666
@@ -417,7 +419,7 @@ As mentioned before, `--show-request` option which will print out the HTTP reque
 ```
 ```
 <snip>
-GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c/status
+GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/94cf72b718184615bfc181c6589b240c
 ```
 ##### Wait
 ```
@@ -425,7 +427,7 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b
 ```
 ```
 <snip>
-GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c/status
+GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/94cf72b718184615bfc181c6589b240c
 ```
 ##### Stop
 ```
