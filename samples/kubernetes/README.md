@@ -41,13 +41,6 @@ sudo -E ./microk8s/install.sh
 <snip>
 Assigning <user name> to microk8s group
 ```
->
-> NOTE: If you are running behind a proxy please ensure that your `NO_PROXY` and `no_proxy` environment variables are set correctly to allow cluster nodes to communicate directly. You can run these commands to set this up automatically:
-> ```bash
-> UPDATE_NO_PROXY=true sudo -E ./microk8s/install.sh
-> su - $USER
-> ```
->
 
 ### Step 2: Activate Group Membership
 
@@ -117,7 +110,6 @@ kube-system          kubernetes-dashboard-85fd7f45cb-h82gk        1/1     Runnin
 kube-system          hostpath-provisioner-5c65fbdb4f-42pdn        1/1     Running   0          86s
 container-registry   registry-9b57d9df8-vtmsj                     1/1     Running   0          86s
 ```
-
 
 ### Step 5: Setup Proxy Server DNS
 > Note: This step is required if you are running behind proxy, skip otherwise.
@@ -269,102 +261,50 @@ vcplab002    Ready    <none>   84s   v1.21.5-3+83e2bb7ee39726
 
 ## Building and Deploying Services to the Cluster
 
-Follow the steps below to build and deploy the Pipeline Server, HAProxy and MQTT services to the cluster.
+Use the following command to deploy the Pipeline Server(CPU,GPU), HAProxy and MQTT services to the cluster.
 
-### Step 1: Deploy MQTT
+The command
+ * Deletes existing Pipeline Server workers.
+ * Creates namespace `pipeline-server` and deploys Services in that namespace.
+ * Uses the pre built docker image from [intel/dlstreamer-pipeline-server:0.7.2](https://hub.docker.com/r/intel/dlstreamer-pipeline-server). To use a local image instead run `BASE_IMAGE=dlstreamer-pipeline-server-gstreamer:latest ./build_deploy_all.sh`
+ * Build and deploys MQTT, Pipeline Server worker and HAProxy. Each node will have one Pipeline Server Worker, if `GPU` available on machine, `GPU` worker will be started, else `CPU` worker.
+ * Uses [Kubernetes Node Feature Discovery](https://kubernetes-sigs.github.io/node-feature-discovery/stable/get-started/index.html) and [Intel(R) GPU device plugin for Kubernetes](https://github.com/intel/intel-device-plugins-for-kubernetes/blob/v0.23.0/cmd/gpu_plugin/README.md) to discover, find device resources and enable GPU.
+ * Runs script [haproxy/check_for_changes.sh](haproxy/check_for_changes.sh) in background that looks for changes in Pipeline server pods and rebuilds and deploys haproxy.
 
-This will enable listening to metadata using MQTT broker.
+### Command
+
+```bash
+./build_deploy_all.sh
+```
+
+### Expected Output
+
+```text
+NAME                                  READY   STATUS
+mqtt-deployment-64f7b4f5c-89l77       1/1     Running
+intel-gpu-plugin-krsch                1/1     Running
+pipeline-server-gpu-worker-vknh2      1/1     Running
+haproxy-deployment-6c9c989957-9nrkd   1/1     Running
+Running process to check for pipeline-server changes in the background
+<snip>
+```
+
+### Check status of all pods
 
 #### Command
 
 ```bash
-./mqtt/deploy.sh
+microk8s kubectl get pods
 ```
 
 #### Expected Output
 
 ```text
-MQTT instance is up and running
-```
-
-### Step 2: Build and Deploy Pipeline Server(s)
-
-#### Update Configuration with Number of Replicas
-
-Update the number of replicas in the Pipeline Server deployment configuration [`pipeline-server-worker/pipeline-server.yaml#L8`](./pipeline-server-worker/pipeline-server.yaml#L8) to match the number of nodes in the cluster.
-
-#### Build and Deploy
-
-This command adds host system proxy settings to `pipeline-server-worker/pipeline-server.yaml` and deploys it.
-
- > The following command uses the pre built docker image from [intel/dlstreamer-pipeline-server:0.7.1](https://hub.docker.com/r/intel/dlstreamer-pipeline-server). To use a local image instead run `BASE_IMAGE=dlstreamer-pipeline-server-gstreamer:latest ./pipeline-server-worker/build.sh`
-
-##### Command
-
-```bash
-./pipeline-server-worker/build.sh
-./pipeline-server-worker/deploy.sh
-```
-
-##### Expected Output
-
-```text
-All Pipeline Server instances are up and running
-```
-
-#### Check Status
-
-##### Command
-
-```bash
-microk8s kubectl get pods
-```
-
-##### Expected Output
-```text
-NAME                                          READY   STATUS
-mqtt-deployment-7d85664dc7-f976h              1/1     Running
-pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
-```
-
-### Step 3: Build and Deploy HAProxy
-
-This will enable load balancing of Pipeline Server REST Requests through the cluster on port 31000.
-
-> Note: Pipeline Server pod(s) must be up and running before building and deploying HAProxy.
-
-#### Build and Deploy
-
-##### Command
-
-```bash
-./haproxy/build.sh
-./haproxy/deploy.sh
-```
-
-##### Expected Output
-
-```text
-HAProxy Service started
-```
-
-#### Check Status
-
-Check status of all pods
-
-##### Command
-
-```bash
-microk8s kubectl get pods
-```
-
-##### Expected Output
-
-```text
-NAME                                          READY   STATUS
-mqtt-deployment-7d85664dc7-f976h              1/1     Running
-pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
-haproxy-deployment-7d79cf66f5-4d92n           1/1     Running
+NAME                                  READY   STATUS
+mqtt-deployment-64f7b4f5c-89l77       1/1     Running
+intel-gpu-plugin-krsch                1/1     Running
+pipeline-server-gpu-worker-vknh2      1/1     Running
+haproxy-deployment-6c9c989957-9nrkd   1/1     Running
 ```
 
 ## Adding Nodes to an Existing Deployment
@@ -373,62 +313,9 @@ haproxy-deployment-7d79cf66f5-4d92n           1/1     Running
 
 To add nodes to an existing deployment first follow the steps outlined in [Installing MicroK8s](#installing-microk8s) and [Joining Nodes to the Cluster](#joining-nodes-to-the-cluster) for the nodes to be added to the deployment.
 
-### Step 2: Update Pipeline Server Configuration with Number of Replicas
+### Step 2: Check Status
 
-Update the number of replicas in the Pipeline Server deployment configuration [`pipeline-server-worker/pipeline-server.yaml#L8`](./pipeline-server-worker/pipeline-server.yaml#L8) to match the number of nodes in the cluster.
-
-### Step 3: Redeploy Pipeline Server
-
-Using the node selected as the `leader`, redeploy the pipeline server instances.
-
-#### Command
-
-```bash
-./pipeline-server-worker/deploy.sh
-```
-
-#### Expected Output
-
-```text
-All Pipeline Server instances are up and running
-```
-
-### Step 4: Check Status
-
-#### Command
-
-```bash
-microk8s kubectl get pods | grep 'pipeline-server'
-```
-
-#### Expected Output
-
-```text
-pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
-pipeline-server-deployment-7479f5d494-2knop   1/1     Running
-```
-
-### Step 5: Rebuild and Redeploy HAProxy
-
-This will add the new Pipeline Server pod(s) to the HAProxy config.
-
-> Note: Pipeline Server pod(s) must be up and running before building and deploying HAProxy.
-
-#### Command
-
-```bash
-./haproxy/build.sh
-./haproxy/deploy.sh
-```
-
-#### Expected Output
-
-```text
-HAProxy Service started
-```
-
-### Step 6: Check Status
-
+Pipeline Server workers should automatically increase cpu/gpu workers based on Hardware available on new nodes. HAProxy will be built and deployed automatically for any changes in Pipeline Server pods.
 #### Command
 
 ```bash
@@ -438,22 +325,23 @@ microk8s kubectl get pods
 #### Expected Output
 
 ```text
-NAME                                          READY   STATUS
-pipeline-server-deployment-7479f5d494-2wkkk   1/1     Running
-pipeline-server-deployment-7479f5d494-2knop   1/1     Running
-haproxy-deployment-7d79cf66f5-4d92n           1/1     Running
-mqtt-deployment-7d85664dc7-f976h              1/1     Running
+NAME                                  READY   STATUS
+mqtt-deployment-64f7b4f5c-89l77       1/1     Running
+intel-gpu-plugin-krsch                1/1     Running
+pipeline-server-gpu-worker-vknh2      1/1     Running
+pipeline-server-cpu-worker-5gtxg      1/1     Running
+haproxy-deployment-6c9c989957-9nrba   1/1     Running
 ```
 
 ## Sending Pipeline Server Requests to the Cluster
 
-Once pods have been deployed, clients can send pipeline server requests to the cluster via the leader node. The HAProxy service is responsible for load balancing pipeline server requests accross the cluster using a `round-robin` algorithm.
+Once pods have been deployed, clients can send pipeline server requests to the cluster via the leader node. The HAProxy service is responsible for load balancing pipeline server requests across the cluster using a `round-robin` algorithm.
 
 When pipeline servers are deployed, they can also be configured to stop taking new requests based on a `MAX_RUNNING_PIPELINES` setting and/or a `TARGET_FPS` setting.
 
 Pipeline servers that reach the configured `MAX_RUNNING_PIPELINES` or have a pipeline instance running with an FPS below the `TARGET_FPS` become unavailable for new requests.
 
-Once all the pipeline servers in the cluster become unavailable, clients receive a `503 Service Unavailable` error from the load balancer. Both `MAX_RUNNING_PIPELINES` and `TARGET_FPS` are set in `pipeline-server-worker/pipeline-server.yaml`.
+Once all the pipeline servers in the cluster become unavailable, clients receive a `503 Service Unavailable` error from the load balancer. Both `MAX_RUNNING_PIPELINES` and `TARGET_FPS` are set in `pipeline-server-worker/deployments/base/pipeline-server-worker.yaml`.
 
 ### Step 1: Start Pipelines on the Cluster
 
@@ -508,22 +396,8 @@ docker run -it  --entrypoint mosquitto_sub  eclipse-mosquitto:1.6 --topic infere
 
 ### Step 1: Undeploy Pipeline Server, HAProxy and MQTT services
 
-#### Remove Pipeline Server deployment
-
 ```bash
-microk8s kubectl delete -f pipeline-server-worker/pipeline-server.yaml
-```
-
-#### Remove HAProxy deployment
-
-```bash
-microk8s kubectl delete -f haproxy/haproxy.yaml
-```
-
-#### Remove MQTT deployment
-
-```bash
-microk8s kubectl delete -f mqtt/mqtt.yaml
+./undeploy_all.sh
 ```
 
 ### Step 2: Remove Node
@@ -610,7 +484,10 @@ The examples require [pipeline_client](../../client/README.md) so the container 
 Start stream as follows
 
 ```text
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
+  --server-address http://<leader-ip>:31000 \
+  --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
 ```
 
 Output should be like this (with different instance id and timestamps)
@@ -646,7 +523,11 @@ Done
 For two streams, we won't use MQTT but will measure fps to see if both streams can be processed at 30fps (i.e. can we attain a stream density of 2). Note the use of [model-instance-id](../../docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) so pipelines can share resources.
 
 ```text
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id person-vehicle-bike-cpu --number-of-streams 2
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
+  --server-address http://<leader-ip>:31000 \
+  --parameter detection-model-instance-id person-vehicle-bike \
+  --number-of-streams 2
 ```
 
 ```text
@@ -702,7 +583,11 @@ First add a second node as per [Adding Nodes to Existing Deployment](#adding-nod
 Now we run two streams and monitor fps using the same request as before. This time the work should be shared across the two nodes so we anticipate a higher fps for both streams.
 
 ```bash
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://lvamedia.blob.core.windows.net/public/homes_00425.mkv --server-address http://<leader-ip>:31000 --parameter detection-model-instance-id cpu --number-of-streams 2 
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
+  --server-address http://<leader-ip>:31000 \
+  --parameter detection-model-instance-id person-vehicle-bike \
+  --number-of-streams 2 
 ```
 
 ```text
@@ -748,7 +633,7 @@ microk8s kubectl get nodes -o wide
 # Check running nodes information in yaml format
 microk8s kubectl get nodes -o yaml
 
-# Decribe all nodes and details
+# Describe all nodes and details
 microk8s kubectl describe nodes
 
 # Describe specific node
@@ -766,12 +651,6 @@ microk8s kubectl apply -f <file.yaml>
 # Delete an existing service from cluster
 microk8s kubectl delete -f <file.yaml>
 
-# Delete Pipeline Server from cluster
-microk8s kubectl delete -f pipeline-server-worker/pipeline-server.yaml
-
-# Delete HAProxy from cluster
-microk8s kubectl delete -f haproxy/haproxy.yaml
-
 # Get pods from all namespaces
 microk8s kubectl get pods --all-namespaces
 
@@ -787,8 +666,9 @@ microk8s kubectl exec -it <pod-name> -- /bin/bash
 # Restart a deployment
 microk8s kubectl rollout restart deployment <service-name>-deployment
 
-# Restart All Pipeline Server deployments
-microk8s kubectl rollout restart deploy pipeline-server-deployment
+# Restart Pipeline Server workers
+microk8s kubectl rollout restart daemonset pipeline-server-cpu-worker
+microk8s kubectl rollout restart daemonset pipeline-server-gpu-worker
 
 # Restart HAProxy Service
 microk8s kubectl rollout restart deploy haproxy-deployment
@@ -809,11 +689,6 @@ microk8s leave
 
 ## Limitations
 
-- Every time a new Intel® DL Streamer Pipeline Server pod is added or an existing pod restarted, HAProxy needs to be reconfigured and deployed by running below commands
-
-    ```bash
-    ./haproxy/build.sh
-    ./haproxy/deploy.sh
-    ```
-
+- Every time a new Intel® DL Streamer Pipeline Server is added or deleted, HAProxy will be restarted automatically to update configuration.
 - We cannot yet query full set of pipeline statuses across all Pipeline Server pods. This means `GET <leader-ip>:31000/pipelines/status` may not return complete list.
+- When a pipeline runs on a GPU worker, it may take up to 60 seconds to start the pipeline, setting `model-instance-id` with same value limits this issue to the first request as this setting shares resources.

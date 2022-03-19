@@ -22,7 +22,7 @@ microk8s kubectl rollout restart deploy haproxy-deployment
 sleep 10
 
 for (( i=0; i<10; ++i)); do
-    terminating=$(microk8s kubectl get pods --all-namespaces | grep "haproxy" | awk '{ print $4 }' | grep  'Terminating' | wc -l)
+    terminating=$(microk8s kubectl get pods | grep "haproxy" | awk '{ print $3 }' | grep  'Terminating' | wc -l)
     echo "Waiting for haproxy service to start......."
     if [ $terminating == 0 ]; then
         echo "HAProxy Service started"
@@ -31,3 +31,5 @@ for (( i=0; i<10; ++i)); do
         sleep 10
     fi
 done
+
+echo "$(microk8s kubectl get pods)"

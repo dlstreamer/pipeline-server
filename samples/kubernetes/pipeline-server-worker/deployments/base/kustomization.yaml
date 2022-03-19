@@ -1,0 +1,2 @@
+resources:
+  - pipeline-server-worker.yaml

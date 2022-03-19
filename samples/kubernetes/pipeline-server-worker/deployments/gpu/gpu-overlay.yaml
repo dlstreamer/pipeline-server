@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pipeline-server-gpu-worker
+spec:
+  template:
+    spec:
+      nodeSelector:
+        feature.node.kubernetes.io/pci-0300_8086.present: "true"
+      containers:
+        - name: pipeline-server
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+          env:
+            - name: DETECTION_DEVICE
+              value: GPU
+            - name: CLASSIFICATION_DEVICE
+              value: GPU

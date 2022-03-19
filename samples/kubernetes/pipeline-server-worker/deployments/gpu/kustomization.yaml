@@ -1,0 +1,16 @@
+bases:
+  - ../base
+patches:
+  - target:
+      kind: DaemonSet
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: pipeline-server-gpu-worker
+  - target:
+      kind: Service
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: pipeline-server-gpu-service
+  - path: gpu-overlay.yaml

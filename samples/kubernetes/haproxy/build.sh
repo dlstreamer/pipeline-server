@@ -21,13 +21,13 @@ GET_SERVER_STRING="  server server-name server-address:8080 check"
 
 running=0
 for (( i=0; i<20; ++i)); do
-    running=$(microk8s kubectl get pods --all-namespaces | grep "pipeline-server" | awk '{ print $4 }' | grep  'Running' | wc -l)
+    running=$(microk8s kubectl get pods | grep "pipeline-server" | awk '{ print $3 }' | grep  'Running' | wc -l)
     if [ $running -gt 0 ]; then
         echo " $running pipeline-server services running "
         break
     else
         echo "No pipeline-server services are running"
-        echo "$(microk8s kubectl get pods --all-namespaces | grep "pipeline-server")"
+        echo "$(microk8s kubectl get pods | grep "pipeline-server")"
         sleep 10
     fi
 done
