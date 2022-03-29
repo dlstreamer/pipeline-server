@@ -131,7 +131,7 @@ def start(args):
 
 def stop(args):
     if stop_pipeline(args.server_address, args.instance, args.show_request):
-        print_fps(get_pipeline_status(args.server_address, args.instance))
+        print_fps([get_pipeline_status(args.server_address, args.instance)])
 
 def wait(args):
     try:
@@ -140,11 +140,11 @@ def wait(args):
             print(pipeline_status["state"])
         else:
             print("Unable to fetch status")
-        print_fps(wait_for_pipeline_completion(args.server_address, args.instance))
+        print_fps([wait_for_pipeline_completion(args.server_address, args.instance)])
     except KeyboardInterrupt:
         print()
         stop_pipeline(args.pipeline, args.instance)
-        print_fps(wait_for_pipeline_completion(args.server_address, args.instance))
+        print_fps([wait_for_pipeline_completion(args.server_address, args.instance)])
 
 def status(args):
     pipeline_status = get_pipeline_status(args.server_address, args.instance, args.show_request)
@@ -279,6 +279,7 @@ def wait_for_pipeline_completion(server_address, instance_id):
 
 def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=False):
     status = {"state" : "RUNNING"}
+    status_list = []
     stopped = False
     num_streams = len(instance_ids)
     if num_streams == 0:
@@ -297,15 +298,17 @@ def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=
                         instance_id, status["state"], round(status["avg_fps"])))
                     if not Pipeline.State[status["state"]].stopped():
                         all_streams_stopped = False
+                    status_list.append(status)
                 first_pipeline = False
             stopped = all_streams_stopped
         else:
             time.sleep(SLEEP_FOR_STATUS)
             status = get_pipeline_status(server_address, instance_ids[0])
             stopped = Pipeline.State[status["state"]].stopped()
+            status_list.append(status)
     if status and status["state"] == "ERROR":
         raise ValueError("Error in pipeline, please check pipeline-server log messages")
-    return status
+    return status_list
 
 def get_pipeline_status(server_address, instance_id, show_request=False):
     status_url = urljoin(server_address,
@@ -363,9 +366,15 @@ def delete(url, show_request=False):
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
     return None
 
-def print_fps(status):
-    if status and 'avg_fps' in status:
-        print('avg_fps: {:.2f}'.format(status['avg_fps']))
+def print_fps(status_list):
+    sum_of_all_fps = 0
+    num_of_pipelines = 0
+    for status in status_list:
+        if status and 'avg_fps' in status and status['avg_fps'] > 0:
+            sum_of_all_fps += status['avg_fps']
+            num_of_pipelines += 1
+    if num_of_pipelines > 0:
+        print('avg_fps: {:.2f}'.format(sum_of_all_fps/num_of_pipelines))
 
 def print_list(item_list):
     for item in item_list:
