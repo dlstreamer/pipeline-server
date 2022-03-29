@@ -14,7 +14,6 @@
     "output_postproc": [
         {
             "attribute_name": "action",
-            "layer_name": "data",
             "converter": "tensor_to_label",
             "method": "softmax",
             "labels": [

@@ -22,5 +22,6 @@
     },
     "golden_results": false,
     "expect_error": true,
-    "regex": "Error on Pipeline [0-9a-z]+: 'BPU'"
+    "regex": "Error on Pipeline [0-9a-z]+: 'BPU'",
+    "result": []
 }

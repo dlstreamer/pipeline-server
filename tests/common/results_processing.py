@@ -127,6 +127,9 @@ def cmp_results(measured, expected, tolerance):
         assert len(measured) == len(expected), "Dictionary length not equal"
         for key in measured:
             assert key in expected, "Dictionary keys not equal"
+            # No exact match expected on region_id
+            if key == "region_id":
+                continue
             if key.endswith("id"):
                 assert measured[key] == expected[key], "{} doesn't match".format(key)
                 return True

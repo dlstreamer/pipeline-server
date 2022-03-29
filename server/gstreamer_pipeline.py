@@ -29,13 +29,20 @@ class GStreamerPipeline(Pipeline):
     GVA_INFERENCE_ELEMENT_TYPES = ["GstGvaDetect",
                                    "GstGvaClassify",
                                    "GstGvaInference",
+                                   "GstGvaActionRecognitionBin",
                                    "GvaAudioDetect",
-                                   "GstGvaActionRecognitionBin"]
+                                   "GvaDetectBin",
+                                   "GvaClassifyBin",
+                                   "GvaInferenceBin",
+                                   "GvaActionRecognitionBin"]
     GVA_ELEMENT_ENUM_TYPES = ["GstGVAMetaPublishFileFormat",
                               "InferenceRegionType",
                               "GstGVAMetaconvertFormatType",
                               "GstGVAMetaPublishMethod",
-                              "GstGVAActionRecognitionBinBackend"]
+                              "GstGVAActionRecognitionBinBackend",
+                              "GvaMetaPublishFileFormat",
+                              "GvaInferenceBinRegion",
+                              "GvaVideoToTensorBackend"]
 
     SOURCE_ALIAS = "auto_source"
     GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
@@ -341,7 +348,7 @@ class GStreamerPipeline(Pipeline):
         gva_elements = [element for element in self.pipeline.iterate_elements() if (
             element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)]
         for element in gva_elements:
-            if element.get_property("model-proc") is None:
+            if not element.get_property("model-proc"):
                 proc = None
                 if element.get_property("model") in self.model_manager.model_procs:
                     proc = self.model_manager.model_procs[element.get_property("model")]
@@ -469,7 +476,7 @@ class GStreamerPipeline(Pipeline):
         gva_elements = [element for element in self.pipeline.iterate_elements()
                         if (element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)
                         and model_instance_id in [x.name for x in element.list_properties()]
-                        and (element.get_property(model_instance_id) is None)]
+                        and not element.get_property(model_instance_id)]
         for element in gva_elements:
             name = element.get_property("name")
             instance_id = name + "_" + str(self.identifier)

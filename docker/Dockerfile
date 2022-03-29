@@ -32,21 +32,8 @@ ARG USER=pipeline-server
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/pipeline-server && \
     chown ${USER} -R /home/pipeline-server /root
 
-RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]; then \
-       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \
-    fi
-
-RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y -q --no-install-recommends \
-    intel-media-va-driver-non-free \
-    gstreamer1.0-tools && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* ;\
-    fi
-
 # Install boost library required for HDDL plugin
-RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then \
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* || ${PIPELINE_SERVER_BASE} == *"dlstreamer/"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     libboost-program-options1.71.0 && \
@@ -55,20 +42,16 @@ RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then
     fi
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get upgrade -y -q && \
     apt-get dist-upgrade -y -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;
-
-RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y -q --no-install-recommends \
-    python3 \
-    python3-setuptools \
-    python3-pip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* ;\
-    fi
 
 COPY ./requirements.txt /
 RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
@@ -97,9 +80,9 @@ FROM dlstreamer-pipeline-server as do_not_copy_models
 
 # Creates a stage that copies models from the build context
 FROM dlstreamer-pipeline-server as copy_models
-ONBUILD ARG MODELS_PATH
-ONBUILD ENV MODELS_PATH=${MODELS_PATH}
-ONBUILD COPY ${MODELS_PATH} /home/pipeline-server/models
+ONBUILD ARG PS_MODELS_PATH
+ONBUILD ENV PS_MODELS_PATH=${PS_MODELS_PATH}
+ONBUILD COPY $PS_MODELS_PATH /home/pipeline-server/models
 
 # Stage that is used is controlled via MODELS_COMMAND build argument
 FROM ${MODELS_COMMAND} as dlstreamer-pipeline-server-with-models
@@ -115,9 +98,9 @@ FROM dlstreamer-pipeline-server-with-models as do_not_copy_pipelines
 
 # Creates a stage that copies pipelines from the build context
 FROM dlstreamer-pipeline-server-with-models as copy_pipelines
-ONBUILD ARG PIPELINES_PATH
-ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
-ONBUILD COPY ${PIPELINES_PATH} /home/pipeline-server/pipelines
+ONBUILD ARG PS_PIPELINES_PATH
+ONBUILD ENV PS_PIPELINES_PATH=${PS_PIPELINES_PATH}
+ONBUILD COPY ${PS_PIPELINES_PATH} /home/pipeline-server/pipelines
 
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as dlstreamer-pipeline-server-with-models-and-pipelines

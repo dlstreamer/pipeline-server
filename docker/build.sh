@@ -18,7 +18,7 @@ BASE_BUILD_DOCKERFILE=
 BASE_BUILD_TAG=
 USER_BASE_BUILD_ARGS=
 MODELS=$SOURCE_DIR/models_list/models.list.yml
-MODELS_PATH=models
+PS_MODELS_PATH=models
 PIPELINES=
 FRAMEWORK="gstreamer"
 TAG=
@@ -35,8 +35,10 @@ BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
 SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
-OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"openvino/ubuntu20_data_dev"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.2"}
+DEFAULT_OMZ_IMAGE_GSTREAMER="openvino/ubuntu20_data_dev"
+DEFAULT_OMZ_VERSION_GSTREAMER="2021.4.2"
+DEFAULT_OMZ_IMAGE_FFMPEG="openvino/ubuntu18_data_dev"
+DEFAULT_OMZ_VERSION_FFMPEG="2021.2"
 FORCE_MODEL_DOWNLOAD=
 
 DEFAULT_GSTREAMER_BASE_BUILD_TAG="dlstreamer-pipeline-server-gstreamer-base"
@@ -246,6 +248,13 @@ get_options() {
             BASE_IMAGE=${CACHE_PREFIX}$BASE_IMAGE_GSTREAMER
         fi
     fi
+    if [ $FRAMEWORK = 'ffmpeg' ]; then
+        OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-$DEFAULT_OMZ_IMAGE_FFMPEG}
+        OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-$DEFAULT_OMZ_VERSION_FFMPEG}
+    else
+        OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-$DEFAULT_OMZ_IMAGE_GSTREAMER}
+        OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-$DEFAULT_OMZ_VERSION_GSTREAMER}
+    fi
 
     if [ -f "$MODELS" ]; then
         if [[ ! " ${SUPPORTED_IMAGES[@]} " =~ " ${BASE_IMAGE} " ]]; then
@@ -396,14 +405,14 @@ fi
 BUILD_ARGS+=" --build-arg BASE=$BASE_IMAGE "
 BUILD_ARGS+=" --build-arg FRAMEWORK=$FRAMEWORK "
 if [ -n "$MODELS" ]; then
-    BUILD_ARGS+="--build-arg MODELS_PATH=$MODELS_PATH "
+    BUILD_ARGS+="--build-arg PS_MODELS_PATH=$PS_MODELS_PATH "
     BUILD_ARGS+="--build-arg MODELS_COMMAND=copy_models "
 else
     BUILD_ARGS+="--build-arg MODELS_COMMAND=do_not_copy_models "
 fi
 
 if [ -n "$PIPELINES" ]; then
-    BUILD_ARGS+="--build-arg PIPELINES_PATH=$PIPELINES "
+    BUILD_ARGS+="--build-arg PS_PIPELINES_PATH=$PIPELINES "
     BUILD_ARGS+="--build-arg PIPELINES_COMMAND=copy_pipelines "
 else
     BUILD_ARGS+="--build-arg PIPELINES_COMMAND=do_not_copy_pipelines "

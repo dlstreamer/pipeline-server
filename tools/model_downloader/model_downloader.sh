@@ -100,26 +100,20 @@ done
 YML_DIR=$(dirname "${MODEL_LIST}")
 YML_FILE_NAME=$(basename "${MODEL_LIST}")
 VOLUME_MOUNT+="-v $TOOLS_DIR:/home/pipeline-server/tools -v $YML_DIR:/models_yml -v $OUTPUT_DIR:/output"
+DL_STREAMER_VERSION=""
 
-case $OPEN_MODEL_ZOO_VERSION in
-    2020.4)
-        DL_STREAMER_VERSION="v1.1.0"
-        ;;
-    2021.1)
-        DL_STREAMER_VERSION="v1.2.1"
-        ;;
-    2021.2)
-        DL_STREAMER_VERSION="v1.3"
-        ;;
-    2021.3*)
-        DL_STREAMER_VERSION="v1.4.1"
-        ;;
-    2021.4*)
-        DL_STREAMER_VERSION="v1.5"
-        ;;
-    *)
-        error 'ERROR: Unknown Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION
-esac
+if [[ "$OPEN_MODEL_ZOO_TOOLS_IMAGE" == *"openvino/"* ]]; then
+    case $OPEN_MODEL_ZOO_VERSION in
+        2021.2)
+            DL_STREAMER_VERSION="v1.3"
+            ;;
+        2021.4*)
+            DL_STREAMER_VERSION="v1.5"
+            ;;
+        *)
+            error 'ERROR: Unsupported Open Model Zoo version: ' $OPEN_MODEL_ZOO_VERSION
+    esac
+fi
 
 if [ ! -z "$TEAMCITY_VERSION" ]; then
     NON_INTERACTIVE=--non-interactive
@@ -130,4 +124,8 @@ if [ ! -d "$OUTPUT_DIR/models" ]; then
     echo "Created output models folder as UID: $UID"
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/pipeline-server/tools/model_downloader/requirements.txt ; python3 -u /home/pipeline-server/tools/model_downloader --model-proc-version $DL_STREAMER_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+if [ ! -z "$DL_STREAMER_VERSION"]; then
+    $MODEL_PROC_VERSION=--model-proc-version $DL_STREAMER_VERSION
+fi
+
+$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/pipeline-server/tools/model_downloader/requirements.txt ; python3 -u /home/pipeline-server/tools/model_downloader $MODEL_PROC_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
