@@ -11,6 +11,7 @@ SOURCE_DIR=$(dirname "$TOOLS_DIR")
 OUTPUT_DIR=$(realpath $( pwd ))
 FORCE=
 RUN_PREFIX=
+# FIXME : Post Dockerhub update, use intel/dlstreamer and version 2022.1-ubuntu-devel
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"${CACHE_PREFIX}openvino/ubuntu20_data_dev"}
 OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2021.4.2"}
 NAME="dlstreamer-pipeline-server-model-downloader"

@@ -33,7 +33,8 @@ RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/pipeline-server 
     chown ${USER} -R /home/pipeline-server /root
 
 # Install boost library required for HDDL plugin
-RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* || ${PIPELINE_SERVER_BASE} == *"dlstreamer/"* ]]; then \
+# FIXME : Post Dockerhub update, use intel/dlstreamer
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* || ${PIPELINE_SERVER_BASE} == *"dlstreamer"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
     libboost-program-options1.71.0 && \
