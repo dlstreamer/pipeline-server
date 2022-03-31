@@ -38,7 +38,9 @@ class FrameInfo:
     def process_frame(self, frame: VideoFrame, _: float = DETECT_THRESHOLD) -> bool:
         while self.json_objects:
             metadata_pts = self.json_objects[0]["timestamp"] + self.offset_timestamp
-            timestamp_difference = abs(frame.video_meta().buffer.pts - metadata_pts)
+            # pylint: disable=protected-access
+            buffer = frame._VideoFrame__buffer
+            timestamp_difference = abs(buffer.pts - metadata_pts)
             # A margin of error of 1000 nanoseconds
             # If the difference is greater than the margin of error:
             #   If frame has a higher pts then the timestamp at the head of the list,
@@ -47,7 +49,7 @@ class FrameInfo:
             #   its still possible for the timestamp to come up, so break
             # Otherwise, assume this timestamp at the head of the list is accurate to that frame
             if timestamp_difference > 1000:
-                if (frame.video_meta().buffer.pts - metadata_pts) > 0:
+                if (buffer.pts - metadata_pts) > 0:
                     self.json_objects.pop(0)
                     continue
                 break
