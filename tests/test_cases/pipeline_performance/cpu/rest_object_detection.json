@@ -1,19 +1,17 @@
 {
     "path": "pipelines/object_detection/person_vehicle_bike",
-    "start" : {
-        "body": {
-            "source": {
-                "uri": "file:///home/pipeline-server/tests/media/store-aisle-detection.mp4",
-                "type": "uri"
-            },
-            "destination": {
-                "type": "file",
-                "path": "/dev/null",
-                "format": "json-lines"
-            }
+    "request" : {
+        "source": {
+            "uri": "file:///home/pipeline-server/tests/media/store-aisle-detection.mp4",
+            "type": "uri"
+        },
+        "destination": {
+            "type": "file",
+            "path": "/dev/null",
+            "format": "json-lines"
         }
     },
-    "iterations": 1,
+    "iterations": 10,
     "fps_percentage_diff_limit": 5,
-    "gst_launch_string": "gst-launch-1.0 uridecodebin uri=file:///home/pipeline-server/tests/media/store-aisle-detection.mp4 ! gvadetect model=/home/pipeline-server/models/object_detection/person_vehicle_bike/FP32/person-vehicle-bike-detection-crossroad-0078.xml model-proc=/home/pipeline-server/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json ! gvametaconvert ! gvametapublish file-path=/dev/null ! gvafpscounter ! fakesink"
+    "gst_launch_string": "gst-launch-1.0 urisourcebin uri=file:///home/pipeline-server/tests/media/store-aisle-detection.mp4 ! decodebin ! gvadetect model=/home/pipeline-server/models/object_detection/person_vehicle_bike/FP32/person-vehicle-bike-detection-crossroad-0078.xml model-proc=/home/pipeline-server/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json ! gvametaconvert ! gvametapublish file-path=/dev/null ! gvafpscounter ! fakesink"
 }

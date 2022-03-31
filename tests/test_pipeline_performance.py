@@ -60,12 +60,11 @@ def run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps):
 def run_ps_pipeline(iterations, pipeline_server_avg_fps, service, test_case):
 
     url = urllib.parse.urljoin(service.host, test_case['path'])
-    start_test = test_case["start"]
     for i in range(iterations):
         start_ps_time = time.time()
         print("Initiating ps_launch iteration #{iter}".format(iter=i), flush=True)
         response = requests.post(url,
-                                json=start_test["body"],
+                                json=test_case["request"],
                                 timeout=TIMEOUT)
         # Check response to POST
         assert response.status_code == HTTP_OK, "Status Code Mismatch"
@@ -79,17 +78,32 @@ def run_ps_pipeline(iterations, pipeline_server_avg_fps, service, test_case):
         print("##teamcity[buildStatisticValue key='pipeline_server_duration_iter{}' value='{}']".format(i, round(time_elapsed,3)), flush=True)
 
 def check_results(gst_launch_avg_fps, pipeline_server_avg_fps, fps_percentage_diff_limit):
+    print("Excluding gst-launch min value from average fps calculation: {}".format(min(gst_launch_avg_fps)))
+    print("Excluding gst-launch max value from average fps calculation: {}".format(max(gst_launch_avg_fps)))
+    gst_launch_avg_fps.remove(min(gst_launch_avg_fps))
+    gst_launch_avg_fps.remove(max(gst_launch_avg_fps))
     gst_launch_overall_avg_fps = statistics.mean(gst_launch_avg_fps)
+    print("Excluding pipeline server min value from average fps calculation: {}".format(min(pipeline_server_avg_fps)))
+    print("Excluding pipeline server max value from average fps calculation: {}".format(max(pipeline_server_avg_fps)))
+    pipeline_server_avg_fps.remove(min(pipeline_server_avg_fps))
+    pipeline_server_avg_fps.remove(max(pipeline_server_avg_fps))
     pipeline_server_overall_avg_fps = statistics.mean(pipeline_server_avg_fps)
     fps_percentage_diff = abs(pipeline_server_overall_avg_fps - gst_launch_overall_avg_fps) / gst_launch_overall_avg_fps * 100
-    print("##teamcity[buildStatisticValue key='pipeline_server_avg_fps' value='{}']".format(round(pipeline_server_overall_avg_fps,3)))
-    print("##teamcity[buildStatisticValue key='gst_launch_avg_fps' value='{}']".format(round(gst_launch_overall_avg_fps,3)))
-    print("##teamcity[buildStatisticValue key='fps_percentage_diff' value='{}']".format(round(fps_percentage_diff,3)))
+    metrics = {
+        "pipeline_server_min_fps" : round(min(pipeline_server_avg_fps),3),
+        "pipeline_server_max_fps" : round(max(pipeline_server_avg_fps),3),
+        "pipeline_server_avg_fps" : round(pipeline_server_overall_avg_fps,3),
+        "gst_launch_min_fps" : round(min(gst_launch_avg_fps),3),
+        "gst_launch_max_fps" : round(max(gst_launch_avg_fps),3),
+        "gst_launch_avg_fps" : round(gst_launch_overall_avg_fps,3),
+        "fps_percentage_diff" : round(fps_percentage_diff,3)
+        }
+    for key, value in metrics.items():
+        print("##teamcity[buildStatisticValue key='{}' value='{}']".format(key, value))
+
     try:
         with open(results_output_file, 'a+') as output_file:
-            artifact_result = "pipeline_server_avg_fps={}\n".format(round(pipeline_server_overall_avg_fps,3)) + \
-                              "gst_launch_avg_fps={}\n".format(round(gst_launch_overall_avg_fps,3)) + \
-                              "fps_percentage_diff={}\n".format(round(fps_percentage_diff,3))
+            artifact_result = "\n".join(["{}={}".format(key, value) for key, value in metrics.items()])
             output_file.write(artifact_result)
             output_file.flush()
     except OSError:

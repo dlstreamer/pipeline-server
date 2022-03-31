@@ -25,7 +25,7 @@ def get_pipeline_state(instance_url, valid_states):
 def get_pipeline_avg_fps(instance_url):
     status = get_pipeline_status(instance_url)
     avg_fps = status.get('avg_fps')
-    print("avg_fps: %s", avg_fps)
+    print("avg_fps: {}".format(avg_fps))
     return avg_fps
 
 def wait_for_pipeline_status(instance_url, expected_status, valid_states, timeout):
