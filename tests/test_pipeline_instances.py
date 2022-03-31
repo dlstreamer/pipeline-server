@@ -6,6 +6,8 @@
 
 import time
 from server.pipeline import Pipeline
+import signal
+import sys
 
 PAUSE = 0.1
 
@@ -37,17 +39,24 @@ def wait_for_pipeline_state(pipeline_manager, pipelines, target_states):
 
 def test_pipeline_instances(PipelineServer, test_case, test_filename, generate, numerical_tolerance, skip_sources):
     PipelineServer.start(test_case["options"])
-    pipelines = []
-    for tc in test_case["pipelines"]:
-        pipeline = PipelineServer.pipeline(tc["name"], tc["version"])
-        assert pipeline is not None, "Failed to Load Pipeline!"
-        pipeline.start(tc["request"])
-        pipelines.append(pipeline)
-    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case["pipelines"], [Pipeline.State.RUNNING])
-    abort_delay = test_case["abort"]["delay"]
-    print("Pipelines running - stop in {}s".format(abort_delay))
-    time.sleep(abort_delay)
-    for pipeline in pipelines:
-        pipeline.stop()
-    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case["pipelines"], [Pipeline.State.COMPLETED, Pipeline.State.ABORTED])
+    pipeline_instances = []
+    test_case_pipelines = []
+    iterations = test_case.get("iterations", 1)
+    for _ in range(iterations):
+        for tc in test_case["pipelines"]:
+            pipeline_instance = PipelineServer.pipeline(tc["name"], tc["version"])
+            assert pipeline_instance is not None, "Failed to Load Pipeline!"
+            pipeline_instance.start(tc["request"])
+            pipeline_instances.append(pipeline_instance)
+            test_case_pipelines.append(tc)
+    if "start_delay" in test_case:
+        time.sleep(test_case["start_delay"])
+    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case_pipelines, [Pipeline.State.COMPLETED, Pipeline.State.RUNNING])
+    if "abort_delay" in test_case:
+        abort_delay = test_case["abort_delay"]
+        print("Pipelines running - stop in {}s".format(abort_delay))
+        time.sleep(abort_delay)
+    for pipeline_instance in pipeline_instances:
+        pipeline_instance.stop()
+    wait_for_pipeline_state(PipelineServer.pipeline_manager, test_case_pipelines, [Pipeline.State.COMPLETED, Pipeline.State.ABORTED])
     PipelineServer.stop()

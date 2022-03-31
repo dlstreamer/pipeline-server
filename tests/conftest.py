@@ -208,7 +208,12 @@ def load_test_cases(metafunc, directory):
             assert False, "Error Reading Test Case"
     return (test_cases, test_names)
 
+def sig_handler(signum, frame):
+    print("Segmentation fault")
+    sys.exit(139)
+
 def pytest_generate_tests(metafunc):
+    signal.signal(signal.SIGSEGV, sig_handler)
     if "rest_api" in metafunc.function.__name__:
         test_cases, test_names = load_test_cases(metafunc, "rest_api")
         metafunc.parametrize("test_case,test_filename,generate", test_cases, ids=test_names)

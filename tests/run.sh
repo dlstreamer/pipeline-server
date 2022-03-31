@@ -189,10 +189,14 @@ if [ $PREPARE_PERFORMANCE == true ]; then
   fi
 fi
 
-
 $SOURCE_DIR/docker/run.sh --image $IMAGE --framework $FRAMEWORK $VOLUME_MOUNT $ENVIRONMENT $INTERACTIVE $ENTRYPOINT $ENTRYPOINT_ARGS "$@"
 
+exit_code=$?
 if [ $PREPARE_GROUND_TRUTH == true ]; then
   echo "Renaming .json.generated files to .json in preparation to update ground truth."
   find $TESTS_DIR/test_cases -depth -name "*.json.generated" -exec sh -c 'mv "$1" "${1%.json.generated}.json"' _ {} \;
 fi
+if [[ $exit_code -ne 0 ]]; then
+  echo "Tests failed, non zero exit code $exit_code"
+fi
+exit $exit_code
