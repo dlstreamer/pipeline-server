@@ -213,20 +213,16 @@ if __name__ == "__main__":
                 "      http_proxy: $http_proxy\n"\
                 "      socks_proxy: $socks_proxy\n"\
                 "      no_proxy: $no_proxy\n"\
-                "    volumes:\n"\
-                "      - /tmp/.xdg_runtime_dir:/home/.xdg_runtime_dir\n"\
                 "    devices:\n"\
                 "      - /dev/dri:/dev/dri\n"\
                 "    hostname: {containername}\n"\
                 "    image: {analyticsimage}\n"\
                 "    command: \"--source={source} --topic={topic} $edgex_request_rtsp_path\"\n" \
-                "#    user: \"$UID:$GID\"\n"\
                 "    networks:\n"\
                 "      edgex-network: {{}}\n"\
                 "    ports:\n"\
                 "    - 127.0.0.1:8080:8080/tcp\n"\
                 "    - 127.0.0.1:$edgex_rtsp_port:$edgex_rtsp_port/tcp\n"\
-                "    read_only: true\n"\
                 "version: '3.7'\n\n"
             with open(compose_dest, 'w') as override_file:
                 override_file.write(COMPOSE.format(**parameters["compose"]))
@@ -246,20 +242,21 @@ if __name__ == "__main__":
             PipelineServer.start({'log_level': 'INFO'})
             pipeline = PipelineServer.pipeline(pipeline_name, pipeline_version)
             source = {"uri":args.source, "type":"uri"}
-            frame_destination={}
-            if args.requested_rtsp_path:
-                frame_destination = {
-                    "type": "rtsp",
-                    "path": args.requested_rtsp_path
-                }
             destination = {
                 "metadata": {
                     "type":"mqtt",
                     "host":args.destination,
                     "topic":'edgex_bridge/'+args.topic
-                },
-                "frame": frame_destination
+                }
             }
+            if args.requested_rtsp_path:
+                frame_destination = {
+                    "frame": {
+                        "type": "rtsp",
+                        "path": args.requested_rtsp_path
+                    }
+                }
+                destination.update(frame_destination)
 
             pipeline.start(source=source, destination=destination, parameters=parameters)
             start_time = None

@@ -72,6 +72,7 @@ function launch { echo $@
 launch "$SAMPLE_DIR/../../docker/build.sh
   --framework gstreamer
   --create-service true $BASE_IMAGE $OMZ_VERSION
+  --force-model-download
   --models $SAMPLE_DIR/$MODELS
   --pipelines samples/edgex_bridge/$PIPELINES
   --tag $TAG_BASE
