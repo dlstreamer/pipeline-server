@@ -344,18 +344,18 @@ class GStreamerPipeline(Pipeline):
         return [element for element in pipeline.iterate_elements()
                 if element.__gtype__.name in type_strings]
 
-    def _set_model_proc(self):
+    def _set_model_property(self, property_name):
         gva_elements = [element for element in self.pipeline.iterate_elements() if (
             element.__gtype__.name in self.GVA_INFERENCE_ELEMENT_TYPES)]
         for element in gva_elements:
-            if not element.get_property("model-proc"):
-                proc = None
-                if element.get_property("model") in self.model_manager.model_procs:
-                    proc = self.model_manager.model_procs[element.get_property("model")]
-                if proc is not None:
-                    self._logger.debug("Setting model proc to {} for element {}".format(
-                        proc, element.get_name()))
-                    element.set_property("model-proc", proc)
+            if element.find_property(property_name) and not element.get_property(property_name):
+                if element.get_property("model") in self.model_manager.model_properties[property_name]:
+                    property_value = self.model_manager.model_properties[property_name][element.get_property("model")]
+                    if property_value is None:
+                        continue
+                    self._logger.debug("Setting {} to {} for element {}".format(
+                        property_name, property_value, element.get_name()))
+                    element.set_property(property_name, property_value)
 
     @staticmethod
     def validate_config(config):
@@ -504,7 +504,8 @@ class GStreamerPipeline(Pipeline):
                 self._set_properties()
                 self._set_bus_messages_flag()
                 self._set_default_models()
-                self._set_model_proc()
+                self._set_model_property("model-proc")
+                self._set_model_property("labels")
                 self._cache_inference_elements()
                 self._set_model_instance_id()
 

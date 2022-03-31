@@ -48,7 +48,8 @@ class ModelManager:
         self.model_dir = model_dir
         self.network_preference = network_preference
         self.models = defaultdict(dict)
-        self.model_procs = {}
+        self.model_properties = defaultdict(dict)
+
         if not self.network_preference:
             self.network_preference = {'CPU': ["FP32"],
                                        'HDDL': ["FP16"],
@@ -66,10 +67,10 @@ class ModelManager:
             raise Exception("Error Initializing Models")
 
 
-    def _get_model_proc(self, path):
-        candidates = fnmatch.filter(os.listdir(path), "*.json")
+    def _get_model_property(self, path, model_property, extension):
+        candidates = fnmatch.filter(os.listdir(path), "*.{}".format(extension))
         if (len(candidates) > 1):
-            raise Exception("Multiple model proc files found in %s" % (path,))
+            raise Exception("Multiple {} files found in {}".format(model_property, path))
         if (len(candidates) == 1):
             return os.path.abspath(os.path.join(path, candidates[0]))
         return None
@@ -169,7 +170,10 @@ class ModelManager:
                     version_path = os.path.join(model_path, version)
                     if (os.path.isdir(version_path)):
                         version = self.convert_version(version)
-                        proc = self._get_model_proc(version_path)
+                        proc = self._get_model_property(
+                            version_path, "model-proc", "json")
+                        labels = self._get_model_property(
+                            version_path, "labels", "txt")
                         if proc is None:
                             self.logger.info("Model {model}/{ver} is missing Model-Proc".format(
                                 model=model_name, ver=version))
@@ -178,15 +182,18 @@ class ModelManager:
                         if (networks):
                             for key in networks:
                                 networks[key].update({"proc": proc,
+                                                      "labels": labels,
                                                       "version": version,
                                                       "type": "IntelDLDT",
                                                       "description": model_name})
-                                self.model_procs[networks.get(key).get("network")] = proc
+                                self.model_properties["model-proc"][networks[key]["network"]] = proc
+                                self.model_properties["labels"][networks[key]["network"]] = labels
 
                             models[model_name][version] = ModelsDict(model_name,
                                                                      version,
                                                                      {"networks": networks,
                                                                       "proc": proc,
+                                                                      "labels" : labels,
                                                                       "version": version,
                                                                       "type": "IntelDLDT",
                                                                       "description": model_name
@@ -194,6 +201,7 @@ class ModelManager:
                             network_paths = {
                                 key: value["network"] for key, value in networks.items()}
                             network_paths["model-proc"] = proc
+                            network_paths["labels"] = labels
                             self.logger.info("Loading Model: {} version: {} "
                                              "type: {} from {}".format(
                                                  model_name, version, "IntelDLDT", network_paths))
@@ -226,11 +234,14 @@ class ModelManager:
 
         if "networks" in self.models[name][version]:
             proc = None
+            labels = None
             for _, value in self.models[name][version]['networks'].items():
                 proc = value['proc']
+                labels = value['labels']
                 break
             params_obj["networks"] = {
                 'model-proc': proc,
+                'labels' : labels,
                 'networks': {key: value['network']
                              for key, value
                              in self.models[name][version]['networks'].items()}}

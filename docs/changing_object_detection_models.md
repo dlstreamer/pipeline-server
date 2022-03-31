@@ -129,11 +129,11 @@ the end of the file.
 Expected output (abbreviated):
 
 ```
-[ SUCCESS ] Generated IR version 10 model.
-[ SUCCESS ] XML file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
-[ SUCCESS ] BIN file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
-[ SUCCESS ] Total execution time: 9.70 seconds.
-[ SUCCESS ] Memory consumed: 584 MB.
+[ SUCCESS ] Generated IR version 11 model.
+[ SUCCESS ] XML file: /tmp/tmp4u2kd1v9/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
+[ SUCCESS ] BIN file: /tmp/tmp4u2kd1v9/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
+[ SUCCESS ] Total execution time: 3.79 seconds.
+[ SUCCESS ] Memory consumed: 532 MB.
 
 Copied model_proc to: /output/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json
 ```
@@ -147,6 +147,7 @@ tree models
 models
 └── object_detection
     └── yolo-v2-tiny-tf
+        ├── coco-80cl.txt
         ├── FP16
         │   ├── yolo-v2-tiny-tf.bin
         │   ├── yolo-v2-tiny-tf.mapping

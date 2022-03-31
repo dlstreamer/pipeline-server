@@ -8,6 +8,7 @@
             "description": "object_classification",
             "name": "object_classification",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/object_classification/vehicle_attributes/vehicle-attributes-recognition-barrier-0039.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/object_classification/vehicle_attributes/FP16/vehicle-attributes-recognition-barrier-0039.xml",
@@ -21,6 +22,7 @@
             "description": "action_recognition",
             "name": "action_recognition",
             "networks": {
+                "labels": null,
                 "model-proc": null,
                 "networks": {
                     "FP16": "/home/pipeline-server/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
@@ -34,6 +36,7 @@
             "description": "action_recognition",
             "name": "action_recognition",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/action_recognition/decoder/action-recognition-0001.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
@@ -47,6 +50,7 @@
             "description": "emotion_recognition",
             "name": "emotion_recognition",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/emotion_recognition/1/emotions-recognition-retail-0003.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/emotion_recognition/1/FP16/emotions-recognition-retail-0003.xml",
@@ -60,6 +64,7 @@
             "description": "audio_detection",
             "name": "audio_detection",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/audio_detection/environment/aclnet.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/audio_detection/environment/FP16/aclnet.xml",
@@ -73,6 +78,7 @@
             "description": "object_detection",
             "name": "object_detection",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/object_detection/person_vehicle_bike/person-vehicle-bike-detection-crossroad-0078.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/object_detection/person_vehicle_bike/FP16/person-vehicle-bike-detection-crossroad-0078.xml",
@@ -86,6 +92,7 @@
             "description": "face_detection_retail",
             "name": "face_detection_retail",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/face_detection_retail/1/face-detection-retail-0004.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/face_detection_retail/1/FP16/face-detection-retail-0004.xml",
@@ -99,6 +106,7 @@
             "description": "object_detection",
             "name": "object_detection",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/object_detection/person/person-detection-retail-0013.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/object_detection/person/FP16/person-detection-retail-0013.xml",
@@ -112,6 +120,7 @@
             "description": "object_detection",
             "name": "object_detection",
             "networks": {
+                "labels": null,
                 "model-proc": "/home/pipeline-server/models/object_detection/vehicle/vehicle-detection-0202.json",
                 "networks": {
                     "FP16": "/home/pipeline-server/models/object_detection/vehicle/FP16/vehicle-detection-0202.xml",
