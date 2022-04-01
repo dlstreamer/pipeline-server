@@ -579,7 +579,7 @@ class GStreamerPipeline(Pipeline):
             if element_name in element.__gtype__.name.lower():
                 for paramspec in element.list_properties():
                     # Skipping adding of caps and params that aren't writable
-                    if paramspec.name == 'caps' or paramspec.flags != 227:
+                    if paramspec.name in ['caps', 'parent', 'name'] or paramspec.flags == 225:
                         continue
                     if add_defaults or paramspec.default_value != element.get_property(paramspec.name):
                         property_value = element.get_property(
