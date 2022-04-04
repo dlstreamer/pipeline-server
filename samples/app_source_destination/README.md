@@ -77,7 +77,7 @@ docker/build.sh
 docker/run.sh --dev
 ```
 ```
-openvino@host:~$ python3 samples/app_source_destination/app_source_destination.py
+pipeline-server@host:~$ python3 samples/app_source_destination/app_source_destination.py
 ```
 ```
 {"levelname": "INFO", "asctime": "2021-04-09 05:24:43,626", "message": "Creating Instance of Pipeline object_detection/app_src_dst", "module": "pipeline_manager"}

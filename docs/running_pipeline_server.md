@@ -276,11 +276,8 @@ Configure your host by downloading the [HDDL driver package](https://storage.ope
 
 ## Mixed Device
 Based on enabled hardware `MULTI`, `HETERO` and `AUTO` plugins are also supported.
-
 * `MULTI`: The Multi-Device plugin automatically assigns inference requests to available computational devices to execute the requests in parallel. Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_MULTI.html). Example Inference Device `MULTI:CPU,GPU`
-
 * `HETERO`: The heterogeneous plugin enables computing the inference of one network on several devices.Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_HETERO.html). Example Inference Device `HETERO:CPU,GPU`
-
 * `AUTO`: Use `AUTO` as the device name to delegate selection of an actual accelerator to OpenVINO<sup>&#8482;</sup>. Refer to OpenVINO<sup>&#8482;</sup> [documentation](https://docs.openvino.ai/latest/openvino_docs_IE_DG_supported_plugins_AUTO.html). Example Inference Device `AUTO`
 
 # Developer Mode
@@ -304,6 +301,7 @@ Developer mode:
 * Uses the docker option `--network=host`. All ports and network interfaces for the host are shared with the container.
 * Uses the docker option `--privileged`. Operates the container with elevated privileges.
 
+
 ### Intel(R) DL Streamer based Image in Developer Mode
 **Example:**
 
@@ -313,6 +311,9 @@ docker/run.sh --dev
 ```
 pipeline-server@my-host:~$ python3 -m server
 ```
+
+By default, the running user's UID value determines user name inside the container. A UID of 1001 is assigned as `pipeline-server`. For other UIDs, you may see `I have no name!@my-host`. 
+To run as another user, you can add `--user <user_name>` to the run command.  i.e. to add pipeline-server by name use add `--user pipeline-server`
 
 ---
 \* Other names and brands may be claimed as the property of others.
