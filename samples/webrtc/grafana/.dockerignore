@@ -1,0 +1,3 @@
+# Avoid issues with container-specific assignment of user permissions
+grafana-storage/**/*
+grafana-storage

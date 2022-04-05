@@ -44,9 +44,19 @@ RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* || ${PIP
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
+    gstreamer1.0-nice \
     python3-pip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;
+
+# Only install gst-plugins-good if missing from OpenVINO
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"dlstreamer"* ]]; then \
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    gstreamer1.0-plugins-good && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;\
+    fi
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get upgrade -y -q && \
@@ -121,6 +131,14 @@ FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline
 ONBUILD COPY ./requirements.service.txt /
 ONBUILD RUN pip3 install  --no-cache-dir -r /requirements.service.txt
 ONBUILD RUN rm -f /requirements.service.txt
+
+# WebRTC specific dependencies installed via pip
+ONBUILD COPY ./requirements.webrtc.txt /
+ONBUILD RUN if [[ ${FRAMEWORK} == "gstreamer" ]]; then \
+       pip3 install  --no-cache-dir -r /requirements.webrtc.txt; \
+   fi
+ONBUILD RUN rm -f /requirements.webrtc.txt
+
 ONBUILD ENTRYPOINT ["python3", "-m", "server"]
 
 FROM ${FINAL_STAGE} as deploy
@@ -128,6 +146,7 @@ FROM ${FINAL_STAGE} as deploy
 ARG USER=pipeline-server
 
 ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server
+ENV GST_PLUGIN_PATH=$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/
 
 # Prepare XDG_RUNTIME_DIR
 ENV XDG_RUNTIME_DIR=/home/.xdg_runtime_dir

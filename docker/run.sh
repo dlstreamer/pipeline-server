@@ -24,7 +24,8 @@ USER=
 INTERACTIVE=-it
 DEVICE_CGROUP_RULE=
 USER_GROUPS=
-ENABLE_RTSP=
+ENABLE_RTSP=${ENABLE_RTSP:-"false"}
+ENABLE_WEBRTC=${ENABLE_WEBRTC:-"false"}
 RTSP_PORT=8554
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
@@ -69,6 +70,7 @@ show_help() {
   echo "  [--device device to pass to docker run]"
   echo "  [--enable-rtsp To enable rtsp re-streaming]"
   echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
+  echo "  [--enable-webrtc To enable WebRTC frame destination]"
   echo "  [--dev run in developer mode]"
   exit 0
 }
@@ -262,6 +264,9 @@ while [[ "$#" -gt 0 ]]; do
     --enable-rtsp)
         ENABLE_RTSP=true
         ;;
+    --enable-webrtc)
+        ENABLE_WEBRTC=true
+        ;;
     --non-interactive)
         unset INTERACTIVE
         ;;
@@ -326,9 +331,13 @@ fi
 
 enable_hardware_access
 
-if [ ! -z "$ENABLE_RTSP" ]; then
-    ENVIRONMENT+="-e ENABLE_RTSP=true -e RTSP_PORT=$RTSP_PORT "
+if [ "$ENABLE_RTSP" != "false" ]; then
+    ENVIRONMENT+="-e ENABLE_RTSP=$ENABLE_RTSP -e RTSP_PORT=$RTSP_PORT "
     PORTS+="-p $RTSP_PORT:$RTSP_PORT "
+fi
+
+if [ "$ENABLE_WEBRTC" != "false" ]; then
+    ENVIRONMENT+="-e ENABLE_WEBRTC=$ENABLE_WEBRTC "
 fi
 
 if [ ! -z "$MODELS" ]; then

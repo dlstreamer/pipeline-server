@@ -40,6 +40,13 @@ RTSP_TEMPLATE = {
         "path": ""
     }
 }
+WEBRTC_TEMPLATE = {
+    "frame": {
+        "type": "webrtc",
+        "peer-id": ""
+    }
+}
+
 SERVER_CONNECTION_FAILURE_MESSAGE = "Unable to connect to server, check if the pipeline-server microservice is running"
 
 def html_handle_data(self, data):
@@ -202,6 +209,10 @@ def update_request_options(request,
         rtsp_template = RTSP_TEMPLATE
         rtsp_template['frame']['path'] = args.rtsp_path
         request['destination'].update(rtsp_template)
+    if hasattr(args, 'webrtc_peer_id') and args.webrtc_peer_id:
+        webrtc_template = WEBRTC_TEMPLATE
+        webrtc_template['frame']['peer-id'] = args.webrtc_peer_id
+        request['destination'].update(webrtc_template)
     if hasattr(args, 'request_file') and args.request_file:
         with open(args.request_file, 'r') as request_file:
             request.update(json.load(request_file))

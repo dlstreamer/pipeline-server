@@ -1,0 +1,6 @@
+# Avoid issues with container-specific assignment of user permissions
+samples/webrtc/grafana/grafana-storage/**/*
+samples/webrtc/grafana/grafana-storage
+samples/webrtc/webserver/www/js-client/**/*
+samples/webrtc/webserver/www/js-client
+

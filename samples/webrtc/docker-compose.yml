@@ -1,0 +1,106 @@
+#
+# Copyright (C) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+version: "3"
+
+services:
+
+  pipeline_server:
+    image: dlstreamer-pipeline-server-gstreamer:latest
+    hostname: pipeline_server
+    container_name: pipeline_server
+    environment:
+      - ENABLE_WEBRTC=true
+      - WEBRTC_SIGNALING_SERVER=ws://webrtc_signaling_server:8443
+      - no_proxy=$no_proxy
+      - http_proxy=$http_proxy
+      - https_proxy=$https_proxy
+      - LOG_LEVEL=DEBUG
+    depends_on:
+      - webrtc_signaling_server
+      - webrtc_webserver
+    ports:
+      - '8080:8080'
+    networks:
+      - app_network
+    volumes:
+      - /tmp:/tmp
+    user: $USER_ID:$GROUP_ID
+
+  webrtc_signaling_server:
+    build: ./signaling
+    image: webrtc_signaling_server:latest
+    hostname: webrtc_signaling_server
+    container_name: webrtc_signaling_server
+    environment:
+      - no_proxy=$no_proxy
+      - http_proxy=$http_proxy
+      - https_proxy=$https_proxy
+    ports:
+      - '8443:8443'
+    networks:
+      - app_network
+    entrypoint: /opt/start.sh
+
+  webrtc_webserver:
+    build: ./webserver
+    image: webrtc_webserver:latest
+    hostname: webrtc_webserver
+    container_name: webrtc_webserver
+    environment:
+      - no_proxy=$no_proxy
+      - http_proxy=$http_proxy
+      - https_proxy=$https_proxy
+      - NGINX_PORT=80
+      - NGINX_HOST=localhost
+    ports:
+      - '8082:80'
+    networks:
+      - app_network
+    user: root
+
+  webrtc_grafana:
+    build: ./grafana
+    image: webrtc_grafana:latest
+    hostname: webrtc_grafana
+    container_name: webrtc_grafana
+    depends_on:
+      - pipeline_server
+    ports:
+      - '3222:3000'
+    networks:
+      - app_network
+    cap_drop:
+      - NET_ADMIN
+      - SYS_ADMIN
+      - SYS_MODULE
+    user: '472:0'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    security_opt:
+      - apparmor:unconfined
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 2m30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  grafana-storage:
+    driver: local
+    driver_opts:
+      type: local
+      o: bind
+      device: $PWD/grafana/grafana-storage/
+
+networks:
+  app_network:
+    driver: "bridge"

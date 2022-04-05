@@ -429,7 +429,7 @@ fi
 cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
-if [[ "$BASE_IMAGE" == *"openvino/"* ]]; then
+if [[ "$BASE_IMAGE" == *"openvino/"* || "$BASE_IMAGE" == *"dlstreamer"* ]]; then
     $RUN_PREFIX docker run -t --rm --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi

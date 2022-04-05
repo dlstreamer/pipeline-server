@@ -185,6 +185,8 @@ For example, if you'd like to set `ntp-sync` property of the `rtspsrc` element t
 ## Destination
 Pipelines can be configured to output `frames`, `metadata` or both. The destination object within the request contains sections to configure each.
 
+> Note: Destinations are optional and you may supply up to one frame and/or metadata specification per request.
+
 - Metadata (inference results)
 - Frame
 
@@ -354,10 +356,26 @@ Steps to run Kafka:
    ```
 
 ### Frame
-Frame is another aspect of destination and it can be set to RTSP.
+Frame is another type of destination and it can be set to request RTSP or WebRTC output from Pipeline Server.
 
 #### RTSP
-RTSP is a type of frame destination supported. The following are available properties:
+RTSP is a type of frame destination supported.
+
+##### Request RTSP Frame Output
+RTSP must be enabled for these request parameters to be accepted. For more information, see [RTSP re-streaming](running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming)
+1. Start a pipeline with Pipeline Server Client to request a frame destination type set as rtsp and custom path set. For demonstration, path set as `person-detection` in example request below.
+   ```bash
+   ./client/pipeline_client.sh --quiet start \
+   --server-address http://localhost:8080 \
+   "object_detection/person_vehicle_bike" \
+   "https://github.com/intel-iot-devkit/sample-videos/blob/master/face-demographics-walking-and-pause.mp4?raw=true" \
+   --rtsp-path "person-detection"
+    ```
+2. Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect to the RTSP server.
+3. Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+
+##### RTSP Destination Parameters
+Use the following parameters to customize the request:
 - type : "rtsp"
 - path (required): custom string to uniquely identify the stream
 - cache-length (default 30): number of frames to buffer in rtsp pipeline.
@@ -365,7 +383,44 @@ RTSP is a type of frame destination supported. The following are available prope
 - sync-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
 - sync-with-destination (default True): block processing pipeline if rtsp pipeline is blocked.
 
-For more information, see [RTSP re-streaming](running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming)
+> **Note:** If the RTSP stream playback is choppy this may be due to
+> network bandwidth. Decreasing the encoding-quality or increasing the
+> cache-length can help.
+
+#### WebRTC
+WebRTC is a type of frame destination supported.
+
+##### Request WebRTC Frame Output
+WebRTC must be enabled for these request parameters to be accepted. For more information, see [WebRTC streaming](running_pipeline_server.md#web-real-time-communication-webrtc)
+1. Start a pipeline with Pipeline Server Client to request a frame destination type set as WebRTC and unique `peer-id` value set. For demonstration, peer-id is set as `person_detection_001` in example request below.
+   ```bash
+   ./client/pipeline_client.sh --quiet start \
+   --server-address http://localhost:8080 \
+   object_detection/person_vehicle_bike \
+   https://github.com/intel-iot-devkit/sample-videos/blob/master/face-demographics-walking-and-pause.mp4?raw=true \
+   --webrtc-peer-id person_detection_001
+    ```
+    ```text
+    <snip>
+    e98dae1caf7511ecaaf90242ac170004
+    ```
+2. Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect the WebRTC peer.
+3. View the pipeline stream in your browser with url `http://localhost:8082/?destination_peer_id=person_detection_001&instance_id=e98dae1caf7511ecaaf90242ac170004` where the value of `destination_peer_id` query parameter matches the `--webrtc-peer-id` provided in the request from step 1 and the value of `instance_id` is produced in the response from step 1.
+
+##### WebRTC Destination Parameters
+Use the following parameters to customize the request:
+- type : "webrtc"
+- peer-id (required): custom string to uniquely identify the stream. May contain alphanumeric or underscore `_` characters only.
+- cache-length (default 30): number of frames to buffer in WebRTC pipeline.
+- cq-level (default 10): vp8 constrained encoding quality level (0 - 63). Lower values increase compression but sacrifice quality. Explanation and related details found on this [encoder parameter guide](https://www.webmproject.org/docs/encoder-parameters/).
+- sync-with-source (default True): rate limit processing pipeline to encoded frame rate (e.g. 30 fps)
+- sync-with-destination (default True): block processing pipeline if WebRTC pipeline is blocked.
+
+> **Note:** If WebRTC stream playback is choppy this may be due to
+> network bandwidth. Decreasing the encoding-quality or increasing the
+> cache-length can help.
+
+> **Note:** Providing an invalid value to Pipeline Client for `--webrtc-peer-id` will output a 400 "Invalid Destination" error.
 
 ## Parameters
 Pipeline parameters as specified in the pipeline definition file, can be set in the REST request.

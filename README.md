@@ -278,6 +278,18 @@ ERROR (0fps)
 
 ## Real Time Streaming Protocol (RTSP)
 
+### RTSP/RTP/SDP/RTCP Protocols
+
+[Real Time Streaming Protocol (RTSP)](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) is a standards based definition for rendering media output and facilitating **control** of stream activities (e.g., play, pause, rewind) by negotiating with remote clients about how data is to be authorized, packaged and streamed. However, RTSP is not responsible for transporting media data.
+
+The actual **transfer** of the media data is governed by [Realtime Transport Protocol (RTP)](https://en.wikipedia.org/wiki/Real-time_Transport_Protocol). RTP is essentially wrapping UDP to provide a level of reliability. As you may know UDP is faster and supports more distributed transmission than TCP but it's prone to untracked packet loss. RTP works via UDP but tracks the missed packets for a more robust client experienced; e.g., if packet is lost for H264 packet transfer, the client may request a full I frame from the server.
+
+The [Session Description Protocol (SDP)](https://en.wikipedia.org/wiki/Session_Description_Protocol) is used by RTSP as a standardized way to understand session level **parameters** of the media stream (e.g., URI, session name, date/time session is available, etc.).
+
+Real Time Control Protocol (RTCP) collects RTP **statistics** that are needed to measure throughput of streaming sessions.
+
+### How to Enable RTSP
+
 RTSP allows you to connect to a server and display a video stream. The Pipeline Server includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/). For this example we'll assume the Pipeline Server and vlc are running on the same host.
 
 First start the Pipeline Server with RTSP enabled. By default, the RTSP stream will use port 8554.
@@ -304,6 +316,8 @@ Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL 
 > **Note:** The pipeline must be running before you hit play otherwise VLC will not be able to connect to the RTSP server.
 
 > **Note:** For shorter video files you should have VLC ready to go before starting pipeline otherwise by the time you hit play the pipeline will have completed and the RTSP server will have shut down.
+
+> **Note:** Depending on your use case, also consider rendering output using Pipeline Server's [WebRTC frame destination](/samples/webrtc/README.md).
 
 # Request Customizations
 

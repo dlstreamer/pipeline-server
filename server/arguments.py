@@ -46,7 +46,14 @@ def parse_options(args=None):
                         default=bool(util.strtobool(os.getenv('ENABLE_RTSP', 'false'))))
     parser.add_argument("--rtsp-port", action="store", type=int,
                         dest="rtsp_port", default=int(os.getenv('RTSP_PORT', '8554')))
-
+    parser.add_argument("--enable-webrtc",
+                        dest="enable_webrtc",
+                        action="store",
+                        type=lambda x: bool(util.strtobool(x)),
+                        default=bool(util.strtobool(os.getenv('ENABLE_WEBRTC', 'false'))))
+    parser.add_argument("--webrtc-signaling-server", action="store",
+                        dest="webrtc_signaling_server",
+                        default=os.getenv('WEBRTC_SIGNALING_SERVER', 'ws://webrtc_signaling_server:8443'))
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)

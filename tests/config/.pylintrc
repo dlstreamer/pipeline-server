@@ -319,6 +319,7 @@ good-names=x,
            j,
            k,
            ex,
+           ws,
            Run,
            _
 
@@ -447,7 +448,8 @@ ignore-on-opaque-inference=yes
 # qualified names.
 ignored-classes=optparse.Values,thread._local,_thread._local,
                 extension__pb2.MediaStreamMessage,MediaStreamMessage,
-                VideoFrameSampleFormat,Entity
+                VideoFrameSampleFormat,Entity,
+                AppSrc,AppSink
 
 
 # List of module names for which member attributes should not be checked

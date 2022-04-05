@@ -299,9 +299,42 @@ destination = {
                 "path"
             ]
         },
+        "webrtc": {
+            "type":"object",
+            "properties": {
+                "type": {
+                    "type":"string",
+                    "enum":["webrtc"]
+                },
+                "peer-id": {
+                    "type":"string",
+                    "minLength": 1,
+                    "pattern" : "^[a-zA-Z0-9][a-zA-Z0-9_]*[a-zA-Z0-9]$"
+                },
+                "cache-length": {
+                    "type":"integer"
+                },
+                "sync-with-source": {
+                    "type":"boolean"
+                },
+                "sync-with-destination":{
+                    "type":"boolean"
+                },
+                "encode-cq-level":{
+                    "type":"integer"
+                }
+            },
+            "required": [
+                "type",
+                "peer-id"
+            ]
+        },
         "oneOf": [
             {
                 "$ref": "#/rtsp"
+            },
+            {
+                "$ref": "#/webrtc"
             }
         ]
     },

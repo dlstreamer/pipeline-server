@@ -162,50 +162,19 @@ docker/run.sh --enable-rtsp
 ```
 > **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
 
-### Connect and visualize
-> **Note:** Leverage REST client when available.
 
-*  Start a pipeline with curl request with frame destination set as rtsp and custom path set. For demonstration, path set as `person-detection` in example request below.
+# Web Real Time Communication (WebRTC)
+> **Note:** WebRTC streaming is supported only in Intel(R) DL Streamer based Microservice.
+
+The Pipeline Server contains support for [WebRTC](https://en.wikipedia.org/wiki/WebRTC) that allows viewing from any system on the current network right within your browser. This is enabled using an HTML5 video player and JavaScript APIs in the browser to negotiate with Pipeline Server. With these prerequisites provided as dependent microservices, it makes a very low bar for clients to render streams that show what is being detected by the running pipeline. This allows a user to connect and visualize input video with superimposed bounding boxes by navigating to a webserver that hosts the page with HTML5 video player and backed by JavaScript APIs. Has been tested with Chrome and Firefox, though [other browsers](https://html5test.com) are also supported.
+
+### Enable WebRTC in service
 ```bash
-curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
-'Content-Type: application/json' -d \
-'{
-  "source": {
-    "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
-    "type": "uri"
-  },
-  "destination": {
-    "metadata": {
-      "type": "file",
-      "path": "/tmp/results.txt",
-      "format": "json-lines"
-    },
-    "frame": {
-      "type": "rtsp",
-      "path": "person-detection"
-    }
-  }
-}'
+docker/run.sh --enable-webrtc
 ```
-*  Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect to the RTSP server.
-*  Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+> **Note:** WebRTC support starts at service start-up for all pipelines. It _requires_ a WebRTC signaling server container running on port 8443 and a web server container running on port 8082.
 
-### RTSP destination params.
-
-> **Note:** If the RTSP stream playback is choppy this may be due to
-> network bandwidth. Decreasing the encoding-quality or increasing the
-> cache-length can help.
-
-```bash
-"frame": {
-  "type": "rtsp",
-  "path" : <custom rtsp path>(required. When path already exists, throws error),
-  "cache-length": (default 30) number of frames to buffer in rtsp pipeline.
-  "encoding-quality": (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
-  "sync-with-source": (default True) process media at the encoded frame rate (e.g. 30 fps)
-  "sync-with-destination": (default True) block processing pipeline if rtsp pipeline is blocked.
-}
-```
+For details and launch instructions for prerequisites, refer to our [WebRTC sample](/samples/webrtc/README.md).
 
 # Selecting Pipelines and Models at Runtime
 

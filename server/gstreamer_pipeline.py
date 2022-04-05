@@ -15,13 +15,15 @@ import gi
 gi.require_version('Gst', '1.0')
 gi.require_version('GstApp', '1.0')
 # pylint: disable=wrong-import-position
-from gi.repository import GLib, Gst, GstApp  # pylint: disable=unused-import
+from gi.repository import GLib, Gst, GstApp
 from server.app_destination import AppDestination
 from server.app_source import AppSource
 from server.common.utils import logging
 from server.pipeline import Pipeline
-from server.rtsp.gstreamer_rtsp_destination import GStreamerRtspDestination # pylint: disable=unused-import
+from server.rtsp.gstreamer_rtsp_destination import GStreamerRtspDestination
 from server.rtsp.gstreamer_rtsp_server import GStreamerRtspServer
+from server.webrtc.gstreamer_webrtc_destination import GStreamerWebRTCDestination
+from server.webrtc.gstreamer_webrtc_manager import GStreamerWebRTCManager
 # pylint: enable=wrong-import-position
 
 class GStreamerPipeline(Pipeline):
@@ -51,6 +53,7 @@ class GStreamerPipeline(Pipeline):
     _mainloop = None
     _mainloop_thread = None
     _rtsp_server = None
+    _webrtc_manager = None
     CachedElement = namedtuple("CachedElement", ["element", "pipelines"])
 
     @staticmethod
@@ -68,7 +71,6 @@ class GStreamerPipeline(Pipeline):
         self.identifier = identifier
         self.pipeline = None
         self.template = config['template']
-        self.models = model_manager.models
         self.model_manager = model_manager
         self.request = request
         self._auto_source = None
@@ -105,14 +107,14 @@ class GStreamerPipeline(Pipeline):
                 target=GStreamerPipeline.gobject_mainloop)
             GStreamerPipeline._mainloop_thread.daemon = True
             GStreamerPipeline._mainloop_thread.start()
-
-        if (options.enable_rtsp and not GStreamerPipeline._rtsp_server):
-            GStreamerPipeline._rtsp_server = GStreamerRtspServer(options.rtsp_port)
-            GStreamerPipeline._rtsp_server.start()
-
+        if options:
+            if (options.enable_rtsp and not GStreamerPipeline._rtsp_server):
+                GStreamerPipeline._rtsp_server = GStreamerRtspServer(options.rtsp_port)
+                GStreamerPipeline._rtsp_server.start()
+            if (options.enable_webrtc and not GStreamerPipeline._webrtc_manager):
+                GStreamerPipeline._webrtc_manager = GStreamerWebRTCManager(options.webrtc_signaling_server)
         self.rtsp_server = GStreamerPipeline._rtsp_server
-
-
+        self.webrtc_manager = GStreamerPipeline._webrtc_manager
 
     @staticmethod
     def mainloop_quit():
@@ -122,13 +124,16 @@ class GStreamerPipeline(Pipeline):
             # Avoids hang or segmentation fault on pipeline_server.stop()
             del GStreamerPipeline._rtsp_server
             GStreamerPipeline._rtsp_server = None
+        if (GStreamerPipeline._webrtc_manager):
+            GStreamerPipeline._webrtc_manager.stop()
+            GStreamerPipeline._webrtc_manager = None
         if (GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop.quit()
             GStreamerPipeline._mainloop = None
         if (GStreamerPipeline._mainloop_thread):
             GStreamerPipeline._mainloop_thread = None
 
-    def _verify_and_set_rtsp_destination(self):
+    def _verify_and_set_frame_destinations(self):
         destination = self.request.get("destination", {})
         frame_destination = destination.get("frame", {})
         frame_destination_type = frame_destination.get("type", None)
@@ -139,13 +144,22 @@ class GStreamerPipeline(Pipeline):
             if not self.rtsp_path.startswith('/'):
                 self.rtsp_path = "/" + self.rtsp_path
             self.rtsp_server.check_if_path_exists(self.rtsp_path)
-            frame_destination["class"] = "GStreamerRtspDestination"
+            frame_destination["class"] = GStreamerRtspDestination.__name__
             rtsp_destination = AppDestination.create_app_destination(self.request, self, "frame")
             if not rtsp_destination:
                 raise Exception("Unsupported Frame Destination: {}".format(
                     frame_destination["class"]))
             self._app_destinations.append(rtsp_destination)
-
+        if frame_destination_type == "webrtc":
+            self._logger.info("Request assigned webrtc frame destination {dest}".format(
+                dest=json.dumps(frame_destination)))
+            if (not self.appsink_element):
+                raise Exception("Pipeline does not support Frame Destination")
+            frame_destination["class"] = GStreamerWebRTCDestination.__name__
+            webrtc_destination = AppDestination.create_app_destination(self.request, self, "frame")
+            if not webrtc_destination:
+                raise Exception("Unsupported Frame Destination: {}".format(frame_destination["class"]))
+            self._app_destinations.append(webrtc_destination)
 
     def _delete_pipeline(self, new_state):
         self._cal_avg_fps()
@@ -364,11 +378,13 @@ class GStreamerPipeline(Pipeline):
         if GStreamerPipeline.SOURCE_ALIAS in field_names:
             template = template.replace("{"+ GStreamerPipeline.SOURCE_ALIAS +"}", "fakesrc")
         pipeline = Gst.parse_launch(template)
-        appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSink"])
+        logger = logging.get_logger('GSTPipeline', is_static=True)
+        logger.info("Validating pipeline elements of type {} and {}".format(GstApp.AppSrc.__gtype__.name,
+                                                                            GstApp.AppSink.__gtype__.name))
+        appsink_elements = GStreamerPipeline._get_elements_by_type(pipeline, [GstApp.AppSink.__gtype__.name])
         metaconvert = pipeline.get_by_name("metaconvert")
         metapublish = pipeline.get_by_name("destination")
-        appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline, ["GstAppSrc"])
-        logger = logging.get_logger('GSTPipeline', is_static=True)
+        appsrc_elements = GStreamerPipeline._get_elements_by_type(pipeline, [GstApp.AppSrc.__gtype__.name])
         if (len(appsrc_elements) > 1):
             logger.warning("Multiple appsrc elements found")
         if len(appsink_elements) != 1:
@@ -482,9 +498,28 @@ class GStreamerPipeline(Pipeline):
             instance_id = name + "_" + str(self.identifier)
             element.set_property(model_instance_id, instance_id)
 
-    def start(self):
+    def _set_source_and_sink(self):
+        src = self._get_any_source()
+        if self._auto_source and src.__gtype__.name in self.GST_ELEMENTS_WITH_SOURCE_SETUP:
+            src.connect("source_setup", self.source_setup_callback, src)
+        sink = self.pipeline.get_by_name("appsink")
+        if (not sink):
+            sink = self.pipeline.get_by_name("sink")
+        if src and sink:
+            src_pad = src.get_static_pad("src")
+            if (src_pad):
+                src_pad.add_probe(Gst.PadProbeType.BUFFER,
+                                    GStreamerPipeline.source_probe_callback, self)
+            else:
+                src.connect(
+                    "pad-added", GStreamerPipeline.source_pad_added_callback, self)
+            sink_pad = sink.get_static_pad("sink")
+            sink_pad.add_probe(Gst.PadProbeType.BUFFER,
+                                GStreamerPipeline.appsink_probe_callback, self)
 
-        self.request["models"] = self.models
+    def start(self):
+        if self.model_manager:
+            self.request["models"] = self.model_manager.models
         field_names = [fname for _, fname, _, _ in string.Formatter().parse(self.template)]
         if self.SOURCE_ALIAS in field_names:
             self._set_auto_source()
@@ -508,25 +543,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_model_property("labels")
                 self._cache_inference_elements()
                 self._set_model_instance_id()
-
-                src = self._get_any_source()
-                if self._auto_source and src.__gtype__.name in self.GST_ELEMENTS_WITH_SOURCE_SETUP:
-                    src.connect("source_setup", self.source_setup_callback, src)
-
-                sink = self.pipeline.get_by_name("appsink")
-                if (not sink):
-                    sink = self.pipeline.get_by_name("sink")
-                if src and sink:
-                    src_pad = src.get_static_pad("src")
-                    if (src_pad):
-                        src_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                          GStreamerPipeline.source_probe_callback, self)
-                    else:
-                        src.connect(
-                            "pad-added", GStreamerPipeline.source_pad_added_callback, self)
-                    sink_pad = sink.get_static_pad("sink")
-                    sink_pad.add_probe(Gst.PadProbeType.BUFFER,
-                                       GStreamerPipeline.appsink_probe_callback, self)
+                self._set_source_and_sink()
 
                 bus = self.pipeline.get_bus()
                 bus.add_signal_watch()
@@ -542,6 +559,9 @@ class GStreamerPipeline(Pipeline):
                 self._set_application_source()
                 self._set_application_destination()
                 self._log_launch_string()
+
+                if "prepare-pads" in self.config:
+                    self.config["prepare-pads"](self.pipeline)
 
                 self.pipeline.set_state(Gst.State.PLAYING)
                 self.start_time = time.time()
@@ -596,11 +616,11 @@ class GStreamerPipeline(Pipeline):
     def _set_application_destination(self):
         self.appsink_element = None
 
-        app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, ["GstAppSink"])
+        app_sink_elements = GStreamerPipeline._get_elements_by_type(self.pipeline, [GstApp.AppSink.__gtype__.name])
         if (app_sink_elements):
             self.appsink_element = app_sink_elements[0]
 
-        self._verify_and_set_rtsp_destination()
+        self._verify_and_set_frame_destinations()
 
         destination = self.request.get("destination", None)
         if destination and "metadata" in destination and destination["metadata"]["type"] == "application":
@@ -648,7 +668,7 @@ class GStreamerPipeline(Pipeline):
 
             appsrc_element = self.pipeline.get_by_name("source")
 
-            if (appsrc_element) and (appsrc_element.__gtype__.name == "GstAppSrc"):
+            if (appsrc_element) and (appsrc_element.__gtype__.name == GstApp.AppSrc.__gtype__.name):
                 self.appsrc_element = appsrc_element
 
             self._app_source = AppSource.create_app_source(self.request, self)

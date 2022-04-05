@@ -53,6 +53,7 @@ def add_request_arguments(parser):
     parser.add_argument('--destination', action='append', nargs=2, metavar=('key', 'value'), type=str, \
         help='Update destination information with key and value pair')
     parser.add_argument('--rtsp-path', type=str, help='RTSP endpoint path')
+    parser.add_argument('--webrtc-peer-id', type=str, help='WebRTC server side peer id')
     parser.add_argument('--parameter', action='append', nargs=2, metavar=('key', 'value'), type=get_typed_value, \
         dest='parameters', help='Update request parameter with key and value pair')
     parser.add_argument('--parameter-file', type=str, dest='parameter_file', help='Update request parameter \
