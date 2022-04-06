@@ -30,6 +30,6 @@ launch "$WORK_DIR/haproxy/deploy.sh"
 
 if [ "$RUN_HAPROXY_BACKGROUND" == "true" ]; then
     echo "Running process to check for pipeline-server changes in the background"
-    PIPELINE_SERVER_PODS=$(microk8s kubectl get pods | grep pipeline-server | awk '{ print $1 }')
+    PIPELINE_SERVER_PODS=$(microk8s kubectl get pods | grep "pipeline-server.*worker" | awk '{ print $1 " " $4}')
     nohup $WORK_DIR/haproxy/check_for_changes.sh "$PIPELINE_SERVER_PODS" >/dev/null 2>&1 &
 fi

@@ -14,9 +14,6 @@ function launch { $@
     return $exit_code
 }
 
-echo "Creating proxy config map using host system proxy settings"
-"$WORK_DIR/create-proxy-configmap.sh"
-
 echo "Deploying Intel GPU device plugin "
 launch microk8s kubectl apply -k https://github.com/kubernetes-sigs/node-feature-discovery/deployment/overlays/default?ref=v0.10.1
 launch microk8s kubectl apply -k https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.23.0
@@ -43,7 +40,7 @@ sleep 10
 
 not_running=0
 for (( i=0; i<25; ++i)); do
-    not_running=$(microk8s kubectl get pods | grep "pipeline-server" | grep -vE 'Running' | wc -l)
+    not_running=$(microk8s kubectl get pods | grep "pipeline-server.*worker" | grep -vE 'Running' | wc -l)
     echo "Waiting for Pipeline Server instances to start......."
     if [ $not_running == 0 ]; then
         echo "All Pipeline Server instances are up and running"

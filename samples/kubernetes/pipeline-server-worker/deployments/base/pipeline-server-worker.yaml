@@ -21,9 +21,6 @@ spec:
             - containerPort: 8080
             - containerPort: 3333
             - containerPort: 4444
-          envFrom:
-            - configMapRef:
-                name: proxy-config
           env:
             - name: TARGET_FPS
               value: "30"

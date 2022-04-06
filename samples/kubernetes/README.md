@@ -1,12 +1,12 @@
 # Kubernetes Deployment with Load Balancing
 
-| [Installing Microk8s](#installing-microk8s) | [Adding Initial Nodes](#adding-initial-nodes-to-the-cluster) | [Building and Deploying Services](#building-and-deploying-services-to-the-cluster) | [Adding Nodes to Existing Deployment](#adding-nodes-to-an-existing-deployment) | [Sending Requests](#sending-pipeline-server-requests-to-the-cluster) | [Uninstalling](#uninstalling) | [Examples](#examples) | [Useful Commands](#useful-commands) | [Limitations](#limitations) |
+| [Definition](#definitions) | [Prerequisites](#prerequisites) | [Building and Deploying Services](#building-and-deploying-services-to-the-cluster) | [Sending Requests](#sending-pipeline-server-requests-to-the-cluster) | [Adding Nodes to Existing Deployment](#adding-nodes-to-an-existing-deployment) | [Examples](#examples) | [Limitations](#limitations) | [Undeploy Services](#undeploy-services) | [Useful Commands](#useful-commands) |
 
 This sample demonstrates how to set up a Kubernetes cluster using MicroK8s, how to deploy Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server to the cluster, and how to use HAProxy to load balance requests.
 
 ![diagram](./kubernetes-diagram.svg)
 
-### Definitions
+## Definitions
 
 | Term | Definition |
 |---|---|
@@ -20,244 +20,13 @@ This sample demonstrates how to set up a Kubernetes cluster using MicroK8s, how 
 | Pod  | The smallest deployable unit of computing in a Kubernetes cluster, typically a single container. |
 | leader-ip | Host IP address of Leader. |
 
-### Prerequisites
-
-The following steps, installation and deployment scripts have been tested on Ubuntu 20.04. Other operating systems may have additional requirements and are beyond the scope of this document.
-
-## Installing MicroK8s
-
-For each node that will be in the cluster run the following commands to install MicroK8s along with its dependencies. These steps must be performed on each node individually. Please review the contents of [microk8s/install.sh](microk8s/install.sh) and [microk8s/install_addons.sh](./microk8s/install_addons.sh) as these scripts will install additional components on your system as well as make changes to your groups and environment variables.
-
-### Step 1: Install MicroK8s Base
-
-#### Command
-```bash
-cd ./samples/kubernetes
-sudo -E ./microk8s/install.sh
-```
-
-#### Expected Output
-```text
-<snip>
-Assigning <user name> to microk8s group
-```
-
-### Step 2: Activate Group Membership
-
-Your user is now a member of a newly added 'microk8s' group. However, the current terminal session will not be aware of this until you issue this command:
-
-#### Command
-
-```bash
-newgrp microk8s
-groups | grep microk8s
-```
-
-#### Expected Output
-```text
-<snip> microk8s <snip>
-```
-
-### Step 3: Install MicroK8s Add-Ons
-
-Next we need to install add-on components into the cluster. These enable docker registry and dns.
-
-#### Command
-
-```bash
-./microk8s/install_addons.sh
-```
-
-Note that this script may take **several minutes** to complete.
-
-#### Expected Output
-
-```text
-Started.
-Metrics-Server is enabled
-DNS is enabled
-Ingress is enabled
-Metrics-Server is enabled
-DNS is enabled
-The registry is enabled
-```
-
-### Step 4: Wait for Kubernetes System Pods to Reach Running State
-
-At this point we need to wait for the Kubernetes system pods to reach the running state. This may take a few minutes.
-
-Check that the installation was successful by confirming `STATUS` is `Running` for all pods. Pods will cycle through `ContainerCreating`, `Pending`, and `Waiting` states but all should eventually reach the `Running` state. After a few minutes if all pods do not reach the `Running` state refer to [application cluster troubleshooting tips](https://kubernetes.io/docs/tasks/debug-application-cluster/debug-pod-replication-controller/) for more help.
-
-> Troubleshooting Tip: If you see `Pending` or `ContainerCreating` after waiting more than a few minutes, you may need to modify your environment variables with respect to proxy settings and restart MicroK8s. Do this by running `microk8s stop`, modifying the environment variables in your shell, and then running `microk8s start`. Then check the status of pods by running this command again.
-
-#### Command
-
-```bash
-microk8s kubectl get pods --all-namespaces
-```
-
-#### Expected Output
-
-```text
-NAMESPACE            NAME                                         READY   STATUS    RESTARTS   AGE
-kube-system          calico-node-mhvlc                            1/1     Running   0          4m28s
-kube-system          metrics-server-8bbfb4bdb-pl6g7               1/1     Running   0          3m1s
-kube-system          calico-kube-controllers-f7868dd95-mkjjk      1/1     Running   0          4m30s
-kube-system          dashboard-metrics-scraper-78d7698477-pgpkj   1/1     Running   0          86s
-kube-system          coredns-7f9c69c78c-8vjr4                     1/1     Running   0          86s
-ingress              nginx-ingress-microk8s-controller-rjcpr      1/1     Running   0          86s
-kube-system          kubernetes-dashboard-85fd7f45cb-h82gk        1/1     Running   0          86s
-kube-system          hostpath-provisioner-5c65fbdb4f-42pdn        1/1     Running   0          86s
-container-registry   registry-9b57d9df8-vtmsj                     1/1     Running   0          86s
-```
-
-### Step 5: Setup Proxy Server DNS
-> Note: This step is required if you are running behind proxy, skip otherwise.
-
-Use the following steps to set up the MicroK8s DNS service correctly.
-
-#### 1. Identify host network’s configured DNS servers
-
-##### Command
-
-```bash
-systemd-resolve --status | grep "Current DNS" --after-context=3
-```
-
-##### Expected Output
-
-```text
-Current DNS Server: 10.22.1.1
-       DNS Servers: <ip1>
-                    <ip2>
-                    <ip3>
-```
-
-#### 2. Disable MicroK8s DNS
-
-##### Command
-
-```bash
-microk8s disable dns
-```
-
-##### Expected Output
-
-```text
-Disabling DNS
-Reconfiguring kubelet
-Removing DNS manifest
-serviceaccount "coredns" deleted
-configmap "coredns" deleted
-deployment.apps "coredns" deleted
-service "kube-dns" deleted
-clusterrole.rbac.authorization.k8s.io "coredns" deleted
-clusterrolebinding.rbac.authorization.k8s.io "coredns" deleted
-DNS is disabled
-```
-
-#### 3. Enable DNS with Host DNS Server
-
-##### Command
-
-```bash
-microk8s enable dns:<ip1>,<ip2>,<ip3>
-```
-
-##### Expected Output
-
-```text
-Enabling DNS
-Applying manifest
-serviceaccount/coredns created
-configmap/coredns created
-deployment.apps/coredns created
-service/kube-dns created
-clusterrole.rbac.authorization.k8s.io/coredns created
-clusterrolebinding.rbac.authorization.k8s.io/coredns created
-Restarting kubelet
-DNS is enabled
-```
-
-#### 4. Confirm Update
-
-##### Command
-
-```bash
-sh -c "until microk8s.kubectl rollout status deployments/coredns -n kube-system -w; do sleep 5; done"
-```
-
-##### Expected Output
-
-```text
-deployment "coredns" successfully rolled out
-```
-
-## Adding Initial Nodes to the Cluster
-
-> Note: This step is only required if you have 2 or more nodes, skip otherwise.
-
-### Step 1: Select Leader and Add Nodes
-
-Choose one of your nodes as the `leader` node.
-
-For each additional node that will be in the cluster, issue the following command on the `leader` node. You will need to do this once for each node you want to add.
-
-#### Command
-
-```bash
-microk8s add-node
-```
-
-#### Expected Output
-
-You should see output as follows, including the IP address of the primary/controller host and unique token for the node you are adding to use during connection to the cluster.
-
-```bash
-From the node you wish to join to this cluster, run the following:
-microk8s join <leader-ip>:25000/02c66e66e811fe2c697b1cd5d31bfba2/023e49528889
-
-If the node you are adding is not reachable through the default interface you can use one of the following:
- microk8s join <leader-ip>:25000/02c66e66e811fe2c697b1cd5d31bfba2/023e49528889
- microk8s join 172.17.0.1:25000/02c66e66e811fe2c697b1cd5d31bfba2/023e49528889
-```
-
-### Step 2: Join Nodes to Cluster
-
-Run  `join` command shown in the above response on each `worker node` to be added.
-
-#### Command
-
-```bash
-microk8s join <leader-ip>:25000/02c66e66e811fe2c697b1cd5d31bfba2/023e49528889
-```
-
-#### Expected Output
-
-```text
-Contacting cluster at <leader-ip>
-Waiting for this node to finish joining the cluster. ..
-```
-
-If you encounter an error `Connection failed. Invalid token (500)` your token may have expired or you already used it for another node. To resolve, run the `add-node` command on the leader node to get a new token.
-
-### Step 3: Confirm Cluster Nodes
-
-To confirm what nodes are running in your cluster, run:
-
-#### Command
-
-```bash
-microk8s kubectl get no
-```
-
-#### Expected Output
-
-```text
-NAME         STATUS   ROLES    AGE   VERSION
-vcplab003    Ready    <none>   3d    v1.21.5-3+83e2bb7ee39726
-vcplab002    Ready    <none>   84s   v1.21.5-3+83e2bb7ee39726
-```
+## Prerequisites
+
+| |                  |
+|---------------------------------------------|------------------|
+| **Docker** | This sample requires Docker for its build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
+| **bash** | This sample's build and deploy scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. |
+| **MicroK8s** | This sample requires MicroK8s with DNS setup if system runs under proxy, please follow instructions [here](docs/microk8s.md) to install and Setup Proxy Server DNS  |
 
 ## Building and Deploying Services to the Cluster
 
@@ -265,7 +34,7 @@ Use the following command to deploy the Pipeline Server(CPU,GPU), HAProxy and MQ
 
 The command
  * Deletes existing Pipeline Server workers.
- * Creates namespace `pipeline-server` and deploys Services in that namespace.
+ * Creates namespace `pipeline-server`, sets it as default and deploys Services in that namespace.
  * Uses the pre built docker image from [intel/dlstreamer-pipeline-server:0.7.2](https://hub.docker.com/r/intel/dlstreamer-pipeline-server). To use a local image instead run `BASE_IMAGE=dlstreamer-pipeline-server-gstreamer:latest ./build_deploy_all.sh`
  * Build and deploys MQTT, Pipeline Server worker and HAProxy. Each node will have one Pipeline Server Worker, if `GPU` available on machine, `GPU` worker will be started, else `CPU` worker.
  * Uses [Kubernetes Node Feature Discovery](https://kubernetes-sigs.github.io/node-feature-discovery/stable/get-started/index.html) and [Intel(R) GPU device plugin for Kubernetes](https://github.com/intel/intel-device-plugins-for-kubernetes/blob/v0.23.0/cmd/gpu_plugin/README.md) to discover, find device resources and enable GPU.
@@ -289,15 +58,13 @@ Running process to check for pipeline-server changes in the background
 <snip>
 ```
 
-### Check status of all pods
-
-#### Command
+### Check Status of All Pods
 
 ```bash
 microk8s kubectl get pods
 ```
 
-#### Expected Output
+### Expected Output
 
 ```text
 NAME                                  READY   STATUS
@@ -305,32 +72,6 @@ mqtt-deployment-64f7b4f5c-89l77       1/1     Running
 intel-gpu-plugin-krsch                1/1     Running
 pipeline-server-gpu-worker-vknh2      1/1     Running
 haproxy-deployment-6c9c989957-9nrkd   1/1     Running
-```
-
-## Adding Nodes to an Existing Deployment
-
-### Step 1: Prepare New Nodes
-
-To add nodes to an existing deployment first follow the steps outlined in [Installing MicroK8s](#installing-microk8s) and [Joining Nodes to the Cluster](#joining-nodes-to-the-cluster) for the nodes to be added to the deployment.
-
-### Step 2: Check Status
-
-Pipeline Server workers should automatically increase cpu/gpu workers based on Hardware available on new nodes. HAProxy will be built and deployed automatically for any changes in Pipeline Server pods.
-#### Command
-
-```bash
-microk8s kubectl get pods
-```
-
-#### Expected Output
-
-```text
-NAME                                  READY   STATUS
-mqtt-deployment-64f7b4f5c-89l77       1/1     Running
-intel-gpu-plugin-krsch                1/1     Running
-pipeline-server-gpu-worker-vknh2      1/1     Running
-pipeline-server-cpu-worker-5gtxg      1/1     Running
-haproxy-deployment-6c9c989957-9nrba   1/1     Running
 ```
 
 ## Sending Pipeline Server Requests to the Cluster
@@ -392,234 +133,76 @@ docker run -it  --entrypoint mosquitto_sub  eclipse-mosquitto:1.6 --topic infere
 {"objects":[{"detection":{"bounding_box":{"x_max":0.1800042986869812,"x_min":0.0009236931800842285,"y_max":0.5527437925338745,"y_min":0.04479485750198364},"confidence":0.8942767381668091,"label":"person","label_id":1},"h":366,"roi_type":"person","w":229,"x":1,"y":32},{"detection":{"bounding_box":{"x_max":0.8907946944236755,"x_min":0.3679085373878479,"y_max":0.9973113238811493,"y_min":0.12812647223472595},"confidence":0.9935075044631958,"label":"vehicle","label_id":2},"h":626,"roi_type":"vehicle","w":669,"x":471,"y":92},{"detection":{"bounding_box":{"x_max":0.6346513032913208,"x_min":0.4170849323272705,"y_max":0.17429469525814056,"y_min":0.006016984581947327},"confidence":0.9765880107879639,"label":"vehicle","label_id":2},"h":121,"roi_type":"vehicle","w":278,"x":534,"y":4},{"detection":{"bounding_box":{"x_max":0.9923359751701355,"x_min":0.8340855240821838,"y_max":0.6327562630176544,"y_min":0.03546741604804993},"confidence":0.5069465041160583,"label":"vehicle","label_id":2},"h":430,"roi_type":"vehicle","w":203,"x":1068,"y":26}],"resolution":{"height":720,"width":1280},"source":"https://lvamedia.blob.core.windows.net/public/homes_00425.mkv","timestamp":34300000000}
 ```
 
-## Uninstalling
 
-### Step 1: Undeploy Pipeline Server, HAProxy and MQTT services
+## Adding Nodes to an Existing Deployment
 
-```bash
-./undeploy_all.sh
-```
+### Step 1: Prepare New Nodes
 
-### Step 2: Remove Node
+To add nodes to an existing deployment first follow the steps outlined in [Installing MicroK8s](docs/microk8s.md#installing-microk8s) and [Joining Node to the Cluster](docs/microk8s.md#adding-node-to-the-cluster) for the nodes to be added to the deployment.
 
-#### Confirm running nodes
+### Step 2: Check Status
 
-To confirm what nodes are running in your cluster, run:
-
-##### Command
-
-```bash
-microk8s kubectl get no
-```
-
-##### Expected Output
-
-```text
-NAME           STATUS     ROLES    AGE   VERSION
-<node-name>    Ready      <none>   96d   v1.21.9-3+5bfa682137fad9
-```
-
-#### Drain Node
-
-Drain the node, run below command in worker node you want to remove
-
-##### Command
-
-```bash
-microk8s kubectl drain <node-name>
-```
-
-##### Expected Output
-
-```text
-<snip>
-node/<node-name> drained
-```
-
-#### Leave Cluster
-
-Run below command in worker node you want to remove to leave the cluster
-
-```bash
-microk8s leave
-```
-
-#### Remove Node
-
-Run below command on **leader node**
-
-```bash
-microk8s remove-node <node-name/ip>
-```
-
-### Step 3: Uninstall MicroK8s
-
+Pipeline Server should automatically increase the number of deployed CPU/GPU worker pods based on Hardware available on new nodes. HAProxy will be built and deployed automatically for any changes in Pipeline Server pods.
 #### Command
 
 ```bash
-./microk8s/uninstall.sh
+microk8s kubectl get pods
 ```
 
 #### Expected Output
 
 ```text
-==========================
-Remove/Purge microk8s
-==========================
-microk8s removed
+NAME                                  READY   STATUS
+mqtt-deployment-64f7b4f5c-89l77       1/1     Running
+intel-gpu-plugin-krsch                1/1     Running
+pipeline-server-gpu-worker-vknh2      1/1     Running
+pipeline-server-cpu-worker-5gtxg      1/1     Running
+haproxy-deployment-6c9c989957-9nrba   1/1     Running
 ```
 
 ## Examples
+Find examples [here](docs/examples.md) that demonstrate how we assessed scaling by calculating _stream density_ across a variety of multi-node cluster scenarios.
 
-These examples will show the following with a target of 30fps per stream:
+## Limitations
 
-- Running a single stream on a single node and exceeding target fps indicating a stream density of at least 1.
-- Running two streams on a single node and seeing both of them processing below target fps showing a stream density of 2 cannot be met.
-- Adding a second node to cluster and seeing two streams exceeding target fps, thus doubling stream density to 2.
+- Every time a new Intel® DL Streamer Pipeline Server is added or deleted, HAProxy will be restarted automatically to update configuration.
+- We cannot yet query full set of pipeline statuses across all Pipeline Server pods. This means `GET <leader-ip>:31000/pipelines/status` may not return complete list.
+- When a pipeline runs on a GPU worker, it may take up to 60 seconds to start the pipeline, setting `model-instance-id` with same value limits this issue to the first request as this setting shares resources.
 
-The examples require [pipeline_client](../../client/README.md) so the container `dlstreamer-pipeline-server-gstreamer` must be built as per [these instructions](../../README.md#building-the-microservice).
+## Undeploy Services
 
-### Single node with MQTT
-
-Start stream as follows
-
-```text
-./client/pipeline_client.sh run object_detection/person_vehicle_bike \
-  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<leader-ip>:31000 \
-  --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
-```
-
-Output should be like this (with different instance id and timestamps)
-
-```text
-Starting pipeline object_detection/person_vehicle_bike, instance = e6846cce838311ecaf588a37d8d13e4f
-Pipeline running - instance_id = e6846cce838311ecaf588a37d8d13e4f
-Timestamp 1533000000
-- vehicle (1.00) [0.39, 0.13, 0.89, 1.00]
-- vehicle (0.99) [0.41, 0.01, 0.63, 0.17]
-Timestamp 1567000000
-- vehicle (1.00) [0.39, 0.13, 0.88, 1.00]
-- vehicle (0.98) [0.41, 0.01, 0.63, 0.17]
-Timestamp 1600000000
-- vehicle (1.00) [0.39, 0.13, 0.88, 0.99]
-- vehicle (0.98) [0.41, 0.01, 0.63, 0.17]
-```
-
-Now stop stream using CTRL+C
-
-```text
-^C
-Stopping Pipeline...
-Pipeline stopped
-- vehicle (0.99) [0.39, 0.13, 0.89, 1.00]
-- vehicle (0.99) [0.42, 0.00, 0.63, 0.17]
-avg_fps: 52.32
-Done
-```
-
-### Single Node with Two Streams
-
-For two streams, we won't use MQTT but will measure fps to see if both streams can be processed at 30fps (i.e. can we attain a stream density of 2). Note the use of [model-instance-id](../../docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) so pipelines can share resources.
-
-```text
-./client/pipeline_client.sh run object_detection/person_vehicle_bike \
-  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<leader-ip>:31000 \
-  --parameter detection-model-instance-id person-vehicle-bike \
-  --number-of-streams 2
-```
-
-```text
-Starting pipeline 1
-Starting pipeline object_detection/person_vehicle_bike, instance = 646559b0860811ec839b1c697aaaa6b4
-Pipeline 1 running - instance_id = 646559b0860811ec839b1c697aaaa6b4
-Starting pipeline 2
-Starting pipeline object_detection/person_vehicle_bike, instance = 65030b7e860811ec839b1c697aaaa6b4
-Pipeline 2 running - instance_id = 65030b7e860811ec839b1c697aaaa6b4
-2 pipelines running.
-Pipeline status @ 7s
-- instance=646559b0860811ec839b1c697aaaa6b4, state=RUNNING, 30fps
-- instance=65030b7e860811ec839b1c697aaaa6b4, state=RUNNING, 26fps
-Pipeline status @ 12s
-- instance=646559b0860811ec839b1c697aaaa6b4, state=RUNNING, 29fps
-- instance=65030b7e860811ec839b1c697aaaa6b4, state=RUNNING, 26fps
-Pipeline status @ 17s
-- instance=646559b0860811ec839b1c697aaaa6b4, state=RUNNING, 28fps
-- instance=65030b7e860811ec839b1c697aaaa6b4, state=RUNNING, 27fps
-Pipeline status @ 22s
-- instance=646559b0860811ec839b1c697aaaa6b4, state=RUNNING, 28fps
-- instance=65030b7e860811ec839b1c697aaaa6b4, state=RUNNING, 27fps
-Pipeline status @ 27s
-- instance=646559b0860811ec839b1c697aaaa6b4, state=RUNNING, 28fps
-- instance=65030b7e860811ec839b1c697aaaa6b4, state=RUNNING, 27fps
-```
-
-Results show that we can't quite get to a stream density of 2.
-
-Use CTRL+C to stop streams.
-
-```text
-^C
-Stopping Pipeline...
-Pipeline stopped
-Stopping Pipeline...
-Pipeline stopped
-Pipeline status @ 26s
-- instance=8db81ca8860d11ecb68672a0c3d9157b, state=ABORTED, 28fps
-- instance=8ea33c42860d11ecb68672a0c3d9157b, state=ABORTED, 27fps
-avg_fps: 26.78
-Done
-```
-
-> **Note:** The `avg_fps` metric is determined by the last instance in the list, it is the not the average across all instances.
-
-### Two Streams on Two Nodes
-
-We'll add a second node to see if we can get a stream density of 2.
-
-First add a second node as per [Adding Nodes to Existing Deployment](#adding-nodes-to-an-existing-deployment).
-
-Now we run two streams and monitor fps using the same request as before. This time the work should be shared across the two nodes so we anticipate a higher fps for both streams.
-
+Undeploy Pipeline Server, HAProxy and MQTT services
+### Command
 ```bash
-./client/pipeline_client.sh run object_detection/person_vehicle_bike \
-  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<leader-ip>:31000 \
-  --parameter detection-model-instance-id person-vehicle-bike \
-  --number-of-streams 2 
+./undeploy_all.sh
 ```
+
+### Expected Output
 
 ```text
-Starting pipeline 1
-Starting pipeline object_detection/person_vehicle_bike, instance = 1ddd102e861111ecb68672a0c3d9157b
-Pipeline 1 running - instance_id = 1ddd102e861111ecb68672a0c3d9157b
-Starting pipeline 2
-Starting pipeline object_detection/person_vehicle_bike, instance = 0fd59b54861111ecbc0856b37602a80f
-Pipeline 2 running - instance_id = 0fd59b54861111ecbc0856b37602a80f
-2 pipelines running.
-Pipeline status @ 7s
-- instance=1ddd102e861111ecb68672a0c3d9157b, state=RUNNING, 54fps
-- instance=0fd59b54861111ecbc0856b37602a80f, state=RUNNING, 53fps
-Pipeline status @ 12s
-- instance=1ddd102e861111ecb68672a0c3d9157b, state=RUNNING, 53fps
-- instance=0fd59b54861111ecbc0856b37602a80f, state=RUNNING, 53fps
-Pipeline status @ 17s
-- instance=1ddd102e861111ecb68672a0c3d9157b, state=RUNNING, 53fps
-- instance=0fd59b54861111ecbc0856b37602a80f, state=RUNNING, 53fps
-^C
-Stopping Pipeline...
-Pipeline stopped
-Stopping Pipeline...
-Pipeline stopped
-Pipeline status @ 18s
-- instance=1ddd102e861111ecb68672a0c3d9157b, state=ABORTED, 53fps
-- instance=0fd59b54861111ecbc0856b37602a80f, state=ABORTED, 53fps
-avg_fps: 53.27
-Done
+<snip>
+daemonset.apps "nfd-worker" deleted
+service "nfd-master" deleted
+deployment.apps "nfd-master" deleted
+pod "nfd-worker-z2flv" deleted
+pod "nfd-master-75b7c4d897-76f9f" deleted
+configmap "kube-root-ca.crt" deleted
+daemonset.apps "intel-gpu-plugin" deleted
+daemonset.apps "pipeline-server-cpu-worker" deleted
+daemonset.apps "pipeline-server-gpu-worker" deleted
+service "mqtt-svc" deleted
+service "pipeline-server-cpu-service" deleted
+service "pipeline-server-gpu-service" deleted
+service "haproxy-svc" deleted
+deployment.apps "mqtt-deployment" deleted
+deployment.apps "haproxy-deployment" deleted
+pod "mqtt-deployment-64f7b4f5c-hwbsq" deleted
+pod "haproxy-deployment-5d84d7b67-2m9ft" deleted
+pod "intel-gpu-plugin-dv8dt" deleted
+pod "pipeline-server-gpu-worker-klr2l" deleted
+<snip>
+Stopped and removed all services
 ```
-
-See that both streams are over 30fps so a stream density of 2 has been achieved.
 
 ## Useful Commands
 
@@ -687,8 +270,3 @@ sudo snap remove --purge microk8s
 microk8s leave
 ```
 
-## Limitations
-
-- Every time a new Intel® DL Streamer Pipeline Server is added or deleted, HAProxy will be restarted automatically to update configuration.
-- We cannot yet query full set of pipeline statuses across all Pipeline Server pods. This means `GET <leader-ip>:31000/pipelines/status` may not return complete list.
-- When a pipeline runs on a GPU worker, it may take up to 60 seconds to start the pipeline, setting `model-instance-id` with same value limits this issue to the first request as this setting shares resources.

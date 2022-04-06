@@ -19,13 +19,13 @@ while true
 do
   sleep 10
   echo "looking for changes in Pipeline Servers"
-  pods=$(microk8s kubectl get pods | grep "pipeline-server" | grep 'Running' | awk '{ print $1 }')
+  pods=$(microk8s kubectl get pods | grep "pipeline-server.*worker" | grep 'Running' | awk '{ print $1 " " $4}')
   if [ "$PIPELINE_SERVER_PODS" != "$pods" ]; then
     echo "Pipeline server pod added or restarted"
     echo "$pods"
     launch $WORK_DIR/build.sh
     launch $WORK_DIR/deploy.sh
-    PIPELINE_SERVER_PODS=$(microk8s kubectl get pods | grep "pipeline-server" | grep 'Running' | awk '{ print $1 }')
+    PIPELINE_SERVER_PODS=$(microk8s kubectl get pods | grep "pipeline-server.*worker" | grep 'Running' | awk '{ print $1 " " $4}')
   fi
 done
 echo "exited"
