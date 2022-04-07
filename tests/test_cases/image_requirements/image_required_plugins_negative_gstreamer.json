@@ -1,0 +1,4 @@
+{
+    "required_plugins": ["igloo_beans", "jumping_beans", "rtp"],
+    "expect_missing": ["igloo_beans", "jumping_beans"]
+}
