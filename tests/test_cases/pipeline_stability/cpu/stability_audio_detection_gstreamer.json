@@ -1,13 +1,18 @@
 {
     "options": {},
     "pipeline": {
-        "name": "stability_audio_detection_gstreamer_pipelines",
-        "version": 1
+        "name": "audio_detection",
+        "version": "environment"
     },
     "request": {
         "source": {
-            "type": "uri",
-            "uri": "file:///home/pipeline-server/tests/media/how_are_you_doing.wav"
+            "type": "gst",
+            "element": "multifilesrc",
+            "postproc": "wavparse ignore-length=1",
+            "properties": {
+                "location": "/home/pipeline-server/tests/media/how_are_you_doing.wav",
+                "loop": true
+            }
         },
         "destination": {
             "type": "file",
@@ -15,7 +20,7 @@
             "format": "json-lines"
         }
     },
-    "stability_duration": 600,
+    "stability_duration": 10800,
     "relaunch_on_complete": false,
     "numerical_tolerance": 0.2
 }

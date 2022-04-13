@@ -16,7 +16,7 @@
         }
     },
     "numerical_tolerance": 0.3,
-    "stability_duration": 600,
+    "stability_duration": 10800,
     "relaunch_on_complete": true,
     "result": [
         {

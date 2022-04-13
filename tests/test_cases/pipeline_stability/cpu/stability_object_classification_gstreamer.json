@@ -1,13 +1,19 @@
 {
     "options": {},
     "pipeline": {
-        "name": "stability_object_classification_gstreamer_pipelines",
-        "version": 1
+        "name": "object_classification",
+        "version": "vehicle_attributes"
     },
     "request": {
         "source": {
-            "type": "uri",
-            "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
+            "type": "gst",
+            "element": "multifilesrc",
+            "postproc": "decodebin ! videoconvert ! video/x-raw,format=NV12",
+            "capsfilter": "image/png,framerate=(fraction)30/1",
+            "properties": {
+                "location": "/home/pipeline-server/tests/media/sample01.png",
+                "loop": true
+            }
         },
         "destination": {
             "type": "file",
@@ -15,6 +21,6 @@
             "format": "json-lines"
         }
     },
-    "stability_duration": 600,
+    "stability_duration": 10800,
     "relaunch_on_complete": false
 }

@@ -18,16 +18,26 @@ import tempfile
 from tests.common import results_processing
 
 PAUSE = 0.1
+MIN_FPS_DROP_DURATION = 50
 
 def start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time):
+    previous_avg_fps = 0 
     pipeline.start(_test_case["request"])
     status = pipeline.status()
+    fps_check_start_time = time.time()
     transitions = [status]
     while (not status.state.stopped()):
         if (status.state != transitions[-1].state):
             transitions.append(status)
         time.sleep(PAUSE)
         status = pipeline.status()
+        if status.avg_fps < previous_avg_fps:
+            if (time.time()-fps_check_start_time) > MIN_FPS_DROP_DURATION:
+                pipeline.stop()
+                assert False, "Pipeline has stalled"
+        else:
+            fps_check_start_time = time.time()            
+        previous_avg_fps = status.avg_fps 
         if (time.time() - start_time) >= stability_duration:
             pipeline.stop()
             return True
@@ -40,17 +50,6 @@ def start_and_run_pipeline(_test_case, pipeline, stability_duration, start_time)
 def test_pipeline_stability(PipelineServer, test_case, test_filename, generate, numerical_tolerance, stability_duration):
     duration_met = False
     _test_case = copy.deepcopy(test_case)
-    test_prefix = os.path.splitext(os.path.basename(test_filename))[0]
-    test_model_dir = os.path.join(os.path.dirname(test_filename),
-                                  "{0}_models".format(test_prefix))
-    test_pipeline_dir = os.path.join(os.path.dirname(test_filename),
-                                  "{0}_pipelines".format(test_prefix))
-    if "model_dir" not in _test_case["options"]:
-        if os.path.isdir(test_model_dir):
-            _test_case["options"]["model_dir"] = test_model_dir
-    if ("pipeline_dir" not in _test_case["options"]):
-        if (os.path.isdir(test_pipeline_dir)):
-            _test_case["options"]["pipeline_dir"] = test_pipeline_dir
     if "numerical_tolerance" in _test_case:
         numerical_tolerance = _test_case["numerical_tolerance"]
     if stability_duration is None and "stability_duration" in _test_case:

@@ -1,18 +1,24 @@
 {
     "options": {},
     "pipeline": {
-        "name": "stability_object_detection_gstreamer_pipelines",
-        "version": 1
+        "name": "object_detection",
+        "version": "person_vehicle_bike"
     },
     "request": {
         "source": {
-            "type": "uri",
-            "uri": "file:///home/pipeline-server/samples/pinwheel.ts"
+            "type": "gst",
+            "element": "multifilesrc",
+            "postproc": "decodebin ! videoconvert ! video/x-raw,format=NV12",
+            "capsfilter": "image/png,framerate=(fraction)30/1",
+            "properties": {
+                "location": "/home/pipeline-server/tests/media/sample01.png",
+                "loop": true
+            }
         },
         "destination": {
             "type": "file",
             "path": "/dev/null",
-            "format": "json"
+            "format": "json-lines"
         }
     },
     "stability_duration": 10800,
