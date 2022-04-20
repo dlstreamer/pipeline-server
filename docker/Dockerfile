@@ -158,6 +158,9 @@ ARG USER=pipeline-server
 ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server
 ENV GST_PLUGIN_PATH=$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/
 
+ENV cl_cache_dir=/home/.cl_cache
+RUN mkdir -p -m g+s $cl_cache_dir && chown ${USER}:users $cl_cache_dir
+
 # Prepare XDG_RUNTIME_DIR
 ENV XDG_RUNTIME_DIR=/home/.xdg_runtime_dir
 RUN mkdir -p -m g+s $XDG_RUNTIME_DIR && chown ${USER}:users $XDG_RUNTIME_DIR
