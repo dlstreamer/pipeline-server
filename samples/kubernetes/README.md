@@ -11,6 +11,8 @@ This sample demonstrates how to set up a Kubernetes cluster using MicroK8s, how 
 | Term | Definition |
 |---|---|
 | Pipeline Server | [Intel(R) DL Streamer Pipeline Server](https://github.com/dlstreamer/pipeline-server) microservice thats runs pipelines. |
+| Pipeline Server `CPU` worker | Pipeline Server microservice with Inference runs on `CPU`, check config [here](pipeline-server-worker/deployments/cpu) |
+| Pipeline Server `GPU` worker | Pipeline Server microservice with Inference runs on `GPU`, check config [here](pipeline-server-worker/deployments/gpu) |
 | HAProxy | [HAProxy](https://www.haproxy.com/) open source load balancer and application delivery controller. |
 | MicroK8s | [microk8s](https://microk8s.io/) minimal production Kubernetes distribution. |
 | MQTT | [MQTT](https://hub.docker.com/_/eclipse-mosquitto) open source message bus. |
