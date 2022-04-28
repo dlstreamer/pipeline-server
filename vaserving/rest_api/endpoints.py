@@ -217,7 +217,7 @@ def pipelines_status_get_all():  # noqa: E501
 
 
 def pipelines_instance_id_status_get(instance_id):  # noqa: E501
-    """pipelines_name_version_instance_id_status_get
+    """pipelines_instance_id_status_get
 
     Return instance status summary # noqa: E501
 
