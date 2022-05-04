@@ -81,7 +81,6 @@ RUN rm -f /requirements.txt
 # Pipeline Server Python Modules
 COPY ./server /home/pipeline-server/server
 COPY ./client /home/pipeline-server/client
-COPY --chown=pipeline-server ./tools /home/pipeline-server/tools
 
 # Copy GVA Python extensions
 COPY ./extensions /home/pipeline-server/extensions
