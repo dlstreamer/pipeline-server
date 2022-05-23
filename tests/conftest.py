@@ -248,11 +248,22 @@ def pytest_generate_tests(metafunc):
     print(metafunc.fixturenames)
     print(metafunc.function, flush=True)
 
+def clear_loggers():
+    """Remove handlers from all loggers"""
+    print("Removing all log handlers")
+    import logging
+    loggers = [logging.getLogger()] + list(logging.Logger.manager.loggerDict.values())
+    for logger in loggers:
+        handlers = getattr(logger, 'handlers', [])
+        for handler in handlers:
+            logger.removeHandler(handler)
+
 @pytest.fixture()
 def PipelineServer(request):
     _PipelineServer.stop()
     yield _PipelineServer
     _PipelineServer.stop()
+    clear_loggers()
 
 @pytest.fixture(scope="session")
 def service(request):

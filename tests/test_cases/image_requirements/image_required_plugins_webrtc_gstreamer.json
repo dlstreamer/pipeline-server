@@ -1,4 +1,13 @@
 {
-    "required_plugins": ["opus", "vpx", "nice", "webrtc", "dtls", "srtp", "rtp", "rtpmanager"],
+    "required_plugins": [
+        "opus",
+        "vpx",
+        "nice",
+        "webrtc",
+        "dtls",
+        "srtp",
+        "rtp",
+        "rtpmanager"
+    ],
     "expect_missing": []
 }
