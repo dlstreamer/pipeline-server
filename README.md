@@ -276,49 +276,6 @@ Checking on state a few seconds later will show the error.
 ERROR (0fps)
 ```
 
-## Real Time Streaming Protocol (RTSP)
-
-### RTSP/RTP/SDP/RTCP Protocols
-
-[Real Time Streaming Protocol (RTSP)](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) is a standards based definition for rendering media output and facilitating **control** of stream activities (e.g., play, pause, rewind) by negotiating with remote clients about how data is to be authorized, packaged and streamed. However, RTSP is not responsible for transporting media data.
-
-The actual **transfer** of the media data is governed by [Realtime Transport Protocol (RTP)](https://en.wikipedia.org/wiki/Real-time_Transport_Protocol). RTP is essentially wrapping UDP to provide a level of reliability. As you may know UDP is faster and supports more distributed transmission than TCP but it's prone to untracked packet loss. RTP works via UDP but tracks the missed packets for a more robust client experienced; e.g., if packet is lost for H264 packet transfer, the client may request a full I frame from the server.
-
-The [Session Description Protocol (SDP)](https://en.wikipedia.org/wiki/Session_Description_Protocol) is used by RTSP as a standardized way to understand session level **parameters** of the media stream (e.g., URI, session name, date/time session is available, etc.).
-
-Real Time Control Protocol (RTCP) collects RTP **statistics** that are needed to measure throughput of streaming sessions.
-
-### How to Enable RTSP
-
-RTSP allows you to connect to a server and display a video stream. The Pipeline Server includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/). For this example we'll assume the Pipeline Server and vlc are running on the same host.
-
-First start the Pipeline Server with RTSP enabled. By default, the RTSP stream will use port 8554.
-```
-docker/run.sh --enable-rtsp -v /tmp:/tmp
-```
-
-Then start a pipeline specifying the RTSP server endpoint path `pipeline-server`. In this case the RTSP endpoint would be `rtsp://localhost:8554/pipeline-server`
-
-```bash
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --rtsp-path pipeline-server
-```
-
-If you see the error
-
-```text
-Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
-Error in pipeline, please check pipeline-server log messages
-```
-
-You probably forgot to enable RTSP in the server.
-
-Now start `vlc` and from the `Media` menu select `Open Network Stream`. For URL enter `rtsp://localhost:8554/pipeline-server` and hit `Play`.
-> **Note:** The pipeline must be running before you hit play otherwise VLC will not be able to connect to the RTSP server.
-
-> **Note:** For shorter video files you should have VLC ready to go before starting pipeline otherwise by the time you hit play the pipeline will have completed and the RTSP server will have shut down.
-
-> **Note:** Depending on your use case, also consider rendering output using Pipeline Server's [WebRTC frame destination](/samples/webrtc/README.md).
-
 # Request Customizations
 
 ## Change Pipeline and Source Media
@@ -375,6 +332,30 @@ Starting pipeline object_classification/vehicle_attributes, instance = <uuid>
 > **Note:** The `detection-model-instance-id` parameter caches the GPU model with a unique id. For more information read about [model instance ids](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements).
 
 pipeline_client's fps measurement is useful when assessing pipeline performance with different accelerators.
+
+## Visualize Inference
+Pipeline server allows you to optionally visualize inference results using either [Real Time Streaming Protocol (RTSP)](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) or [Web Real Time Communication (WebRTC)](https://webrtc.org/) by configuring the frame destination section of the request.
+
+RTSP is simpler to set up but you must have an RTSP player (e.g. [VLC](https://www.videolan.org/vlc/)) to render output. WebRTC setup is more complex (e.g., requires additional server-side microservices) but has the upside of using a web browser for client visualization.
+
+Before requesting visualization, the corresponding feature must be enabled in the server, see [Visualizing Inference Output](docs/running_pipeline_server.md#visualizing-inference-output).
+
+### RTSP
+
+RTSP allows you to connect to a server and display a video stream. The Pipeline Server includes an RTSP server that creates a stream that shows the incoming video with superimposed bounding boxes and meta-data. You will need a client that connects to the server and displays the video. We recommend [vlc](https://www.videolan.org/).
+
+First start the Pipeline Server with RTSP enabled. By default, the RTSP stream will use port 8554.
+```
+docker/run.sh --enable-rtsp -v /tmp:/tmp
+```
+
+Then start pipeline and visualize as per [RTSP section in Customizing Pipeline Requests](docs/customizing_pipeline_requests.md#rtsp).
+
+> **Note:** The pipeline must be running before you hit play otherwise VLC will not be able to connect to the RTSP server. For shorter video files you should have VLC ready to go before starting pipeline otherwise by the time you hit play the pipeline will have completed and the RTSP server will have shut down.
+
+### WebRTC
+
+WebRTC is more complex. Follow setup instructions in the [sample](samples/webrtc). More details on fine tuning request can be found in the [WebRTC section in Customizing Pipeline Requests](docs/customizing_pipeline_requests.md#webrtc).
 
 ## View REST Request
 

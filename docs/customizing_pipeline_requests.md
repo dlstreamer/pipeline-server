@@ -1,5 +1,5 @@
-# Customizing Video Analytics Pipeline Requests
-| [Request Format](#request-format) | [Source](#source) | [Destination](#destination) | [Parameters](#parameters) | [Tags](#tags) |
+# Customizing Pipeline Requests
+| [Request Format](#request-format) | [Source](#source) | [Destination](#metadata-destination) | [Parameters](#parameters) | [Tags](#tags) |
 
 Pipeline requests are initiated to exercise the Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server REST API. Each pipeline in the Pipeline Server has a specific endpoint. A pipeline can be started by issuing a `POST` request and a running pipeline can be stopped using a `DELETE` request. The `source` and `destination` elements of Pipeline Server [pipeline templates](defining_pipelines.md#pipeline-templates) are configured and constructed based on the `source` and `destination` from the incoming requests.
 
@@ -182,18 +182,13 @@ For example, if you'd like to set `ntp-sync` property of the `rtspsrc` element t
 }
 ```
 
-## Destination
-Pipelines can be configured to output `frames`, `metadata` or both. The destination object within the request contains sections to configure each.
+## Metadata Destination
+Pipelines can optionally be configured to output metadata to a specific destination.
 
-> Note: Destinations are optional and you may supply up to one frame and/or metadata specification per request.
-
-- Metadata (inference results)
-- Frame
-
-### Metadata
 For metadata, the destination type can be set to file, mqtt, or kafka as needed.
 
-#### File
+
+### File
 The following are available properties:
 - type : "file"
 - path (required): Path to the file.
@@ -221,7 +216,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 }'
 ```
 
-#### MQTT
+### MQTT
 The following are available properties:
 - type : "mqtt"
 - host (required) expects a format of host:port
@@ -277,8 +272,8 @@ Steps to run MQTT:
   1632949274: Client gva-meta-publish disconnected.
   ```
 
-#### Kafka
-The following are available properties:
+### Kafka
+The following properties are available for the Apache Kafka destination:
 - type : "kafka"
 - host (required) expects a format of host:port
 - topic (required) Kafka topic on which broker messages are sent
@@ -328,14 +323,25 @@ Steps to run Kafka:
    ```
 
 4. Launch pipeline with parameters to emit on the Kafka topic we are listening for:
-   ```
-   ./client/pipeline_client.sh start object_detection/person_vehicle_bike  \
-   https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true  \
-   --destination type kafka  \
-   --destination host localhost \
-   --destination port 9092  \
-   --destination topic pipeline-server.person_vehicle_bike
-   ```
+```
+  curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
+  'Content-Type: application/json' -d \
+  '{
+      "source": {
+          "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+          "type": "uri"
+      },
+      "destination": {
+          "metadata": {
+               "type": "kafka",
+               "format": "json-lines",
+               "host": "localhost",
+               "port": 9092,
+               "topic": "pipeline-server.person_vehicle_bike"
+            }
+        }
+    }'
+  ```
 
 5. Connect to Kafka broker to view inference results:
    ```bash
@@ -355,28 +361,41 @@ Steps to run Kafka:
    docker-compose -f docker-compose-kafka.yml down
    ```
 
-### Frame
-Frame is another type of destination and it can be set to request RTSP or WebRTC output from Pipeline Server.
+## Frame Destination
+`Frame` is another type of destination that sends frames with superimposed bounding boxes over either RTSP or WebRTC protocols.
 
-#### RTSP
-RTSP is a type of frame destination supported.
+### RTSP
+RTSP functionality must be enabled in Pipeline Server for this feature to be used, see [RTSP re-streaming](running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming).
 
-##### Request RTSP Frame Output
-RTSP must be enabled for these request parameters to be accepted. For more information, see [RTSP re-streaming](running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming)
-1. Start a pipeline with Pipeline Server Client to request a frame destination type set as rtsp and custom path set. For demonstration, path set as `person-detection` in example request below.
-   ```bash
-   ./client/pipeline_client.sh --quiet start \
-   --server-address http://localhost:8080 \
-   "object_detection/person_vehicle_bike" \
-   "https://github.com/intel-iot-devkit/sample-videos/blob/master/face-demographics-walking-and-pause.mp4?raw=true" \
-   --rtsp-path "person-detection"
-    ```
-2. Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect to the RTSP server.
-3. Re-stream pipeline using VLC network stream with url `rtsp://localhost:8554/person-detection`.
+Steps for visualizing output over RTSP assuming Pipeline Server and your VLC client are running on the same host.
 
-##### RTSP Destination Parameters
-Use the following parameters to customize the request:
-- type : "rtsp"
+1. Start a pipeline with  frame destination type set as `rtsp` and an endpoint path `person-detection`.
+```bash
+curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
+'Content-Type: application/json' -d \
+'{
+    "source": {
+        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+        "type": "uri"
+    },
+    "destination": {
+        "metadata": {
+            "type": "file",
+            "format": "json-lines",
+            "file": "/tmp/results.jsonl"
+        },
+        "frame": {
+            "type": "rtsp",
+            "path": "person-detection"
+        }
+    }
+}'
+```
+2. Use an RTSP client such as VLC to visualize the stream at address `rtsp://localhost:8554/person-detection`.
+
+> **Note:** Use Pipeline Server Client's [--rtsp-path](../client/README.md#--rtsp-path) argument to specific RTSP output endpoint.
+
+The following parameters can be optionally used to customize the stream:
 - path (required): custom string to uniquely identify the stream
 - cache-length (default 30): number of frames to buffer in rtsp pipeline.
 - encoding-quality (default 85): jpeg encoding quality (0 - 100). Lower values increase compression but sacrifice quality.
@@ -387,27 +406,39 @@ Use the following parameters to customize the request:
 > network bandwidth. Decreasing the encoding-quality or increasing the
 > cache-length can help.
 
-#### WebRTC
-WebRTC is a type of frame destination supported.
+### WebRTC
+WebRTC must be enabled for these request parameters to be accepted. For more information, see [WebRTC streaming](running_pipeline_server.md#web-real-time-communication-webrtc).
 
-##### Request WebRTC Frame Output
-WebRTC must be enabled for these request parameters to be accepted. For more information, see [WebRTC streaming](running_pipeline_server.md#web-real-time-communication-webrtc)
-1. Start a pipeline with Pipeline Server Client to request a frame destination type set as WebRTC and unique `peer-id` value set. For demonstration, peer-id is set as `person_detection_001` in example request below.
-   ```bash
-   ./client/pipeline_client.sh --quiet start \
-   --server-address http://localhost:8080 \
-   object_detection/person_vehicle_bike \
-   https://github.com/intel-iot-devkit/sample-videos/blob/master/face-demographics-walking-and-pause.mp4?raw=true \
-   --webrtc-peer-id person_detection_001
-    ```
-    ```text
-    <snip>
-    e98dae1caf7511ecaaf90242ac170004
-    ```
+#### Request WebRTC Frame Output
+1. Start a pipeline to request frame destination type set as WebRTC and unique `peer-id` value set. For demonstration, peer-id is set as `person_detection_001` in example request below.
+
+```bash
+curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
+'Content-Type: application/json' -d \
+'{
+    "source": {
+        "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+        "type": "uri"
+    },
+    "destination": {
+        "metadata": {
+            "type": "file",
+            "format": "json-lines",
+            "file": "/tmp/results.jsonl"
+        },
+        "frame": {
+            "type": "webrtc",
+            "peer-id": "person_detection_001"
+        }
+    }
+}'
+```
 2. Check that pipeline is running using [status request](restful_microservice_interfaces.md#get-pipelinesnameversioninstance_id) before trying to connect the WebRTC peer.
 3. View the pipeline stream in your browser with url `http://localhost:8082/?destination_peer_id=person_detection_001&instance_id=e98dae1caf7511ecaaf90242ac170004` where the value of `destination_peer_id` query parameter matches the `--webrtc-peer-id` provided in the request from step 1 and the value of `instance_id` is produced in the response from step 1.
 
-##### WebRTC Destination Parameters
+> **Note:** Use Pipeline Server Client's [--webrtc-peer-id](../client/README.md#--webrtc-peer-id) argument to specify peer id.
+
+#### WebRTC Destination Parameters
 Use the following parameters to customize the request:
 - type : "webrtc"
 - peer-id (required): custom string to uniquely identify the stream. May contain alphanumeric or underscore `_` characters only.

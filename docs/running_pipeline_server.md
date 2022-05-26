@@ -151,24 +151,37 @@ docker stop dlstreamer-pipeline-server-gstreamer
 docker stop dlstreamer-pipeline-server-ffmpeg
 ```
 
-# Real Time Streaming Protocol (RTSP) Re-streaming
-> **Note:** RTSP Re-streaming supported only in Intel(R) DL Streamer based Microservice.
+# Visualizing Inference Output
+
+> **Note:** This feature is supported only in the Intel(R) DL Streamer based Microservice.
+
+There are two modes of visualization, [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) and [WebRTC](https://en.wikipedia.org/wiki/WebRTC).
+
+## Underlying Protocols
+
+RTSP and WebRTC are standards based definitions for rendering media output and facilitating **control** of stream activities (e.g., play, pause, rewind) by negotiating with remote clients about how data is to be authorized, packaged and streamed. However they are not responsible for transporting media data.
+
+The actual **transfer** of the media data is governed by [Realtime Transport Protocol (RTP)](https://en.wikipedia.org/wiki/Real-time_Transport_Protocol). RTP is essentially wrapping UDP to provide a level of reliability.
+
+The [Session Description Protocol (SDP)](https://en.wikipedia.org/wiki/Session_Description_Protocol) is used by RTSP as a standardized way to understand session level **parameters** of the media stream (e.g., URI, session name, date/time session is available, etc.).
+
+Real Time Control Protocol (RTCP) collects RTP **statistics** that are needed to measure throughput of streaming sessions.
+
+## Real Time Streaming Protocol (RTSP)
 
 The Pipeline Server contains an [RTSP](https://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol) server that can be optionally started at launch time. This allows an RTSP client to connect and visualize input video with superimposed bounding boxes.
 
-### Enable RTSP in service
 ```bash
 docker/run.sh --enable-rtsp
 ```
+
 > **Note:** RTSP server starts at service start-up for all pipelines. It uses port 8554 and has been tested with [VLC](https://www.videolan.org/vlc/index.html).
 
-
-# Web Real Time Communication (WebRTC)
-> **Note:** WebRTC streaming is supported only in Intel(R) DL Streamer based Microservice.
+## Web Real Time Communication (WebRTC)
 
 The Pipeline Server contains support for [WebRTC](https://en.wikipedia.org/wiki/WebRTC) that allows viewing from any system on the current network right within your browser. This is enabled using an HTML5 video player and JavaScript APIs in the browser to negotiate with Pipeline Server. With these prerequisites provided as dependent microservices, it makes a very low bar for clients to render streams that show what is being detected by the running pipeline. This allows a user to connect and visualize input video with superimposed bounding boxes by navigating to a webserver that hosts the page with HTML5 video player and backed by JavaScript APIs. Has been tested with Chrome and Firefox, though [other browsers](https://html5test.com) are also supported.
 
-### Enable WebRTC in service
+
 ```bash
 docker/run.sh --enable-webrtc
 ```
