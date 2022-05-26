@@ -34,7 +34,7 @@ the status of media analytics pipelines.
 
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/run.sh`|**Intel(R) DL Streamer** docker [file](https://github.com/openvinotoolkit/docker_ci/tree/master/dockerfiles/ubuntu20) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
+| `./docker/run.sh`|**Intel(R) DL Streamer** docker [file](https://github.com/dlstreamer/dlstreamer/blob/master/docker/binary/ubuntu20/dlstreamer.Dockerfile) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. Exposes port 8080. Mounts the host system's graphics devices. |
 | `./docker/run.sh --framework ffmpeg`| **FFmpeg Video Analytics** docker [file](https://github.com/VCDP/FFmpeg-patch/blob/ffmpeg4.2_va/docker/Dockerfile.source) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. Mounts the graphics devices. |
 
 
@@ -270,7 +270,6 @@ Developer mode:
 * Uses the docker option `--network=host`. All ports and network interfaces for the host are shared with the container.
 * Uses the docker option `--privileged`. Operates the container with elevated privileges.
 
-
 ### Intel(R) DL Streamer based Image in Developer Mode
 **Example:**
 
@@ -281,7 +280,7 @@ docker/run.sh --dev
 pipeline-server@my-host:~$ python3 -m server
 ```
 
-By default, the running user's UID value determines user name inside the container. A UID of 1001 is assigned as `pipeline-server`. For other UIDs, you may see `I have no name!@my-host`. 
+By default, the running user's UID value determines user name inside the container. A UID of 1001 is assigned as `pipeline-server`. For other UIDs, you may see `I have no name!@my-host`.
 To run as another user, you can add `--user <user_name>` to the run command.  i.e. to add pipeline-server by name use add `--user pipeline-server`
 
 ---

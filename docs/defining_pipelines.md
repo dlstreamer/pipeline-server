@@ -848,6 +848,8 @@ Some models might have a separate `.txt` file for `labels`, in addition to or in
 If such a file exists, the Pipeline Server automatically looks for this file in the path
 `models/model-alias/model-version/*.txt`.
 
+For more details on model proc and labels see [Model Proc File](https://dlstreamer.github.io/dev_guide/model_proc_file.html)
+
 ### Intel(R) DL Streamer
 For more information on Intel(R) DL Streamer `model-proc` files and samples for
 common models please see the Intel(R) DL Streamer

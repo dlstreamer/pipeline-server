@@ -10,8 +10,7 @@ DOCKERFILE_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname "$DOCKERFILE_DIR")
 
 BASE_IMAGE_FFMPEG="openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10"
-# FIXME : Post Dockerhub update, use intel/dlstreamer and version 2022.1-ubuntu-devel
-BASE_IMAGE_GSTREAMER="openvino/ubuntu20_data_runtime:2021.4.2"
+BASE_IMAGE_GSTREAMER="intel/dlstreamer:2022.1.0-ubuntu20"
 
 BASE_IMAGE=${BASE_IMAGE:-""}
 BASE_BUILD_CONTEXT=
@@ -36,9 +35,8 @@ BUILD_OPTIONS="--network=host "
 BASE_BUILD_OPTIONS="--network=host "
 
 SUPPORTED_IMAGES=($BASE_IMAGE_GSTREAMER $BASE_IMAGE_FFMPEG)
-# FIXME : Post Dockerhub update, use intel/dlstreamer and version 2022.1-ubuntu
-DEFAULT_OMZ_IMAGE_GSTREAMER="openvino/ubuntu20_data_dev"
-DEFAULT_OMZ_VERSION_GSTREAMER="2021.4.2"
+DEFAULT_OMZ_IMAGE_GSTREAMER="intel/dlstreamer"
+DEFAULT_OMZ_VERSION_GSTREAMER="2022.1.0-ubuntu20-devel"
 DEFAULT_OMZ_IMAGE_FFMPEG="openvino/ubuntu18_data_dev"
 DEFAULT_OMZ_VERSION_FFMPEG="2021.2"
 FORCE_MODEL_DOWNLOAD=

@@ -23,11 +23,10 @@ can be customized to meet an application's requirements.
 | **Application / Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Application or microservice using Intel(R) DL Streamer Pipeline Server python modules to execute media analytics pipelines. By default a Tornado based RESTful microservice is included. |
 
 # Default Build Commands and Image Names
-
 | Command | Media Analytics Base Image | Image Name | Description |
 | ---     | ---        | --- | ----        |
-| `./docker/build.sh`| **ubuntu20_data_runtime:2021.4.2** docker [image](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. |
-| `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh`| **intel/dlstreamer:2022.1.0-ubuntu20** docker [image](https://hub.docker.com/r/intel/dlstreamer) |`dlstreamer-pipeline-server-gstreamer` | Intel(R) DL Streamer based microservice with default pipeline definitions and deep learning models. |
+| `./docker/build.sh --framework ffmpeg --open-model-zoo...`| **openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg:20.10** docker [image](https://hub.docker.com/r/openvisualcloud/xeon-ubuntu1804-analytics-ffmpeg) |`dlstreamer-pipeline-server-ffmpeg`| FFmpeg Video Analytics based microservice with default pipeline definitions and deep learning models. |
 ### Building with OpenVINO<sup>&#8482;</sup>, Ubuntu 20.04 and Intel(R) DL Streamer Support
 **Example:**
 ```
@@ -70,7 +69,8 @@ All validation is done in docker environment. Host built (aka "bare metal") conf
 
 | **Base Image** | **Framework** | **OpenVINO<sup>&#8482;</sup> Version** | **Link** | **Default** |
 |---------------------|---------------|---------------|------------------------|-------------|
-| OpenVINO<sup>&#8482;</sup> 2021.4.2 ubuntu20_data_runtime | GStreamer | 2021.4.2 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | Y |
+| OpenVINO<sup>&#8482;</sup> 2021.4.2 ubuntu20_data_runtime | GStreamer | 2021.4.2 | [Docker Hub](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) | N |
+| Intel DL Streamer<sup>&#8482;</sup> 2022.1.0-ubuntu20 | GStreamer | 2022.1.0 | [Docker Hub](https://hub.docker.com/r/intel/dlstreamer) | Y |
 | Open Visual Cloud 20.10 xeone3-ubuntu1804-analytics-ffmpeg | FFmpeg | 2021.1 | [Docker Hub](https://hub.docker.com/r/openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg) | Y |
 
 ---
