@@ -382,7 +382,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         "metadata": {
             "type": "file",
             "format": "json-lines",
-            "file": "/tmp/results.jsonl"
+            "path": "/tmp/results.jsonl"
         },
         "frame": {
             "type": "rtsp",
@@ -424,7 +424,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
         "metadata": {
             "type": "file",
             "format": "json-lines",
-            "file": "/tmp/results.jsonl"
+            "path": "/tmp/results.jsonl"
         },
         "frame": {
             "type": "webrtc",

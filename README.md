@@ -312,7 +312,7 @@ Timestamp 18640000000
 - vehicle (0.98) [0.40, 0.00, 0.55, 0.15] {'color': 'red', 'type': 'car'}
 ```
 
-If you look at video you can see that there are some errors in classification - there are no trucks or busses in the video. However you can see that associated confidence is much lower than the correct classification of the white and red cars.
+If you look at the video, you can see that there are some errors in classification - there are no trucks or buses in the video. However you can see that associated confidence is much lower than the correct classification of the white and red cars.
 
 ## Change Inference Accelerator Device
 
