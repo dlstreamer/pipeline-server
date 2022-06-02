@@ -128,4 +128,4 @@ if [ ! -z "$DL_STREAMER_VERSION" ]; then
     MODEL_PROC_VERSION="--model-proc-version $DL_STREAMER_VERSION"
 fi
 
-$SOURCE_DIR/docker/run.sh --user "$UID" -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/pipeline-server/tools/model_downloader/requirements.txt ; python3 -u /home/pipeline-server/tools/model_downloader $MODEL_PROC_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""
+$SOURCE_DIR/docker/run.sh --user "$UID" -e PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python -e HOME=/tmp $NON_INTERACTIVE --name $NAME --image $OPEN_MODEL_ZOO_TOOLS_IMAGE:$OPEN_MODEL_ZOO_VERSION $VOLUME_MOUNT $DRY_RUN --entrypoint /bin/bash --entrypoint-args "\"-i\" \"-c\" \"pip3 install -r /home/pipeline-server/tools/model_downloader/requirements.txt ; python3 -u /home/pipeline-server/tools/model_downloader $MODEL_PROC_VERSION --model-list /models_yml/$YML_FILE_NAME --output /output $FORCE\""

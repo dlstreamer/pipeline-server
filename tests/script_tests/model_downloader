@@ -4,12 +4,14 @@ MODEL_NAMES+=(vehicle-attributes-recognition-barrier-0039)
 MODEL_NAMES+=(aclnet)
 MODEL_NAMES+=(emotions-recognition-retail-0003)
 MODEL_NAMES+=(face-detection-retail-0004)
+MODEL_NAMES+=(yolo-v2-tiny-tf)
 
 ALIAS_NAMES=(object_detection/person_vehicle_bike)
 ALIAS_NAMES+=(object_classification/vehicle_attributes)
 ALIAS_NAMES+=(audio_detection/environment)
 ALIAS_NAMES+=(emotion_recognition/1)
 ALIAS_NAMES+=(face_detection_retail/1)
+ALIAS_NAMES+=(object_detection/yolo-v2-tiny-tf)
 
 tmp_dir=$(mktemp -d -t model-downloader-XXXXXXXX)
 
@@ -36,13 +38,21 @@ check_directory() {
     fi
 }
 
-OUTPUT=$($SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $SOURCE_DIR/models_list/models.list.yml --output $tmp_dir 2>&1)
-RETURN_CODE=$?
+run_model_downloader(){
+    OUTPUT=$($SOURCE_DIR/tools/model_downloader/model_downloader.sh --model-list $1 --output $tmp_dir 2>&1)
+    RETURN_CODE=$?
 
-if [[ $RETURN_CODE != 0 ]]; then
-    rm -rf $tmp_dir
-    error
-fi
+    if [[ $RETURN_CODE != 0 ]]; then
+        rm -rf $tmp_dir
+        error
+    fi
+}
+
+MODEL_LIST=("$SOURCE_DIR/models_list/models.list.yml")
+MODEL_LIST+=("$SOURCE_DIR/tests/script_tests/input/yolo.list.yml")
+for model_list in ${MODEL_LIST[@]}; do
+    run_model_downloader $model_list
+done
 
 i=0
 for model_name in ${MODEL_NAMES[@]}; do

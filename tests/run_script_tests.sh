@@ -43,7 +43,9 @@ if [ ! -z "$1" ]; then
     run_test $TEST
 else
     for TEST in $TEST_DIR/script_tests/* ; do
-	run_test $TEST
+      if [ ! -d "$TEST" ]; then
+	      run_test $TEST
+      fi
     done
 fi
 
