@@ -1,7 +1,7 @@
 # Customizing Pipeline Requests
 | [Request Format](#request-format) | [Source](#source) | [Destination](#metadata-destination) | [Parameters](#parameters) | [Tags](#tags) |
 
-Pipeline requests are initiated to exercise the Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server REST API. Each pipeline in the Pipeline Server has a specific endpoint. A pipeline can be started by issuing a `POST` request and a running pipeline can be stopped using a `DELETE` request. The `source` and `destination` elements of Pipeline Server [pipeline templates](defining_pipelines.md#pipeline-templates) are configured and constructed based on the `source` and `destination` from the incoming requests.
+Pipeline requests are initiated to exercise the Intel® Deep Learning Streamer (Intel® DL Streamer) Pipeline Server REST API. Each pipeline in the Pipeline Server has a specific endpoint. A pipeline can be started by issuing a `POST` request and a running pipeline can be stopped using a `DELETE` request. The `source` and `destination` elements of Pipeline Server [pipeline templates](defining_pipelines.md#pipeline-templates) are configured and constructed based on the `source` and `destination` from the incoming requests.
 
 ## Request Format
 

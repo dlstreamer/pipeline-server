@@ -1,4 +1,4 @@
-# Intel(R) Deep Learning Streamer Pipeline Server
+# Intel® Deep Learning Streamer Pipeline Server
 
 | [Getting Started](#getting-started)
 | [Request Customizations](#request-customizations)
@@ -6,12 +6,12 @@
 | [Further Reading](#further-reading)
 | [Known Issues](#known-issues) |
 
-Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server is a python package and microservice for
+Intel® Deep Learning Streamer (Intel® DL Streamer) Pipeline Server is a python package and microservice for
 deploying optimized media analytics pipelines. It supports pipelines
 defined in
 [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)*
 or [FFmpeg](https://ffmpeg.org/)* and provides APIs to discover, start,
-stop, customize and monitor pipeline execution. Intel(R) DL Streamer Pipeline Server is based on [OpenVINO<sup>&#8482;</sup> Toolkit DL
+stop, customize and monitor pipeline execution. Intel® DL Streamer Pipeline Server is based on [OpenVINO<sup>&#8482;</sup> Toolkit DL
 Streamer](https://github.com/opencv/gst-video-analytics) and [FFmpeg
 Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 
@@ -22,12 +22,12 @@ Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 | **Customizable Media Analytics Containers** | Scripts and dockerfiles to build and run container images with the required dependencies for hardware optimized media analytics pipelines. |
 | **No-Code Pipeline Definitions and Templates** | JSON based definition files, a flexible way for developers to define and parameterize pipelines while abstracting the low level details from their users. |
 | **Deep Learning Model Integration** | A simple way to package and reference [OpenVINO<sup>&#8482;</sup>](https://software.intel.com/en-us/openvino-toolkit) based models in pipeline definitions. The precision of a model can be auto-selected at runtime based on the chosen inference device. |
-| **Intel(R) DL Streamer Pipeline Server Python API** | A python module to discover, start, stop, customize and monitor pipelines based on their no-code definitions. |
-| **Intel(R) DL Streamer Pipeline Server Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| A RESTful microservice providing endpoints and APIs matching the functionality of the python module. |
+| **Intel® DL Streamer Pipeline Server Python API** | A python module to discover, start, stop, customize and monitor pipelines based on their no-code definitions. |
+| **Intel® DL Streamer Pipeline Server Microservice** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| A RESTful microservice providing endpoints and APIs matching the functionality of the python module. |
 
-> **IMPORTANT:** Intel(R) DL Streamer Pipeline Server is provided as a _sample_. It
+> **IMPORTANT:** Intel® DL Streamer Pipeline Server is provided as a _sample_. It
 > is not intended to be deployed into production environments without
-> modification. Developers deploying Intel(R) DL Streamer Pipeline Server should
+> modification. Developers deploying Intel® DL Streamer Pipeline Server should
 > review it against their production requirements.
 
 The sample microservice includes five categories of media analytics pipelines. Click on the links below to find out more about each of them.
@@ -46,12 +46,12 @@ The sample microservice includes five categories of media analytics pipelines. C
 
 | |                  |
 |---------------------------------------------|------------------|
-| **Docker** | Intel(R) DL Streamer Pipeline Server requires Docker for its build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
-| **bash** | Intel(R) DL Streamer Pipeline Server's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
+| **Docker** | Intel® DL Streamer Pipeline Server requires Docker for its build, development, and runtime environments. Please install the latest for your platform. [Docker](https://docs.docker.com/install). |
+| **bash** | Intel® DL Streamer Pipeline Server's build and run scripts require bash and have been tested on systems using versions greater than or equal to: `GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)`. Most users shouldn't need to update their version but if you run into issues please install the latest for your platform. Instructions for macOS&reg;* users [here](docs/installing_bash_macos.md). |
 
 ## Supported Hardware
 
-Refer to [OpenVINO<sup>&#8482;</sup> System Requirements](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/system-requirements.html) for supported development and target runtime platforms and the [OpenVINO<sup>&#8482;</sup> Container Release Notes](https://hub.docker.com/r/openvino/ubuntu20_data_runtime) for details on providing access to accelerator devices.
+Refer to [Intel® DL Streamer Hardware Requirements](https://dlstreamer.github.io/get_started/hardware_requirements.html) for supported development and target runtime platforms and the [Intel® DL Streamer Install Guide](https://dlstreamer.github.io/get_started/install/install_guide_ubuntu.html) for details on providing access to accelerator devices.
 
 ## Building the Microservice
 
@@ -461,13 +461,13 @@ The Pipeline Server makes pipeline customization and model selection a simple ta
 
 | **Documentation** | **Reference Guides** | **Tutorials** |
 | ------------    | ------------------ | ----------- |
-| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Intel(R) DL Streamer Pipeline Server](docs/building_pipeline_server.md) <br/> **-** [Running Intel(R) DL Streamer Pipeline Server](docs/running_pipeline_server.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Intel(R) DL Streamer Pipeline Server Architecture Diagram](docs/images/pipeline_server_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [Pipeline Client Reference](client/README.md)| **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) <br/> **-** [Kubernetes Deployment with Load Balancing](samples/kubernetes/README.md)
+| **-** [Defining Media Analytics Pipelines](docs/defining_pipelines.md) <br/> **-** [Building Intel® DL Streamer Pipeline Server](docs/building_pipeline_server.md) <br/> **-** [Running Intel® DL Streamer Pipeline Server](docs/running_pipeline_server.md) <br/> **-** [Customizing Pipeline Requests](docs/customizing_pipeline_requests.md) <br/> **-** [Creating Extensions](docs/creating_extensions.md)| **-** [Intel® DL Streamer Pipeline Server Architecture Diagram](docs/images/pipeline_server_architecture.png) <br/> **-** [Microservice Endpoints](docs/restful_microservice_interfaces.md) <br/> **-** [Build Script Reference](docs/build_script_reference.md) <br/> **-** [Run Script Reference](docs/run_script_reference.md) <br/> **-** [Pipeline Client Reference](client/README.md)| **-** [Changing Object Detection Models](docs/changing_object_detection_models.md) <br/> **-** [Kubernetes Deployment with Load Balancing](samples/kubernetes/README.md)
 
 ## Related Links
 
 | **Media Frameworks** | **Media Analytics** | **Samples and Reference Designs**
 | ------------    | ------------------ | -----------------|
-| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [Intel(R) Deep Learning Streamer](https://github.com/dlstreamer/dlstreamer) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
+| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [Intel® Deep Learning Streamer](https://github.com/dlstreamer/dlstreamer) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
 
 # Known Issues
 
