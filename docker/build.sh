@@ -424,10 +424,9 @@ else
     BUILD_ARGS+="--build-arg FINAL_STAGE=dlstreamer-pipeline-server-library "
 fi
 
-cp -f $DOCKERFILE_DIR/Dockerfile $DOCKERFILE_DIR/Dockerfile.env
 ENVIRONMENT_FILE_LIST=
 
-if [[ "$BASE_IMAGE" == *"openvino/"* || "$BASE_IMAGE" == *"dlstreamer"* ]]; then
+if [[ "$BASE_IMAGE" == *"openvino/"* ]]; then
     $RUN_PREFIX docker run -t --rm --entrypoint /bin/bash -e HOSTNAME=BASE $BASE_IMAGE "-i" "-c" "env" > $DOCKERFILE_DIR/openvino_base_environment.txt
     ENVIRONMENT_FILE_LIST+="$DOCKERFILE_DIR/openvino_base_environment.txt "
 fi
@@ -438,11 +437,14 @@ for ENVIRONMENT_FILE in ${ENVIRONMENT_FILES[@]}; do
     fi
 done
 
+DOCKER_FILE=$DOCKERFILE_DIR/Dockerfile
 if [ ! -z "$ENVIRONMENT_FILE_LIST" ]; then
+    DOCKER_FILE=$DOCKERFILE_DIR/Dockerfile.env
+    cp -f $DOCKERFILE_DIR/Dockerfile $DOCKER_FILE
     cat $ENVIRONMENT_FILE_LIST | grep -E '=' | sed -e 's/,\s\+/,/g' | tr '\n' ' ' | tr '\r' ' ' > $DOCKERFILE_DIR/final.env
     echo "  HOME=/home/pipeline-server " >> $DOCKERFILE_DIR/final.env
-    echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKERFILE_DIR/Dockerfile.env
-    printf "\nENV PYTHONPATH=/home/pipeline-server:\$PYTHONPATH\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKERFILE_DIR/Dockerfile.env
+    echo "ENV " | cat - $DOCKERFILE_DIR/final.env | tr -d '\n' >> $DOCKER_FILE
+    printf "\nENV PYTHONPATH=/home/pipeline-server:\$PYTHONPATH\nENV LD_PRELOAD=libjemalloc.so\nENV GST_PLUGIN_PATH=\$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/" >> $DOCKER_FILE
 fi
 
 show_image_options
@@ -450,4 +452,4 @@ show_image_options
 echo "-----------------------------"
 echo "Building Image..."
 echo "-----------------------------"
-launch "$RUN_PREFIX docker build -f "$DOCKERFILE_DIR/Dockerfile.env" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR"
+launch "$RUN_PREFIX docker build -f "$DOCKER_FILE" $BUILD_OPTIONS $BUILD_ARGS -t $TAG --target $TARGET $SOURCE_DIR"

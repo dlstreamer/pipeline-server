@@ -48,6 +48,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y libjemalloc-dev
+
 # Install GStreamer packages not present dlstreamer base image
 RUN if [[ ${PIPELINE_SERVER_BASE} == *"dlstreamer"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -153,8 +155,10 @@ FROM ${FINAL_STAGE} as deploy
 
 ARG USER=pipeline-server
 
-ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server
+ENV HOME=/home/pipeline-server
+ENV PYTHONPATH=/home/pipeline-server:$PYTHONPATH
 ENV GST_PLUGIN_PATH=$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/
+ENV LD_PRELOAD=libjemalloc.so
 
 ENV cl_cache_dir=/home/.cl_cache
 RUN mkdir -p -m g+s $cl_cache_dir && chown ${USER}:users $cl_cache_dir

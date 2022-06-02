@@ -81,7 +81,7 @@ def test_pipeline_stability(PipelineServer, test_case, test_filename, generate, 
                     test_case["result"] = results
                     with open(test_filename+'.generated', "w") as test_output:
                         json.dump(test_case, test_output, indent=4)
-                elif not duration_met:
+                elif not duration_met and _test_case.get("golden_results", True):
                     assert results_processing.cmp_results(results,
                                                           _test_case["result"],
                                                           numerical_tolerance), \

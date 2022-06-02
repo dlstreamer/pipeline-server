@@ -180,9 +180,19 @@ class GStreamerPipeline(Pipeline):
 
         if self._app_source:
             self._app_source.finish()
+            del self._app_source
+            self._app_source = None
 
         for destination in self._app_destinations:
             destination.finish()
+
+        if self.appsrc_element:
+            del self.appsrc_element
+            self.appsrc_element = None
+
+        if self.appsink_element:
+            del self.appsink_element
+            self.appsink_element = None
 
         self._app_destinations.clear()
 
