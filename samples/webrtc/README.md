@@ -147,14 +147,14 @@ You can disconnect the pipeline and start additional pipelines to visualize dire
 
 ### Example 2: Quick Launch + Visualization in Web App
 
-The `./scripts/start_pipeline.sh` script is provided as a quick way to launch a supported pipeline and render results manually. This prepares a unique `peer-id` and then automatically launches the pipeline and visualization stream (on localhost) when the web page loads.
+The `./scripts/start_pipeline_psclient.sh` script is provided as a quick way to launch a supported pipeline and render results manually. This prepares a unique `peer-id` and then automatically launches the pipeline and visualization stream (on localhost) when the web page loads.
 
 These scripts launch your host's default browser, which works if compatible with settings applied as explained [above](#configuring_client_browser).
 
 > NOTE: You may optionally pass a `--remote` flag to instruct the script to provide the URL so you can paste in a browser running on a remote system (such as Firefox running on your Windows laptop). However, you must replace `localhost` in the URL with the IP address or fully qualified DNS name (FQDN) for your host.
 
    ```bash
-   ./scripts/start_pipeline.sh --remote
+   ./scripts/start_pipeline_psclient.sh --remote
    ```
 
    ```text
@@ -162,7 +162,7 @@ These scripts launch your host's default browser, which works if compatible with
    http://pipeline-server.intra.acme.com:8082?destination_peer_id=pipeline_webrtc1_29442&instance_id=36060dc6938c11ec9bfe0242ac140004
    ```
 
-> HINT: You may modify the `scripts/launch_browser.sh` bash script used by start_pipeline.sh so that it provides a suitable FQDN for your host.
+> HINT: You may modify the `scripts/launch_browser.sh` bash script used by start_pipeline_psclient.sh so that it provides a suitable FQDN for your host.
 
 > NOTE: When the `instance_id` and `destination_peer_id` query parameters are provided in the URL in addition to the browser address, this web app sample recognizes the pipeline has already launched and WebRTC visualization should immediately begin. The Pipeline Server instance identifier is used for obtaining status and performance information, while the Destination Peer ID is used to request rendered frames from `webrtcbin`.
 
@@ -219,3 +219,5 @@ Notice that as primary pipelines run a secondary WebRTC render pipeline also run
    Confirm that the host running Pipeline Server microservices reside on the same network and are configured to allow access. For example, if your remote system is behind a proxy server, check in the Network Settings of your system and/or browser.
    
    > NOTE: Be aware that some corporate networks may restrict access to ports or have other configuration that limits routes so you may need to check your firewall rules or other network configuration. On restricted or public networks you may extend the implementation by adding secure endpoints and configuring services to utilize STUN/TURN servers -- this will permit connection traversal using best available throughput for alternate/available ports and public IP negotiation.
+
+1. When grafana dashboard fails to load AJAX iframe panels and gives the error "Failed to retrieve requested URL." along with the IP address, consider adding the IP address to the No Proxy in the browser settings. 
