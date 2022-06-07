@@ -11,9 +11,7 @@ deploying optimized media analytics pipelines. It supports pipelines
 defined in
 [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)*
 or [FFmpeg](https://ffmpeg.org/)* and provides APIs to discover, start,
-stop, customize and monitor pipeline execution. Intel® DL Streamer Pipeline Server is based on [OpenVINO<sup>&#8482;</sup> Toolkit DL
-Streamer](https://github.com/opencv/gst-video-analytics) and [FFmpeg
-Video Analytics](https://github.com/VCDP/FFmpeg-patch).
+stop, customize and monitor pipeline execution. Intel® DL Streamer Pipeline Server is based on [Intel® Deep Learning Streamer Pipeline Framework](https://github.com/dlstreamer/dlstreamer) and [FFmpeg Video Analytics](https://github.com/VCDP/FFmpeg-patch).
 
 ## Features Include
 
@@ -467,7 +465,7 @@ The Pipeline Server makes pipeline customization and model selection a simple ta
 
 | **Media Frameworks** | **Media Analytics** | **Samples and Reference Designs**
 | ------------    | ------------------ | -----------------|
-| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [Intel® Deep Learning Streamer](https://github.com/dlstreamer/dlstreamer) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
+| **-** [GStreamer](https://gstreamer.freedesktop.org/documentation/?gi-language=c)* <br/> **-** [GStreamer* Overview](docs/gstreamer_overview.md) <br/> **-** [FFmpeg](https://ffmpeg.org/)* | **-** [Intel® Deep Learning Streamer Pipeline Framework](https://github.com/dlstreamer/dlstreamer) <br/> **-** [OpenVINO<sup>&#8482;</sup> Toolkit](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit.html) <br/> **-** [FFmpeg* Video Analytics](https://github.com/VCDP/FFmpeg-patch) | **-** [Open Visual Cloud Smart City Sample](https://github.com/OpenVisualCloud/Smart-City-Sample) <br/> **-** [Open Visual Cloud Ad Insertion Sample](https://github.com/OpenVisualCloud/Ad-Insertion-Sample) <br/> **-** [Edge Insights for Retail](https://software.intel.com/content/www/us/en/develop/articles/real-time-sensor-fusion-for-loss-detection.html)
 
 # Known Issues
 
