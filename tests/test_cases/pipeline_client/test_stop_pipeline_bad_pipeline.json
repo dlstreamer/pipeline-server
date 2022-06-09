@@ -1,7 +1,0 @@
-{
-    "test_function": "stop_pipeline",
-    "pipeline": "fake_pipeline/fake_version",
-    "uri": "file:///home/pipeline-server/tests/media/store-aisle-detection.mp4",
-    "instance_id": 101,
-    "expected_output": "Pipeline NOT stopped"
-}

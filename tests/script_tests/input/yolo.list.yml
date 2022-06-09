@@ -1,4 +1,0 @@
-- model: yolo-v2-tiny-tf
-  alias: object_detection
-  version: yolo-v2-tiny-tf
-  precision: [FP16,FP32]
