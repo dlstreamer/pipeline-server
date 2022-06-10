@@ -1206,7 +1206,7 @@ necessary.  Here is a sample; alter the names:
 That's all there is to it!
 
 -------------------------------------------------------------
-12. JSON-C
+13. JSON-C
     Copyright (c) 2009-2012 Eric Haszlakiewicz
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -1253,6 +1253,11 @@ SOFTWARE.
 -------------------------------------------------------------
 
 * Docker Base Images
+
+   Intel(R) Deep Learning Streamer Pipeline Framework Ubuntu 20.04 Runtime Image
+   https://hub.docker.com/r/intel/dlstreamer
+   https://github.com/dlstreamer/dlstreamer/tree/master/docker/source/ubuntu20
+    Copyright (c) 2018-2022 Intel Corporation
 
    OpenVINO(TM) Runtime Base Image
    https://hub.docker.com/r/openvino/ubuntu18_runtime

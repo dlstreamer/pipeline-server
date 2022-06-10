@@ -1,0 +1,29 @@
+{
+	"type": "GStreamer",
+	"template": [
+		"{auto_source} ! decodebin",
+		" ! gvadetect model={models[object_detection][vehicle][network]} name=detection",
+		" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+		" ! appsink name=appsink"
+	],
+	"description": "Vehicle Detection based on vehicle-detection-0202",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
+			},
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
+			}
+		}
+	}
+}

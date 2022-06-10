@@ -40,7 +40,7 @@ if [ "$SKIP_CHECKS" == "false" ]; then
   sleep 3
   # Sanity check to confirm all dependent services are running.
   for (( i=0; i<20; ++i)); do
-    non_running_status=$(microk8s kubectl get pods --all-namespaces | awk '{ print $4 }' | grep -vE 'Running|STATUS')
+    non_running_status=$(microk8s kubectl get pods --all-namespaces | awk '{ print $3 }' | grep -vE 'Running|STATUS')
     if [ -z "$non_running_status" ]; then
       echo "All Services are in Running state."
       break

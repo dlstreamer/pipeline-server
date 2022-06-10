@@ -16,8 +16,8 @@ gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst
 from gstgva.util import gst_buffer_data
-from vaserving.gstreamer_app_source import GvaFrameData
-from vaserving.vaserving import VAServing
+from server.gstreamer_app_source import GvaFrameData
+from server.pipeline_server import PipelineServer
 # pylint: enable=wrong-import-position
 
 source_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
@@ -65,13 +65,13 @@ if __name__ == "__main__":
     decode_output = Queue()
     detect_input = Queue()
     detect_output = Queue()
-    VAServing.start({'log_level': 'INFO', "ignore_init_errors":True})
+    PipelineServer.start({'log_level': 'INFO', "ignore_init_errors":True})
     parameters = None
     if args.parameters:
         parameters = json.loads(args.parameters)
     # Start object detection pipeline
     # It will wait until it receives frames via the detect_input queue
-    detect_pipeline = VAServing.pipeline(args.pipeline, args.pipeline_version)
+    detect_pipeline = PipelineServer.pipeline(args.pipeline, args.pipeline_version)
     detect_pipeline.start(source={"type": "application",
                                   "class": "GStreamerAppSource",
                                   "input": detect_input,
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     # Start decode only pipeline.
     # Its only purpose is to generate decoded frames to be fed into the object detection pipeline
-    decode_pipeline = VAServing.pipeline("video_decode", "app_dst")
+    decode_pipeline = PipelineServer.pipeline("video_decode", "app_dst")
     decode_pipeline.start(source={"type":"uri",
                                   "uri": args.input_uri},
                           destination={"type":"application",
@@ -145,4 +145,4 @@ if __name__ == "__main__":
 
     print("Received {} results".format(result_count))
 
-    VAServing.stop()
+    PipelineServer.stop()

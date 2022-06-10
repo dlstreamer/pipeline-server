@@ -64,6 +64,9 @@ This argument enables rtsp restreaming by setting `ENABLE_RTSP` environment vari
 ### RTSP Port (--rtsp-port)
 This argument specifies the port to use for rtsp re-streaming.
 
+### Enable WebRTC re-streaming (--enable-webrtc)
+This argument enables webrtc restreaming by setting `ENABLE_WEBRTC` environment. Additional dependencies must be running as described [here](./samples/webrtc/README.md).
+
 ### Developer Mode (--dev)
 This argument runs the image in `developer` mode which configures the environment as follows:
 

@@ -1,0 +1,3 @@
+grafana/content/http-stream-dashboard.json
+grafana/grafana-storage/**
+webserver/www/js-client/**

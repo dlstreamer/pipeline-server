@@ -1,4 +1,4 @@
-# Intel(R) DL Streamer Pipeline Server EdgeX Bridge
+# Intel(R) Deep Learning Streamer Pipeline Server EdgeX Bridge
 
 This sample demonstrates how to emit events into [EdgeX Foundry](http://edgexfoundry.org/) from an object detection pipeline based on Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server and [Intel(R) DL Streamer](https://github.com/dlstreamer/dlstreamer). The sample uses the [person-vehicle-bike-detection-crossroad-0078](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-vehicle-bike-detection-crossroad-0078) model for detection but can be customized to use any detection or recognition model.
 
@@ -155,7 +155,7 @@ To do this let's install an RTSP client such as [VLC Media Player*](https://linu
 
 You may extend this script or directly use any other client to connect with the RTSP endpoint being served at `rtsp://127.0.0.1:8554/edgex_event_emitter`.
 
-Refer to our [RTSP Re-streaming](/docs/running_video_analytics_serving.md#real-time-streaming-protocol-rtsp-re-streaming) documentation for additional details.
+Refer to our [RTSP Re-streaming](/docs/running_pipeline_server.md#real-time-streaming-protocol-rtsp-re-streaming) documentation for additional details.
 
 > NOTE: This has been tested when running the RTSP client on the local host. Additional configuration may be needed to view when accessing remotely, bearing in mind that docker-compose is running containers within edgex_network.
 

@@ -48,9 +48,9 @@ Build and run the sample microservice with the following commands:
 ```
 
 ### List Models
-Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also count the number of models. In this example there are 7.
+Use [pipeline_client](/client/README.md) to list the models. Check that `object_detection/person_vehicle_bike` is present and that that `yolo-v2-tiny-tf` is not. Also count the number of models. In this example there are 7.
 ```
-./vaclient/vaclient.sh list-models
+./client/pipeline_client.sh list-models
 ```
 ```
  - audio_detection/environment
@@ -63,9 +63,9 @@ Use [vaclient](/vaclient/README.md) to list the models. Check that `object_detec
 ```
 
 ### Detect Objects on Sample Video
-In a second terminal window use [vaclient](/vaclient/README.md) to run the pipeline. Expected output is abbreviated.
+In a second terminal window use [pipeline_client](/client/README.md) to run the pipeline. Expected output is abbreviated.
 ```bash
-./vaclient/vaclient.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
 ```
 ```
 <snip>
@@ -95,8 +95,7 @@ In the original terminal window, stop the service using `CTRL-C`.
 On start-up the Pipeline Server discovers models that have been
 downloaded and makes them available for reference within pipelines.
 
-Models can be downloaded either as part of the normal Video Analytics
-Serving build process or using a stand-alone tool.
+Models can be downloaded either as part of the normal Pipeline Server build process or using a stand-alone tool.
 
 ### Add `yolo-v2-tiny-tf` to the Model Downloader List file
 
@@ -130,11 +129,11 @@ the end of the file.
 Expected output (abbreviated):
 
 ```
-[ SUCCESS ] Generated IR version 10 model.
-[ SUCCESS ] XML file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
-[ SUCCESS ] BIN file: /tmp/tmps4pxnu7y/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
-[ SUCCESS ] Total execution time: 9.70 seconds.
-[ SUCCESS ] Memory consumed: 584 MB.
+[ SUCCESS ] Generated IR version 11 model.
+[ SUCCESS ] XML file: /tmp/tmp4u2kd1v9/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.xml
+[ SUCCESS ] BIN file: /tmp/tmp4u2kd1v9/public/yolo-v2-tiny-tf/FP32/yolo-v2-tiny-tf.bin
+[ SUCCESS ] Total execution time: 3.79 seconds.
+[ SUCCESS ] Memory consumed: 532 MB.
 
 Copied model_proc to: /output/models/object_detection/yolo-v2-tiny-tf/yolo-v2-tiny-tf.json
 ```
@@ -148,6 +147,7 @@ tree models
 models
 └── object_detection
     └── yolo-v2-tiny-tf
+        ├── coco-80cl.txt
         ├── FP16
         │   ├── yolo-v2-tiny-tf.bin
         │   ├── yolo-v2-tiny-tf.mapping
@@ -214,7 +214,7 @@ Once started you can verify that the new model and pipeline have been loaded.
 
 The `list-models` command now shows 8 models, including `object_detection/yolo-v2-tiny-tf`
 ```bash
-./vaclient/vaclient.sh list-models
+./client/pipeline_client.sh list-models
 ```
 ```
  - emotion_recognition/1
@@ -228,7 +228,7 @@ The `list-models` command now shows 8 models, including `object_detection/yolo-v
 ```
 The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
 ```bash
-./vaclient/vaclient.sh list-pipelines
+./client/pipeline_client.sh list-pipelines
 ```
 ```
  - object_detection/app_src_dst
@@ -246,10 +246,10 @@ The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
 
 ## Step 5. Detect Objects on Sample Video with New Pipeline
 
-Now use vaclient to run the `object_detection/yolo-v2-tiny-tf` pipeline with the new model.
+Now use pipeline_client to run the `object_detection/yolo-v2-tiny-tf` pipeline with the new model.
 You can see the `yolo-v2-tiny-tf` model in action as objects are now correctly detected as bottles.
 ```bash
-./vaclient/vaclient.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/yolo-v2-tiny-tf https://github.com/intel-iot-devkit/sample-videos/raw/master/bottle-detection.mp4?raw=true
 ```
 ```
 Pipeline running: object_detection/yolo-v2-tiny-tf, instance = <uuid>
@@ -279,7 +279,7 @@ rm -r models
 ```
 Once started you can verify that the new model has been loaded.
 ```bash
-./vaclient/vaclient.sh list-models
+./client/pipeline_client.sh list-models
 ```
 ```
  - emotion_recognition/1
@@ -297,7 +297,7 @@ Once started you can verify that the new model has been loaded.
 For more information on the build, run, pipeline definition and model download please see:
 
 * [Getting Started](/README.md#getting-started)
-* [Building Intel(R) DL Streamer Pipeline Server](/docs/building_video_analytics_serving.md)
-* [Running Intel(R) DL Streamer Pipeline Server](/docs/running_video_analytics_serving.md)
+* [Building Intel(R) DL Streamer Pipeline Server](/docs/building_pipeline_server.md)
+* [Running Intel(R) DL Streamer Pipeline Server](/docs/running_pipeline_server.md)
 * [Defining Pipelines](/docs/defining_pipelines.md)
 * [Model Downloader Tool](/tools/model_downloader/README.md)

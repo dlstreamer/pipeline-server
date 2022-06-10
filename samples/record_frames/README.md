@@ -182,7 +182,7 @@ samples/record_frames/run_server.sh --frame-store samples/record_frames/frame_st
 
 Check the pipeline is loaded:
 ```
-vaclient/vaclient.sh list-pipelines
+./client/pipeline_client.sh list-pipelines
 ```
 ```
 <snip>

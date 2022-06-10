@@ -5,7 +5,7 @@
 '''
 
 import json
-from vaserving.common.utils import logging
+from server.common.utils import logging
 
 logger = logging.get_logger('gva_event_meta', is_static=True)
 '''

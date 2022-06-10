@@ -9,7 +9,7 @@ import argparse
 import os
 from shutil import copyfile
 import traceback
-from vaserving.vaserving import VAServing
+from server.pipeline_server import PipelineServer
 
 DEFAULT_SOURCE_URI = "https://github.com/intel/dlstreamer-pipeline-server/raw/master/samples/bottle_detection.mp4"
 
@@ -54,7 +54,7 @@ def parse_args(args=None):
     parser.add_argument("--rtsp-path",
                         action="store",
                         dest="requested_rtsp_path",
-                        help="Indicates VA Serving should render processed frames output using this RTSP path.",
+                        help="Indicates Pipeline Server should render processed frames output using this RTSP path.",
                         default=None)
     parser.add_argument("--analytics-image",
                         action="store",
@@ -108,8 +108,8 @@ if __name__ == "__main__":
             TEMPLATE = "name: \"{edgexdevice}\"\n" \
             "manufacturer: \"PipelineServer\"\n"\
             "model: \"MQTT-2\"\n"\
-            "description: \"Device profile for inference events published by Intel(R) DL Streamer Pipeline Server"\
-            "Serving over MQTT.\"\n"\
+            "description: \"Device profile for inference events published by Pipeline Server"\
+            " over MQTT.\"\n"\
             "labels:\n"\
             "- \"MQTT\"\n"\
             "- \"PipelineServer\"\n"\
@@ -181,7 +181,7 @@ if __name__ == "__main__":
                 "      DRIVER_RESPONSETOPIC: Edgex-command-response\n"\
                 "    volumes:\n"\
                 "      - ./res/device-mqtt-go/:/res/\n\n"\
-                "  vaserving:\n"\
+                "  pipeline_server:\n"\
                 "    container_name: {containername}\n"\
                 "    depends_on:\n"\
                 "      device-mqtt:\n"\
@@ -213,20 +213,16 @@ if __name__ == "__main__":
                 "      http_proxy: $http_proxy\n"\
                 "      socks_proxy: $socks_proxy\n"\
                 "      no_proxy: $no_proxy\n"\
-                "    volumes:\n"\
-                "      - /tmp/.xdg_runtime_dir:/home/.xdg_runtime_dir\n"\
                 "    devices:\n"\
                 "      - /dev/dri:/dev/dri\n"\
                 "    hostname: {containername}\n"\
                 "    image: {analyticsimage}\n"\
                 "    command: \"--source={source} --topic={topic} $edgex_request_rtsp_path\"\n" \
-                "#    user: \"$UID:$GID\"\n"\
                 "    networks:\n"\
                 "      edgex-network: {{}}\n"\
                 "    ports:\n"\
                 "    - 127.0.0.1:8080:8080/tcp\n"\
                 "    - 127.0.0.1:$edgex_rtsp_port:$edgex_rtsp_port/tcp\n"\
-                "    read_only: true\n"\
                 "version: '3.7'\n\n"
             with open(compose_dest, 'w') as override_file:
                 override_file.write(COMPOSE.format(**parameters["compose"]))
@@ -243,28 +239,29 @@ if __name__ == "__main__":
                                                          pipeline_version,
                                                          pipeline_file))
 
-            VAServing.start({'log_level': 'INFO'})
-            pipeline = VAServing.pipeline(pipeline_name, pipeline_version)
+            PipelineServer.start({'log_level': 'INFO'})
+            pipeline = PipelineServer.pipeline(pipeline_name, pipeline_version)
             source = {"uri":args.source, "type":"uri"}
-            frame_destination={}
-            if args.requested_rtsp_path:
-                frame_destination = {
-                    "type": "rtsp",
-                    "path": args.requested_rtsp_path
-                }
             destination = {
                 "metadata": {
                     "type":"mqtt",
                     "host":args.destination,
                     "topic":'edgex_bridge/'+args.topic
-                },
-                "frame": frame_destination
+                }
             }
+            if args.requested_rtsp_path:
+                frame_destination = {
+                    "frame": {
+                        "type": "rtsp",
+                        "path": args.requested_rtsp_path
+                    }
+                }
+                destination.update(frame_destination)
 
             pipeline.start(source=source, destination=destination, parameters=parameters)
             start_time = None
             start_size = 0
-            VAServing.wait()
+            PipelineServer.wait()
     except FileNotFoundError:
         print("Did you forget to run ./samples/edgex_bridge/fetch_edgex.sh ?")
         print("Error processing script: {}".format(traceback.print_exc()))
@@ -272,4 +269,4 @@ if __name__ == "__main__":
         pass
     except Exception:
         print("Error processing script: {}".format(traceback.print_exc()))
-    VAServing.stop()
+    PipelineServer.stop()

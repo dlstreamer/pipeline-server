@@ -8,7 +8,7 @@ import os
 from collections import namedtuple
 from enum import Enum
 from extensions.gva_event_meta import gva_event_meta
-from vaserving.common.utils import logging
+from server.common.utils import logging
 
 Point = namedtuple('Point', ['x', 'y'])
 BoundingBox = namedtuple('BoundingBox', ['left', 'top', 'width', 'height'])

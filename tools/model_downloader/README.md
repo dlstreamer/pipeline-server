@@ -4,8 +4,8 @@
 The model downloader downloads and prepares models from the
 OpenVINO<sup>&#8482;</sup> Toolkit [Open Model
 Zoo](https://github.com/openvinotoolkit/open_model_zoo) for use with
-Intel(R) DL Streamer Pipeline Server. It can be run as a standalone tool or as
-part of the Intel(R) DL Streamer Pipeline Server build process. For more
+Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) Pipeline Server. It can be run as a standalone tool or as
+part of the Pipeline Server build process. For more
 information on model file formats and the directory structure used by
 Intel(R) DL Streamer Pipeline Server see [defining_pipelines](/docs/defining_pipelines.md#deep-learning-models).
 
@@ -37,27 +37,31 @@ more optional properties (alias, version, precision, local
 model-proc). If an optional property is not specified the downloader
 will use [default values](#default-values).
 
+> Note: Models can have a separate file that contains labels.
+
 Example:
 
 ```yaml
 - model: yolo-v3-tf
   alias: object_detection
   version: 2
-  precision: [FP32,INT8]
+  precision: [FP32]
   model-proc: object_detection.json
+  labels: coco.txt
 ```
+
+The `model-proc` and `labels` entries above can be set if a local override is desired.
+In that case, the corresponding files are expected to be in the same directory as the models.list.yml specified.
 
 ## Default Values
 
 * alias = model_name
 * version = 1
 * precision = all available precisions
-* model-proc = model_name.json
+* model-proc = <model_name>.json
+* labels = <filename>.txt
 
-If a local model-proc is not specified, the tool will download the
-corresponding model-proc file from the Intel(R) DL Streamer repository (if one
-exists).
-
+If a local model-proc and/or labels file(s) are not specified, the tool will use the model-proc and/or labels file that is part of the Intel(R) DL Streamer developer image.
 
 # Downloading Models
 

@@ -60,8 +60,7 @@ the template property is specific to the underlying framework
 (`GStreamer` or `FFmpeg`). Templates use the `source`,
 `destination` and `parameters` sections of an incoming pipeline
 `request` to customize the source, destination and behavior of a
-pipeline implemented in an underlying framework. The Video Analytics
-Serving `pipeline_manager` and framework specific modules
+pipeline implemented in an underlying framework. The Pipeline Server `pipeline_manager` and framework specific modules
 `gstreamer_pipeline` and `ffmpeg_pipeline` provide default handling
 for typical `source` and `destination` options.
 
@@ -74,8 +73,7 @@ for typical `source` and `destination` options.
 
 GStreamer templates use the [GStreamer Pipeline
 Description](https://gstreamer.freedesktop.org/documentation/tools/gst-launch.html?gi-language=c#pipeline-description)
-syntax to concatenate elements into a pipeline. The Video Analytics
-Serving `pipeline_manager` and `gstreamer_pipeline` modules
+syntax to concatenate elements into a pipeline. The Pipeline Server `pipeline_manager` and `gstreamer_pipeline` modules
 parse the template, configure the `source`, `destination`, and
 `appsink` elements and then construct the pipeline based on incoming
 requests.
@@ -250,8 +248,7 @@ gvadetect model={models[person_vehicle_bike_detection][1][network]} model-proc={
 ```
 
 The `model` and `model-proc` properties reference file paths to the
-deep learning model as discovered and populated by the Video Analytics
-Serving `model_manager` module. The `model_manager` module provides a
+deep learning model as discovered and populated by the Pipeline Server `model_manager` module. The `model_manager` module provides a
 python dictionary associating model names and versions to their
 absolute paths enabling pipeline templates to reference them by
 name. You can use the `model-proc` property to point to custom model-proc by specifying absolute path. More details are provided in the [Deep Learning Models](#deep-learning-models) section.
@@ -337,7 +334,7 @@ Pipeline parameters enable developers to customize pipelines based on
 incoming requests. Parameters are an optional section within a
 pipeline definition and are used to specify which pipeline properties
 are configurable and what values are valid. Developers can also
-specify default values for each parameter.
+specify default values for each parameter or set to read from environment variable.
 
 ### Defining Parameters as JSON Schema
 
@@ -402,7 +399,7 @@ on how to associate a parameter with one or more GStreamer element
 properties.
 
 The JSON schema for a GStreamer pipeline parameter can include an
-`element` section in one of three forms.
+`element` section in one of the below forms.
 
 1. **Simple String**. <br/> <br/>
    The string indicates the `name` of an element in
@@ -521,6 +518,65 @@ The JSON schema for a GStreamer pipeline parameter can include an
             "device": "CPU"
         }
     }
+    ```
+
+#### Parameters and default value
+
+Parameters default value in pipeline definitions can be set in section in one of two forms(setting value or by environment variable) below.
+
+1. **Set default value directly**
+
+    A default value can be set for the element property using `default` key.
+
+   **Example:**
+
+   The following snippet defines the parameter `detection-device`
+   which sets the `device` property of `detection` with default value `GPU`
+
+   ```json
+   "parameters": {
+   "type": "object",
+   "properties": {
+        "detection-device": {
+            "element": {
+                "name":"detection",
+                "property":"device"
+            },
+            "type": "string",
+            "default": "GPU"
+            }
+        }
+    }
+    ```
+
+1. **Read default value from environment variable**
+
+    A default value can be set using environment variable for the element property using `default` key.
+
+   **Example:**
+
+   The following snippet defines the parameter `detection-device`
+   which sets the `device` property of the `detection` with default value from environment variable `DETECTION_DEVICE`. If the environment variable is not set, pipeline server won't set a default and the element's built-in default will be used by the underlying framework.
+
+   ```json
+   "parameters": {
+   "type": "object",
+   "properties": {
+        "detection-device": {
+            "element": {
+                "name":"detection",
+                "property":"device"
+            },
+            "type": "string",
+            "default": "{env[DETECTION_DEVICE]}"
+            }
+        }
+    }
+    ```
+
+    Set `DETECTION_DEVICE` environment variable at Pipeline Server start.
+    ```bash
+    ./docker/run.sh -e DETECTION_DEVICE=GPU
     ```
 
 #### Parameters and FFmpeg Filters
@@ -719,8 +775,7 @@ Parameter Resolution:
 ```
 ### Reserved Parameters
 
-The following parameters have built-in handling within the Video
-Analytics Serving modules and should only be included in pipeline
+The following parameters have built-in handling within the Pipeline Server modules and should only be included in pipeline
 definitions wishing to trigger that handling.
 
 #### bus-messages
@@ -789,6 +844,12 @@ The Pipeline Server automatically looks for this file in the path
 `models/model-alias/model-version/*.json`. Note that the model manager will
 fail to load if there are multiple ".json" model-proc files in this directory.
 
+Some models might have a separate `.txt` file for `labels`, in addition to or instead of `model-proc`.
+If such a file exists, the Pipeline Server automatically looks for this file in the path
+`models/model-alias/model-version/*.txt`.
+
+For more details on model proc and labels see [Model Proc File](https://dlstreamer.github.io/dev_guide/model_proc_file.html)
+
 ### Intel(R) DL Streamer
 For more information on Intel(R) DL Streamer `model-proc` files and samples for
 common models please see the Intel(R) DL Streamer
@@ -808,30 +869,32 @@ determines their name, version and precision.
 On startup, the Pipeline Server `model_manager` searches
 the configured model directory and creates a dictionary storing the
 location of each model and their associated collateral
-(i.e. `<model-name>.bin`, `<model-name>.xml`, `<model-name>.json`)
+(i.e. `<model-name>.bin`, `<model-name>.xml`, `<model-name>.json`, `<labels>.txt`)
 
 The hierarchical directory structure is made up of four levels:
 
 `<model-root-directory>/<model-name>/<version>/<precision>`
 
+> Note: Not all models have a file for labels. In such cases, the labels could be listed in the `model-proc`file.
 
-Here's a sample directory listing for the `emotion_recognition` model:
+Here's a sample directory listing for the `yolo-v3-tf` model:
 
 ```
 models/
-├── emotion_recognition                                           // name
-│   └── 1                                                         // version
-│       ├── emotions-recognition-retail-0003.json                 // proc file
-│       ├── FP16                                                  // precision
-│       │   ├── emotions-recognition-retail-0003-fp16.bin         // bin file
-│       │   └── emotions-recognition-retail-0003-fp16.xml         // network file
-│       ├── FP32
-│       │   ├── emotions-recognition-retail-0003.bin
-│       │   └── emotions-recognition-retail-0003.xml
-│       └── INT8
-│           ├── emotions-recognition-retail-0003-int8.bin
-│           └── emotions-recognition-retail-0003-int8.xml
+└── object_detection                // name
+    ├── 1                           // version
+    │   ├── yolo-v3-tf.json         // proc file
+    │   ├── coco-80cl.txt           // labels file
+    │   ├── FP16                    // precision
+    │   │   ├── yolo-v3-tf.bin      // bin file
+    │   │   ├── yolo-v3-tf.mapping
+    │   │   └── yolo-v3-tf.xml      // network file
+    │   ├── FP32
+    │   │   ├── yolo-v3-tf.bin
+    │   │   ├── yolo-v3-tf.mapping
+    │   │   └── yolo-v3-tf.xml
 ```
+
 
 ## Referencing Models in Pipeline Definitions
 
@@ -846,16 +909,18 @@ dictionary and standard Python dictionary indexing with the following
 hierarchy: `models[model-name][version][precision][file-type]`.
 
 The default precision for a given model and inference device
-(`CPU`:`FP32`,`GPU`:`FP16`,`HDDL`:`FP16`) can also be referenced
+(`CPU`:`FP32`,`HDDL`:`FP16`,`GPU`:`FP16`,`VPU`:`FP16`,`MYRIAD`:`FP16`,
+`MULTI`:`FP16`,`HETERO`:`FP16`,`AUTO`:`FP16`) can also be referenced
 without specifying the precision:
 `models[model-name][version][file-type]`.
 
 **Examples:**
 
-* `models[emotion_recognition][1][proc]` expands to `emotions-recognition-retail-0003.json`
-* If running on CPU `models[emotion_recognition][1][network]` expands to `emotions-recognition-retail-0003.xml`
-* Running on GPU `models[emotion_recognition][1][network]` expands to `emotions-recognition-retail-0003-fp16.xml`
-* `models[emotion_recognition][1][INT8][network]` expands to `emotions-recognition-retail-0003-int8.xml`
+* `models[object_detection][1][proc]` expands to `models/object_detection/1/yolo-v3-tf.json`
+* `models[object_detection][1][labels]` expands to `models/object_detection/1/coco-80cl.txt`
+* If running on CPU `models[object_detection][1][network]` expands to `models/object_detection/1/FP32/yolo-v3-tf.xml`
+* Running on GPU `models[object_detection][1][network]` expands to `models/object_detection/1/FP16/yolo-v3-tf.xml`
+* `models[object_detection][1][FP16][network]` expands to `models/object_detection/1/FP16/yolo-v3-tf.xml`
 
 ---
 \* Other names and brands may be claimed as the property of others.

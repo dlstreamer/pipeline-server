@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<!--
+  vim: set sts=2 sw=2 et :
+
+* Copyright (C) 2022 Intel Corporation.
+*
+* SPDX-License-Identifier: BSD-3-Clause
+
+  Demo Javascript app for negotiating and streaming a sendrecv webrtc stream
+  with a GStreamer app. Runs only in passive mode, i.e., responds to offers
+  with answers, exchanges ICE candidates, and streams.
+
+  Author: Nirbheek Chauhan <nirbheek@centricular.com>
+
+-->
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="pipeline.js"></script>
+    <script src="webrtc.js"></script>
+    <script>
+      window.onload = websocketServerConnect;
+    </script>
+  </head>
+
+  <body>
+    <div>
+    <div id="divPipelineStatus" class="class-status">
+      <span id="fps-status" style="font-size:12px; visibility:hidden"></span>
+      <br/>
+    </div>
+    <div id="divStreamPlayback" class="class-status">
+      <video id="stream" autoplay="autoplay" muted="muted" loop="loop" playsinline="playsinline" preload="metadata" data-aos="fade-up">
+          Your browser does not support HTML5 video.
+      </video>
+      <br/>
+      <!-- <video id="stream" autoplay playsinline>Your browser doesn't support video</video></div> -->
+      <div id="divStatus" class="class-status">
+        <label class="labelStatus" for="current_status">Status:</label>
+        <span id="status">unknown</span>
+      </div>
+    </div>
+    <br/>
+    <form id="formLaunchPipeline" method="post"></form>
+      <button id="pipeline_launcher" class="expando">New Pipeline Launcher</button>
+      <div class="content">
+        <p>
+          <label for="pipeline-server">Pipeline Server URI:</label>
+          <input id="pipeline-server" type="text" name="text" value="" size="45">
+        </p>
+        <p>
+          <label for="pipelines">Choose Pipeline:</label>
+          <select name="pipelines" id="pipelines" onchange=setPipeline(this.value); >
+            <option value="click">[Empty - Click Get Pipelines]</option>
+          </select>
+          <input id="get-pipelines-button" onclick="onGetPipelinesClicked();" type="button" value="Get Pipelines">
+        </p>
+        <p>
+          <label for="sel_mediasources">Choose Media Source:</label>
+          <select name="sel_mediasources" id="sel_mediasources" onchange=setMediaSource(this.value); >
+            <option value="click">[Empty - Populate Media]</option>
+          </select>
+        </p>
+        <p>
+          <label for="destination-peer-id">Destination Peer ID:</label>
+          <input id="destination-peer-id" type="text" name="text" required pattern="[a-zA-Z0-9_]+" onchange=setFrameDestinationLabel(); value="webrtc_peer_001" size="45">
+        </p>
+        <p>
+          <label for="pipeline-launch-button">Actions:</label>
+          <input id="pipeline-launch-button" onclick="onLaunchClicked();" type="button" value="Launch Pipeline">
+          <label for="sync-checkbox">Sync Playback</label>
+          <input id="sync-checkbox" onclick="setFrameDestinationLabel();" type="checkbox" checked>
+          <!-- Manual GET Status button for troubleshooting -->
+          <input id="pipeline-getstatus-button" onclick="updateFPS();" type="button" value="Get Status" style="display: none;">
+        </p>
+      </div>
+      </div>
+      <hr/>
+      <button id="pipeline_details" class="expando">Chosen Pipeline Parameters</button>
+      <div class="content">
+        <p>
+          <label for="pipeline">Chosen Pipeline:</label>
+          <input class="input-disabled" id="pipeline" onchange="updateLaunchButtonState();" type="text" name="text" value="" readonly="readonly" size="45">
+        </p>
+        <p>
+          <label for="mediasource">Chosen Media Source:</label>
+          <input class="input-disabled"  id="mediasource" onchange="updateLaunchButtonState();" type="text" name="text" value="" readonly="readonly" size="45">
+        </p>
+        <p>
+          <label for="mediasource">Chosen Destination:</label>
+          <input class="input-disabled"  id="destination" onchange="updateLaunchButtonState();" type="text" name="text" value="" readonly="readonly" size="45">
+        </p>
+      </div>
+    </form>
+    <div class="class-input-form">
+      <hr/>
+      <button id="visualization_launcher" class="expando">WebRTC Visualization Parameters</button>
+      <div class="content">
+        <p>
+          <label for="instance-id">Pipeline Server Instance ID:</label>
+          <input class="input-disabled"  id="instance-id" type="text" readonly="readonly" name="text" size="45">
+        </p>
+        <p>
+          <label for="peer-connect">Pipeline Server Peer ID:</label>
+          <input class="input-disabled"  id="peer-connect" type="text" required pattern="[a-zA-Z0-9_]+" readonly="readonly" name="text" size="45">
+        </p>
+        <p>
+          <label for="peer-id">Our Peer ID:</label>
+          <input id="peer-id" type="text" name="text" readonly="readonly" value="unknown" size="45">
+        </p>
+      </div>
+      <p>
+        <label for="peer-connect-button">Actions:</label>
+        <input id="peer-connect-button" onclick="onConnectClicked();" type="button" value="Visualize">
+        <input id="pipeline-stop-button" onclick="onStopClicked();" type="button" value="Stop Pipeline">
+      </p>
+      <!-- Request the peer to send the offer by sending the OFFER_REQUEST message.
+        Same as the -?-remote-offerer flag in the sendrecv C example 
+      <input id="remote-offerer" type="checkbox" autocomplete="off"><span>Remote offerer</span>
+      -->
+      <div id="divStatus" class="class-input-form">
+        <label for="viz_status">WebRTC Status:</label>
+        <span id="viz_status">Waiting for Launch of Pipeline...</span>
+      </div>
+    </div>
+    <br/>
+    <div class="class-details-debug">
+      <div>getUserMedia constraints being used:</div>
+      <div><textarea id="constraints" cols=40 rows=4></textarea></div>
+    </div>
+    <div id="stats" class="class-stats-box"></div>
+  </body>
+</html>

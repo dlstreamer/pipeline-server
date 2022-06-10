@@ -40,7 +40,7 @@ if [ -z $FRAME_STORE ]; then
 fi
 
 FILE_LOCATION=$FRAME_STORE/$SPECIFIER.jpg
-$ROOT_DIR/vaclient/vaclient.sh start $PIPELINE $MEDIA \
+$ROOT_DIR/client/pipeline_client.sh start $PIPELINE $MEDIA \
    --destination type mqtt --destination host $BROKER_ADDR:$BROKER_PORT --destination topic $TOPIC \
    --parameter file-location $FILE_LOCATION
 echo Frame store file location = $FILE_LOCATION

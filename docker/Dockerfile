@@ -24,7 +24,7 @@ USER root
 
 # Dependencies for OpenVINO
 ARG BASE=dlstreamer-pipeline-server-gstreamer-base
-ENV VA_SERVING_BASE=${BASE}
+ENV PIPELINE_SERVER_BASE=${BASE}
 SHELL ["/bin/bash", "-c"]
 
 # Creating user pipeline-server and adding it to groups "video" and "users" to use GPU and VPU
@@ -32,24 +32,39 @@ ARG USER=pipeline-server
 RUN useradd -ms /bin/bash -G video,audio,users ${USER} -d /home/pipeline-server && \
     chown ${USER} -R /home/pipeline-server /root
 
-RUN if [ -f /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh ]; then \
-       /opt/intel/openvino/install_dependencies/install_NEO_OCL_driver.sh -y ; exit 0; \
-    fi
-
-RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime:2021.2" ]]; then \
+# Install boost library required for HDDL plugin
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"openvino/ubuntu20_data_runtime"* || ${PIPELINE_SERVER_BASE} == *"intel/dlstreamer"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
-    intel-media-va-driver-non-free \
-    gstreamer1.0-tools && \
+    libboost-program-options1.71.0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;\
     fi
 
-# Install boost library required for HDDL plugin
-RUN if [[ ${VA_SERVING_BASE} == *"openvino/ubuntu20_data_runtime"* ]]; then \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y -q --no-install-recommends \
+    gstreamer1.0-nice \
+    python3-pip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* ;
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y libjemalloc-dev
+
+# Install GStreamer packages not present dlstreamer base image
+RUN if [[ ${PIPELINE_SERVER_BASE} == *"dlstreamer"* ]]; then \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y -q --no-install-recommends \
-    libboost-program-options1.71.0 && \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-alsa \
+    gstreamer1.0-libav \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-tools \
+    gstreamer1.0-vaapi \
+    gstreamer1.0-x \
+    libgstreamer-plugins-bad1.0-0 \
+    libgstreamer-plugins-base1.0-dev \
+    libgstreamer1.0-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;\
     fi
@@ -60,24 +75,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* ;
 
-RUN if [[ ${VA_SERVING_BASE} == *"openvisualcloud/xeone3-ubuntu1804-analytics-ffmpeg"* ]]; then \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y -q --no-install-recommends \
-    python3 \
-    python3-setuptools \
-    python3-pip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* ;\
-    fi
-
 COPY ./requirements.txt /
 RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
 RUN rm -f /requirements.txt
 
-# Intel(R) DL Streamer Pipeline Server Python Modules
-COPY ./vaserving /home/pipeline-server/vaserving
-COPY ./vaclient /home/pipeline-server/vaclient
-COPY --chown=pipeline-server ./tools /home/pipeline-server/tools
+# Pipeline Server Python Modules
+COPY ./server /home/pipeline-server/server
+COPY ./client /home/pipeline-server/client
 
 # Copy GVA Python extensions
 COPY ./extensions /home/pipeline-server/extensions
@@ -97,9 +101,9 @@ FROM dlstreamer-pipeline-server as do_not_copy_models
 
 # Creates a stage that copies models from the build context
 FROM dlstreamer-pipeline-server as copy_models
-ONBUILD ARG MODELS_PATH
-ONBUILD ENV MODELS_PATH=${MODELS_PATH}
-ONBUILD COPY ${MODELS_PATH} /home/pipeline-server/models
+ONBUILD ARG PS_MODELS_PATH
+ONBUILD ENV PS_MODELS_PATH=${PS_MODELS_PATH}
+ONBUILD COPY $PS_MODELS_PATH /home/pipeline-server/models
 
 # Stage that is used is controlled via MODELS_COMMAND build argument
 FROM ${MODELS_COMMAND} as dlstreamer-pipeline-server-with-models
@@ -115,9 +119,9 @@ FROM dlstreamer-pipeline-server-with-models as do_not_copy_pipelines
 
 # Creates a stage that copies pipelines from the build context
 FROM dlstreamer-pipeline-server-with-models as copy_pipelines
-ONBUILD ARG PIPELINES_PATH
-ONBUILD ENV PIPELINES_PATH=${PIPELINES_PATH}
-ONBUILD COPY ${PIPELINES_PATH} /home/pipeline-server/pipelines
+ONBUILD ARG PS_PIPELINES_PATH
+ONBUILD ENV PS_PIPELINES_PATH=${PS_PIPELINES_PATH}
+ONBUILD COPY ${PS_PIPELINES_PATH} /home/pipeline-server/pipelines
 
 # Stage that is used is controlled via PIPELINES_COMMAND build argument
 FROM ${PIPELINES_COMMAND} as dlstreamer-pipeline-server-with-models-and-pipelines
@@ -128,8 +132,8 @@ FROM ${PIPELINES_COMMAND} as dlstreamer-pipeline-server-with-models-and-pipeline
 # Final stage is controlled by the FINAL_STAGE build argument.
 
 FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline-server-library
-ONBUILD RUN rm -rf /home/pipeline-server/vaserving/__main__.py
-ONBUILD RUN rm -rf /home/pipeline-server/vaserving/rest_api
+ONBUILD RUN rm -rf /home/pipeline-server/server/__main__.py
+ONBUILD RUN rm -rf /home/pipeline-server/server/rest_api
 
 FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline-server-service
 
@@ -137,13 +141,27 @@ FROM dlstreamer-pipeline-server-with-models-and-pipelines as dlstreamer-pipeline
 ONBUILD COPY ./requirements.service.txt /
 ONBUILD RUN pip3 install  --no-cache-dir -r /requirements.service.txt
 ONBUILD RUN rm -f /requirements.service.txt
-ONBUILD ENTRYPOINT ["python3", "-m", "vaserving"]
+
+# WebRTC specific dependencies installed via pip
+ONBUILD COPY ./requirements.webrtc.txt /
+ONBUILD RUN if [[ ${FRAMEWORK} == "gstreamer" ]]; then \
+       pip3 install  --no-cache-dir -r /requirements.webrtc.txt; \
+   fi
+ONBUILD RUN rm -f /requirements.webrtc.txt
+
+ONBUILD ENTRYPOINT ["python3", "-m", "server"]
 
 FROM ${FINAL_STAGE} as deploy
 
 ARG USER=pipeline-server
 
-ENV PYTHONPATH=$PYTHONPATH:/home/pipeline-server
+ENV HOME=/home/pipeline-server
+ENV PYTHONPATH=/home/pipeline-server:$PYTHONPATH
+ENV GST_PLUGIN_PATH=$GST_PLUGIN_PATH:/usr/lib/x86_64-linux-gnu/gstreamer-1.0/
+ENV LD_PRELOAD=libjemalloc.so
+
+ENV cl_cache_dir=/home/.cl_cache
+RUN mkdir -p -m g+s $cl_cache_dir && chown ${USER}:users $cl_cache_dir
 
 # Prepare XDG_RUNTIME_DIR
 ENV XDG_RUNTIME_DIR=/home/.xdg_runtime_dir

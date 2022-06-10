@@ -1,4 +1,4 @@
-ARG BASE=intel/dlstreamer-pipeline-server:0.7.1
+ARG BASE=intel/dlstreamer-pipeline-server:0.7.2
 
 FROM $BASE
 

@@ -60,7 +60,7 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Convenience function to launch optional RTSP client for viewing
-# Intel(R) DL Streamer Pipeline Server's processed pipeline frames.
+# Pipeline Server's processed pipeline frames.
 function rtsp_connect {
     ON_SUCCESS_MESSAGE=0
     ON_USER_TERMINATED=130
@@ -117,7 +117,7 @@ export edgex_rtsp_host=rtsp://127.0.0.1
 export edgex_rtsp_port=8554
 export edgex_default_display=:0.0
 export edgex_default_rtsp_path="edgex_event_emitter"
-export edgex_sample_title="Intel(R) DL Streamer Pipeline Server - EdgeX Sample"
+export edgex_sample_title="Pipeline Server - EdgeX Sample"
 export edgex_request_rtsp_path=""
 
 if [[ ! -z "$RTSP_PATH" ]]; then
@@ -149,7 +149,7 @@ if [ "$edgex_env_enable_rtsp" == "true" ]; then
     export edgex_request_rtsp_path="--rtsp-path $edgex_rtsp_path"
 fi
 
-# Launch EdgeX Stack and another Intel(R) DL Streamer Pipeline Server pipeline instance (if input media stream has completed)
+# Launch EdgeX Stack and another Pipeline Server pipeline instance (if input media stream has completed)
 if test -f "$COMPOSE_FILE"; then
     cd $COMPOSE_PATH
     docker-compose up -d

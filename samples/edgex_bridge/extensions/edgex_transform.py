@@ -14,7 +14,7 @@ gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
 from gi.repository import Gst
 from gstgva import VideoFrame
-from vaserving.common.utils import logging
+from server.common.utils import logging
 # pylint: enable=wrong-import-position
 
 

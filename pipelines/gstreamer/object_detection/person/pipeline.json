@@ -1,0 +1,29 @@
+{
+	"type": "GStreamer",
+	"template": [
+		"{auto_source} ! decodebin",
+		" ! gvadetect model={models[object_detection][person][network]} name=detection",
+		" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
+		" ! appsink name=appsink"
+	],
+	"description": "Person Detection based on person-detection-retail-0013",
+	"parameters": {
+		"type": "object",
+		"properties": {
+			"detection-properties": {
+				"element": {
+					"name": "detection",
+					"format": "element-properties"
+				}
+			},
+			"detection-device": {
+				"element": {
+					"name": "detection",
+					"property": "device"
+				},
+				"type": "string",
+				"default": "{env[DETECTION_DEVICE]}"
+			}
+		}
+	}
+}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pipeline-server-worker
+  labels:
+    app: pipeline-server
+spec:
+  selector:
+    matchLabels:
+      app: pipeline-server
+  template:
+    metadata:
+      labels:
+        app: pipeline-server
+    spec:
+      containers:
+        - name: pipeline-server
+          image: localhost:32000/dlstreamer-pipeline-server-worker:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 3333
+            - containerPort: 4444
+          env:
+            - name: TARGET_FPS
+              value: "30"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pipeline-server-service
+  labels:
+    app: pipeline-server
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http1
+    - port: 3333
+      targetPort: 3333
+      protocol: TCP
+      name: http2
+    - port: 4444
+      targetPort: 4444
+      protocol: TCP
+      name: http3
+  selector:
+    app: pipeline-server

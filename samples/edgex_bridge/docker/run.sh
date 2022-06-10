@@ -22,8 +22,8 @@ PASS_THROUGH_PARAMS=
 function show_help {
   echo "usage: ./run.sh"
   echo "  [ --dry-run : See the raw command(s) that will be executed by this script. ] "
-  echo "  [ --generate : Passed to the entrypoint script located at ./edgex_bridge.py, instructing it to prepare EdgeX configuration to receive and process events triggered by Intel(R) DL Streamer Pipeline Server. ] "
-  echo "  [ Remaining parameters pass through to Intel(R) DL Streamer Pipeline Server /docker/run.sh script ] "
+  echo "  [ --generate : Passed to the entrypoint script located at ./edgex_bridge.py, instructing it to prepare EdgeX configuration to receive and process events triggered by the Pipeline Server. ] "
+  echo "  [ Remaining parameters pass through to the Pipeline Server /docker/run.sh script ] "
 }
 #Get options passed into script, passing through parameters that target parent script.
 while [[ "$#" -gt 0 ]]; do

@@ -15,7 +15,7 @@ from pathlib import Path
 import gi
 gi.require_version('Gst', '1.0')
 # pylint: disable=wrong-import-position
-from vaserving.vaserving import VAServing
+from server.pipeline_server import PipelineServer
 # pylint: enable=wrong-import-position
 
 # default video folder if not provided
@@ -86,7 +86,7 @@ def gst_record(options):
         print("No write permissions for video output directory")
         return -1
 
-    # Populate the request to provide to VAServing library
+    # Populate the request to provide to PipelineServer library
     request = {
         "source": {
             "type": "uri",
@@ -103,16 +103,16 @@ def gst_record(options):
             }
         }
 
-    # Start the recording, once complete, stop VAServing
+    # Start the recording, once complete, stop PipelineServer
     record_playback_file_dir = os.path.dirname(os.path.realpath(__file__))
-    VAServing.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
-    pipeline = VAServing.pipeline("object_detection", "segment_record")
+    PipelineServer.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
+    pipeline = PipelineServer.pipeline("object_detection", "segment_record")
     pipeline.start(request)
     status = pipeline.status()
     while (not status.state.stopped()):
         time.sleep(0.1)
         status = pipeline.status()
-    VAServing.stop()
+    PipelineServer.stop()
 
 # Used by playback
 # If given a file instead of a folder to playback, check to see if file is in the
@@ -138,7 +138,7 @@ def gst_playback(options):
         start_pts = get_timestamp_from_filename(options.input_video_path)
         location = options.input_video_path
 
-    # Populate the request to provide to VAServing library
+    # Populate the request to provide to PipelineServer library
     module = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'preproc_callbacks/insert_metadata.py')
     metadata_args = {"metadata_file_path": options.metadata_file_path, "offset_timestamp": start_pts}
     request = {
@@ -155,16 +155,16 @@ def gst_playback(options):
             }
         }
 
-    # Start the recording, once complete, stop VAServing
+    # Start the recording, once complete, stop PipelineServer
     record_playback_file_dir = os.path.dirname(os.path.realpath(__file__))
-    VAServing.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
-    pipeline = VAServing.pipeline("recording_playback", "playback")
+    PipelineServer.start({'log_level': 'INFO', 'pipeline_dir': os.path.join(record_playback_file_dir, "pipelines")})
+    pipeline = PipelineServer.pipeline("recording_playback", "playback")
     pipeline.start(request)
     status = pipeline.status()
     while (not status.state.stopped()):
         time.sleep(0.1)
         status = pipeline.status()
-    VAServing.stop()
+    PipelineServer.stop()
 
 def launch_pipeline(options):
     """Playback the video with metadata inserted back into the video"""

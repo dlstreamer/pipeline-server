@@ -1,0 +1,665 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 17,
+      "panels": [],
+      "repeat": null,
+      "title": "Pipeline Server Stream Status",
+      "type": "row"
+    },
+    {
+      "datasource": "Infinity",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 1,
+          "mappings": [],
+          "max": 50,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#EF843C",
+                "value": 8
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 12
+              },
+              {
+                "color": "green",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 14,
+      "interval": "5s",
+      "links": [
+        {
+          "title": "",
+          "url": "%PS_HOST%/pipelines/status"
+        }
+      ],
+      "maxDataPoints": 200,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^FPS \\(avg\\)$/",
+          "limit": 6,
+          "values": true
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.3.4",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "avg_fps",
+              "text": "FPS (avg)",
+              "type": "number"
+            },
+            {
+              "selector": "id",
+              "text": "Pipeline",
+              "type": "string"
+            },
+            {
+              "selector": "state",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "elapsed_time",
+              "text": "Elapsed",
+              "type": "number"
+            }
+          ],
+          "data": "",
+          "filters": [
+            {
+              "field": "Status",
+              "operator": "in",
+              "value": [
+                "QUEUED,RUNNING"
+              ]
+            },
+            {
+              "field": "Elapsed",
+              "operator": ">",
+              "value": [
+                "0"
+              ]
+            },
+            {
+              "field": "FPS (avg)",
+              "operator": ">",
+              "value": [
+                "0"
+              ]
+            }
+          ],
+          "format": "table",
+          "global_query_id": "",
+          "json_options": {
+            "columnar": false,
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "%PS_HOST%/pipelines/status",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "timeFrom": "now-5s",
+      "timeShift": null,
+      "title": "Active Streams",
+      "type": "bargauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "state",
+              "text": "state",
+              "type": "string"
+            },
+            {
+              "selector": "avg_fps",
+              "text": "avg_fps",
+              "type": "number"
+            },
+            {
+              "selector": "start_time",
+              "text": "start_time",
+              "type": "timestamp_epoch_s"
+            }
+          ],
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "%PS_HOST%/pipelines/status",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "background6",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time"
+        }
+      ],
+      "timeShift": null,
+      "title": "Running Avg",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "Infinity",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 1,
+          "mappings": [],
+          "max": 50,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#007dc3",
+                "value": 8
+              },
+              {
+                "color": "#007dc3",
+                "value": 12
+              },
+              {
+                "color": "green",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 15,
+      "interval": "5s",
+      "links": [
+        {
+          "title": "",
+          "url": "%PS_HOST%/pipelines/status"
+        }
+      ],
+      "maxDataPoints": 200,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "/^FPS \\(avg\\)$/",
+          "values": true
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.3.4",
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "avg_fps",
+              "text": "FPS (avg)",
+              "type": "number"
+            },
+            {
+              "selector": "id",
+              "text": "Pipeline",
+              "type": "string"
+            },
+            {
+              "selector": "state",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "elapsed_time",
+              "text": "Elapsed",
+              "type": "number"
+            }
+          ],
+          "data": "",
+          "filters": [
+            {
+              "field": "Status",
+              "operator": "notin",
+              "value": [
+                "QUEUED,RUNNING"
+              ]
+            },
+            {
+              "field": "Elapsed",
+              "operator": ">",
+              "value": [
+                "0"
+              ]
+            },
+            {
+              "field": "FPS (avg)",
+              "operator": ">",
+              "value": [
+                "0"
+              ]
+            }
+          ],
+          "format": "table",
+          "global_query_id": "",
+          "json_options": {
+            "columnar": false,
+            "root_is_not_array": false
+          },
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "%PS_HOST%/pipelines/status",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "timeFrom": "now-5s",
+      "timeShift": null,
+      "title": "Completed Pipeline Streams",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 6,
+      "panels": [],
+      "title": "WebRTC Peer Clients",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "header_js": "{}",
+      "id": 4,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{ }",
+      "pluginVersion": "7.3.4",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimePrefix": null,
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "targets": [
+        {
+          "columns": [],
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "queryType": "randomWalk",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "https://jsonplaceholder.typicode.com/users",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "templateResponse": true,
+      "timeFrom": "now-1d",
+      "timeShift": null,
+      "title": "WebRTC Stream 1",
+      "type": "ryantxu-ajax-panel",
+      "url": "%HTTP_HOST%?destination_peer_id=webrtc_stream_1_$RANDOM&pipeline_idx=1&media_idx=1",
+      "withCredentials": false
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "header_js": "{}",
+      "id": 8,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{ }",
+      "pluginVersion": "7.3.4",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimePrefix": null,
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "templateResponse": true,
+      "timeFrom": "now-1d",
+      "timeShift": null,
+      "title": "WebRTC Stream 2",
+      "type": "ryantxu-ajax-panel",
+      "url": "%HTTP_HOST%?destination_peer_id=webrtc_stream_2_$RANDOM&pipeline_idx=2&media_idx=2",
+      "withCredentials": false
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "header_js": "{}",
+      "id": 2,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{ }",
+      "pluginVersion": "7.3.4",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimePrefix": null,
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "templateResponse": true,
+      "timeFrom": "now-1d",
+      "timeShift": null,
+      "title": "WebRTC Stream 3",
+      "type": "ryantxu-ajax-panel",
+      "url": "%HTTP_HOST%?destination_peer_id=webrtc_stream_3_$RANDOM&pipeline_idx=6&media_idx=3",
+      "withCredentials": false
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "header_js": "{}",
+      "id": 10,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{ }",
+      "pluginVersion": "7.3.4",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimePrefix": null,
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "templateResponse": true,
+      "timeFrom": "now-1d",
+      "timeShift": null,
+      "title": "WebRTC Stream 4",
+      "type": "ryantxu-ajax-panel",
+      "url": "%HTTP_HOST%?destination_peer_id=webrtc_stream_4_$RANDOM&pipeline_idx=9&media_idx=4",
+      "withCredentials": false
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": false,
+    "refresh_intervals": [
+      "5s",
+      "15s",
+      "1m",
+      "10m",
+      "30m",
+      "1h",
+      "6h",
+      "12h",
+      "1d",
+      "7d",
+      "14d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Pipeline Server Sample Dashboard",
+  "uid": "kzGVerJnz2",
+  "version": 1
+}
