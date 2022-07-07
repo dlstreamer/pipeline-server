@@ -9,6 +9,8 @@ version: "3"
 services:
 
   pipeline_server:
+    #Uncomment to use latest published image from Docker Hub
+    #image: intel/dlstreamer-pipeline-server:latest
     image: dlstreamer-pipeline-server-gstreamer:latest
     hostname: pipeline_server
     container_name: pipeline_server
@@ -19,6 +21,7 @@ services:
       - http_proxy=$http_proxy
       - https_proxy=$https_proxy
       - LOG_LEVEL=DEBUG
+      - DETECTION_DEVICE=GPU
     depends_on:
       - webrtc_signaling_server
       - webrtc_webserver
@@ -29,6 +32,12 @@ services:
     volumes:
       - /tmp:/tmp
     user: $USER_ID:$GROUP_ID
+    group_add:
+      - $PIPELINE_SERVER_RENDER_GROUP
+      - "audio"
+      - "users"
+    devices:
+      - "/dev/dri:/dev/dri"
 
   webrtc_signaling_server:
     build: ./signaling

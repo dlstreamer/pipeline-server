@@ -70,6 +70,10 @@
         <p>
           <label for="pipeline-launch-button">Actions:</label>
           <input id="pipeline-launch-button" onclick="onLaunchClicked();" type="button" value="Launch Pipeline">
+          
+          <label for="inference-device-checkbox">Inference on GPU</label>
+          <input id="inference-device-checkbox" onclick="setFrameDestinationLabel();" type="checkbox" checked>
+
           <label for="sync-checkbox">Sync Playback</label>
           <input id="sync-checkbox" onclick="setFrameDestinationLabel();" type="checkbox" checked>
           <!-- Manual GET Status button for troubleshooting -->
