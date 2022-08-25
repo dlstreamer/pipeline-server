@@ -8,3 +8,4 @@ docker/Dockerfile.env
 docker/final.env
 models
 samples/edgex_bridge/edgex/**/*
+samples/kubernetes/values.yaml

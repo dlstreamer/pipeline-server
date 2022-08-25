@@ -1,0 +1,152 @@
+# Default values for pipeline-server.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: intel/dlstreamer-pipeline-server
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "2022.1.1-ubuntu20"
+  target_fps: "30"
+
+controlplane:
+  enabled: false
+  controller:
+    image: intel/dlstreamer-pipeline-server-k8s-controller
+  sidecar:
+    image: intel/dlstreamer-pipeline-server-k8s-sidecar
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+network:
+  proxy:
+    enabled: false
+    http:
+    https:
+    no_proxy:
+
+service:
+  type: ClusterIP
+  port: 
+    http: 8080
+    webrtc: 8443
+
+framedestination:
+  webrtc:
+    enabled: false
+    # Leave localSignalingServerImageName empty if you want to deploy your own signalling server
+    localSignalingServerImageName: ""
+    url: ws://$(WEBRTC_SERVER_SERVICE_HOST):$(WEBRTC_SERVER_SERVICE_PORT)
+  rtsp:
+    enabled: false
+    port: 8554
+
+# Below defined are the definitions for persistent volume storage used in deployment and PVC yaml files
+persistentVolumeClaim:
+  enabled: false
+  models:
+    storageClassName: ""
+    accessModes: "ReadOnlyMany"
+    volumeName: ""
+    #Empty string must be explicitly set otherwise default StorageClass will be set
+    size: 10Gi
+    annotations: {}
+  pipelines:
+    storageClassName: ""
+    accessModes: "ReadOnlyMany"
+    volumeName: ""
+    #Empty string must be explicitly set otherwise default StorageClass will be set
+    size: 10Gi
+    annotations: {}
+  exts:
+    storageClassName: ""
+    accessModes: "ReadOnlyMany"
+    volumeName: ""
+    #Empty string must be explicitly set otherwise default StorageClass will be set
+    size: 10Gi
+    annotations: {}
+
+# Haproxy Config is already provided inside haproxy by default: https://github.com/haproxytech/helm-charts/blob/main/haproxy/templates/deployment.yaml#L81
+# Just use existing and override the values
+haproxy:
+  service:
+    type: NodePort
+  extraVolumeMounts:
+    - mountPath: /usr/local/etc/haproxy/servers.map
+      name: haproxy-map
+      subPath: servers.map
+  extraVolumes:
+    - configMap:
+        name: server-maps-haproxy
+      name: haproxy-map
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1001
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: pipeline-server.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: pipeline-server-tls
+  #    hosts:
+  #      - pipeline-server.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+test:
+  connection:
+    enabled: false

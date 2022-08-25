@@ -20,28 +20,13 @@ The examples require [pipeline_client](../../../client/README.md) so the contain
 
 ## Single Node with MQTT
 
-As Mosquitto MQTT Broker resides in the Cluster, you'll need to port forward the MQTT Broker to your host machine.
-
-1. Get the Mosquitto MQTT Broker's deployment name:
-```
-$ kubectl get pods | grep -i mosquitto
-
-pipelineserver-mosquitto-5b5c6b98b6-dhtp6         1/1     Running     0             26m
-```
-
-2. Port forward using kubectl. (In my case, my deployment name is `pipelineserver-mosquitto-5b5c6b98b6-dhtp6`)
-
-```
-$ kubectl --namespace default port-forward pipelineserver-mosquitto-5b5c6b98b6-dhtp6 1883:1883 --address='0.0.0.0'
-```
-
 Start stream as follows
 
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
-  --destination type mqtt --destination host <mosquitto-mqtt-ip>:1883 --destination topic person-vehicle-bike
+  --server-address http://<leader-ip>:31000 \
+  --destination type mqtt --destination host <leader-ip>:31020 --destination topic person-vehicle-bike
 ```
 
 Output should be like this (with different instance id and timestamps)
@@ -79,7 +64,7 @@ For four streams, we won't use MQTT but will measure fps to see if all streams c
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://<leader-ip>:31000 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 4
 ```
@@ -131,7 +116,7 @@ Now we run eight streams and monitor fps using the same request as before. This 
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://<leader-ip>:31000 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 8
 ```
@@ -187,7 +172,7 @@ Now we run 30 streams and monitor fps using the same request as before. This tim
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://<leader-ip>:31000 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 30
 ```

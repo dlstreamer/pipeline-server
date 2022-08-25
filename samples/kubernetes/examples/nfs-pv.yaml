@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pipelines
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+  nfs:
+    server:
+    path: /home/k8s_user/data/pipelines
+    readOnly: no
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-models
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+  nfs:
+    server:
+    path: /home/k8s_user/data/models
+    readOnly: no
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-exts
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Recycle
+  volumeMode: Filesystem
+  nfs:
+    server:
+    path: /home/k8s_user/data/extensions
+    readOnly: no

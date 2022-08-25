@@ -1,0 +1,40 @@
+{{- if .Values.persistentVolumeClaim.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-models-claim
+spec:
+  accessModes:
+    - {{ .Values.persistentVolumeClaim.models.accessModes }}
+  volumeName: {{ .Values.persistentVolumeClaim.models.volumeName }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.models.size }}
+  storageClassName: {{ .Values.persistentVolumeClaim.models.storageClassName }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-pipelines-claim
+spec:
+  accessModes:
+    - {{ .Values.persistentVolumeClaim.pipelines.accessModes }}
+  volumeName: {{ .Values.persistentVolumeClaim.pipelines.volumeName }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.pipelines.size }}
+  storageClassName: {{ .Values.persistentVolumeClaim.pipelines.storageClassName }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-exts-claim
+spec:
+  accessModes:
+    - {{ .Values.persistentVolumeClaim.exts.accessModes }}
+  volumeName: {{ .Values.persistentVolumeClaim.exts.volumeName }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.exts.size }}
+  storageClassName: {{ .Values.persistentVolumeClaim.exts.storageClassName }}
+{{- end }}

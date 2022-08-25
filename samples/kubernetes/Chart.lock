@@ -1,0 +1,9 @@
+dependencies:
+- name: mosquitto
+  repository: https://k8s-at-home.com/charts/
+  version: 4.4.0
+- name: haproxy
+  repository: https://haproxytech.github.io/helm-charts
+  version: 1.14.0
+digest: sha256:f10768cf1d7cb065568f3e3c979c4aa4b2dea129e0027ae23fe832812a7943b7
+generated: "2022-07-08T02:05:18.671204711-07:00"
