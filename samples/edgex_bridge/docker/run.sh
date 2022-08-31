@@ -16,7 +16,6 @@ ENTRYPOINT_ARGS+="--entrypoint-args \"--analytics-image=$IMAGE_NAME\" "
 
 # Mount to the host's pipelines to allow writes
 VOLUME_MOUNT="-v $SAMPLE_DIR/pipelines:/home/pipeline-server/pipelines "
-
 PASS_THROUGH_PARAMS=
 
 function show_help {
@@ -36,7 +35,8 @@ while [[ "$#" -gt 0 ]]; do
       # Handle this parameter locally to remove default/preceding entrypoint-args.
       # Allows user to successfully enter DEV mode.
       ENTRYPOINT_ARGS=""
-      PASS_THROUGH_PARAMS+="--dev "
+      VOLUME_MOUNT=""
+      PASS_THROUGH_PARAMS+="--dev --pipelines $SAMPLE_DIR/pipelines "
       shift
       ;;
     --dry-run)
