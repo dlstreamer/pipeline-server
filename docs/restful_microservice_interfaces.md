@@ -96,6 +96,7 @@ Return supported pipelines
     "avg_fps": 8.932587737800183,
     "start_time": 1638179813.2005367,
     "elapsed_time": 72.43142008781433,
+    "message": "",
     "avg_pipeline_latency": 0.4533823041311556
   },
   {
@@ -104,6 +105,7 @@ Return supported pipelines
     "avg_fps": 6.366260838099841,
     "start_time": 1638179886.3203313,
     "elapsed_time": 16.493194580078125,
+    "message": "",
     "avg_pipeline_latency": 0.6517487730298723
   },
   {
@@ -111,7 +113,8 @@ Return supported pipelines
     "state": "ERROR",
     "avg_fps": 0,
     "start_time": null,
-    "elapsed_time": null
+    "elapsed_time": null,
+    "message": "Not Found (404), URL: https://github.com/intel-iot-devkit/sample.mp4, Redirect to: (NULL)"
   }
 ]
  ```
@@ -631,6 +634,7 @@ Return pipeline instance status.
   "name": "object_detection",
   "start_time": 1640156425.2014737,
   "state": "RUNNING",
+  "message": "",
   "version": "person_vehicle_bike"
 }
 ```
@@ -737,6 +741,7 @@ Return pipeline instance status.
   "elapsed_time": 5,
   "id": 0,
   "state": "RUNNING",
+  "message": "",
   "avg_fps": 6.027456183070403
 }
 ```

@@ -156,7 +156,10 @@ def wait(args):
 def status(args):
     pipeline_status = get_pipeline_status(args.server_address, args.instance, args.show_request)
     if pipeline_status is not None and "state" in pipeline_status:
-        print("{} ({}fps)".format(pipeline_status["state"], round(pipeline_status["avg_fps"])))
+        if pipeline_status["state"] == "ERROR":
+            print("{} ({})".format(pipeline_status["state"], pipeline_status["message"]))
+        else:
+            print("{} ({}fps)".format(pipeline_status["state"], round(pipeline_status["avg_fps"])))
     else:
         print("Unable to fetch status")
 
@@ -275,7 +278,7 @@ def wait_for_pipeline_running(server_address,
             print("Timed out waiting for RUNNING status")
             break
     if not status or status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
     return Pipeline.State[status["state"]] == Pipeline.State.RUNNING
 
 def wait_for_pipeline_completion(server_address, instance_id):
@@ -284,7 +287,7 @@ def wait_for_pipeline_completion(server_address, instance_id):
         status = get_pipeline_status(server_address, instance_id)
         time.sleep(SLEEP_FOR_STATUS)
     if status and status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
 
     return status
 
@@ -318,7 +321,7 @@ def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=
             stopped = Pipeline.State[status["state"]].stopped()
             status_list.append(status)
     if status and status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
     return status_list
 
 def get_pipeline_status(server_address, instance_id, show_request=False):
@@ -348,7 +351,7 @@ def post(url, body, show_request=False):
             return instance_id
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
-    raise RuntimeError(html_to_text(launch_response.text))
+    raise RuntimeError("{} - {}".format(launch_response.status_code, html_to_text(launch_response.text)))
 
 def get(url, show_request=False):
     try:

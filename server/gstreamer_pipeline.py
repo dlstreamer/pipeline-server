@@ -101,6 +101,8 @@ class GStreamerPipeline(Pipeline):
         self._cached_element_keys = []
         self._logger = logging.get_logger('GSTPipeline', is_static=True)
         self.rtsp_path = None
+        self._debug_message = ""
+
 
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
@@ -245,12 +247,18 @@ class GStreamerPipeline(Pipeline):
         else:
             elapsed_time = None
 
+        message = ""
+        messages = self._debug_message.splitlines()
+        if len(messages):
+            messages.pop(0)
+            message = ''.join(messages)
         status_obj = {
             "id": self.identifier,
             "state": self.state,
             "avg_fps": self.get_avg_fps(),
             "start_time": self.start_time,
-            "elapsed_time": elapsed_time
+            "elapsed_time": elapsed_time,
+            "message": message
         }
         if self.count_pipeline_latency != 0:
             status_obj["avg_pipeline_latency"] = self.sum_pipeline_latency / \
@@ -754,11 +762,11 @@ class GStreamerPipeline(Pipeline):
             self._logger.info("Pipeline {id} Ended".format(id=self.identifier))
             self._delete_pipeline_with_lock(Pipeline.State.COMPLETED)
         elif message_type == Gst.MessageType.ERROR:
-            err, debug = message.parse_error()
+            error_message, self._debug_message = message.parse_error()
             self._logger.error(
                 "Error on Pipeline {id}: {err}: {debug}".format(id=self.identifier,
-                                                                err=err,
-                                                                debug=debug))
+                                                                err=error_message,
+                                                                debug=self._debug_message))
             self._delete_pipeline_with_lock(Pipeline.State.ERROR)
         elif message_type == Gst.MessageType.STATE_CHANGED:
             old_state, new_state, unused_pending_state = message.parse_state_changed()

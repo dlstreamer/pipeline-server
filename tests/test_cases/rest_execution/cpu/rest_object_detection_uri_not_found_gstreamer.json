@@ -3,7 +3,7 @@
     "start": {
         "body": {
             "source": {
-                "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4",
+                "uri": "https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-detection.mp4?raw=true",
                 "type": "uri"
             },
             "destination": {
@@ -12,7 +12,7 @@
                 "format": "json-lines"
             },
             "parameters": {
-                "detection-device": "BPU"
+                "detection-device": "CPU"
             }
         }
     },
@@ -21,7 +21,7 @@
         "timeout": 0.5
     },
     "status_result": {
-        "error": "Device with \"BPU\" name is not registered in the InferenceEngine"
+        "error": "Not Found (404)"
     },
-    "result": 4
+    "result": 6
 }

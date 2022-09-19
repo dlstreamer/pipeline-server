@@ -72,7 +72,7 @@ avg_fps: 39.66
 However, if there are errors during pipeline execution i.e GPU is specified as detection device but is not present, pipeline_client will terminate with an error message
 ```
 Pipeline instance = <uuid>
-Error in pipeline, please check pipeline-server log messages
+<Error Message>
 ```
 
 ### Starting Pipelines
@@ -90,7 +90,7 @@ Errors during pipeline execution are not flagged as pipeline_client exits after 
 ```
 The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
 ```
-"Invalid Pipeline or Version"
+400 - "Invalid Pipeline or Version"
 ```
 
 #### Instance ID
@@ -113,10 +113,14 @@ Querying the current state of the pipeline is done using the `status` command al
 ```
 ./client/pipeline_client.sh status object_detection/person_vehicle_bike 0fe8f408ea2441bca8161e1190eefc51
 ```
-pipeline_client will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED` or `ERROR` and also fps.
+pipeline_client will print the status of `QUEUED`, `RUNNING`, `ABORTED`, `COMPLETED`  along with the fps or `ERROR` with the error message as applicable.
 ```
 <snip>
 RUNNING (30fps)
+```
+```
+<snip>
+ERROR (Not Found (404), URL: https://github.com/intel-iot-devkit/sample.mp4, Redirect to: (NULL))
 ```
 
 ### Waiting for a pipeline to finish

@@ -53,6 +53,11 @@ def test_rest_execution(service, test_case, test_filename, generate):
         state_transition_timeout = float(test_case["check_error"]["timeout"])
         assert pipeline_processing.wait_for_pipeline_status(status_url, "ERROR", states_negative,
                                         state_transition_timeout), "Pipeline did not error"
+        
+        if "status_result" in test_case:
+            response = pipeline_processing.get_pipeline_status(status_url)
+            assert test_case["status_result"]["error"] in str(response)
+
     else:
         state_transition_timeout = float(test_case["check_running"]["timeout"])
         assert pipeline_processing.wait_for_pipeline_status(status_url, "RUNNING", states,
