@@ -1,5 +1,7 @@
 ## Microservice Endpoints
 
+The REST API has a default maximum body size of 10KB, this can be changed by setting the environment variable MAX_BODY_SIZE in bytes.
+
 | Path | Description |
 |----|------|
 | [`GET` /models](#get-models) | Return supported models. |

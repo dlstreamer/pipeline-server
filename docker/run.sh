@@ -340,6 +340,10 @@ if [ "$ENABLE_WEBRTC" != "false" ]; then
     ENVIRONMENT+="-e ENABLE_WEBRTC=$ENABLE_WEBRTC "
 fi
 
+if [[ ! -z "${MAX_BODY_SIZE}" ]]; then
+    ENVIRONMENT+="-e MAX_BODY_SIZE=$MAX_BODY_SIZE "
+fi
+
 if [ ! -z "$MODELS" ]; then
     VOLUME_MOUNT+="-v $MODELS:/home/pipeline-server/models "
 fi

@@ -6,12 +6,14 @@
 '''
 
 import sys
+import os
 import connexion
 from flask_cors import CORS
 from server.common.utils import logging
 from server.pipeline_server import PipelineServer
 
 logger = logging.get_logger('main', is_static=True)
+MAX_BODY_SIZE = int(os.getenv("MAX_BODY_SIZE", "10240"))
 
 def main(options):
     try:
@@ -22,7 +24,7 @@ def main(options):
         # Enables CORS on all domains/routes/methods per https://flask-cors.readthedocs.io/en/latest/#usage
         CORS(app.app)
         logger.info("Starting Tornado Server on port: %s", options.port)
-        app.run(port=options.port, server='tornado')
+        app.run(port=options.port, server='tornado', max_body_size=MAX_BODY_SIZE)
     except (KeyboardInterrupt, SystemExit):
         logger.info("Keyboard Interrupt or System Exit")
     except Exception as error:
