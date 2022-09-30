@@ -14,6 +14,7 @@ VOLUME_MOUNT=
 MODE=SERVICE
 PORTS=
 DEVICES=
+GPU_DEVICE=
 DEFAULT_GSTREAMER_IMAGE="dlstreamer-pipeline-server-gstreamer"
 DEFAULT_FFMPEG_IMAGE="dlstreamer-pipeline-server-ffmpeg"
 ENTRYPOINT=
@@ -67,6 +68,7 @@ show_help() {
   echo "  [--user name of user to pass to docker run]"
   echo "  [--group-add name of user group to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
+  echo "  [--gpu-device select GPU device]"
   echo "  [--device device to pass to docker run]"
   echo "  [--enable-rtsp To enable rtsp re-streaming]"
   echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
@@ -82,14 +84,21 @@ error() {
 
 enable_hardware_access() {
     # GPU
-    if ls /dev/dri/render* 1> /dev/null 2>&1; then
-        echo "Found /dev/dri/render entry - enabling for GPU"
-        DEVICES+='--device /dev/dri '
-        RENDER_GROUPS=$(stat -c '%g' /dev/dri/render*)
-        for group in $RENDER_GROUPS
-        do
-            USER_GROUPS+="--group-add $group "
-        done
+    if [ -z $GPU_DEVICE ]; then
+        if [ -e /dev/dri/renderD128 ] ; then
+            GPU_DEVICE="/dev/dri/renderD128"
+            echo "Found $GPU_DEVICE - enabling GPU"
+        fi
+    fi
+    if [ ! -z $GPU_DEVICE ]; then
+        if [ ! -e $GPU_DEVICE ]; then
+            echo GPU device $GPU_DEVICE not found - exiting
+            exit 1
+        fi
+        DEVICES+="--device $GPU_DEVICE "
+        ENVIRONMENT+="-e GST_VAAPI_DRM_DEVICE=$GPU_DEVICE "
+        render_group=$(stat -c '%g' $GPU_DEVICE)
+        USER_GROUPS+="--group-add $render_group "
     fi
 
     # Intel(R) NCS2
@@ -165,6 +174,14 @@ while [[ "$#" -gt 0 ]]; do
             shift
         else
             error 'ERROR: "--device" requires a non-empty option argument.'
+        fi
+        ;;
+    --gpu-device)
+        if [ "$2" ]; then
+            GPU_DEVICE=$2
+            shift
+        else
+            error 'ERROR: "--gpu-device" requires a non-empty option argument.'
         fi
         ;;
     --privileged)

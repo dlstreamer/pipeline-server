@@ -1,0 +1,14 @@
+#!/bin/bash
+
+$SOURCE_DIR/docker/run.sh --gpu-device /dev/my-bad-device --non-interactive &
+sleep 5
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/bottle-detection.mp4?raw=true --parameter detection-device GPU --parameter inference-interval 10)
+RETURN_CODE=$?
+
+# Stop server
+$SOURCE_DIR/tests/stop.sh
+
+if [[ $RETURN_CODE = 0 ]]; then
+    error
+fi
+

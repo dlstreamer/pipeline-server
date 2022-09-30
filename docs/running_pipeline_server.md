@@ -230,14 +230,19 @@ The following the table shows docker configuration and inference device name for
 
 |Accelerator| Device      | Volume Mount(s)    |CGroup Rule|Inference Device|
 |-----------|-------------|------------------- |-----------|----------------|
-| GPU       | /dev/dri    |                    |           | GPU            |
+| GPU       | /dev/dri/renderDxxx    |                    |           | GPU            |
 | Intel&reg; NCS2      |             | /dev/bus/usb       |c 189:* rmw| MYRIAD         |
 | HDDL-R    |             | /var/tmp, /dev/shm |           | HDDL           |
 
 > **Note:** Intel&reg; NCS2 and HDDL-R accelerators are incompatible and cannot be used on the same system.
 
 ## GPU
-The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request.
+The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request. You can also set the `cl_cache_dir` environment variable to specify location of kernel cache so it can be re-used across sessions.
+
+If multiple GPUs are available, /dev/dri/renderD128 will be automatically selected. The environment variable [GST_VAAPI_DRM_DEVICE](https://gstreamer.freedesktop.org/documentation/vaapi/index.html?gi-language=python) will be set to device path. Different devices can be selected by using the `--gpu-device` argument.
+```
+--gpu-device /dev/dri/renderD129
+```
 
 On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md), not shown in the above table, is necessary to allow access to the GPU. The [docker/run.sh](../docker/run.sh) script takes care of this for you, but other deployments will have to be updated accordingly.
 
