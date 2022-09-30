@@ -15,8 +15,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 
 # Dependencies installed via pip
+RUN python3 -m pip install --upgrade pip setuptools
 COPY ./tests/requirements.tests.txt /home/pipeline-server
-RUN pip3 install  --no-cache-dir -r /home/pipeline-server/requirements.tests.txt
+RUN python3 -m pip install --no-cache-dir -r /home/pipeline-server/requirements.tests.txt
 RUN rm -f /home/pipeline-server/requirements.tests.txt
 
 # Copy tests and sample files

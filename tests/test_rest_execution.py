@@ -74,7 +74,7 @@ def test_rest_execution(service, test_case, test_filename, generate):
                 rtsp_url = "{}:{}/{}".format(url, port, rtsp_path)
                 print("Reading frame from %s", rtsp_url)
                 import cv2
-                cap = cv2.VideoCapture(rtsp_url, cv2.CAP_GSTREAMER)
+                cap = cv2.VideoCapture(rtsp_url, cv2.CAP_FFMPEG)
                 ret, frame = cap.read()
                 cap.release()
                 assert ret, "Unable to read RTSP frame"

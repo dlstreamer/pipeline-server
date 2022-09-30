@@ -559,6 +559,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_default_models()
                 self._set_model_property("model-proc")
                 self._set_model_property("labels")
+                self._set_model_property("labels-file")
                 self._cache_inference_elements()
                 self._set_model_instance_id()
                 self._set_source_and_sink()

@@ -92,35 +92,6 @@
             "version": "vehicle_attributes"
         },
         {
-            "description": "General action recognition based on action-recognition-0001",
-            "name": "action_recognition",
-            "parameters": {
-                "properties": {
-                    "dec-device": {
-                        "default": "CPU",
-                        "description": "Decoder inference device: [CPU, GPU]",
-                        "element": "action_recognition",
-                        "type": "string"
-                    },
-                    "enc-device": {
-                        "default": "CPU",
-                        "description": "Encoder inference device: [CPU, GPU]",
-                        "element": "action_recognition",
-                        "type": "string"
-                    },
-                    "action-recognition-properties": {
-                        "element": {
-                            "name": "action_recognition",
-                            "format": "element-properties"
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "type": "GStreamer",
-            "version": "general"
-        },
-        {
             "description": "Environmental sound detection based on Aclnet",
             "name": "audio_detection",
             "parameters": {

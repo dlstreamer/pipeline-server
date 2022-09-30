@@ -19,34 +19,6 @@
             "version": "vehicle_attributes"
         },
         {
-            "description": "action_recognition",
-            "name": "action_recognition",
-            "networks": {
-                "labels": null,
-                "model-proc": null,
-                "networks": {
-                    "FP16": "/home/pipeline-server/models/action_recognition/encoder/FP16/action-recognition-0001-encoder.xml",
-                    "FP32": "/home/pipeline-server/models/action_recognition/encoder/FP32/action-recognition-0001-encoder.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "encoder"
-        },
-        {
-            "description": "action_recognition",
-            "name": "action_recognition",
-            "networks": {
-                "labels": null,
-                "model-proc": "/home/pipeline-server/models/action_recognition/decoder/action-recognition-0001.json",
-                "networks": {
-                    "FP16": "/home/pipeline-server/models/action_recognition/decoder/FP16/action-recognition-0001-decoder.xml",
-                    "FP32": "/home/pipeline-server/models/action_recognition/decoder/FP32/action-recognition-0001-decoder.xml"
-                }
-            },
-            "type": "IntelDLDT",
-            "version": "decoder"
-        },
-        {
             "description": "emotion_recognition",
             "name": "emotion_recognition",
             "networks": {

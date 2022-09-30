@@ -259,7 +259,6 @@
         "gvapython",
         "audioanalytics",
         "videoanalytics",
-        "videoanalytics_preview",
         "staticelements"
     ],
     "expect_missing": []

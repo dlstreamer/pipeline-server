@@ -16,8 +16,6 @@ Listing models:
 ```
 <snip>
  - object_classification/vehicle_attributes
- - action_recognition/encoder
- - action_recognition/decoder
  - emotion_recognition/1
  - audio_detection/environment
  - object_detection/person_vehicle_bike
@@ -31,7 +29,6 @@ Listing pipelines:
 ```
 <snip>
  - object_classification/vehicle_attributes
- - action_recognition/general
  - audio_detection/environment
  - object_tracking/person_vehicle_bike
  - object_tracking/object_line_crossing

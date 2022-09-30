@@ -36,7 +36,6 @@ The sample microservice includes five categories of media analytics pipelines. C
 | **[object_classification](pipelines/gstreamer/object_classification)** | As object_detection adding meta-data such as object subtype and color
 | **[object_tracking](pipelines/gstreamer/object_tracking)** | As object_classification adding tracking identifier to meta-data
 | **[audio_detection](pipelines/gstreamer/audio_detection)** | Analyze audio streams for events such as breaking glass or barking dogs.
-| [Preview] **[action_recognition](pipelines/gstreamer/action_recognition/general/README.md)**  | Classifies general purpose actions in input video such as tying a bow tie or shaking hands.
 
 # Getting Started
 
@@ -123,7 +122,6 @@ In new shell run the following command:
  ```text
  - object_classification/vehicle_attributes
  - audio_detection/environment
- - action_recognition/general
  - object_tracking/object_line_crossing
  - object_tracking/person_vehicle_bike
  - object_detection/object_zone_count

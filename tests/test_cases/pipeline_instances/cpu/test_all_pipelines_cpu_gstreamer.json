@@ -94,22 +94,6 @@
             }
         },
         {
-            "name": "action_recognition",
-            "version": "general",
-            "request": {
-                "source": {
-                    "type": "uri",
-                    "uri": "file:///home/pipeline-server/tests/media/person-bicycle-car-detection.mp4"
-                },
-                "destination": {
-                    "metadata" : {
-                        "type": "file",
-                        "path": "/dev/null"
-                    }
-                }
-            }
-        },
-        {
             "name": "audio_detection",
             "version": "environment",
             "request": {

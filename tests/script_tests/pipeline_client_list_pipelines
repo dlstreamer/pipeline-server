@@ -1,7 +1,6 @@
 #!/bin/bash
 
-EXPECTED=' - action_recognition/general
- - audio_detection/environment
+EXPECTED=' - audio_detection/environment
  - object_classification/vehicle_attributes
  - object_detection/app_src_dst
  - object_detection/object_zone_count

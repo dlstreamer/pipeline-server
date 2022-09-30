@@ -18,23 +18,23 @@ from jsonschema import Draft7Validator, FormatChecker
 from mdt_schema import model_list_schema
 from model_index_schema import model_index_schema
 
+# Elements of OMZ_PATHS must all exist for detection/validity of the "base_type"
 OMZ_PATHS = {
     "dlstreamer_devel": {
-        "MODEL_DOWNLOADER_PATH" : "/usr/local/bin/omz_downloader",
-        "MODEL_CONVERTER_PATH" : "/usr/local/bin/omz_converter",
-        "MODEL_OPTIMIZER_PATH" : "/usr/local/bin/mo",
-        "SAMPLES_ROOT" : "/opt/intel/dlstreamer/samples",
-        "MODEL_INDEX_FILE": "/opt/intel/dlstreamer/samples/model_index.yaml"
+        "MODEL_DOWNLOADER_PATH": "/usr/local/bin/omz_downloader",
+        "MODEL_CONVERTER_PATH": "/usr/local/bin/omz_converter",
+        "MODEL_OPTIMIZER_PATH": "/usr/local/bin/mo"
     },
     "openvino_data_dev": {
         "MODEL_DOWNLOADER_PATH": "/opt/intel/openvino/deployment_tools/open_model_zoo/tools/downloader/downloader.py",
         "MODEL_CONVERTER_PATH": "/opt/intel/openvino/deployment_tools/open_model_zoo/tools/downloader/converter.py",
         "MODEL_OPTIMIZER_PATH": "/opt/intel/openvino/deployment_tools/model_optimizer/mo.py",
-        "DLSTREAMER_VERSION_FILE" : "/opt/intel/openvino/data_processing/dl_streamer/version.txt"
+        "DLSTREAMER_VERSION_FILE": "/opt/intel/openvino/data_processing/dl_streamer/version.txt"
     }
 }
-
-MODEL_PROC_SEARCH_PATH  ="/opt/intel/openvino/data_processing/dl_streamer/samples/model_proc/**/{0}.json"
+SAMPLES_ROOT = "/opt/intel/dlstreamer/samples"
+MODEL_INDEX_FILE = "model_index.yaml"
+MODEL_PROC_SEARCH_PATH = "/opt/intel/openvino/data_processing/dl_streamer/samples/model_proc/**/{0}.json"
 # Pointer to Intel(R) Deep Learning Streamer (Intel(R) DL Streamer) repository
 DL_STREAMER_REPO_ROOT = "https://raw.githubusercontent.com/openvinotoolkit/dlstreamer_gst"
 
@@ -44,16 +44,20 @@ MODEL_LIST_EXPECTED_SCHEMA = "\n- model(Required): mobilenet-ssd\n \
  precision(Optional): [FP16,FP32]"
 
 MODEL_INDEX_EXPECTED_SCHEMA = '{<model name>: {model-proc (optional): <value>,\
- labels (optional) : <value>}}'
+ labels-file (optional) : <value>}}'
 
 def get_base_image_type():
     valid_types = list(OMZ_PATHS.keys())
     for base_type, path_dict in OMZ_PATHS.items():
         for _, file_path in path_dict.items():
             if not os.path.exists(file_path):
+                print("Filespec show this OMZ image is not base_type {}".format(base_type))
                 valid_types.remove(base_type)
                 break
     if not valid_types:
+        return None
+    if len(valid_types) > 1:
+        print("ERROR: Paths are not sufficiently distinct to discover base_type!")
         return None
     return valid_types[0]
 
@@ -90,7 +94,7 @@ def _find_downloaded_model(model_name, download_dir):
             return os.path.abspath(os.path.join(root, model_name))
     return None
 
-def _copy_datadev_model_proc(target_dir, model_name, dl_streamer_version, version_file):
+def _copy_datadev_model_proc(base_type, target_dir, model_name, dl_streamer_version, version_file):
     result = None
 
     with open(version_file) as local_version:
@@ -111,7 +115,7 @@ def _copy_datadev_model_proc(target_dir, model_name, dl_streamer_version, versio
                     print("Unexpected error: {}".format(error))
     return result
 
-def _download_model_proc(target_dir, model_name, dl_streamer_version):
+def _download_model_proc(base_type, target_dir, model_name, dl_streamer_version):
     url = "{0}/{1}/samples/model_proc/{2}.json".format(DL_STREAMER_REPO_ROOT, dl_streamer_version, model_name
     )
     response = requests.get(url)
@@ -197,14 +201,15 @@ def _get_model_properties(model, model_list_path, target_root):
     result.setdefault("precision", None)
     result.setdefault("model-proc", None)
     result.setdefault("labels", None)
+    result.setdefault("labels-file", None)
     if result["model-proc"]:
         result["model-proc"] = os.path.abspath(
             os.path.join(os.path.dirname(model_list_path), result["model-proc"])
         )
-    if result["labels"]:
-        result["labels"] = os.path.abspath(
+    if result["labels-file"]:
+        result["labels-file"] = os.path.abspath(
             os.path.join(os.path.dirname(model_list_path),
-                         result["labels"])
+                         result["labels-file"])
     )
     result["target-dir"] = os.path.join(target_root,
                                         result["alias"],
@@ -250,20 +255,19 @@ def _handle_model_files(base_type, model_properties, model_proc_dict, dl_streame
     target_dir = model_properties["target-dir"]
 
     if base_type == "openvino_data_dev":
-        version_file = OMZ_PATHS["openvino_data_dev"]["DLSTREAMER_VERSION_FILE"]
-        if not model_proc and _copy_datadev_model_proc(
+        version_file = OMZ_PATHS[base_type]["DLSTREAMER_VERSION_FILE"]
+        if not model_proc and _copy_datadev_model_proc(base_type,
             target_dir, model_name, dl_streamer_version, version_file) is None:
-            _download_model_proc(target_dir, model_name, dl_streamer_version)
-    elif base_type == "dlstreamer_devel":
-        samples_root = OMZ_PATHS["dlstreamer_devel"]["SAMPLES_ROOT"]
+            _download_model_proc(base_type, target_dir, model_name, dl_streamer_version)
+    else:
         if not model_proc:
-            model_proc = _find_model_property_value(model_name, "model-proc", model_proc_dict, samples_root)
+            model_proc = _find_model_property_value(model_name, "model-proc", model_proc_dict, SAMPLES_ROOT)
         if not labels:
-            labels = _find_model_property_value(model_name, "labels", model_proc_dict, samples_root)
+            labels = _find_model_property_value(model_name, "labels-file", model_proc_dict, SAMPLES_ROOT)
 
     collateral = namedtuple('Collateral', ['name', 'value'])
     model_proc_tuple = collateral("model-proc", model_proc)
-    labels_tuple = collateral("labels", labels)
+    labels_tuple = collateral("labels-file", labels)
     for item in [model_proc_tuple, labels_tuple]:
         if item.value:
             if os.path.isfile(item.value):
@@ -272,16 +276,25 @@ def _handle_model_files(base_type, model_properties, model_proc_dict, dl_streame
                 print("Error, {} {} specified but not found".format(item.name, item.value))
                 sys.exit(1)
 
+def find_model_index(samples_root):
+    model_index_search_path = samples_root + "/**/" + MODEL_INDEX_FILE
+    model_index_pathfile = None
+    for model_index_pathfile in glob(model_index_search_path, recursive=True):
+        break
+    return model_index_pathfile
+
 def download_and_convert_models(
         base_type, model_list_path, output_dir, force, dl_streamer_version
 ):
     model_list = _load_yaml_data(model_list_path, model_list_schema, MODEL_LIST_EXPECTED_SCHEMA)
     model_proc_dict = None
     if base_type == "dlstreamer_devel":
-        model_index_file = OMZ_PATHS["dlstreamer_devel"]["MODEL_INDEX_FILE"]
-        model_proc_dict = _load_yaml_data(
-            model_index_file, model_index_schema, MODEL_INDEX_EXPECTED_SCHEMA
-        )
+        model_index_file = find_model_index(SAMPLES_ROOT)
+        if model_index_file:
+            print("Found model index: {}".format(model_index_file))
+            model_proc_dict = _load_yaml_data(
+                model_index_file, model_index_schema, MODEL_INDEX_EXPECTED_SCHEMA
+            )
     target_root = os.path.join(output_dir, "models")
     os.makedirs(target_root, exist_ok=True)
 

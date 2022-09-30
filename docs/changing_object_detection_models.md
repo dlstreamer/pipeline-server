@@ -56,8 +56,6 @@ Use [pipeline_client](/client/README.md) to list the models. Check that `object_
  - audio_detection/environment
  - face_detection_retail/1
  - object_classification/vehicle_attributes
- - action_recognition/encoder
- - action_recognition/decoder
  - object_detection/person_vehicle_bike
  - emotion_recognition/1
 ```
@@ -222,8 +220,6 @@ The `list-models` command now shows 8 models, including `object_detection/yolo-v
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment
- - action_recognition/encoder
- - action_recognition/decoder
  - face_detection_retail/1
 ```
 The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
@@ -240,7 +236,6 @@ The `list-pipelines` command shows `object_detection/yolo-v2-tiny-tf`
  - video_decode/app_dst
  - object_tracking/object_line_crossing
  - object_tracking/person_vehicle_bike
- - action_recognition/general
 ```
 
 
@@ -287,8 +282,6 @@ Once started you can verify that the new model has been loaded.
  - object_detection/person_vehicle_bike
  - object_classification/vehicle_attributes
  - audio_detection/environment
- - action_recognition/encoder
- - action_recognition/decoder
  - face_detection_retail/1
 ```
 
