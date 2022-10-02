@@ -286,12 +286,14 @@ def find_model_index(samples_root):
 def download_and_convert_models(
         base_type, model_list_path, output_dir, force, dl_streamer_version
 ):
+    global SAMPLES_ROOT
     model_list = _load_yaml_data(model_list_path, model_list_schema, MODEL_LIST_EXPECTED_SCHEMA)
     model_proc_dict = None
     if base_type == "dlstreamer_devel":
         model_index_file = find_model_index(SAMPLES_ROOT)
         if model_index_file:
             print("Found model index: {}".format(model_index_file))
+            SAMPLES_ROOT, _ = os.path.split(model_index_file)
             model_proc_dict = _load_yaml_data(
                 model_index_file, model_index_schema, MODEL_INDEX_EXPECTED_SCHEMA
             )
