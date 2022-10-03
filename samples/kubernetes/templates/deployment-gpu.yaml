@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pipeline-server.fullname" . }}-cpu
+  name: {{ include "pipeline-server.fullname" . }}-gpu
   labels:
-    {{- include "pipeline-server.labels" . | nindent 4 }}-cpu
+    {{- include "pipeline-server.labels" . | nindent 4 }}-gpu
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.cpuReplicaCount }}
+  replicas: {{ .Values.gpuReplicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -29,8 +29,11 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            runAsGroup: {{ .Values.gpu.renderGroup }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           # Defined below is where volumes are mounted
@@ -55,6 +58,10 @@ spec:
               value: "{{ .Release.Name }}"
             - name: MY_NAMESPACE
               value: "{{ .Release.Namespace }}"
+            - name: DETECTION_DEVICE
+              value: GPU
+            - name: CLASSIFICATION_DEVICE
+              value: GPU
             {{- if .Values.framedestination.webrtc.enabled }}
             - name: WEBRTC_SIGNALING_SERVER
               value: "{{ .Values.framedestination.webrtc.url }}"
@@ -132,8 +139,6 @@ spec:
             claimName: pipeline-exts-claim
       {{- end }}
       {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
       affinity:

@@ -7,6 +7,7 @@ class Pod:
     hostname: str
     ip_address: str
     mac_address: str
+    xpu_type: "Xpu"
     is_running: bool = False
 
     def __eq__(self, other):

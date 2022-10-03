@@ -2,7 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+cpuReplicaCount: 1
+gpuReplicaCount: 2
 
 image:
   repository: intel/dlstreamer-pipeline-server
@@ -28,6 +29,16 @@ network:
     http:
     https:
     no_proxy:
+
+mosquittoImage:
+  repository: eclipse-mosquitto
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.6"
+
+gpu:
+  # renderGroup depends on your GPU's hardware (e.g. TGL - 109)
+  renderGroup: 109
 
 service:
   type: ClusterIP

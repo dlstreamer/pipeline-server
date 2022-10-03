@@ -3,6 +3,7 @@ FROM python:buster
 COPY controller.py /app/controller.py
 COPY kubectl.py /app/kubectl.py
 COPY cluster.py /app/cluster.py
+COPY xpu.py /app/xpu.py
 COPY cluster_watch.py /app/cluster_watch.py
 COPY pod.py /app/pod.py
 COPY requirements.txt /app/requirements.txt

@@ -8,18 +8,42 @@
 
 > Current implementation of the Kubernetes cluster deploys a Mosquitto MQTT broke together with the cluster. To receive the MQTT output from the Mosquitto broker, please set the Mosquitto deployment to NodePort.
 
-Step 1: Build the dependencies from helm
+Step 1: (Optional) Installing Intel GPU Plugin and Node Feature Discovery to enable GPU in your cluster
+
+> Currently we are supporting the use of manual scripts to install Intel GPU Plugin, as the support for Helm is not released yet.
+
+You can set the `number of shared devices` based on the number of GPU pods that you plan to deploy, leaving this blank will default to `1`
+
+```
+$ ./samples/kubernetes/dependencies/deploy-gpu-plugin.sh <number of shared devices>
+```
+
+Step 2: Build the dependencies from helm
 
 ```
 $ cd samples/kubernetes
 $ helm dep up
 ```
 
-Step 2: Install pipeline-server into your cluster using default values.yaml. In this example, `dlstreamer` is the release name that is used, you can change this value to any desired value to denote the release name for this deployment.
+Step 3: Install pipeline-server into your cluster using default values.yaml. In this example, `dlstreamer` is the release name that is used, you can change this value to any desired value to denote the release name for this deployment.
 
 ```
 $ cd samples/kubernetes
 $ helm install dlstreamer .
+```
+
+## Uninstall the Cluster
+
+Step 1: Uninstall the deployment in helm
+
+```sh
+$ helm uninstall dlstreamer .
+```
+
+Step 2: Uninstall Intel GPU Plugin and NFD
+
+```sh
+$ ./samples/kubernetes/dependencies/remove-gpu-plugin.sh
 ```
 
 ## Sending Pipeline Server Requests to the Cluster
@@ -41,7 +65,7 @@ $ kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
 As an example, the following `curl` request starts processing the `homes_00425.mkv` media file with the `object_detection/person_vehicle_bike` pipeline.
 This command can be issued multiple times to start multiple concurrent pipelines on the cluster.
 
-> In below command, replace `<ingress-ip-address>` at two places with host ip address of the ingress node (HAProxy).
+> In below command, replace `<ingress-ip-address>` at places with host ip address of the ingress node (HAProxy).
 
 #### Command
 
@@ -54,6 +78,42 @@ This command can be issued multiple times to start multiple concurrent pipelines
         "type": "uri"
     }
   }'
+```
+
+#### Expected Output
+
+```text
+59896b90853511ec838b0242ac110002
+```
+
+### Step 3 (Optional): Starting GPU Pipelines on the GPU pods in the Cluster
+
+As an example, the following `curl` request starts processing the `person-bicycle-car-detection.mp4` media file with the `object_detection/person_vehicle_bike` pipeline.
+This command can be issued multiple times to start multiple concurrent pipelines on the cluster.
+
+> In below command, replace `<ingress-ip-address>` at places with host ip address of the ingress node (HAProxy).
+
+> Important notice, in order to deploy into a GPU pod, you'll need to add the keyword `device` and `GPU` together as the regex detects based on `device.*GPU`. See example below for reference.
+
+#### Command
+
+```bash
+curl http://<ingress-ip-address>:8080/pipelines/object_detection/person_vehicle_bike -X POST -H "Content-Type: application/json" -d '{
+   "source":{
+      "uri":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+      "type":"uri"
+   },
+   "destination":{
+      "frame":{
+         "type":"rtsp",
+         "path":"dlstreamer"
+      }
+   },
+   "parameters": {
+      "detection-device": "GPU",
+      "detection-model-instance-id": "detect_object_detection_person_vehicle_bike_GPU"
+   }
+}'
 ```
 
 #### Expected Output
@@ -310,6 +370,19 @@ values.yaml
 ```
 controlplane:
   enabled: true
+```
+
+### Customizing GPU values
+
+Refer to this doc: [https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md](https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md) to understand more about GPU configuration.  
+
+Render group does not have a strict group ID, unlike the video group, please check the group ID for your GPU render and then replace at `renderGroup`
+
+values.yaml
+```
+gpu:
+  # renderGroup depends on your GPU's hardware (e.g. TGL - 109)
+  renderGroup: 109
 ```
 
 ### Enable network proxy inside pods

@@ -13,6 +13,7 @@ import asyncio
 import paho.mqtt.client as mqtt
 
 from cluster import Cluster
+from xpu import Xpu
 from pod import Pod
 from kubectl import KubeCtl
 from controller_server import RunServer
@@ -36,19 +37,38 @@ class Controller:
         self.kubectl.rollout_deployment(self.k8s_releasename + "-haproxy")
 
     def update_config_map(self):
+        # Get all
         _server_map_file_macaddrs = self.cluster.get_mac_addresses()
         _server_map_file_ipaddrs = self.cluster.get_ip_addresses()
+
+        # Get CPU only
+        _server_map_file_macaddrs_cpu = self.cluster.get_mac_addresses(xpu_type = Xpu.CPU)
+        _server_map_file_ipaddrs_cpu = self.cluster.get_ip_addresses(xpu_type = Xpu.CPU)
+
+        # Get GPU only
+        _server_map_file_macaddrs_gpu = self.cluster.get_mac_addresses(xpu_type = Xpu.GPU)
+        _server_map_file_ipaddrs_gpu = self.cluster.get_ip_addresses(xpu_type = Xpu.GPU)
         self.servermap = ''
 
         with open("haproxy-template.cfg", "r") as file_haproxy:
             self.haproxy = file_haproxy.read()
         self.haproxy = self.haproxy.replace("this line is updated by script\n", "", 1)
-        for index, server_map_file_macaddr in enumerate(_server_map_file_macaddrs):
+        for index, server_map_file_macaddr in enumerate(_server_map_file_macaddrs_cpu):
             self.haproxy = self.haproxy + \
                            "    server {}_server {}:8080 check weight 100 agent-check        agent-addr {} \
                             agent-port 3333 agent-inter 1s  agent-send ping \n" \
-                            .format(server_map_file_macaddr, _server_map_file_ipaddrs[index], \
-                            _server_map_file_ipaddrs[index])
+                            .format(server_map_file_macaddr, _server_map_file_ipaddrs_cpu[index], \
+                            _server_map_file_ipaddrs_cpu[index])
+
+        self.haproxy += "\n\nbackend pipeline-servers-gpu-post  \nbalance roundrobin\n"
+
+        ## Add GPU Backend
+        for index, server_map_file_macaddr in enumerate(_server_map_file_macaddrs_gpu):
+            self.haproxy = self.haproxy + \
+                           "    server {}_server {}:8080 check weight 100 agent-check        agent-addr {} \
+                            agent-port 3333 agent-inter 1s  agent-send ping \n" \
+                            .format(server_map_file_macaddr, _server_map_file_ipaddrs_gpu[index], \
+                            _server_map_file_ipaddrs_gpu[index])
 
         self.haproxy += "\n\n"
 
@@ -71,36 +91,47 @@ class Controller:
 
         self.update_ingress_controller_config(self.haproxy, self.servermap)
 
+    def remove_pods(self, hostnames):
+        for hostname in hostnames:
+            # manually check which pod to remove based on hostname and IP address
+            pod_by_hostname = self.cluster.get_pod_by_hostname(hostname)
+            if pod_by_hostname:
+                print ("Pod with hostname {} is removed".format(pod_by_hostname))
+                self.cluster.remove_pod(pod_by_hostname)
+            else:
+                print("Pod with {} doesn't exist or has already been removed".format(pod_by_hostname))
+        if self.kubectl.count_pods("pipeline-server") == len(self.cluster):
+            self.update_config_map()
+
+    def add_pods(self, dmessage):
+        _, hostname, mac_address = dmessage.split(';', 2)
+        try:
+            ip_address = self.kubectl.get_pod_ip_from_name(hostname)
+            if ip_address:
+                if "-gpu" in hostname:
+                    pod = Pod(hostname = hostname, ip_address = ip_address, \
+                                mac_address = mac_address, is_running = True, xpu_type=Xpu.GPU)
+                else:
+                    pod = Pod(hostname = hostname, ip_address = ip_address, \
+                                mac_address = mac_address, is_running = True, xpu_type=Xpu.CPU)
+
+                if pod not in self.cluster.pods:
+                    self.cluster.add_pod(pod)
+                    # Only update config map once pod count is same as pod in cluster
+                    if self.kubectl.count_pods("pipeline-server") == len(self.cluster):
+                        self.update_config_map()
+        except Exception:
+            print("Can't get IP Address, most likely the {} pod has been removed.".format(hostname))
+
     def on_message(self, _unused_client, _unused_userdata, message):
         # Only call update_database if the number of pod counts == number of dmessage received
         dmessage = str(message.payload.decode("utf-8"))
         pod_state = dmessage.split(';', maxsplit=1)[0]
         if pod_state == "add":
-            pod_state, hostname, mac_address = dmessage.split(';', 2)
-            try:
-                ip_address = self.kubectl.get_pod_ip_from_name(hostname)
-                if ip_address:
-                    pod = Pod(hostname = hostname, ip_address = ip_address, \
-                              mac_address = mac_address, is_running = True)
-                    if pod not in self.cluster.pods:
-                        self.cluster.add_pod(pod)
-                        # Only update config map once pod count is same as pod in cluster
-                        if self.kubectl.count_pods("pipeline-server") == len(self.cluster):
-                            self.update_config_map()
-            except Exception:
-                print("Can't get IP Address, most likely the {} pod has been removed.".format(hostname))
+            self.add_pods(dmessage)
         elif pod_state == "remove":
             hostnames = dmessage.split(';')[1:]
-            for hostname in hostnames:
-                # manually check which pod to remove based on hostname and IP address
-                pod_by_hostname = self.cluster.get_pod_by_hostname(hostname)
-                if pod_by_hostname:
-                    print ("Pod with hostname {} is removed".format(pod_by_hostname))
-                    self.cluster.remove_pod(pod_by_hostname)
-                else:
-                    print("Pod with {} doesn't exist or has already been removed".format(pod_by_hostname))
-            if self.kubectl.count_pods("pipeline-server") == len(self.cluster):
-                self.update_config_map()
+            self.remove_pods(hostnames)
         else:
             print("Unknown pod_state: {}".format(pod_state))
         print("received message: {}".format(dmessage))

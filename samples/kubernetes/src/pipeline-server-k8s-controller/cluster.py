@@ -1,4 +1,5 @@
 from pod import Pod
+from xpu import Xpu
 
 class Cluster:
     def __init__(self, namespace = "default"):
@@ -49,26 +50,38 @@ class Cluster:
             tmp.append(pod.hostname)
         return tmp
 
-    def get_ip_addresses(self) -> list:
+    def get_ip_addresses(self, xpu_type = None) -> list:
         """
         Returns list of IP Address.
 
+        :param xpu_type: Xpu enum datatype
         :return: list
         """
         tmp = []
         for pod in self.pods:
-            tmp.append(pod.ip_address)
+            if pod.xpu_type == Xpu.CPU and xpu_type == Xpu.CPU:
+                tmp.append(pod.ip_address)
+            elif pod.xpu_type == Xpu.GPU and xpu_type == Xpu.GPU:
+                tmp.append(pod.ip_address)
+            elif xpu_type is None:
+                tmp.append(pod.ip_address)
         return tmp
 
-    def get_mac_addresses(self) -> list:
+    def get_mac_addresses(self, xpu_type = None) -> list:
         """
         Returns list of MAC Address.
 
+        :param xpu_type: Xpu enum datatype
         :return: list
         """
         tmp = []
         for pod in self.pods:
-            tmp.append(pod.mac_address)
+            if pod.xpu_type == Xpu.CPU and xpu_type == Xpu.CPU:
+                tmp.append(pod.mac_address)
+            elif pod.xpu_type == Xpu.GPU and xpu_type == Xpu.GPU:
+                tmp.append(pod.mac_address)
+            elif xpu_type is None:
+                tmp.append(pod.mac_address)
         return tmp
 
     def add_pod(self, pod: Pod) -> None:
