@@ -16,7 +16,7 @@ The REST API has a default maximum body size of 10KB, this can be changed by set
 | [`DELETE` /pipelines/{instance_id}](#delete-pipelinesinstance_id) | Stops a running pipeline or cancels a queued pipeline. |
 | [`DELETE` /pipelines/{name}/{version}/{instance_id}](#delete-pipelinesnameversioninstance_id) | Stops a running pipeline or cancels a queued pipeline. |
 
-The following endpoints are deprecated and will be removed by v1.0.
+The following endpoints are deprecated and will be removed in a future release. 
 | Path | Description |
 |----|------|
 | [`GET` /pipelines/{name}/{version}/{instance_id}](#get-pipelinesnameversioninstance_id) | Return pipeline instance summary. |
