@@ -71,6 +71,7 @@ show_help() {
   echo "  [--gpu-device select GPU device]"
   echo "  [--device device to pass to docker run]"
   echo "  [--enable-rtsp To enable rtsp re-streaming]"
+  echo "  [--disable-http-port Specify to close web service port e.g. 8080 in docker]"
   echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
   echo "  [--enable-webrtc To enable WebRTC frame destination]"
   echo "  [--dev run in developer mode]"
@@ -278,6 +279,9 @@ while [[ "$#" -gt 0 ]]; do
             error 'ERROR: "--rtsp-port" requires a non-empty option argument.'
         fi
         ;;
+    --disable-http-port)
+        MODE=DISABLE_HTTP_PORT
+        ;;
     --enable-rtsp)
         ENABLE_RTSP=true
         ;;
@@ -341,6 +345,8 @@ elif [ "${MODE}" == "SERVICE" ]; then
     if [ -z "$PORTS" ]; then
         PORTS+="-p 8080:8080 "
     fi
+elif [ "${MODE}" == "DISABLE_HTTP_PORT" ]; then
+    echo "HTTP Web Service port has been disabled on Docker!"
 else
     echo "Invalid Mode"
     show_help

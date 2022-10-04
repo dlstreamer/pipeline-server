@@ -11,3 +11,4 @@ samples/edgex_bridge/edgex/**/*
 samples/kubernetes/values.yaml
 samples/kubernetes/charts/
 samples/kubernetes/Chart.lock
+samples/nginx/cert/*

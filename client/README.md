@@ -304,6 +304,13 @@ This can be used with any command to specify a remote HTTP server address. Here 
 ./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server=address http://remote-server.my-domain.com:8080
 ```
 
+#### --server-cert
+Specifies a certificate for HTTPS. This information is added to each request to run on HTTPS with the given certificate.
+This example makes pipeline_client.sh use HTTPS by setting `--server-address` and `--server-cert`
+```
+./client/pipeline_client.sh list-pipelines --server-address https://localhost:8443 --server-cert $(pwd)/cert/server.crt
+```
+
 #### --status-only
 Use with `run` command to disable output of metadata and periodically display pipeline state and fps
 ```

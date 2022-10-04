@@ -30,6 +30,8 @@
 import sys
 import json
 import argparse
+import os
+from urllib.parse import urlparse
 import pipeline_client
 
 
@@ -123,5 +125,8 @@ def parse_args(program_name="Pipeline Client"):
     args = parser.parse_args()
     if args.subparsers in ['start', 'run'] and not args.uri and not args.request_file:
         parser.error("at least one of uri or --request-file is required")
+
+    if urlparse(args.server_address).scheme == "https" and not os.environ["ENV_CERT"]:
+        parser.error("ENV_CERT environment must be set if you are using HTTPS")
 
     return args

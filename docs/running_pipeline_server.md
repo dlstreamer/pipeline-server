@@ -301,5 +301,17 @@ pipeline-server@my-host:~$ python3 -m server
 By default, the running user's UID value determines user name inside the container. A UID of 1001 is assigned as `pipeline-server`. For other UIDs, you may see `I have no name!@my-host`.
 To run as another user, you can add `--user <user_name>` to the run command.  i.e. to add pipeline-server by name use add `--user pipeline-server`
 
+# Disabling HTTP Port on Docker
+
+The run script includes a --disable-http-port flag which starts the container without any HTTP ports opened up for security reasons. This is used for HTTPS or securing your container.
+
+**Example:**
+
+The example below disables HTTP Port and connects the container into a bridged network for reverse proxy.
+
+```
+docker/run.sh --disable-http-port --network my_bridge
+```
+
 ---
 \* Other names and brands may be claimed as the property of others.
