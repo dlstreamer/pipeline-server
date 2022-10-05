@@ -7,6 +7,7 @@
 import os
 import json
 import requests
+import parse
 import pytest
 import urllib
 import time
@@ -14,6 +15,7 @@ import subprocess
 import shlex
 import statistics
 import sys
+from parse import search
 from tests.common import pipeline_processing
 
 TIMEOUT = 120
@@ -39,6 +41,8 @@ def test_pipeline_performance(service, test_case, test_filename, generate):
         pytest.fail("Required parameter gst_launch_string missing")
     if "iterations" in test_case:
         iterations = test_case["iterations"]
+        if iterations < 3:
+            pytest.fail("Required parameter iterations must be > 2 to derive the mean")
     check_turbo_is_disabled()
     run_gst_pipeline(iterations, gst_launch_string, gst_launch_avg_fps)
     run_ps_pipeline(iterations, pipeline_server_avg_fps, service, test_case)
@@ -112,11 +116,8 @@ def check_results(gst_launch_avg_fps, pipeline_server_avg_fps, fps_percentage_di
     assert fps_percentage_diff < fps_percentage_diff_limit
 
 def extract_avg_fps_from_output(output):
-    # Get float value between pre & post
-    pre  = b'(average): total='
-    post = b' fps'
-    result = output.split(pre, 1)[1].split(post, 1)[0]
-    avg_fps = float(result)
+    result = search("\nFpsCounter(overall {}sec): total={avg_fps:f} fps, number-streams={}, per-stream={}", output.decode('ascii'))
+    avg_fps = result['avg_fps']
     assert type(avg_fps) == float, "Unable to get avg_fps from gst-launch command"
     return avg_fps
 
