@@ -217,15 +217,6 @@
                         "element": "classification",
                         "type": "integer"
                     },
-                    "tracking-device": {
-                        "element": [
-                            {
-                                "name": "tracking",
-                                "property": "device"
-                            }
-                        ],
-                        "type": "string"
-                    },
                     "tracking-properties": {
                         "element": {
                             "name": "tracking",
@@ -344,15 +335,6 @@
                     "reclassify-interval": {
                         "element": "classification",
                         "type": "integer"
-                    },
-                    "tracking-device": {
-                        "element": [
-                            {
-                                "name": "tracking",
-                                "property": "device"
-                            }
-                        ],
-                        "type": "string"
                     },
                     "tracking-properties": {
                         "element": {

@@ -2,7 +2,7 @@
 	"type": "GStreamer",
 	"template": ["{auto_source} ! decodebin",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-				" ! gvatrack name=tracking",
+				" ! gvatrack name=tracking device=CPU",
 				" ! gvaclassify model={models[object_classification][vehicle_attributes][network]} name=classification",
 				" ! gvametaconvert name=metaconvert ! gvametapublish name=destination",
 				" ! appsink name=appsink"],
@@ -43,13 +43,6 @@
 				},
 				"type": "string",
 				"default": "{env[CLASSIFICATION_DEVICE]}"
-			},
-			"tracking-device": {
-				"element":
-					[ {"name":"tracking",
-						"property":"device"}
-					],
-				"type": "string"
 			},
 			"inference-interval": {
 				"element":
