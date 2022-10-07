@@ -12,7 +12,7 @@ OUTPUT_DIR=$(realpath $( pwd ))
 FORCE=
 RUN_PREFIX=
 OPEN_MODEL_ZOO_TOOLS_IMAGE=${OPEN_MODEL_ZOO_TOOLS_IMAGE:-"${CACHE_PREFIX}intel/dlstreamer"}
-OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2022.2.0-gpu815-ubuntu20-devel"}
+OPEN_MODEL_ZOO_VERSION=${OPEN_MODEL_ZOO_VERSION:-"2022.2.0-ubuntu20-gpu815-devel"}
 NAME="dlstreamer-pipeline-server-model-downloader"
 
 DL_STREAMER_VERSION=
