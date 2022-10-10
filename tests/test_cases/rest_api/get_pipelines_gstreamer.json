@@ -188,7 +188,6 @@
                         },
                         "type": "number"
                     },
-
                     "detection-properties": {
                         "element": {
                             "name": "detection",

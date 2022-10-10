@@ -23,5 +23,5 @@
     "status_result": {
         "error": "Device with \"BPU\" name is not registered in the InferenceEngine"
     },
-    "result": 4
+    "result": "b6a3452a48b311ed9def0242ac110003"
 }

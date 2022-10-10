@@ -25,5 +25,5 @@
     "check_stopped": {
         "timeout": 0.5
     },
-    "result": 3
+    "result": "b32cad4648b311ed9def0242ac110003"
 }
