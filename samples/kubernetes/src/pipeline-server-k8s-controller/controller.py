@@ -70,6 +70,16 @@ class Controller:
                             .format(server_map_file_macaddr, _server_map_file_ipaddrs_gpu[index], \
                             _server_map_file_ipaddrs_gpu[index])
 
+        self.haproxy += "\n\nbackend pipeline-servers-post  \nbalance roundrobin\n"
+
+        ## Add All Backend
+        for index, server_map_file_macaddr in enumerate(_server_map_file_macaddrs):
+            self.haproxy = self.haproxy + \
+                           "    server {}_server {}:8080 check weight 100 agent-check        agent-addr {} \
+                            agent-port 3333 agent-inter 1s  agent-send ping \n" \
+                            .format(server_map_file_macaddr, _server_map_file_ipaddrs[index], \
+                            _server_map_file_ipaddrs[index])
+
         self.haproxy += "\n\n"
 
         for index, server_map_file_macaddr in enumerate(_server_map_file_macaddrs):

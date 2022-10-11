@@ -13,7 +13,7 @@ image:
   target_fps: "30"
 
 controlplane:
-  enabled: false
+  enabled: true
   controller:
     image: intel/dlstreamer-pipeline-server-k8s-controller
   sidecar:
