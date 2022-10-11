@@ -46,3 +46,35 @@ You can adjust this value as shown below if you require busting request or faste
 ```
 limit_req_zone $binary_remote_addr zone=mylimit:10m rate=10r/s;
 ```
+
+# Submitting an HTTPS Request via NGINX
+
+You can submit a HTTPS request using two methods:
+
+## 1. Submitting request using CURL
+
+Confirm your setup by passing the generated `server.crt` to `curl` with a query request.
+
+```sh
+$ curl --cacert cert/server.crt https://localhost:8443/pipelines/object_detection/person_vehicle_bike -X POST -H "Content-Type: application/json" -d '{
+   "source":{
+      "uri":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+      "type":"uri"
+   },
+   "destination":{
+      "frame":{
+         "type":"rtsp",
+         "path":"ps1"
+      }
+   }
+}'
+```
+```
+"c6f2476444f811ed81550242ac120003"
+```
+
+![httpscurlnginx](/docs/images/tls_nginx_curl_demo.png)
+
+## 2. Submitting request using Pipeline Client
+
+Pipeline Client also supports HTTPS queries. Refer to [Pipeline Client HTTPS example](/client/README.md#using-https-with-pipeline-client) for examples.

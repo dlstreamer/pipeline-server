@@ -64,26 +64,37 @@ You can test your setup by providing the `server.crt` into the curl when queryin
 
 ![httpsk8s](/docs/images/0031-https-k8s.png)
 
+Port forward port 443 from HAProxy
 ```sh
+$ POD_NAME=$(kubectl get pods | grep haproxy | cut -d' ' -f1)
 $ kubectl --namespace default port-forward $POD_NAME 8080:443
+```
+
+Example #1: Get status of all pipeline instances
+```
 $ curl --cacert server.crt https://localhost:8080/pipelines/status
 []
 ```
 
+Example #2: Submit work request (launch pipeline instance)
+```sh
+$ curl --cacert cert/server.crt https://localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H "Content-Type: application/json" -d '{
+   "source":{
+      "uri":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
+      "type":"uri"
+   },
+   "destination":{
+      "frame":{
+         "type":"rtsp",
+         "path":"ps1"
+      }
+   }
+}'
+```
+```
+"c6f2476444f811ed81550242ac120003"
+```
+
 Step 7: Using Pipeline Client
 
-Pipeline Client also support Kubernetes Cluster with HTTPS, you can test your setup using Pipeline Client and the same `server.crt` when querying.
-
-```sh
-$ client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4\?raw\=true --server-address https://localhost:8443 --server-cert samples/nginx-tls-https/cert/server.crt
-
-.
-.
-.
-
-Starting pipeline object_detection/person_vehicle_bike, instance = 1843e91040da11edbaf2b62e8c582e09
-Pipeline running - instance_id = 1843e91040da11edbaf2b62e8c582e09
-No results will be displayed. Unable to read from file /tmp/results.jsonl
-avg_fps: 593.75
-Done
-```
+Pipeline Client also supports submitting work requests on Kubernetes Clusters with HTTPS. Test your setup using the [Pipeline Client HTTPS example](/client/README.md#using-https-with-pipeline-client).

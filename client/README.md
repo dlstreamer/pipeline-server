@@ -445,3 +445,21 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/
 <snip>
 DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c
 ```
+
+# Using HTTPS with Pipeline Client
+
+To use Pipeline Client together with HTTPS, the request must provide `--server-address` with a https address and `--server-cert` with the server certificate. Below is an example:
+
+```sh
+$ client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4\?raw\=true --server-address https://localhost:8443 --server-cert samples/nginx/cert/server.crt
+
+.
+.
+.
+
+Starting pipeline object_detection/person_vehicle_bike, instance = 1843e91040da11edbaf2b62e8c582e09
+Pipeline running - instance_id = 1843e91040da11edbaf2b62e8c582e09
+No results will be displayed. Unable to read from file /tmp/results.jsonl
+avg_fps: 593.75
+Done
+```

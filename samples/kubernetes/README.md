@@ -1,6 +1,19 @@
 # Kubernetes Deployment using Helm Charts
 
-## Deploying with Helm
+| [Architecture](#pipeline-server-kubernetes-architecture-diagram)
+| [Installation](#installation)
+| [Uninstall](#uninstall-the-cluster)
+| [Pipeline Requests](#sending-pipeline-server-requests-to-the-cluster)
+| [Persistent Volume](#using-persistent-volume-to-share-models-pipelines-and-extensions)
+| [Visualizing Inference Output](#visualizing-inference-output)
+| [Values.yaml](#understanding-valuesyaml)
+| [Examples](#examples) |
+
+## Pipeline Server Kubernetes Architecture Diagram
+
+Kubernetes Pipeline Server allows users to deploy multiple instances of Pipeline Server while handling network traffic and properly managing workload distribution. It supports processing media analytics on CPU and/or GPU, visual output via RTSP or WebRTC, and utilizes Persistent Volumes for model storage via NFS.
+
+![k8sarchdiagram](/docs/images/k8s-arch-diag.png)
 
 ## Installation
 
@@ -121,9 +134,6 @@ curl http://<ingress-ip-address>:8080/pipelines/object_detection/person_vehicle_
 ```text
 59896b90853511ec838b0242ac110002
 ```
-
-## Examples
-Find examples [here](docs/examples.md) that demonstrate how we assessed scaling by calculating _stream density_ across a variety of multi-node cluster scenarios.
 
 ****
 
@@ -441,3 +451,12 @@ persistentVolumeClaim:
     size: 10Gi
     annotations: {}
 ```
+
+## Examples
+
+Currently we provide examples under [examples](/samples/kubernetes/examples/) directory.
+
+| Examples | Definition |
+|---|---|
+| [Securing Kubernetes with HTTPS](/samples/kubernetes/docs/examples.md#securing-k8s.md) | Demo on running Kubernetes with HTTPS |
+| [Stream Density example](/samples/kubernetes/docs/examples.md#stream-density-example) | Running various streams with a target of 30fps per stream |

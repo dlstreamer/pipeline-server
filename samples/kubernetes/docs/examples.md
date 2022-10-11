@@ -1,4 +1,4 @@
-# Pipeline Server Stream Density Examples
+# Pipeline Server Examples
 
 ## Definitions
 
@@ -7,7 +7,14 @@
 | Intel® NUC | Intel® NUC11PAHi7 11th Gen Intel® Core™ i7-1165G7 Processor |
 | Intel® Xeon® Processor | Intel® Xeon® Platinum Processor 9221 CPU |
 
-## Examples
+## Table of Content
+
+| Examples | Definition |
+|---|---|
+| [Securing Kubernetes with HTTPS](#securing-k8s.md) | Demo on running Kubernetes with HTTPS |
+| [Stream Density Example](#stream-density-example) | Running various streams with a target of 30fps per stream |
+
+## Stream Density Example
 
 These examples will show the following with a target of 30fps per stream:
 
