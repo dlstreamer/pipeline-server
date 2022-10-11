@@ -126,7 +126,7 @@ class FFmpegPipeline(Pipeline):
         return status_obj
 
     @staticmethod
-    def validate_config(config):
+    def validate_config(config, request):
         pass
 
     def _get_fps(self, next_line):

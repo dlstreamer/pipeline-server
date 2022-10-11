@@ -59,6 +59,15 @@ class PipelineManager:
 
         return pipeline_types
 
+    def _validate_config(self, config):
+        # Create a request with Default values
+        default_request = {}
+        self.set_defaults(default_request, config)
+        # Setup models and auto_source with default values for validation
+        default_request["models"] = self.model_manager.models
+        default_request["auto_source"] = "fakesrc"
+        self.pipeline_types[config['type']].validate_config(config, default_request)
+
     def _load_pipelines(self):
         # TODO: refactor
         # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-statements
@@ -105,8 +114,7 @@ class PipelineManager:
                                         config['version'] = version
                                         # validate_config will throw warning of
                                         # missing elements but continue execution
-                                        self.pipeline_types[config['type']].validate_config(
-                                            config)
+                                        self._validate_config(config)
                                         self.logger.info("Loading Pipeline: {} version: "
                                                          "{} type: {} from {}".format(
                                                              pipeline,

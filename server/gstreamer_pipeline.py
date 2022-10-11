@@ -390,8 +390,14 @@ class GStreamerPipeline(Pipeline):
                     element.set_property(property_name, property_value)
 
     @staticmethod
-    def validate_config(config):
-        template = config["template"]
+    def validate_config(config, request):
+        # Create a copy of the config to be used for default values
+        # Subsititute the values inside config with default_request
+        template = string.Formatter().vformat(                  \
+                                            config["template"], \
+                                            [],                 \
+                                            request             \
+                                            )
         field_names = [fname for _, fname, _, _ in string.Formatter().parse(template)]
         if GStreamerPipeline.SOURCE_ALIAS in field_names:
             template = template.replace("{"+ GStreamerPipeline.SOURCE_ALIAS +"}", "fakesrc")

@@ -29,7 +29,7 @@ class Pipeline:
         pass
 
     @staticmethod
-    def validate_config(config):
+    def validate_config(config, request):
         pass
 
     @staticmethod
