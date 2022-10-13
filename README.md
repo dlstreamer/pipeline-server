@@ -219,7 +219,7 @@ Starting pipeline object_detection/person_vehicle_bike, instance = 8ad2c85af4bd4
 ```
 
 ```bash
-./client/pipeline_client.sh status object_detection/person_vehicle_bike 8ad2c85a-f4bd473e8a693aff562be316
+./client/pipeline_client.sh status object_detection/person_vehicle_bike 8ad2c85af4bd473e8a693aff562be316
 ```
 
 ```text
@@ -257,7 +257,7 @@ The error state covers a number of outcomes such as the request could not be sat
 
 ```text
 <snip>
-Starting pipeline object_detection/person_vehicle_bike, instance = 2bb2d219-310a4ee881faf258fbcc4355
+Starting pipeline object_detection/person_vehicle_bike, instance = 2bb2d219310a4ee881faf258fbcc4355
 ```
 
 Note that the Pipeline Server does not report an error at this stage as it goes into `QUEUED` state before it realizes that the source is not providing media.
@@ -276,7 +276,7 @@ ERROR (0fps)
 
 ## Change Pipeline and Source Media
 
-With pipeline_client it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the Iot Devkit video `car-detection.mp4`. Note how pipeline_client now displays classification metadata including type and color of vehicle.
+With pipeline_client it is easy to customize service requests. Here will use a vehicle classification pipeline `object_classification/vehicle_attributes` with the IoT Devkit video `car-detection.mp4`. Note how pipeline_client now displays classification metadata including type and color of vehicle.
 
 ```bash
 ./client/pipeline_client.sh run object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
