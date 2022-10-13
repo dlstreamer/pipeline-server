@@ -246,7 +246,7 @@ In the following example, passing in `--destination path /tmp/newfile.jsonl` wil
 
 If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and pipeline_client will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
 ```
-docker run -rm --network=host -d eclipse-mosquitto:1.6
+docker run --rm --network=host -d eclipse-mosquitto:1.6
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost:1883 --destination topic pipeline-server
 ```
 ```
@@ -301,7 +301,7 @@ This example adds tags for direction and location of video capture
 #### --server-address
 This can be used with any command to specify a remote HTTP server address. Here we start a pipeline on remote server `http://remote-server.my-domain.com:8080`.
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server=address http://remote-server.my-domain.com:8080
+./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server-address http://remote-server.my-domain.com:8080
 ```
 
 #### --server-cert
