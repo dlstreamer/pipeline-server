@@ -37,10 +37,21 @@ Listing pipelines:
 ```
 
 ### Running Pipelines
+
+All examples (including samples) that produce `file` output assume you will have already started Pipeline Server using a volume mount to the destination path; e.g., the `/tmp` folder in our examples.
+
+   ```
+   ./docker/run.sh -v /tmp:/tmp
+   ```
+
+> **Important**: While Pipeline Server does support overriding the runtime user, keep in mind that by default all examples are designed to permit _current user_ access to files exported by Pipeline Server.
+
 pipeline_client can be used to send pipeline start requests using the `run` command. With the `run` command you will need to enter two additional arguments the `pipeline` (in the form of pipeline_name/pipeline_version) you wish to use and the `uri` pointing to the media of your choice.
 ```
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
+
 If the pipeline request is successful, an instance id is created and pipeline_client will print the instance. More on `instance_id` below.
 Once pre-roll is completed and pipeline begins running, the output file is processed by pipeline_client and inference information is printed to the screen in the following format: `label (confidence) [top left width height] {meta-data}` At the end of the pipeline run, the average fps is printed as well. If you wish to stop the pipeline mid-run, `Ctrl+C` will signal the client to send a `stop` command to the service. Once the pipeline is stopped, pipeline_client will output the average fps. More on `stop` below
 
@@ -72,18 +83,36 @@ Pipeline instance = <uuid>
 <Error Message>
 ```
 
+If the server was started without mounting `/tmp` you will see the message:
+
+```
+No results will be displayed. Unable to read from file
+```
+
+If the server and client are not started by the same user you will see the message:
+```
+Unable to delete destination metadata file /tmp/results.jsonl
+```
+
 ### Starting Pipelines
 The `run` command is helpful for quickly showing inference results but `run` blocks until completion. If you want to do your own processing and only want to kickoff a pipeline, this can be done with the `start` command. `start` arguments are the same as `run`, you'll need to provide the `pipeline` and `uri`. Run the following command:
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
+
+The `start` and `run` commands in all client examples require the following to successfully output results:
+   1. The server volume mounts the /tmp folder (i.e. `-v /tmp:/tmp`)
+   2. Both the server and client are started by the same user
+
 Similar to `run`, if the pipeline request is successful, an instance id is created and pipeline_client will print the instance. More on `instance_id` below.
 ```
 Pipeline instance = <uuid>
 ```
 Errors during pipeline execution are not flagged as pipeline_client exits after receiving instance id for a successful request. However, both `start` and `run` will flag invalid requests, for example:
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bke https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bke \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 The pipeline name has a typo `object_detection/person_vehicle_bke` making it invalid, this results in the error message:
 ```
@@ -132,14 +161,16 @@ Querying the current state of the pipeline is done using the `list-instances` co
 
 This example starts two pipelines and then gets their status and request details.
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 Output:
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = 94cf72b718184615bfc181c6589b240c
 ```
 ```
-./client/pipeline_client.sh start object_classification/vehicle_attributes https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
+./client/pipeline_client.sh start object_classification/vehicle_attributes \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/car-detection.mp4?raw=true
 ```
 Output:
 ```
@@ -195,7 +226,8 @@ This optional argument is meant to handle logging verbosity common across all co
 #### Start
 pipeline_client output will just be the pipeline instance.
 ```
-./client/pipeline_client.sh --quiet start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh --quiet start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
 <snip>
@@ -204,7 +236,8 @@ pipeline_client output will just be the pipeline instance.
 #### Run
 pipeline_client output will be the pipeline instance followed by inference results.
 ```
-./client/pipeline_client.sh --quiet run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
+./client/pipeline_client.sh --quiet run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true
 ```
 ```
 <snip>
@@ -239,15 +272,26 @@ By default, pipeline_client uses a generic template for destination:
 ```
 Destination configuration can be updated with `--destination`. This argument affects only metadata part of the destination.
 In the following example, passing in `--destination path /tmp/newfile.jsonl` will update the filepath for saving inference result.
-> **Note**: You may need to volume mount this new location when running Pipeline Server.
-```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl
-```
+
+> **Note**: To access files exported by Pipeline Server, remember that you must _volume mount_ the destination path (e.g., the `/tmp` folder for our examples) when Pipeline Server is started.
+   ```
+   docker/run.sh -v /tmp:/tmp
+   ```
+
+   ```
+   ./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+     https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+     --destination path /tmp/newfile.jsonl
+   ```
 
 If other destination types are specified (e.g. `mqtt` or `kafka` ), the pipeline will try to publish to specified broker and pipeline_client will subscribe to it and display published metadata. Here is an mqtt example using a broker on localhost.
 ```
 docker run --rm --network=host -d eclipse-mosquitto:1.6
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination type mqtt --destination host localhost:1883 --destination topic pipeline-server
+
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --destination type mqtt --destination host localhost:1883 \
+  --destination topic pipeline-server
 ```
 ```
 Starting pipeline object_detection/person_vehicle_bike, instance = <uuid>
@@ -271,7 +315,9 @@ For example, adding `--rtsp-path new_path` will able you to view the stream at `
 #### --parameter
 By default, pipeline_client relies on pipeline parameter defaults. This can be updated with `--parameter` option. See [Defining Pipelines](../docs/defining_pipelines.md) to know how parameters are defined. The following example adds `--parameter detection-device GPU`
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter detection-device GPU
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --parameter detection-device GPU
 ```
 
 #### --parameter-file
@@ -288,27 +334,34 @@ A sample parameter file can look like
 ```
 The above file, say /tmp/sample_parameters.json may be used as follows:
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --parameter-file /tmp/sample_parameters.json
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --parameter-file /tmp/sample_parameters.json
 ```
 
 #### --tag
 Specifies a key, value pair to update request with. This information is added to each frame's metadata.
 This example adds tags for direction and location of video capture
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --tag camera_location parking_lot
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --tag direction east --tag camera_location parking_lot
 ```
 
 #### --server-address
 This can be used with any command to specify a remote HTTP server address. Here we start a pipeline on remote server `http://remote-server.my-domain.com:8080`.
-
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server-address http://remote-server.my-domain.com:8080
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --tag direction east --server=address http://remote-server.my-domain.com:8080
 ```
 
 #### --status-only
 Use with `run` command to disable output of metadata and periodically display pipeline state and fps
 ```
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --status-only
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --tag direction east --status-only
 ```
 ```
 Starting pipeline 0
@@ -328,7 +381,9 @@ Pipeline status @ 21s
 Takes an integer value that specifies the number of streams to start (default value is 1) using specified request.
 If number of streams is greater than one, "status only" display mode is used.
 ```
-./client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --status-only --number-of-streams 4 --server-address http://hbruce-desk2.jf.intel.com:8080
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --status-only --number-of-streams 4 --server-address http://hbruce-desk2.jf.intel.com:8080
 ```
 ```
 Starting pipeline 0
@@ -387,14 +442,18 @@ A sample request file can look like
 ```
 The above file, named for instance as /tmp/sample_request.json may be used as follows:
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike --request-file /tmp/sample_request.json
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  --request-file /tmp/sample_request.json
 ```
 
 #### --show-request
 All pipeline_client commands can be used with the `--show-request` option which will print out the HTTP request and exit i.e it will not be sent to the Pipeline Server.
 This example shows the result of `--show-request` when the pipeline is started with options passed in
 ```
-./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --destination path /tmp/newfile.jsonl --parameter detection-device GPU --tag direction east --tag camera_location parking_lot --show-request
+./client/pipeline_client.sh start object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true \
+  --destination path /tmp/newfile.jsonl \
+  --parameter detection-device GPU --tag direction east --tag camera_location parking_lot --show-request
 ```
 ```
 <snip>
@@ -417,7 +476,8 @@ As mentioned before, `--show-request` option which will print out the HTTP reque
 
 ##### Status
 ```
-./client/pipeline_client.sh status object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh status object_detection/person_vehicle_bike \
+  94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
@@ -425,7 +485,8 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/
 ```
 ##### Wait
 ```
-./client/pipeline_client.sh wait object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh wait object_detection/person_vehicle_bike \
+  94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
@@ -433,7 +494,8 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/
 ```
 ##### Stop
 ```
-./client/pipeline_client.sh stop object_detection/person_vehicle_bike 94cf72b718184615bfc181c6589b240c --show-request
+./client/pipeline_client.sh stop object_detection/person_vehicle_bike \
+  94cf72b718184615bfc181c6589b240c --show-request
 ```
 ```
 <snip>
@@ -451,7 +513,9 @@ This example makes pipeline_client.sh use HTTPS by setting `--server-address` an
 This adds an Environment variable `ENV_CERT` and `REQUESTS_CA_BUNDLE` to accomodate for self-signed certificates. These environment variables can be ignored if you are not using self-signed certificate.
 
 ```sh
-$ client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4\?raw\=true --server-address https://localhost:8443 --server-cert samples/nginx/cert/server.crt
+$ client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4\?raw\=true \
+  --server-address https://localhost:8443 --server-cert samples/nginx/cert/server.crt
 
 .
 .
