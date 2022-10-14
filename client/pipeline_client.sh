@@ -13,6 +13,7 @@ LOCAL_CLIENT_DIR=$(dirname $(readlink -f "$0"))
 ROOT_DIR=$(dirname $LOCAL_CLIENT_DIR)
 ARGS=
 ENV_CERT=
+MQTT_CLUSTER_BROKER=
 
 error() {
     printf '%s\n' "$1" >&2
@@ -30,6 +31,14 @@ while [[ "$#" -ge 0 ]]; do
                     error 'ERROR: "--server-cert" requires an argument.'
                 fi
                 ;;
+            --mqtt-cluster-broker)
+                if [ "$2" ]; then
+                    MQTT_CLUSTER_BROKER=$2
+                    shift
+                else
+                    error 'ERROR: "--mqtt-cluster-broker" requires an argument.'
+                fi
+                ;;
             *)
                 ARGS="${ARGS} ${1}"
                 ;;
@@ -42,4 +51,4 @@ while [[ "$#" -ge 0 ]]; do
 done
 ENTRYPOINT_ARGS="$PIPELINE_SERVER_ROOT/client $ARGS"
 
-"$ROOT_DIR/docker/run.sh" $INTERACTIVE --name \"\" --network host --image  $IMAGE $VOLUME_MOUNT -e \"ENV_CERT=${ENV_CERT}\" -e \"REQUESTS_CA_BUNDLE=${ENV_CERT}\" --entrypoint $ENTRYPOINT --entrypoint-args "$ENTRYPOINT_ARGS"
+"$ROOT_DIR/docker/run.sh" $INTERACTIVE --name \"\" --network host --image  $IMAGE $VOLUME_MOUNT -e "ENV_CERT=${ENV_CERT}" -e "MQTT_CLUSTER_BROKER=${MQTT_CLUSTER_BROKER}" -e "REQUESTS_CA_BUNDLE=${ENV_CERT}" --entrypoint $ENTRYPOINT --entrypoint-args "$ENTRYPOINT_ARGS"

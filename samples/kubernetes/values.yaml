@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 cpuReplicaCount: 1
-gpuReplicaCount: 2
+gpuReplicaCount: 1
 
 image:
   repository: intel/dlstreamer-pipeline-server
@@ -62,21 +62,21 @@ persistentVolumeClaim:
   models:
     storageClassName: ""
     accessModes: "ReadOnlyMany"
-    volumeName: ""
+    volumeName: "nfs-models"
     #Empty string must be explicitly set otherwise default StorageClass will be set
     size: 10Gi
     annotations: {}
   pipelines:
     storageClassName: ""
     accessModes: "ReadOnlyMany"
-    volumeName: ""
+    volumeName: "nfs-pipelines"
     #Empty string must be explicitly set otherwise default StorageClass will be set
     size: 10Gi
     annotations: {}
   exts:
     storageClassName: ""
     accessModes: "ReadOnlyMany"
-    volumeName: ""
+    volumeName: "nfs-exts"
     #Empty string must be explicitly set otherwise default StorageClass will be set
     size: 10Gi
     annotations: {}

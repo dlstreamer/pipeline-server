@@ -1,54 +1,74 @@
-# Pipeline Server Examples
+# Stream Density Example
 
-## Definitions
+These examples will show the following using Pipeline Client:
 
-| Term | Definition |
-|---|---|
-| Intel® NUC | Intel® NUC11PAHi7 11th Gen Intel® Core™ i7-1165G7 Processor |
-| Intel® Xeon® Processor | Intel® Xeon® Platinum Processor 9221 CPU |
+- Running a single stream on a single node. This indicates a stream density of at least 1.
+- Running four streams on a single node. This indicates a stream density of 4.
+- Adding a second node to cluster and running eight streams on both nodes. This indicates a stream density of 8 and that we are scaling effectively with each node added to the cluster.
+- Adding a third node to cluster and running 30 streams across 3 nodes. This indicates we are utilizing all available resources across the cluster's nodes to run our workloads.
 
-## Table of Content
-
-| Examples | Definition |
-|---|---|
-| [Securing Kubernetes with HTTPS](#securing-k8s.md) | Demo on running Kubernetes with HTTPS |
-| [Stream Density Example](#stream-density-example) | Running various streams with a target of 30fps per stream |
-
-## Stream Density Example
-
-These examples will show the following with a target of 30fps per stream:
-
-- Running a single stream on a single node (Intel® NUC) exceeds target fps. This indicates a stream density of at least 1.
-- Running four streams on a single node showing each exceeds target fps. This indicates a stream density of 4.
-- Adding a second node (Intel® NUC) to cluster and running eight streams showing each exceeds target fps. This indicates a stream density of 8 and that we are scaling effectively with each node added to the cluster.
-- Adding a third node (Intel® Xeon® Processor) to cluster and running 30 streams showing each exceeds target fps. This indicates we are utilizing all available resources across the cluster's nodes to run our workloads.
-
-The examples require [pipeline_client](../../../client/README.md) so the container `dlstreamer-pipeline-server-gstreamer` must be built as per [these instructions](../../../README.md#building-the-microservice).
+The examples require [pipeline_client](/client/README.md) so the container `dlstreamer-pipeline-server-gstreamer` must be built as per [these instructions](/README.md#building-the-microservice).
 
 ## Single Node with MQTT
 
-As Mosquitto MQTT Broker resides in the Cluster, you'll need to port forward the MQTT Broker to your host machine.
+### Port forward MQTT and HTTP endpoint
 
-1. Get the Mosquitto MQTT Broker's deployment name:
+As Mosquitto MQTT Broker resides in the Cluster, you'll need to port forward the MQTT Broker to your host machine in another terminal. Similarly do the same for the HTTP endpoint in another terminal.
+
+1. Open a new terminal and get the Mosquitto MQTT Broker's deployment name:
 ```
-$ kubectl get pods | grep -i mosquitto
-
-pipelineserver-mosquitto-5b5c6b98b6-dhtp6         1/1     Running     0             26m
+kubectl get pods | grep -i mosquitto
 ```
 
-2. Port forward using kubectl. (In my case, my deployment name is `pipelineserver-mosquitto-5b5c6b98b6-dhtp6`)
+Expected output:
+```
+dlstreamer-mosquitto-5b5c6b98b6-dhtp6         1/1     Running     0             26m
+```
+
+2. Port forward using kubectl. (In this case, the deployment name is `dlstreamer-mosquitto-5b5c6b98b6-dhtp6`)
 
 ```
-$ kubectl --namespace default port-forward pipelineserver-mosquitto-5b5c6b98b6-dhtp6 1883:1883 --address='0.0.0.0'
+kubectl --namespace default port-forward dlstreamer-mosquitto-5b5c6b98b6-dhtp6 1883:1883 --address='0.0.0.0'
+```
+
+Expected output:
+```
+Forwarding from 0.0.0.0:1883 -> 1883
+<Terminal will hold here>
+```
+
+3. Open another terminal and get the HAProxy's deployment name:
+```
+kubectl get pods | grep haproxy
+```
+
+Expected output:
+```
+dlstreamer-haproxy-57c6c98bb6-sxnzb               1/1     Running   0             11h
+```
+
+4. Port forward using kubectl. (In this case, the deployment name is `dlstreamer-haproxy-57c6c98bb6-sxnzb`)
+
+```
+kubectl --namespace default port-forward dlstreamer-haproxy-57c6c98bb6-sxnzb 8080:80 --address='0.0.0.0'
+```
+
+Expected output:
+```
+Forwarding from 0.0.0.0:8080 -> 80
+<Terminal will hold here>
 ```
 
 Start stream as follows
 
 ```bash
+# Get MQTT Broker deployment name
+MQTTBROKER=$(kubectl get deployment | grep -i mosquitto | cut -f1 -d' ')
+
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
-  --destination type mqtt --destination host <mosquitto-mqtt-ip>:1883 --destination topic person-vehicle-bike
+  --server-address http://localhost:8080 \
+  --destination type mqtt --destination host $MQTTBROKER:1883 --destination topic person-vehicle-bike --mqtt-cluster-broker localhost:1883
 ```
 
 Output should be like this (with different instance id and timestamps)
@@ -56,15 +76,16 @@ Output should be like this (with different instance id and timestamps)
 ```text
 Starting pipeline object_detection/person_vehicle_bike, instance = e6846cce838311ecaf588a37d8d13e4f
 Pipeline running - instance_id = e6846cce838311ecaf588a37d8d13e4f
-Timestamp 1533000000
-- vehicle (1.00) [0.39, 0.13, 0.89, 1.00]
-- vehicle (0.99) [0.41, 0.01, 0.63, 0.17]
-Timestamp 1567000000
-- vehicle (1.00) [0.39, 0.13, 0.88, 1.00]
-- vehicle (0.98) [0.41, 0.01, 0.63, 0.17]
-Timestamp 1600000000
-- vehicle (1.00) [0.39, 0.13, 0.88, 0.99]
-- vehicle (0.98) [0.41, 0.01, 0.63, 0.17]
+Timestamp 5300000000
+- person (0.73) [0.03, 0.21, 0.22, 0.87]
+- vehicle (0.97) [0.42, 0.01, 0.63, 0.17]
+- vehicle (0.83) [0.39, 0.12, 0.89, 0.99]
+- vehicle (0.52) [0.82, 0.05, 0.99, 0.64]
+Timestamp 5333000000
+- person (0.97) [0.05, 0.20, 0.23, 0.85]
+- vehicle (0.97) [0.42, 0.01, 0.63, 0.17]
+- vehicle (0.84) [0.39, 0.12, 0.89, 0.99]
+- vehicle (0.54) [0.83, 0.05, 0.99, 0.64]
 ```
 
 Now stop stream using CTRL+C, pipeline will be in `ABORTED` state after.
@@ -79,14 +100,14 @@ avg_fps: 123.33
 Done
 ```
 
-### Single Node with Four Streams
+## Single Node with Four Streams
 
-For four streams, we won't use MQTT but will measure fps to see if all streams can be processed at 30fps (i.e. can we attain a stream density of 4). Note the use of [model-instance-id](../../../docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) so pipelines can share resources.
+For four streams, we won't use MQTT but will measure fps by querying the `/pipelines/status` endpoint (i.e. can we attain a stream density of 4). Note the use of [model-instance-id](/docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) so pipelines can share resources.
 
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://localhost:8080 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 4
 ```
@@ -127,18 +148,16 @@ avg_fps: 33
 Done
 ```
 
-### Eight Streams on Two Nodes
+## Eight Streams on Two Nodes
 
-We'll add a second node to see if we can get a stream density of eight.
-
-First add a second node(Intel® NUC) as per [Adding Node to Existing Deployment](../README.md#adding-nodes-to-an-existing-deployment).
+We'll add a second node to see if we can get a stream density of eight as per [Increase number of replicas](./understanding-values-yaml.md#increase-number-of-replicas) by increasing either `cpuReplicaCount` or `gpuReplicaCount`.
 
 Now we run eight streams and monitor fps using the same request as before. This time the work should be shared across the two nodes.
 
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://localhost:8080 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 8
 ```
@@ -164,7 +183,7 @@ Pipeline status @ 18s
 - instance=96ad090cac9311ec984ec2ba86c884b6, state=RUNNING, 32fps
 ```
 
-See all the streams are over 30fps so a stream density of 8 has been achieved.
+See all the streams have state=RUNNING if so, a stream density of 8 has been achieved.
 
 Use CTRL+C to stop streams, pipeline will be in `ABORTED` state after.
 
@@ -183,18 +202,16 @@ avg_fps: 32.75
 Done
 ```
 
-### 30 Streams on Three Nodes
+## 30 Streams on Three Nodes
 
-We'll add a third node(Intel® Xeon® Processor). As single Intel® Xeon® processor gives stream density of 22 exceeding target fps. By adding to cluster, we should be able to get around 30 streams with target fps.
-
-First add a third node as per [Adding Node to Existing Deployment](../README.md#adding-nodes-to-an-existing-deployment).
+We'll add a third node to see if we can get a stream density of 30 as per [Increase number of replicas](./understanding-values-yaml.md#increase-number-of-replicas) by increasing either `cpuReplicaCount` or `gpuReplicaCount`.
 
 Now we run 30 streams and monitor fps using the same request as before. This time the work should be shared across the three nodes.
 
 ```bash
 ./client/pipeline_client.sh run object_detection/person_vehicle_bike \
   https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
-  --server-address http://<ingress-controller-ip>:8080 \
+  --server-address http://localhost:8080 \
   --parameter detection-model-instance-id person-vehicle-bike \
   --number-of-streams 30
 ```
@@ -248,7 +265,7 @@ Pipeline status @ 14s
 - instance=bbe191bab05411eca1ccd2862a904e11, state=RUNNING, 30fps
 ```
 
-See all 30 streams are close to 30fps so a stream density of 30 has been achieved.
+See all 30 streams have state=RUNNING if so, a stream density of 30 has been achieved.
 
 Use CTRL+C to stop streams, pipeline will be in `ABORTED` state after.
 

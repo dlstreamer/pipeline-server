@@ -4,7 +4,7 @@ Clone Pipeline Server repository and enter into NGINX directory:
 
 ```
 git clone https://github.com/dlstreamer/pipeline-server
-cd samples/nginx-tls-https/ 
+cd samples/nginx/ 
 ```
 
 The scripts in this directory provides an example of using NGINX to secure HTTP traffic to Pipeline Server using SSL/TLS encryption.
@@ -29,7 +29,7 @@ The scripts in this directory provides an example of using NGINX to secure HTTP 
 
 # Quick Start
 
-1. Build Pipeline Server image from [building an image](/).
+1. Build Pipeline Server image from [building an image](https://github.com/dlstreamer/pipeline-server#building-the-microservice).
 2. Run `./generate_cert.sh .` (This script accept one argument to `generate_cert.sh <your_directory>`) this will generate a `cert` directory, please make sure that this cert directory is placed in the same location as the `run_nginx_pipeline_server.sh` for `docker` to find it. It will generate a self-signed certificates (for testing only - follow your organization process for requesting and generating the server certificates)
 3. From here, you can run and execute Pipeline Server and NGINX using `./run_nginx_pipeline_server.sh` (This launches NGINX with port 8443 by default, but you can change this port by `./run_nginx_pipeline_server.sh --tls-port <your-desired-port-number>`). This will create a docker network to isolate HTTP endpoint on Pipeline Server and expose only NGINX on port 443 for HTTPS. You can verify your output by running starting a pipeline and you should see an output on RTSP using VLC as shown below:
 4. After stopping the server, run `./clean.sh` this will remove the bridged network and the nginx server once it's done.

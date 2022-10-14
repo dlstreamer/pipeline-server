@@ -14,7 +14,7 @@ spec:
   volumeMode: Filesystem
   nfs:
     server:
-    path: /home/k8s_user/data/pipelines
+    path: /data/pipelines
     readOnly: no
 ---
 apiVersion: v1
@@ -33,7 +33,7 @@ spec:
   volumeMode: Filesystem
   nfs:
     server:
-    path: /home/k8s_user/data/models
+    path: /data/models
     readOnly: no
 ---
 apiVersion: v1
@@ -52,5 +52,5 @@ spec:
   volumeMode: Filesystem
   nfs:
     server:
-    path: /home/k8s_user/data/extensions
+    path: /data/extensions
     readOnly: no

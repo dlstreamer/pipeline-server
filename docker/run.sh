@@ -28,6 +28,7 @@ USER_GROUPS=
 ENABLE_RTSP=${ENABLE_RTSP:-"false"}
 ENABLE_WEBRTC=${ENABLE_WEBRTC:-"false"}
 RTSP_PORT=8554
+HOST_NAME=
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -45,6 +46,7 @@ show_options() {
     echo "   Ports: '${PORTS}'"
     echo "   Name: '${NAME}'"
     echo "   Network: '${NETWORK}'"
+    echo "   Hostname: '${HOST_NAME}'"
     echo "   Entrypoint: '${ENTRYPOINT}'"
     echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}'"
     echo "   User: '${USER}'"
@@ -65,6 +67,7 @@ show_help() {
   echo "  [--entrypoint-args additional parameters to pass to entrypoint in docker run]"
   echo "  [-p additional ports to pass to docker run]"
   echo "  [--network name network to pass to docker run]"
+  echo "  [--hostname set hostname of the container to pass to docker run]"
   echo "  [--user name of user to pass to docker run]"
   echo "  [--group-add name of user group to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
@@ -279,6 +282,14 @@ while [[ "$#" -gt 0 ]]; do
             error 'ERROR: "--rtsp-port" requires a non-empty option argument.'
         fi
         ;;
+    --hostname)
+	if [ "$2" ]; then
+	    HOST_NAME="--hostname "$2
+	    shift
+	else
+	    error 'ERROR: "--hostname" requires a non-empty option argument.'
+	fi
+        ;;
     --disable-http-port)
         MODE=DISABLE_HTTP_PORT
         ;;
@@ -391,4 +402,4 @@ fi
 show_options
 
 # eval must be used to ensure the --device-cgroup-rule string is correctly parsed
-eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $USER_GROUPS $IMAGE ${ENTRYPOINT_ARGS}"
+eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $HOST_NAME $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $USER_GROUPS $IMAGE ${ENTRYPOINT_ARGS}"

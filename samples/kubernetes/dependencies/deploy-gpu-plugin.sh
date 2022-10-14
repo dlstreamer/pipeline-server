@@ -7,7 +7,7 @@
 
 RELEASE_VERSION=0.24.0
 SCRIPT_DIR=$(dirname $(readlink -f "$0"))
-NUM_OF_SHARED_DEVICE=${1:-1}
+NUM_OF_SHARED_DEVICE=${1:-2}
 sed -i "s/shared-dev-num=.*\"/shared-dev-num=$NUM_OF_SHARED_DEVICE\"/" $SCRIPT_DIR/intel-gpu-plugin/intel-gpu-plugin.yaml
 
 # Start NFD - if your cluster doesn't have NFD installed yet

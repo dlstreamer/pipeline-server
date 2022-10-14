@@ -300,15 +300,9 @@ This example adds tags for direction and location of video capture
 
 #### --server-address
 This can be used with any command to specify a remote HTTP server address. Here we start a pipeline on remote server `http://remote-server.my-domain.com:8080`.
+
 ```
 ./client/pipeline_client.sh start object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true --tag direction east --server-address http://remote-server.my-domain.com:8080
-```
-
-#### --server-cert
-Specifies a certificate for HTTPS. This information is added to each request to run on HTTPS with the given certificate.
-This example makes pipeline_client.sh use HTTPS by setting `--server-address` and `--server-cert`
-```
-./client/pipeline_client.sh list-pipelines --server-address https://localhost:8443 --server-cert $(pwd)/cert/server.crt
 ```
 
 #### --status-only
@@ -446,9 +440,15 @@ GET http://localhost:8080/pipelines/object_detection/person_vehicle_bike/status/
 DELETE http://localhost:8080/pipelines/object_detection/person_vehicle_bike/94cf72b718184615bfc181c6589b240c
 ```
 
-# Using HTTPS with Pipeline Client
+### Using HTTPS with Pipeline Client
 
-To use Pipeline Client together with HTTPS, the request must provide `--server-address` with a https address and `--server-cert` with the server certificate. Below is an example:
+To use Pipeline Client together with HTTPS, the request must provide `--server-address` with a https address and `--server-cert` with the server certificate as a configuration option to configure the client with the server certificate. This is handled by `pipeline-client.sh` and is set as an Environment variable to `pipeline_client.py`. Below is an example:
+
+#### --server-cert
+Specifies a certificate for HTTPS. This information is added to each request to run on HTTPS with the given certificate.
+This example makes pipeline_client.sh use HTTPS by setting `--server-address` and `--server-cert`
+
+This adds an Environment variable `ENV_CERT` and `REQUESTS_CA_BUNDLE` to accomodate for self-signed certificates. These environment variables can be ignored if you are not using self-signed certificate.
 
 ```sh
 $ client/pipeline_client.sh run object_detection/person_vehicle_bike https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4\?raw\=true --server-address https://localhost:8443 --server-cert samples/nginx/cert/server.crt
@@ -462,4 +462,20 @@ Pipeline running - instance_id = 1843e91040da11edbaf2b62e8c582e09
 No results will be displayed. Unable to read from file /tmp/results.jsonl
 avg_fps: 593.75
 Done
+```
+
+### Working with Kubernetes
+
+As Kubernetes deploys its' own MQTT broker inside the cluster, Pipeline Client requires a configuration to be set to `pipeline_client.sh`. This is handled by `pipeline_client.sh` and this configuration option is set as an Environment variable to `pipeline_client.py` to override MQTT broker's address for Kubernetes use case.
+
+#### --mqtt-cluster-broker
+This argument is to be used together with MQTT destination. This argument is helpful when your MQTT broker & Pipeline Server instance is on a separate network from your client machine. This happens in the Kubernetes deployment. Use this argument to set the client to connect to the MQTT broker directly to get the output. This will set an Environment variable `MQTT_CLUSTER_BROKER` which will override the existing MQTT broker destination for the client to connect.
+
+```
+./client/pipeline_client.sh run object_detection/person_vehicle_bike \
+  https://lvamedia.blob.core.windows.net/public/homes_00425.mkv \
+  --server-address http://remote-server.my-domain.com:8080 \
+  --destination type mqtt --destination host mqtt-broker-address:1883 \
+  --destination topic person-vehicle-bike \
+  --mqtt-cluster-broker cluster-mqtt-broker-address:1883
 ```

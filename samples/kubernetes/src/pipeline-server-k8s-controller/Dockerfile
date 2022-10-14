@@ -1,3 +1,8 @@
+#
+# Copyright (C) 2022 Intel Corporation.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 FROM python:buster
 
 COPY controller.py /app/controller.py
