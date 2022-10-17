@@ -9,7 +9,7 @@ image:
   repository: intel/dlstreamer-pipeline-server
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2022.1.1-ubuntu20"
+  tag: "latest"
   target_fps: "30"
 
 controlplane:
