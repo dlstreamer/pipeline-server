@@ -9,7 +9,7 @@
 
 ## Pipeline Server Kubernetes Architecture Diagram
 
-Kubernetes Pipeline Server allows users to deploy multiple instances of Pipeline Server while handling network traffic and properly managing workload distribution. It supports processing media analytics on CPU and/or GPU, visual output via RTSP or WebRTC, and utilizes Persistent Volumes for model storage via NFS.
+Kubernetes Pipeline Server allows users to deploy multiple instances of Pipeline Server by routing requests to manage workload distribution. It supports processing media analytics on CPU and/or GPU, visual output via RTSP or WebRTC, and utilizes Persistent Volumes for model storage via NFS.
 
 ![k8sarchdiagram](/docs/images/k8s-arch-diag.png)
 
@@ -17,12 +17,12 @@ Kubernetes Pipeline Server allows users to deploy multiple instances of Pipeline
 
 | |                  |
 |---------------------------------------------|------------------|
-| **Kubernetes** | To run this deployment, an access to a Kubernetes cluster is required. Instructions for installing Kubernetes cluster can be found [here](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). |
+| **Kubernetes** | To run this deployment, access to a Kubernetes cluster is required. Instructions for installing a Kubernetes cluster can be found [here](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/). |
 | **Helm** | This deployment uses Helm as the package manager to ship Pipeline Server. Instructions to install Helm can be found [here](https://helm.sh/docs/intro/install/) |
 
 ## Getting Started
 
-Step 1: (Optional) Installing Intel GPU Plugin and Node Feature Discovery (NFD) to enable GPU in your cluster
+Step 1: If you have GPU capable nodes, install Intel GPU Plugin and Node Feature Discovery (NFD) to enable GPU in your cluster.
 
 > **Note**: Currently we are supporting the use of manual scripts to install Intel GPU Plugin, as the support for Helm is not released yet.
 
@@ -54,7 +54,7 @@ Once pods have been deployed, clients can send pipeline server requests to the c
 
 ### Step 1: Discover the IP Address of the Ingress Controller (HAProxy)
 
-HAProxy is used to mediate the route from the HTTP request to the respective pods. Use `kubectl` to either port-forward port `80` or set HAProxy to NodePort (it is already set to NodePort by default). In this example, we will be forwarding port `80` to port `8080`.
+HAProxy is used to route the HTTP request to the appropriate pods. Use `kubectl` to either port-forward port `80` or set HAProxy to NodePort (NodePort is the default). In this example, we will be forwarding port `80` to port `8080`.
 
 ```bash
 export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=haproxy,app.kubernetes.io/instance=$RELEASE_NAME" -o jsonpath="{.items[0].metadata.name}")
@@ -111,32 +111,13 @@ To check the pipeline you can use `/pipelines/status` which queries the status o
 ]
 ```
 
-### Step 3 (Optional): Starting GPU Pipelines on the GPU pods in the Cluster
+### Sending a request
 
-In this example, we will be specifying the device that we would like the pipeline to start in. Notice in the example given below, `"detection-device": "GPU",` has been added to the parameters's request in order to deploy into a GPU pod. See example below for reference. If `detection-device` is not set, the pipeline will be started in a pod that is selected based on `round-robin` algorithm. 
+The Kubernetes cluster is compatible with the [Pipeline Server REST API](/docs/restful_microservice_interfaces.md), see examples in the [Running a Pipeline](/README.md#running-a-pipeline) section in [README.md](/README.md). The REST request will be routed to nodes using the `round-robin` algorithm.
 
-> In this example, we are using `localhost` because we have port forwarded it to localhost in Step 1.
+#### Specifying an inference device
 
-#### Command
-
-```bash
-curl http://localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H "Content-Type: application/json" -d '{
-   "source":{
-      "uri":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true",
-      "type":"uri"
-   },
-   "parameters": {
-      "detection-device": "GPU",
-      "detection-model-instance-id": "detect_object_detection_person_vehicle_bike_GPU"
-   }
-}'
-```
-
-#### Expected Output
-
-```text
-59896b90853511ec838b0242ac110002
-```
+When specifying an inference device [see Change Inference Accelerator Device](/README.md#change-inference-accelerator-device), the request will be routed to the Node with that capability.
 
 ## Uninstall the Cluster
 
@@ -160,7 +141,7 @@ There are various examples and documentation under [examples](/samples/kubernete
 
 | Examples & Tutorials | Definition |
 |---|---|
-| [Sharing Models, Pipelines & Extensions between Pods](./docs/persistent-volume.md | Tutorial of using Persistent Volume to share models, pipelines and extensions between Pods
+| [Sharing Models, Pipelines & Extensions between Pods](./docs/persistent-volume.md) | Tutorial of using Persistent Volume to share models, pipelines and extensions between Pods
 | [Visualizing Inference Output](./docs/visualizing-inference.md) | Tutorial to view the inference output from pipelines
 | [Values.yaml](./docs/understanding-values-yaml.md) | Documentation to explain about values.yaml
 | [Securing Kubernetes with HTTPS](./docs/securing-k8s.md) | Demo on running Kubernetes with HTTPS |
