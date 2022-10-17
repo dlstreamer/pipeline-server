@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 #
-FROM python:buster
+FROM python:3.11-rc-slim-bullseye
 
 COPY sidecar.py /app/sidecar.py
 COPY requirements.txt /app/requirements.txt
