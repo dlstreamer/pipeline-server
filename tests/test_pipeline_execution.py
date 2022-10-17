@@ -161,6 +161,12 @@ def test_pipeline_execution(PipelineServer, test_case, test_filename, generate, 
     else:
         wait_for_pipeline_completion(pipeline, PipelineServer)
 
+    if "expected_server_output" in _test_case:
+        captured = capsys.readouterr()
+        pattern = _test_case["expected_server_output"]
+        assert re.search(
+            r'{}'.format(pattern), captured.err) is not None
+
     if (thread):
         thread.join()
     elif not _test_case.get("expect_error"):

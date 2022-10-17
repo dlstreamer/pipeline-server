@@ -42,9 +42,9 @@ class GStreamerPipeline(Pipeline):
                               "GstGVAMetaconvertFormatType",
                               "GstGVAMetaPublishMethod",
                               "GstGVAActionRecognitionBinBackend",
-                              "GvaMetaPublishFileFormat",
                               "GvaInferenceBinRegion",
                               "GvaVideoToTensorBackend"]
+    G_PARAM_WRITABLE_FLAG = 2
 
     SOURCE_ALIAS = "auto_source"
     GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
@@ -556,7 +556,8 @@ class GStreamerPipeline(Pipeline):
                 return
 
             self._logger.debug("Starting Pipeline {id}".format(id=self.identifier))
-            self._logger.debug(self._gst_launch_string)
+            self._logger.debug("Pipeline template (excludes request parameters): {template}".
+                format(template=self._gst_launch_string))
 
             try:
                 self.pipeline = Gst.parse_launch(self._gst_launch_string)
@@ -623,8 +624,9 @@ class GStreamerPipeline(Pipeline):
         for element in self.pipeline.iterate_elements():
             if element_name in element.__gtype__.name.lower():
                 for paramspec in element.list_properties():
-                    # Skipping adding of caps and params that aren't writable
-                    if paramspec.name in ['caps', 'parent', 'name'] or paramspec.flags == 225:
+                    # Skipping adding of caps and params that aren't writable and not readable
+                    if paramspec.name in ['caps', 'parent', 'name'] or paramspec.flags == 225 \
+                        or paramspec.flags == GStreamerPipeline.G_PARAM_WRITABLE_FLAG:
                         continue
                     if add_defaults or paramspec.default_value != element.get_property(paramspec.name):
                         property_value = element.get_property(
