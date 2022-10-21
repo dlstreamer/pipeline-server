@@ -48,6 +48,7 @@ class GStreamerPipeline(Pipeline):
 
     SOURCE_ALIAS = "auto_source"
     GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
+    GST_ELEMENTS_THAT_EMIT_SOURCE = ("GstGvaMetaConvert")
 
     _inference_element_cache = {}
     _mainloop = None
@@ -102,6 +103,7 @@ class GStreamerPipeline(Pipeline):
         self._logger = logging.get_logger('GSTPipeline', is_static=True)
         self.rtsp_path = None
         self._debug_message = ""
+        self._options = options
 
 
         if (not GStreamerPipeline._mainloop):
@@ -227,7 +229,13 @@ class GStreamerPipeline(Pipeline):
         request = copy.deepcopy(self.request)
         if "models" in request:
             del request["models"]
-
+        if not self._options.emit_source_and_destination:
+            self._logger.debug("Not emitting source or destination."\
+                "Launch server with --emit-source-and-destination if desired.")
+            if "source" in request:
+                del request["source"]
+            if "destination" in request:
+                del request["destination"]
         params_obj = {
             "id": self.identifier,
             "request": request,
@@ -322,6 +330,12 @@ class GStreamerPipeline(Pipeline):
 
     def _set_element_property(self, element, property_name, property_value, format_type=None):
         if (property_name in [x.name for x in element.list_properties()]):
+            if property_name == "source" and element.__gtype__.name in self.GST_ELEMENTS_THAT_EMIT_SOURCE:
+                if not self._options.emit_source_and_destination:
+                    self._logger.debug(
+                        "Not emitting source or destination. "\
+                        "Launch server with --emit-source-and-destination if desired.")
+                    return
             if (format_type == "json"):
                 element.set_property(
                     property_name, json.dumps(property_value))

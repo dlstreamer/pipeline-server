@@ -185,7 +185,8 @@ def list_instances(args):
         print("{}: {}/{}".format(status["id"], pipeline["name"], pipeline["version"]))
         print("state: {}".format(status["state"]))
         print("fps: {:.2f}".format(status["avg_fps"]))
-        print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
+        if request_status["request"].get("source") is not None:
+            print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
         if request_status["request"].get("destination") is not None:
             print("destination: {}".format(json.dumps(request_status["request"]["destination"], indent=4)))
         if request_status["request"].get("parameters") is not None:

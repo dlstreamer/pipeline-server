@@ -127,10 +127,28 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 tail -f /tmp/results.txt
 ```
 ```
-{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768}","timestamp":49250000000}
 ```
 
 Detection results are published to `/tmp/results.txt`.
+
+### Emitting Source and Destination Details
+
+To add source details from your pipeline requests to metadata output and source and destination details to pipeline status, launch Pipeline Server with the `EMIT_SOURCE_AND_DESTINATION` flag:
+
+```
+docker/run.sh -v /tmp:/tmp -e EMIT_SOURCE_AND_DESTINATION=true
+```
+
+The source is then emitted in the detection result as shown below:
+
+```
+tail -f /tmp/results.txt
+```
+```
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+```
+> **TIP:** To attach a friendly name rather than revealing source or destination details, we recommend use of [tags](https://github.com/intel-innersource/frameworks.ai.dlstreamer.pipeline-server/blob/main/docs/customizing_pipeline_requests.md#tags) when submitting a pipeline request.
 
 ## Stopping the Microservice
 

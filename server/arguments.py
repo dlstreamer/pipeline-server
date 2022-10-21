@@ -54,6 +54,13 @@ def parse_options(args=None):
     parser.add_argument("--webrtc-signaling-server", action="store",
                         dest="webrtc_signaling_server",
                         default=os.getenv('WEBRTC_SIGNALING_SERVER', 'ws://webrtc_signaling_server:8443'))
+    parser.add_argument("--emit-source-and-destination",
+                        dest="emit_source_and_destination",
+                        help="Outputs source/destination endpoint access information into metadata "
+                        "and REST response messages",
+                        action="store",
+                        type=lambda x: bool(util.strtobool(x)),
+                        default=bool(util.strtobool(os.getenv('EMIT_SOURCE_AND_DESTINATION', 'false'))))
 
     if (isinstance(args, dict)):
         args = ["--{}={}".format(key, value)

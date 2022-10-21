@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#expect source to NOT occur in output file
+EXPECTED="0"
+TEST_OUTPUT_FILE=/tmp/script_test_emit_no_source.jsonl
+
+# Stop server
+$SOURCE_DIR/tests/stop.sh
+
+# Run server and wait for init to complete
+$SOURCE_DIR/docker/run.sh --non-interactive -v /tmp:/tmp -e EMIT_SOURCE_AND_DESTINATION=false &
+sleep 5
+
+# Run client with int float and string parameters
+SOURCE_PARAM=https://github.com/intel-iot-devkit/sample-videos/blob/master/classroom.mp4?raw=true
+OUTPUT=$($SOURCE_DIR/client/pipeline_client.sh run --status-only object_detection/person_vehicle_bike \
+   ${SOURCE_PARAM} --destination path ${TEST_OUTPUT_FILE} && cat ${TEST_OUTPUT_FILE} | grep ${SOURCE_PARAM} | wc -l)
+RETURN_CODE=$?
+
+# Stop server
+$SOURCE_DIR/tests/stop.sh
+rm -rf $TEST_OUTPUT_FILE
+
+if [[ $RETURN_CODE != 0 ]]; then
+    error
+fi
+
+if [[ ! "$OUTPUT" =~ .*"$EXPECTED".* ]]; then
+  error "Unexpected output"
+fi
