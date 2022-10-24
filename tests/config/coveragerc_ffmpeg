@@ -1,6 +1,0 @@
-[run]
-omit = *gstreamer*,*app_destination*,*app_source*
-data_file = /home/pipeline-server/tests/results/pytest/ffmpeg/.coverage
-
-[report]
-omit = *gstreamer*,*app_destination*,*app_source*
