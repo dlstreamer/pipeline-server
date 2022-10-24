@@ -42,12 +42,13 @@ class GStreamerPipeline(Pipeline):
                               "GstGVAMetaconvertFormatType",
                               "GstGVAMetaPublishMethod",
                               "GstGVAActionRecognitionBinBackend",
-                              "GvaMetaPublishFileFormat",
                               "GvaInferenceBinRegion",
                               "GvaVideoToTensorBackend"]
+    G_PARAM_WRITABLE_FLAG = 2
 
     SOURCE_ALIAS = "auto_source"
     GST_ELEMENTS_WITH_SOURCE_SETUP = ("GstURISourceBin")
+    GST_ELEMENTS_THAT_EMIT_SOURCE = ("GstGvaMetaConvert")
 
     _inference_element_cache = {}
     _mainloop = None
@@ -101,6 +102,9 @@ class GStreamerPipeline(Pipeline):
         self._cached_element_keys = []
         self._logger = logging.get_logger('GSTPipeline', is_static=True)
         self.rtsp_path = None
+        self._debug_message = ""
+        self._options = options
+
 
         if (not GStreamerPipeline._mainloop):
             GStreamerPipeline._mainloop_thread = Thread(
@@ -225,7 +229,13 @@ class GStreamerPipeline(Pipeline):
         request = copy.deepcopy(self.request)
         if "models" in request:
             del request["models"]
-
+        if not self._options.emit_source_and_destination:
+            self._logger.debug("Not emitting source or destination."\
+                "Launch server with --emit-source-and-destination if desired.")
+            if "source" in request:
+                del request["source"]
+            if "destination" in request:
+                del request["destination"]
         params_obj = {
             "id": self.identifier,
             "request": request,
@@ -245,12 +255,18 @@ class GStreamerPipeline(Pipeline):
         else:
             elapsed_time = None
 
+        message = ""
+        messages = self._debug_message.splitlines()
+        if len(messages):
+            messages.pop(0)
+            message = ''.join(messages)
         status_obj = {
             "id": self.identifier,
             "state": self.state,
             "avg_fps": self.get_avg_fps(),
             "start_time": self.start_time,
-            "elapsed_time": elapsed_time
+            "elapsed_time": elapsed_time,
+            "message": message
         }
         if self.count_pipeline_latency != 0:
             status_obj["avg_pipeline_latency"] = self.sum_pipeline_latency / \
@@ -314,6 +330,12 @@ class GStreamerPipeline(Pipeline):
 
     def _set_element_property(self, element, property_name, property_value, format_type=None):
         if (property_name in [x.name for x in element.list_properties()]):
+            if property_name == "source" and element.__gtype__.name in self.GST_ELEMENTS_THAT_EMIT_SOURCE:
+                if not self._options.emit_source_and_destination:
+                    self._logger.debug(
+                        "Not emitting source or destination. "\
+                        "Launch server with --emit-source-and-destination if desired.")
+                    return
             if (format_type == "json"):
                 element.set_property(
                     property_name, json.dumps(property_value))
@@ -382,8 +404,14 @@ class GStreamerPipeline(Pipeline):
                     element.set_property(property_name, property_value)
 
     @staticmethod
-    def validate_config(config):
-        template = config["template"]
+    def validate_config(config, request):
+        # Create a copy of the config to be used for default values
+        # Subsititute the values inside config with default_request
+        template = string.Formatter().vformat(                  \
+                                            config["template"], \
+                                            [],                 \
+                                            request             \
+                                            )
         field_names = [fname for _, fname, _, _ in string.Formatter().parse(template)]
         if GStreamerPipeline.SOURCE_ALIAS in field_names:
             template = template.replace("{"+ GStreamerPipeline.SOURCE_ALIAS +"}", "fakesrc")
@@ -542,7 +570,8 @@ class GStreamerPipeline(Pipeline):
                 return
 
             self._logger.debug("Starting Pipeline {id}".format(id=self.identifier))
-            self._logger.debug(self._gst_launch_string)
+            self._logger.debug("Pipeline template (excludes request parameters): {template}".
+                format(template=self._gst_launch_string))
 
             try:
                 self.pipeline = Gst.parse_launch(self._gst_launch_string)
@@ -551,6 +580,7 @@ class GStreamerPipeline(Pipeline):
                 self._set_default_models()
                 self._set_model_property("model-proc")
                 self._set_model_property("labels")
+                self._set_model_property("labels-file")
                 self._cache_inference_elements()
                 self._set_model_instance_id()
                 self._set_source_and_sink()
@@ -608,8 +638,9 @@ class GStreamerPipeline(Pipeline):
         for element in self.pipeline.iterate_elements():
             if element_name in element.__gtype__.name.lower():
                 for paramspec in element.list_properties():
-                    # Skipping adding of caps and params that aren't writable
-                    if paramspec.name in ['caps', 'parent', 'name'] or paramspec.flags == 225:
+                    # Skipping adding of caps and params that aren't writable and not readable
+                    if paramspec.name in ['caps', 'parent', 'name'] or paramspec.flags == 225 \
+                        or paramspec.flags == GStreamerPipeline.G_PARAM_WRITABLE_FLAG:
                         continue
                     if add_defaults or paramspec.default_value != element.get_property(paramspec.name):
                         property_value = element.get_property(
@@ -754,11 +785,11 @@ class GStreamerPipeline(Pipeline):
             self._logger.info("Pipeline {id} Ended".format(id=self.identifier))
             self._delete_pipeline_with_lock(Pipeline.State.COMPLETED)
         elif message_type == Gst.MessageType.ERROR:
-            err, debug = message.parse_error()
+            error_message, self._debug_message = message.parse_error()
             self._logger.error(
                 "Error on Pipeline {id}: {err}: {debug}".format(id=self.identifier,
-                                                                err=err,
-                                                                debug=debug))
+                                                                err=error_message,
+                                                                debug=self._debug_message))
             self._delete_pipeline_with_lock(Pipeline.State.ERROR)
         elif message_type == Gst.MessageType.STATE_CHANGED:
             old_state, new_state, unused_pending_state = message.parse_state_changed()

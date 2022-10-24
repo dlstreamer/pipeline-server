@@ -1,0 +1,4 @@
+- model: ssdlite_mobilenet_v2
+  alias: object_detection
+  version: ssdlite_mobilenet_v2
+  precision: [FP16,FP32]

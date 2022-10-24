@@ -2,7 +2,7 @@
 	"type": "GStreamer",
 	"template": ["{auto_source} ! decodebin",
 				" ! gvadetect model={models[object_detection][person_vehicle_bike][network]} name=detection",
-				" ! gvatrack name=tracking",
+				" ! gvatrack name=tracking device=CPU",
 				" ! gvaclassify model={models[object_classification][vehicle_attributes][network]} name=classification",
 				" ! gvapython class=ObjectLineCrossing module=/home/pipeline-server/extensions/spatial_analytics/object_line_crossing.py name=object-line-crossing",
 				" ! gvametaconvert name=metaconvert",
@@ -68,13 +68,6 @@
 				},
 				"type": "string",
 				"default": "{env[CLASSIFICATION_DEVICE]}"
-			},
-			"tracking-device": {
-				"element":
-					[ {"name":"tracking",
-						"property":"device"}
-					],
-				"type": "string"
 			},
 			"inference-interval": {
 				"element":

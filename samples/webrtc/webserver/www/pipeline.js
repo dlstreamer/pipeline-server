@@ -336,13 +336,18 @@ function onLaunchClicked() {
     if (!source) { alert("You must specify a media source!"); }
     var frame_destination_peer_id = getDestinationPeerID();
     var sync_playback = getSyncPlayback();
+    var gpu_inference = getInferenceDevice();
+    var detection_device = gpu_inference ? "GPU" : "CPU";
+    var classification_device = detection_device; // for now, inherit same CPU/GPU inference device
     var requestPath = pipeline_server + "/pipelines/" + pipeline;
     var frame_destination = { "type": "webrtc",
                               "peer-id": frame_destination_peer_id,
                               "sync-with-source": sync_playback,
                               "sync-with-destination": sync_playback
                             };
-    var parameters = {"detection-device": "CPU"}
+    var parameters = {"detection-device": detection_device,
+                      "classification-device": classification_device};
+                      // NOTE: Some pipelines will also have tracking-device
     var requestBody = JSON.stringify(
                             {
                                 "source": {"uri": source, "type": "uri"}, 
@@ -352,6 +357,7 @@ function onLaunchClicked() {
                                 },
                                 "parameters": parameters 
                             });
+    console.warn("SUBMITTING LAUNCH REQUEST: " + requestBody);
     setFrameDestinationLabel();
     doLaunch(requestPath, requestBody, receivePipelineInstance);
 }
@@ -363,6 +369,10 @@ function doLaunch(requestPath, requestBody, callback) {
 
 function getSyncPlayback() {
     return document.getElementById("sync-checkbox").checked;
+}
+
+function getInferenceDevice() {
+    return document.getElementById("inference-device-checkbox").checked;
 }
 
 function setFrameDestinationLabel() {

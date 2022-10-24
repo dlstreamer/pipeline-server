@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pipeline-server.fullname" . }}-cpu
+  labels:
+    {{- include "pipeline-server.labels" . | nindent 4 }}-cpu
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.cpuReplicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pipeline-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pipeline-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "pipeline-server.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Defined below is where volumes are mounted
+          {{- if .Values.persistentVolumeClaim.enabled }}
+          volumeMounts:
+            - name: pipeline-models
+              mountPath: /home/pipeline-server/models
+              subPath: models
+            - name: pipeline-pipelines
+              mountPath: /home/pipeline-server/pipelines
+              subPath: pipelines
+            - name: pipeline-exts
+              mountPath: /home/pipeline-server/extensions
+              subPath: extensions
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: MY_RELEASE_NAME
+              value: "{{ .Release.Name }}"
+            - name: MY_NAMESPACE
+              value: "{{ .Release.Namespace }}"
+            {{- if .Values.framedestination.webrtc.enabled }}
+            - name: WEBRTC_SIGNALING_SERVER
+              value: "{{ .Values.framedestination.webrtc.url }}"
+            - name: ENABLE_WEBRTC
+              value: "true"
+            {{- end }}
+            {{- if .Values.framedestination.rtsp.enabled }}
+            - name: RTSP_PORT
+              value: "{{ .Values.framedestination.rtsp.port }}"
+            - name: ENABLE_RTSP
+              value: "true"
+            {{- end }}
+            {{- if .Values.network.proxy.enabled }}
+            - name: HTTP_PROXY
+              value: "{{ .Values.network.proxy.http }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.network.proxy.https }}"
+            - name: NO_PROXY
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            - name: http_proxy
+              value: "{{ .Values.network.proxy.http }}"
+            - name: https_proxy
+              value: "{{ .Values.network.proxy.https }}"
+            - name: no_proxy
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            {{- end }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+        {{- if .Values.controlplane.enabled }}
+        - name: {{ .Release.Name }}-ps-k8s-sidecar
+          image: {{ .Values.controlplane.sidecar.image }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: MY_RELEASE_NAME
+              value: "{{ .Release.Name }}"
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: TARGET_FPS
+              value: "{{ .Values.image.target_fps }}"
+            {{- if .Values.network.proxy.enabled }}
+            - name: HTTP_PROXY
+              value: "{{ .Values.network.proxy.http }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.network.proxy.https }}"
+            - name: NO_PROXY
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            - name: http_proxy
+              value: "{{ .Values.network.proxy.http }}"
+            - name: https_proxy
+              value: "{{ .Values.network.proxy.https }}"
+            - name: no_proxy
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            {{- end }}
+        {{- end }}
+      {{- if .Values.persistentVolumeClaim.enabled }}
+      volumes:
+        - name: pipeline-models
+          persistentVolumeClaim:
+            claimName: pipeline-models-claim
+        - name: pipeline-pipelines
+          persistentVolumeClaim:
+            claimName: pipeline-pipelines-claim
+        - name: pipeline-exts
+          persistentVolumeClaim:
+            claimName: pipeline-exts-claim
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

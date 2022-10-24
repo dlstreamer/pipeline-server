@@ -14,6 +14,7 @@ VOLUME_MOUNT=
 MODE=SERVICE
 PORTS=
 DEVICES=
+GPU_DEVICE=
 DEFAULT_GSTREAMER_IMAGE="dlstreamer-pipeline-server-gstreamer"
 DEFAULT_FFMPEG_IMAGE="dlstreamer-pipeline-server-ffmpeg"
 ENTRYPOINT=
@@ -27,6 +28,7 @@ USER_GROUPS=
 ENABLE_RTSP=${ENABLE_RTSP:-"false"}
 ENABLE_WEBRTC=${ENABLE_WEBRTC:-"false"}
 RTSP_PORT=8554
+HOST_NAME=
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 SOURCE_DIR=$(dirname $SCRIPT_DIR)
@@ -44,6 +46,7 @@ show_options() {
     echo "   Ports: '${PORTS}'"
     echo "   Name: '${NAME}'"
     echo "   Network: '${NETWORK}'"
+    echo "   Hostname: '${HOST_NAME}'"
     echo "   Entrypoint: '${ENTRYPOINT}'"
     echo "   EntrypointArgs: '${ENTRYPOINT_ARGS}'"
     echo "   User: '${USER}'"
@@ -64,11 +67,14 @@ show_help() {
   echo "  [--entrypoint-args additional parameters to pass to entrypoint in docker run]"
   echo "  [-p additional ports to pass to docker run]"
   echo "  [--network name network to pass to docker run]"
+  echo "  [--hostname set hostname of the container to pass to docker run]"
   echo "  [--user name of user to pass to docker run]"
   echo "  [--group-add name of user group to pass to docker run]"
   echo "  [--name container name to pass to docker run]"
+  echo "  [--gpu-device select GPU device]"
   echo "  [--device device to pass to docker run]"
   echo "  [--enable-rtsp To enable rtsp re-streaming]"
+  echo "  [--disable-http-port Specify to close web service port e.g. 8080 in docker]"
   echo "  [--rtsp-port Specify the port to use for rtsp re-streaming]"
   echo "  [--enable-webrtc To enable WebRTC frame destination]"
   echo "  [--dev run in developer mode]"
@@ -82,14 +88,21 @@ error() {
 
 enable_hardware_access() {
     # GPU
-    if ls /dev/dri/render* 1> /dev/null 2>&1; then
-        echo "Found /dev/dri/render entry - enabling for GPU"
-        DEVICES+='--device /dev/dri '
-        RENDER_GROUPS=$(stat -c '%g' /dev/dri/render*)
-        for group in $RENDER_GROUPS
-        do
-            USER_GROUPS+="--group-add $group "
-        done
+    if [ -z $GPU_DEVICE ]; then
+        if [ -e /dev/dri/renderD128 ] ; then
+            GPU_DEVICE="/dev/dri/renderD128"
+            echo "Found $GPU_DEVICE - enabling GPU"
+        fi
+    fi
+    if [ ! -z $GPU_DEVICE ]; then
+        if [ ! -e $GPU_DEVICE ]; then
+            echo GPU device $GPU_DEVICE not found - exiting
+            exit 1
+        fi
+        DEVICES+="--device $GPU_DEVICE "
+        ENVIRONMENT+="-e GST_VAAPI_DRM_DEVICE=$GPU_DEVICE "
+        render_group=$(stat -c '%g' $GPU_DEVICE)
+        USER_GROUPS+="--group-add $render_group "
     fi
 
     # Intel(R) NCS2
@@ -165,6 +178,14 @@ while [[ "$#" -gt 0 ]]; do
             shift
         else
             error 'ERROR: "--device" requires a non-empty option argument.'
+        fi
+        ;;
+    --gpu-device)
+        if [ "$2" ]; then
+            GPU_DEVICE=$2
+            shift
+        else
+            error 'ERROR: "--gpu-device" requires a non-empty option argument.'
         fi
         ;;
     --privileged)
@@ -261,6 +282,17 @@ while [[ "$#" -gt 0 ]]; do
             error 'ERROR: "--rtsp-port" requires a non-empty option argument.'
         fi
         ;;
+    --hostname)
+	if [ "$2" ]; then
+	    HOST_NAME="--hostname "$2
+	    shift
+	else
+	    error 'ERROR: "--hostname" requires a non-empty option argument.'
+	fi
+        ;;
+    --disable-http-port)
+        MODE=DISABLE_HTTP_PORT
+        ;;
     --enable-rtsp)
         ENABLE_RTSP=true
         ;;
@@ -324,6 +356,8 @@ elif [ "${MODE}" == "SERVICE" ]; then
     if [ -z "$PORTS" ]; then
         PORTS+="-p 8080:8080 "
     fi
+elif [ "${MODE}" == "DISABLE_HTTP_PORT" ]; then
+    echo "HTTP Web Service port has been disabled on Docker!"
 else
     echo "Invalid Mode"
     show_help
@@ -338,6 +372,10 @@ fi
 
 if [ "$ENABLE_WEBRTC" != "false" ]; then
     ENVIRONMENT+="-e ENABLE_WEBRTC=$ENABLE_WEBRTC "
+fi
+
+if [[ ! -z "${MAX_BODY_SIZE}" ]]; then
+    ENVIRONMENT+="-e MAX_BODY_SIZE=$MAX_BODY_SIZE "
 fi
 
 if [ ! -z "$MODELS" ]; then
@@ -364,4 +402,4 @@ fi
 show_options
 
 # eval must be used to ensure the --device-cgroup-rule string is correctly parsed
-eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $USER_GROUPS $IMAGE ${ENTRYPOINT_ARGS}"
+eval "$RUN_PREFIX docker run $INTERACTIVE --rm $ENVIRONMENT $VOLUME_MOUNT $DEVICE_CGROUP_RULE $DEVICES $NETWORK $HOST_NAME $PORTS $ENTRYPOINT --name ${NAME} ${PRIVILEGED} ${USER} $USER_GROUPS $IMAGE ${ENTRYPOINT_ARGS}"

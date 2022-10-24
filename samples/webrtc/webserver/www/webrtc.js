@@ -330,7 +330,13 @@ function websocketServerConnect() {
     if (window.location.protocol.startsWith ("file")) {
         ws_server = ws_server || "127.0.0.1";
     } else if (window.location.protocol.startsWith ("http")) {
-        ws_server = ws_server || window.location.hostname;
+        let searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has("websocket") === true) {
+            ws_server = searchParams.get("websocket");
+            ws_port = searchParams.get("wsport");
+        } else {
+            ws_server = ws_server || window.location.hostname;
+        }
     } else {
         throw new Error ("Don't know how to connect to the signaling server with uri" + window.location);
     }

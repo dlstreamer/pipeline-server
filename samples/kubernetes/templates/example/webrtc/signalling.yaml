@@ -1,0 +1,43 @@
+{{- if .Values.framedestination.webrtc.localSignalingServerImageName }}
+# WebRTC signalling server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webrtc-server
+spec:
+  selector:
+    matchLabels:
+      app: webrtc-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webrtc-server
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: webrtc-server
+        # Please read the README.md to build this image into your cluster. This image is not published on dockerhub.
+        image: "{{ .Values.framedestination.webrtc.localSignalingServerImageName }}"
+        command: ["/opt/start.sh"]
+        # TURN server config to return to the user
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webrtc-server
+  labels:
+    app: webrtc-server
+spec:
+  type: NodePort
+  selector:
+    app: webrtc-server
+  ports:
+    - port: 8443
+      protocol: TCP
+      name: webrtc-server-port
+{{- end }}

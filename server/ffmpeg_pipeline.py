@@ -47,7 +47,7 @@ class FFmpegPipeline(Pipeline):
     Input = namedtuple("Input", ["range", "token", "properties"])
     Output = namedtuple("Output", ["range", "token", "format", "properties"])
 
-    def __init__(self, identifier, config, model_manager, request, finished_callback, _unused_options):
+    def __init__(self, identifier, config, model_manager, request, finished_callback, options):
         # TODO: refactor as abstract interface
         # pylint: disable=super-init-not-called
         self.config = config
@@ -85,6 +85,7 @@ class FFmpegPipeline(Pipeline):
         self._output_format_index = Counter()
         self._output_format_map = {}
         self.pipeline_type = "FFmpeg"
+        self._options = options
 
     def stop(self):
         with self._create_delete_lock:
@@ -97,6 +98,13 @@ class FFmpegPipeline(Pipeline):
         request = copy.deepcopy(self.request)
         if "models" in request:
             del request["models"]
+        if not self._options.emit_source_and_destination:
+            self._logger.debug("Not emitting source or destination."\
+                "Launch server with --emit-source-and-destination if desired.")
+            if "source" in request:
+                del request["source"]
+            if "destination" in request:
+                del request["destination"]
 
         params_obj = {
             "id": self.identifier,
@@ -126,7 +134,7 @@ class FFmpegPipeline(Pipeline):
         return status_obj
 
     @staticmethod
-    def validate_config(config):
+    def validate_config(config, request):
         pass
 
     def _get_fps(self, next_line):
@@ -315,10 +323,15 @@ class FFmpegPipeline(Pipeline):
             if (_filter.enum_values):
                 _value = _filter.enum_values[_value]
 
+            if _filter.name == "metaconvert" and _filter.property == "source":
+                if not self._options.emit_source_and_destination:
+                    self._logger.debug("Not emitting source or destination."\
+                        "Launch server with --emit-source-and-destination if desired.")
+                    return
+
             if (_filter.format == 'json'):
                 _value = "\'{}\'".format(json.dumps(
                     _value).replace(':', r'\:'))
-
             self._logger.debug("Setting filter: {}, property: {}, value: {}".format(
                 key,
                 _filter.property,

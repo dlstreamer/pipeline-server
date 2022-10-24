@@ -114,7 +114,7 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 ```
 
 ### RTSP Source
-RTSP streams from IP cameras can be referenced using the `rtsp` uri scheme. RTSP uris will normally be of the format `rtsp://<user>:<password>@<ip_address>:<port>/<server_url>` where `<user>` and `password` are optional authentication credentials.
+RTSP streams originating from IP cameras, DVRs, or similar sources can be referenced using the `rtsp` URI scheme.
 
 The request `source` object would be updated to:
 
@@ -126,6 +126,11 @@ The request `source` object would be updated to:
     }
 }
 ```
+
+#### RTSP Basic Authentication
+Depending on the configuration of your media source, during development and troubleshooting you may issue Pipeline Server requests that include RTSP URIs formatted as `rtsp://<user>:<password>@<ip_address>:<port>/<server_url>` where `<user>` and `<password>` are authentication credentials needed to connect to the stream/device at `<ip_address>`.
+
+> **Warning**: Keep in mind that basic authentication does not provide a secure method to access source inputs and to verify visual, metadata, and logged outputs. For this reason basic authentication is not recommended for production deployments, please use with caution.
 
 ### Web Camera Source
 Web cameras accessible through the `Video4Linux` api and device drivers are supported via `type=webcam`. `device` is the path of the `v4l2` device, typically `video<N>`.

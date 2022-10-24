@@ -1,35 +1,13 @@
 '''
-* Copyright (C) 2019-2020 Intel Corporation.
+* Copyright (C) 2019 Intel Corporation.
 *
-* SPDX-License-Identifier: MIT License
-*
-*****
-*
-* MIT License
-*
-* Copyright (c) Microsoft Corporation.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE
+* SPDX-License-Identifier: BSD-3-Clause
 '''
 import sys
 import json
 import argparse
+import os
+from urllib.parse import urlparse
 import pipeline_client
 
 
@@ -123,5 +101,8 @@ def parse_args(program_name="Pipeline Client"):
     args = parser.parse_args()
     if args.subparsers in ['start', 'run'] and not args.uri and not args.request_file:
         parser.error("at least one of uri or --request-file is required")
+
+    if urlparse(args.server_address).scheme == "https" and not os.environ["ENV_CERT"]:
+        parser.error("ENV_CERT environment must be set if you are using HTTPS")
 
     return args

@@ -9,7 +9,7 @@ model_index_schema = {
                         "additionalProperties": {
                             "type": "object",
                             "properties": {
-                                "labels": {
+                                "labels-file": {
                                         "type": ["string", "null"]
                                 },
                                 "model-proc": {

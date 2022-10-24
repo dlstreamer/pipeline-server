@@ -5,15 +5,20 @@
 * SPDX-License-Identifier: BSD-3-Clause
 '''
 
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 import json
 import time
 import os
 import sys
+
 from html.parser import HTMLParser
 import requests
 import results_watcher
+# Used to workaround warning shown by Self-signed certificate
+import urllib3
 from server.pipeline import Pipeline
+
+urllib3.disable_warnings(urllib3.exceptions.SecurityWarning)
 
 RESPONSE_SUCCESS = 200
 TIMEOUT = 30
@@ -156,7 +161,10 @@ def wait(args):
 def status(args):
     pipeline_status = get_pipeline_status(args.server_address, args.instance, args.show_request)
     if pipeline_status is not None and "state" in pipeline_status:
-        print("{} ({}fps)".format(pipeline_status["state"], round(pipeline_status["avg_fps"])))
+        if pipeline_status["state"] == "ERROR":
+            print("{} ({})".format(pipeline_status["state"], pipeline_status["message"]))
+        else:
+            print("{} ({}fps)".format(pipeline_status["state"], round(pipeline_status["avg_fps"])))
     else:
         print("Unable to fetch status")
 
@@ -171,14 +179,14 @@ def list_instances(args):
     statuses = get(url, args.show_request)
     for status in statuses:
         url = urljoin(args.server_address, "pipelines/{}".format(status["id"]))
-        response = requests.get(url, timeout=TIMEOUT)
-        request_status = json.loads(response.text)
-        response.close()
+        time.sleep(SLEEP_FOR_STATUS)
+        request_status = get(url, args.show_request)
         pipeline = request_status["request"]["pipeline"]
         print("{}: {}/{}".format(status["id"], pipeline["name"], pipeline["version"]))
         print("state: {}".format(status["state"]))
         print("fps: {:.2f}".format(status["avg_fps"]))
-        print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
+        if request_status["request"].get("source") is not None:
+            print("source: {}".format(json.dumps(request_status["request"]["source"], indent=4)))
         if request_status["request"].get("destination") is not None:
             print("destination: {}".format(json.dumps(request_status["request"]["destination"], indent=4)))
         if request_status["request"].get("parameters") is not None:
@@ -266,25 +274,25 @@ def wait_for_pipeline_running(server_address,
     status = {"state" : "QUEUED"}
     timeout_count = 0
     while status and not Pipeline.State[status["state"]] == Pipeline.State.RUNNING:
+        time.sleep(SLEEP_FOR_STATUS)
         status = get_pipeline_status(server_address, instance_id)
         if not status or Pipeline.State[status["state"]].stopped():
             break
-        time.sleep(SLEEP_FOR_STATUS)
         timeout_count += 1
         if timeout_count * SLEEP_FOR_STATUS >= timeout_sec:
             print("Timed out waiting for RUNNING status")
             break
     if not status or status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
     return Pipeline.State[status["state"]] == Pipeline.State.RUNNING
 
 def wait_for_pipeline_completion(server_address, instance_id):
     status = {"state" : "RUNNING"}
     while status and not Pipeline.State[status["state"]].stopped():
-        status = get_pipeline_status(server_address, instance_id)
         time.sleep(SLEEP_FOR_STATUS)
+        status = get_pipeline_status(server_address, instance_id)
     if status and status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
 
     return status
 
@@ -318,7 +326,7 @@ def wait_for_all_pipeline_completions(server_address, instance_ids, status_only=
             stopped = Pipeline.State[status["state"]].stopped()
             status_list.append(status)
     if status and status["state"] == "ERROR":
-        raise ValueError("Error in pipeline, please check pipeline-server log messages")
+        raise ValueError(status["message"])
     return status_list
 
 def get_pipeline_status(server_address, instance_id, show_request=False):
@@ -337,25 +345,34 @@ def _list(server_address, list_name, show_request=False):
         return
     print_list(response)
 
+def https_request(url):
+    return urlparse(url).scheme == "https"
+
 def post(url, body, show_request=False):
     try:
         if show_request:
             print('POST {}\nBody:{}'.format(url, body))
             sys.exit(0)
-        launch_response = requests.post(url, json=body, timeout=TIMEOUT)
+        if https_request(url):
+            launch_response = requests.post(url, json=body, timeout=TIMEOUT, verify=os.environ["ENV_CERT"])
+        else:
+            launch_response = requests.post(url, json=body, timeout=TIMEOUT)
         if launch_response.status_code == RESPONSE_SUCCESS:
             instance_id = json.loads(launch_response.text)
             return instance_id
     except requests.exceptions.ConnectionError as error:
         raise ConnectionError(SERVER_CONNECTION_FAILURE_MESSAGE) from error
-    raise RuntimeError(html_to_text(launch_response.text))
+    raise RuntimeError("{} - {}".format(launch_response.status_code, html_to_text(launch_response.text)))
 
 def get(url, show_request=False):
     try:
         if show_request:
             print('GET {}'.format(url))
             sys.exit(0)
-        status_response = requests.get(url, timeout=TIMEOUT)
+        if https_request(url):
+            status_response = requests.get(url, timeout=TIMEOUT, verify=os.environ["ENV_CERT"])
+        else:
+            status_response = requests.get(url, timeout=TIMEOUT)
         if status_response.status_code == RESPONSE_SUCCESS:
             return json.loads(status_response.text)
         print("Got unsuccessful status code: {}".format(status_response.status_code))
@@ -369,7 +386,10 @@ def delete(url, show_request=False):
         if show_request:
             print('DELETE {}'.format(url))
             sys.exit(0)
-        stop_response = requests.delete(url, timeout=TIMEOUT)
+        if https_request(url):
+            stop_response = requests.delete(url, timeout=TIMEOUT, verify=os.environ["ENV_CERT"])
+        else:
+            stop_response = requests.delete(url, timeout=TIMEOUT)
         if stop_response.status_code != RESPONSE_SUCCESS:
             print(html_to_text(stop_response.text))
         return stop_response.status_code

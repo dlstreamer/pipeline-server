@@ -1,0 +1,17 @@
+{
+    "type": "GStreamer",
+    "template": [" {auto_source} ! decodebin ! video/x-raw(memory:VASurface)",
+                 " ! gvadetect model={models[object_detection][ssdlite_mobilenet_v2][FP16-INT8][network]} name=detection device=GPU pre-process-backend=vaapi-surface-sharing",
+		         " ! gvametaconvert name=metaconvert ! gvametapublish name=destination ! appsink "],
+    "description": "Local Detection",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "batch-size": {
+                "element": "detection",
+                "type": "integer"
+            }
+        }
+    }
+}
+

@@ -1,0 +1,78 @@
+{{- if .Values.controlplane.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Release.Name }}-controller-pod
+  labels:
+    {{- include "pipeline-server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "pipeline-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "pipeline-server.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: service-account-for-hook
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: ps-k8s-controller
+          image: {{ .Values.controlplane.controller.image }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MY_RELEASE_NAME
+              value: "{{ .Release.Name }}"
+            - name: MY_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- if .Values.network.proxy.enabled }}
+            - name: HTTP_PROXY
+              value: "{{ .Values.network.proxy.http }}"
+            - name: HTTPS_PROXY
+              value: "{{ .Values.network.proxy.https }}"
+            - name: NO_PROXY
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            - name: http_proxy
+              value: "{{ .Values.network.proxy.http }}"
+            - name: https_proxy
+              value: "{{ .Values.network.proxy.https }}"
+            - name: no_proxy
+              value: "{{ .Values.network.proxy.no_proxy }}"
+            {{- end }}
+          ports:
+          - name: controller-port
+            containerPort: 80
+          - name: controller-svr
+            containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller-port-svc
+spec:
+  ports:
+    - port: 80
+      targetPort: controller-port
+      name: controllerport
+    - port: 8080
+      targetPort: controller-svr
+      name: controllersvr
+  selector:
+    app: controller-port-pod
+{{- end }}

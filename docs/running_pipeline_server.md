@@ -127,10 +127,28 @@ curl localhost:8080/pipelines/object_detection/person_vehicle_bike -X POST -H \
 tail -f /tmp/results.txt
 ```
 ```
-{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768}","timestamp":49250000000}
 ```
 
 Detection results are published to `/tmp/results.txt`.
+
+### Emitting Source and Destination Details
+
+To add source details from your pipeline requests to metadata output and source and destination details to pipeline status, launch Pipeline Server with the `EMIT_SOURCE_AND_DESTINATION` flag:
+
+```
+docker/run.sh -v /tmp:/tmp -e EMIT_SOURCE_AND_DESTINATION=true
+```
+
+The source is then emitted in the detection result as shown below:
+
+```
+tail -f /tmp/results.txt
+```
+```
+{"objects":[{"detection":{"bounding_box":{"x_max":0.0503933560103178,"x_min":0.0,"y_max":0.34233352541923523,"y_min":0.14351698756217957},"confidence":0.6430817246437073,"label":"vehicle","label_id":2},"h":86,"roi_type":"vehicle","w":39,"x":0,"y":62}],"resolution":{"height":432,"width":768},"source":"https://github.com/intel-iot-devkit/sample-videos/blob/master/person-bicycle-car-detection.mp4?raw=true","timestamp":49250000000}
+```
+> **TIP:** To attach a friendly name rather than revealing source or destination details, we recommend use of [tags](https://github.com/intel-innersource/frameworks.ai.dlstreamer.pipeline-server/blob/main/docs/customizing_pipeline_requests.md#tags) when submitting a pipeline request.
 
 ## Stopping the Microservice
 
@@ -230,14 +248,19 @@ The following the table shows docker configuration and inference device name for
 
 |Accelerator| Device      | Volume Mount(s)    |CGroup Rule|Inference Device|
 |-----------|-------------|------------------- |-----------|----------------|
-| GPU       | /dev/dri    |                    |           | GPU            |
+| GPU       | /dev/dri/renderDxxx    |                    |           | GPU            |
 | Intel&reg; NCS2      |             | /dev/bus/usb       |c 189:* rmw| MYRIAD         |
 | HDDL-R    |             | /var/tmp, /dev/shm |           | HDDL           |
 
 > **Note:** Intel&reg; NCS2 and HDDL-R accelerators are incompatible and cannot be used on the same system.
 
 ## GPU
-The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request.
+The first time inference is run on a GPU there will be a 30s delay while OpenCL kernels are built for the specific device. To prevent the same delay from occurring on subsequent runs a [model instance id](docs/defining_pipelines.md#model-persistance-in-openvino-gstreamer-elements) can be specified in the request. You can also set the `cl_cache_dir` environment variable to specify location of kernel cache so it can be re-used across sessions.
+
+If multiple GPUs are available, /dev/dri/renderD128 will be automatically selected. The environment variable [GST_VAAPI_DRM_DEVICE](https://gstreamer.freedesktop.org/documentation/vaapi/index.html?gi-language=python) will be set to device path. Different devices can be selected by using the `--gpu-device` argument.
+```
+--gpu-device /dev/dri/renderD129
+```
 
 On Ubuntu20 and later hosts [extra configuration](https://github.com/openvinotoolkit/docker_ci/blob/master/configure_gpu_ubuntu20.md), not shown in the above table, is necessary to allow access to the GPU. The [docker/run.sh](../docker/run.sh) script takes care of this for you, but other deployments will have to be updated accordingly.
 
@@ -295,6 +318,18 @@ pipeline-server@my-host:~$ python3 -m server
 
 By default, the running user's UID value determines user name inside the container. A UID of 1001 is assigned as `pipeline-server`. For other UIDs, you may see `I have no name!@my-host`.
 To run as another user, you can add `--user <user_name>` to the run command.  i.e. to add pipeline-server by name use add `--user pipeline-server`
+
+# Disabling HTTP Port on Docker
+
+The run script includes a --disable-http-port flag which starts the container without any HTTP ports opened up for security reasons. This is used for HTTPS or securing your container.
+
+**Example:**
+
+The example below disables HTTP Port and connects the container into a bridged network for reverse proxy.
+
+```
+docker/run.sh --disable-http-port --network my_bridge
+```
 
 ---
 \* Other names and brands may be claimed as the property of others.

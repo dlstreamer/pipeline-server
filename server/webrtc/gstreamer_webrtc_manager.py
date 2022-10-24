@@ -9,7 +9,7 @@ from server.common.utils import logging
 
 class GStreamerWebRTCManager:
     _source = "appsrc name=webrtc_source format=GST_FORMAT_TIME "
-    _WebRTCVideoPipeline = " ! videoconvert ! queue ! gvawatermark " \
+    _WebRTCVideoPipeline = " ! videoconvert ! video/x-raw,format=I420 ! gvawatermark " \
 				" ! vp8enc name=vp8encoder deadline=1 ! rtpvp8pay " \
 				" ! queue ! application/x-rtp,media=video,encoding-name=VP8,payload=97 " \
 				" ! webrtcbin name=webrtc_destination bundle-policy=max-bundle"

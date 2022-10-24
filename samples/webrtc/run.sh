@@ -10,5 +10,6 @@ SOURCE_DIR=$(dirname "$SCRIPT_DIR")
 pushd $SCRIPT_DIR
 export USER_ID=$UID
 export GROUP_ID=$GID
+export PIPELINE_SERVER_RENDER_GROUP=$(stat -c '%g' /dev/dri/render*)
 docker-compose up -d
 popd

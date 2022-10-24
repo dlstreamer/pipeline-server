@@ -21,7 +21,7 @@ model_list_schema = {
                                                  "FP32-INT1", "FP16-INT1", "INT1"]}
                         },
                         "model-proc" : {"type": "string"},
-                        "labels": {"type": "string"},
+                        "labels-file": {"type": "string"},
                     },
                     "required" : ["model"],
                     "additionalProperties" : False

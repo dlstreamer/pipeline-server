@@ -7,6 +7,7 @@
 
 import json
 import time
+import os
 import socket
 from threading import Thread, Event
 from abc import ABC, abstractmethod
@@ -140,7 +141,11 @@ class MqttWatcher(ResultsWatcher):
     def __init__(self, destination):
         super().__init__()
         self._client = mqtt.Client("Intel(R) DL Streamer Results Watcher", userdata=destination)
-        broker_address = destination["host"].split(':')
+        if os.environ["MQTT_CLUSTER_BROKER"]:
+            mqtt_host = os.environ["MQTT_CLUSTER_BROKER"]
+            broker_address = mqtt_host.split(':')
+        else:
+            broker_address = destination["host"].split(':')
         self._host = broker_address[0]
         if len(broker_address) == 2:
             self._port = int(broker_address[1])

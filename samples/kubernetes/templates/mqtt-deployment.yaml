@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mosquitto
+  labels:
+    app: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - image: "{{ .Values.mosquittoImage.repository }}:{{ .Values.mosquittoImage.tag | default .Chart.AppVersion }}"
+        name: mosquitto
+        ports:
+        - containerPort: 1883
+          name: mqtt-port
+        volumeMounts:
+        - name: mqtt-config-file
+          mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+      volumes:
+      - name: mqtt-config-file
+        configMap:
+            name: {{ .Release.Name }}-config-map
