@@ -1,4 +1,4 @@
 paho-mqtt==1.6.1
-requests==2.28.1
+requests==2.31.0
 tornado==6.2
 kubernetes==24.2.0
